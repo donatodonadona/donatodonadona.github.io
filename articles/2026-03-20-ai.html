@@ -105,7 +105,6 @@
       font-size: 10px;
       font-weight: 500;
       color: var(--accent);
-      text-transform: uppercase;
       letter-spacing: 0.1em;
     }
     .sbar-sep { color: var(--border-quote); font-size: 11px; }
@@ -147,7 +146,6 @@
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.72rem;
       font-weight: 500;
-      text-transform: uppercase;
       letter-spacing: 0.12em;
       color: var(--accent);
     }
@@ -187,7 +185,6 @@
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.85rem;
       font-weight: 500;
-      text-transform: uppercase;
       letter-spacing: 0.1em;
       color: var(--text-muted);
       margin: 1.75em 0 0.5em;
@@ -204,7 +201,6 @@
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.7rem;
       font-weight: 500;
-      text-transform: uppercase;
       letter-spacing: 0.08em;
       color: var(--text-muted);
       background: var(--bg-subtle);
@@ -547,7 +543,7 @@
 
             <!-- ① TL;DR -->
             <div class="exec-block">
-              <div class="section-label">TL;DR</div>
+              <div class="section-label"><span class="lang-ja">概要</span><span class="lang-en">Summary</span></div>
               <p class="exec-tldr">
                 <span class="lang-ja">2026年2〜3月、フロンティアAI性能の商品化が加速し、Claude Opus 4.6▲67%値下げ・GPT-5.4の100万トークンCW・Gemini 3.1 Proのベンチマーク制覇が相次いだ。Finance ProのAI活用は「実験段階」から「実務導入段階」へ移行する転換点にある。</span>
                 <span class="lang-en">In Feb–Mar 2026, frontier AI commoditized at speed: Claude Opus 4.6 dropped 67% in price, GPT-5.4 hit 1M-token context windows, and Gemini 3.1 Pro topped benchmarks at $2/M tokens. This marks the inflection from AI experimentation to practical deployment for Finance Professionals.</span>
@@ -558,7 +554,7 @@
             <div class="exec-block">
               <div class="section-label">
                 <span class="lang-ja">今週の論点</span>
-                <span class="lang-en">KEY ISSUES THIS WEEK</span>
+                <span class="lang-en">Key Issues This Week</span>
               </div>
               <ul class="issues-list">
                 <li class="issue-item">
@@ -603,7 +599,7 @@
             <div class="exec-block">
               <div class="section-label">
                 <span class="lang-ja">Finance Proへの示唆</span>
-                <span class="lang-en">IMPLICATIONS FOR FINANCE PROFESSIONALS</span>
+                <span class="lang-en">Implications for Finance Professionals</span>
               </div>
               <ul class="implications-list">
                 <li class="implication-item">
@@ -625,13 +621,13 @@
             <div class="exec-block">
               <div class="section-label">
                 <span class="lang-ja">この記事を読み進めるべきか</span>
-                <span class="lang-en">SHOULD YOU READ ON?</span>
+                <span class="lang-en">Should You Read On?</span>
               </div>
               <div class="read-grid">
                 <div>
                   <div class="read-col-label read-label-yes">
                     <span class="lang-ja">読むべき人</span>
-                    <span class="lang-en">READ IF YOU ARE</span>
+                    <span class="lang-en">Read If You Are</span>
                   </div>
                   <div class="read-item"><span class="lang-ja">AIコスト・ROIを評価中のCFO・財務企画担当</span><span class="lang-en">CFO or FP&amp;A evaluating AI cost and ROI</span></div>
                   <div class="read-item"><span class="lang-ja">AI活用DDを検討中のPE・M&Aアドバイザー</span><span class="lang-en">PE/M&amp;A advisor exploring AI-assisted due diligence</span></div>
@@ -641,7 +637,7 @@
                 <div>
                   <div class="read-col-label read-label-no">
                     <span class="lang-ja">スキップしてよい人</span>
-                    <span class="lang-en">SKIP IF</span>
+                    <span class="lang-en">Skip If</span>
                   </div>
                   <div class="skip-item"><span class="lang-ja">AI活用を十分調査・導入済みで最新モデル比較が不要な方</span><span class="lang-en">You have already deployed AI tools and don't need a model comparison update</span></div>
                   <div class="skip-item"><span class="lang-ja">AI活用を当面検討していない方</span><span class="lang-en">AI adoption is not on your near-term agenda</span></div>
@@ -936,8 +932,8 @@
 
           <div class="sidebar-card">
             <div class="section-label">
-              <span class="lang-ja">KEY FACTS</span>
-              <span class="lang-en">KEY FACTS</span>
+              <span class="lang-ja">Key Facts</span>
+              <span class="lang-en">Key Facts</span>
             </div>
             <div class="keyfacts-grid">
               <div class="fact-card highlight">
@@ -988,7 +984,7 @@
           <div class="sidebar-card">
             <div class="section-label">
               <span class="lang-ja">今週の注目点</span>
-              <span class="lang-en">THIS WEEK'S HIGHLIGHTS</span>
+              <span class="lang-en">This Week's Highlights</span>
             </div>
             <ol class="highlights-list">
               <li class="highlight-item">
@@ -1047,8 +1043,8 @@
     let currentLang = 'ja';
     function toggleLang() {
       currentLang = currentLang === 'ja' ? 'en' : 'ja';
-      document.querySelectorAll('.lang-ja').forEach(el => el.style.display = currentLang === 'ja' ? '' : 'none');
-      document.querySelectorAll('.lang-en').forEach(el => el.style.display = currentLang === 'en' ? '' : 'none');
+      document.querySelectorAll('.lang-ja').forEach(el => el.style.display = currentLang === 'ja' ? 'inline' : 'none');
+      document.querySelectorAll('.lang-en').forEach(el => el.style.display = currentLang === 'en' ? 'inline' : 'none');
       document.getElementById('lang-btn').textContent = currentLang === 'ja' ? 'EN' : 'JA';
       document.documentElement.lang = currentLang;
     }

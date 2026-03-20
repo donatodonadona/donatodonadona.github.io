@@ -91,6 +91,53 @@
       color: var(--donato-gold);
     }
 
+    /* お知らせ */
+    .announcements {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 1rem 2rem;
+      border-bottom: 1px solid var(--donato-border);
+    }
+    .announce-header {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--donato-gold);
+      margin-bottom: 0.6rem;
+    }
+    .announce-list {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .announce-item {
+      display: flex;
+      gap: 1rem;
+      align-items: baseline;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.8rem;
+    }
+    .announce-date {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--donato-text2);
+      flex-shrink: 0;
+    }
+    .announce-text {
+      color: var(--donato-text);
+      line-height: 1.45;
+    }
+    .announce-text a {
+      color: var(--donato-accent);
+      text-decoration: none;
+    }
+    .announce-text a:hover {
+      text-decoration: underline;
+    }
+
     /* Main */
     main {
       max-width: 960px;
@@ -224,6 +271,17 @@
     <a href="#" class="cat-btn" onclick="filterArticles('ma'); return false;">M&A</a>
     <a href="#" class="cat-btn" onclick="filterArticles('career'); return false;">Career</a>
   </nav>
+
+  <!-- お知らせ欄: article releases and reader-relevant updates -->
+  <section class="announcements" id="announcements">
+    <div class="announce-header">お知らせ</div>
+    <ul class="announce-list" id="announce-list">
+      <li class="announce-item">
+        <span class="announce-date">2026-03-20</span>
+        <span class="announce-text">新着記事: <a href="./2026-03-20-ai.html">AIモデル戦線レポート — 2026年3月</a> を公開しました</span>
+      </li>
+    </ul>
+  </section>
 
   <main>
     <div class="articles-grid" id="articles-grid">

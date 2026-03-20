@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Donato — Valuation & AI</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+JP:wght@300;400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -30,6 +30,16 @@
       font-size: 16px;
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
+    }
+
+    :lang(ja), [data-ja] {
+      font-family: 'Noto Serif JP', serif;
+      font-weight: 300;
+      line-height: 1.9;
+    }
+
+    [data-ja] p, [data-ja] span {
+      font-family: 'Noto Serif JP', serif;
     }
 
     /* NAV */
@@ -156,18 +166,25 @@
     }
 
     h1 {
-      font-size: clamp(48px, 7vw, 88px);
-      font-weight: 700;
-      line-height: 1.05;
-      letter-spacing: -0.03em;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(52px, 7.5vw, 96px);
+      font-weight: 600;
+      line-height: 1.02;
+      letter-spacing: -0.01em;
       margin-bottom: 24px;
     }
 
     h1 .gradient {
+      font-style: italic;
       background: linear-gradient(135deg, #6B9FC4 0%, #C9A84C 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
+    }
+
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 600;
     }
 
     .hero-sub {

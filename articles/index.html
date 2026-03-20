@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Finance Professional x AI — Articles</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+JP:wght@300;400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --donato-bg:      #0A0B10;
+      --donato-surface: #12141C;
+      --donato-border:  #21253A;
+      --donato-accent:  #6B9FC4;
+      --donato-gold:    #C9A84C;
+      --donato-text:    #E4E2DC;
+      --donato-text2:   #7A8099;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--donato-bg);
+      color: var(--donato-text);
+      font-family: 'Noto Serif JP', serif;
+      font-weight: 300;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    header {
+      border-bottom: 1px solid var(--donato-border);
+      padding: 2rem 0 1.5rem;
+    }
+    .header-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+    .site-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      color: var(--donato-gold);
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    h1 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-weight: 600;
+      font-size: 2.4rem;
+      line-height: 1.15;
+      letter-spacing: -0.01em;
+    }
+    .tagline {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: var(--donato-text2);
+      margin-top: 0.5rem;
+    }
+
+    /* Category nav */
+    nav {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 1.25rem 2rem;
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--donato-border);
+    }
+    .cat-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      padding: 0.3rem 0.75rem;
+      border: 1px solid var(--donato-border);
+      border-radius: 2px;
+      background: transparent;
+      color: var(--donato-text2);
+      cursor: pointer;
+      transition: all 0.15s;
+      text-decoration: none;
+    }
+    .cat-btn:hover,
+    .cat-btn.active {
+      border-color: var(--donato-accent);
+      color: var(--donato-accent);
+    }
+    .cat-btn.all.active {
+      border-color: var(--donato-gold);
+      color: var(--donato-gold);
+    }
+
+    /* Main */
+    main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    /* Article grid */
+    .articles-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+    @media (max-width: 640px) {
+      .articles-grid { grid-template-columns: 1fr; }
+    }
+
+    .article-card {
+      background: var(--donato-surface);
+      border: 1px solid var(--donato-border);
+      padding: 1.5rem;
+      text-decoration: none;
+      display: block;
+      transition: border-color 0.15s;
+      position: relative;
+    }
+    .article-card:hover {
+      border-color: var(--donato-accent);
+    }
+    .article-card .category {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--donato-gold);
+      margin-bottom: 0.6rem;
+    }
+    .article-card h2 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-weight: 600;
+      font-size: 1.2rem;
+      line-height: 1.35;
+      color: var(--donato-text);
+      margin-bottom: 0.5rem;
+    }
+    .article-card .summary {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 0.8rem;
+      color: var(--donato-text2);
+      line-height: 1.65;
+    }
+    .article-card .meta {
+      margin-top: 1rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--donato-text2);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .article-card .read-more {
+      color: var(--donato-accent);
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+    }
+
+    /* Empty state */
+    .empty-state {
+      grid-column: 1 / -1;
+      padding: 4rem 0;
+      text-align: center;
+      color: var(--donato-text2);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+    }
+    .empty-state .icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      opacity: 0.3;
+    }
+    .empty-code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--donato-accent);
+      margin-top: 0.75rem;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--donato-border);
+      padding: 1.5rem 2rem;
+      max-width: 960px;
+      margin: 4rem auto 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    footer .brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--donato-text2);
+    }
+    footer .note {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--donato-text2);
+    }
+
+    @media print {
+      body { background: white; color: black; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <p class="site-label">Finance Professional x AI</p>
+      <h1>Articles</h1>
+      <p class="tagline">AI・会計基準・税法・企業法・M&A・キャリア — Finance Proのための情報キュレーション</p>
+    </div>
+  </header>
+
+  <nav>
+    <a href="#" class="cat-btn all active" onclick="filterArticles('all'); return false;">All</a>
+    <a href="#" class="cat-btn" onclick="filterArticles('ai'); return false;">AI Models</a>
+    <a href="#" class="cat-btn" onclick="filterArticles('accounting'); return false;">会計基準</a>
+    <a href="#" class="cat-btn" onclick="filterArticles('tax'); return false;">税法</a>
+    <a href="#" class="cat-btn" onclick="filterArticles('law'); return false;">企業法・金商法</a>
+    <a href="#" class="cat-btn" onclick="filterArticles('ma'); return false;">M&A</a>
+    <a href="#" class="cat-btn" onclick="filterArticles('career'); return false;">Career</a>
+  </nav>
+
+  <main>
+    <div class="articles-grid" id="articles-grid">
+      <a class="article-card" data-category="ai" href="./2026-03-20-ai.html">
+        <p class="category">Finance Professional x AI › AI Models &amp; Tools</p>
+        <h2>AIモデル戦線レポート — 2026年3月</h2>
+        <p class="summary">Claude Opus 4.6が▲67%値下げ、GPT-5.4が100万トークンCW対応、Gemini 3.1 Proがベンチマーク制覇。Finance Professionalのワークフローに直結する変化が相次いだ2〜3月の総括。</p>
+        <div class="meta">
+          <span>2026-03-20</span>
+          <span class="read-more">Read →</span>
+        </div>
+      </a>
+    </div>
+  </main>
+
+  <footer>
+    <span class="brand">Finance Professional x AI</span>
+    <span class="note">Generated with Claude Code · Donato Brand System</span>
+  </footer>
+
+  <script>
+    function filterArticles(category) {
+      // カテゴリフィルター
+      document.querySelectorAll('.cat-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+
+      const cards = document.querySelectorAll('.article-card[data-category]');
+      cards.forEach(card => {
+        if (category === 'all' || card.dataset.category === category) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    // 記事カードの追加ヘルパー（ニュースレターエージェントが呼び出す想定のテンプレート）
+    // addArticle({ title, summary, category, date, filename })
+    // → <a class="article-card" data-category="..." href="./...html"> ... </a>
+  </script>
+
+</body>
+</html>

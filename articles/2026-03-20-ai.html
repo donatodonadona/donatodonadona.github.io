@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AIモデル戦線レポート — 2026年3月 | Finance Professional × AI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+JP:wght@300;400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:           #F8F7F4;
+      --bg-code:      #EEECEA;
+      --bg-quote:     #EEECEA;
+      --bg-highlight: #EBF3FB;
+      --bg-subtle:    #F0EFEB;
+      --bg-card:      #F0EFEB;
+      --bg-header:    #0A0B10;
+      --text-primary: #111320;
+      --text-body:    #2A2C3E;
+      --text-muted:   #565C70;
+      --text-light:   #888EA0;
+      --accent:       #1A6EB0;
+      --accent-warm:  #D4A010;
+      --border:       #D4D2CC;
+      --border-light: #D4D2CC;
+      --tag-bg:       #E4EFF8;
+      --tag-text:     #1A6EB0;
+      --table-stripe: #F0EFEB;
+      --donato-gold:  #C9A84C;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-body);
+      font-family: 'Noto Serif JP', Georgia, serif;
+      font-size: 18px;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ============================================================
+       HEADER
+    ============================================================ */
+    .site-header {
+      background: var(--bg-header);
+      padding: 16px 20px;
+      position: relative;
+    }
+
+    .site-header::after {
+      content: '';
+      display: block;
+      height: 3px;
+      background: linear-gradient(90deg, #1A6EB0, #6B9FC4);
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
+
+    .site-header-inner {
+      max-width: 1240px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .site-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--donato-gold);
+      letter-spacing: 0.02em;
+      text-decoration: none;
+    }
+
+    .site-date {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: #7A8099;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    /* ============================================================
+       ARTICLE META BAR
+    ============================================================ */
+    .article-meta-bar {
+      background: var(--bg-subtle);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 20px;
+    }
+
+    .article-meta-bar-inner {
+      max-width: 1240px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+    }
+
+    .meta-separator {
+      color: var(--border);
+      font-size: 0.75rem;
+    }
+
+    .meta-text {
+      font-family: 'Noto Sans JP', 'Inter', sans-serif;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* ============================================================
+       CONTAINER & GRID
+    ============================================================ */
+    .article-container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .article-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 20px;
+      padding: 40px 0 60px;
+    }
+
+    .article-body {
+      grid-column: 2 / 10;
+      max-width: 68ch;
+    }
+
+    .article-sidebar {
+      grid-column: 10 / 13;
+    }
+
+    @media (max-width: 1024px) {
+      .article-body {
+        grid-column: 1 / 10;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .article-body,
+      .article-sidebar {
+        grid-column: 1 / -1;
+      }
+
+      .article-grid {
+        padding: 24px 0 40px;
+      }
+    }
+
+    /* ============================================================
+       ARTICLE HEADER
+    ============================================================ */
+    .article-header {
+      padding: 48px 20px 32px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .article-header-inner {
+      max-width: 1240px;
+      margin: 0 auto;
+    }
+
+    .article-category {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .article-headline {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 600;
+      font-size: clamp(2rem, 4vw, 2.75rem);
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      line-height: 1.15;
+      margin-bottom: 20px;
+    }
+
+    .article-standfirst {
+      font-family: 'Noto Sans JP', 'Inter', sans-serif;
+      font-size: 1.2rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+      max-width: 72ch;
+    }
+
+    .article-byline-row {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .byline {
+      font-family: 'Noto Sans JP', 'Inter', sans-serif;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .byline strong {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    .tag {
+      display: inline-block;
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 2px;
+    }
+
+    /* ============================================================
+       BODY TYPOGRAPHY
+    ============================================================ */
+    .article-body p {
+      margin-bottom: 1.4em;
+      color: var(--text-body);
+    }
+
+    .article-body h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      border-top: 1px solid var(--border);
+      padding-top: 1em;
+      margin-top: 2em;
+      margin-bottom: 0.6em;
+      line-height: 1.3;
+    }
+
+    .article-body h3 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.875rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-top: 1.8em;
+      margin-bottom: 0.5em;
+    }
+
+    .article-body h4 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-top: 1.4em;
+      margin-bottom: 0.4em;
+    }
+
+    .article-body strong {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .article-body ul,
+    .article-body ol {
+      padding-left: 1.5em;
+      margin-bottom: 1.4em;
+    }
+
+    .article-body li {
+      margin-bottom: 0.5em;
+    }
+
+    .article-body hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 2em 0;
+    }
+
+    /* ============================================================
+       PULLQUOTE
+    ============================================================ */
+    .pullquote {
+      border-left: 4px solid var(--accent);
+      background: var(--bg-card);
+      padding: 20px 24px;
+      margin: 2em 0;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.25rem;
+      line-height: 1.5;
+      color: var(--text-primary);
+    }
+
+    .pullquote cite {
+      display: block;
+      font-family: 'Noto Sans JP', 'Inter', sans-serif;
+      font-style: normal;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 10px;
+    }
+
+    /* ============================================================
+       TABLE
+    ============================================================ */
+    .table-wrapper {
+      overflow-x: auto;
+      margin: 1.6em 0;
+      border: 1px solid var(--border-light);
+      border-radius: 4px;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      min-width: 560px;
+    }
+
+    thead th {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      background: var(--bg-code);
+      color: var(--text-muted);
+      border-bottom: 2px solid var(--accent);
+      padding: 10px 14px;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    tbody td {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 0.9rem;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border-light);
+      color: var(--text-body);
+      vertical-align: top;
+    }
+
+    tbody tr:nth-child(even) td {
+      background: var(--table-stripe);
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .num {
+      font-family: 'JetBrains Mono', monospace;
+      font-variant-numeric: tabular-nums;
+      text-align: right;
+    }
+
+    .table-caption {
+      font-family: 'Noto Sans JP', 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 8px;
+      padding: 0 4px;
+      font-style: italic;
+    }
+
+    /* ============================================================
+       SVG CHART
+    ============================================================ */
+    .chart-wrapper {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: 4px;
+      padding: 20px;
+      margin: 1.2em 0 2em;
+    }
+
+    .chart-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+    }
+
+    .chart-source {
+      font-family: 'Noto Sans JP', 'Inter', sans-serif;
+      font-size: 0.72rem;
+      color: var(--text-light);
+      margin-top: 10px;
+      font-style: italic;
+    }
+
+    .chart-wrapper svg {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    /* ============================================================
+       SIDEBAR
+    ============================================================ */
+    .sidebar-sticky {
+      position: sticky;
+      top: 20px;
+    }
+
+    .fact-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-top: 3px solid var(--accent);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .fact-box-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .fact-item {
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .fact-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .fact-item-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-light);
+      margin-bottom: 3px;
+    }
+
+    .fact-item-value {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.35rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+
+    .fact-item-value.accent {
+      color: var(--accent);
+    }
+
+    .fact-item-value.gold {
+      color: var(--donato-gold);
+    }
+
+    .fact-item-sub {
+      font-family: 'Noto Sans JP', 'Inter', sans-serif;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* Sidebar watch list */
+    .watch-box {
+      background: var(--bg-highlight);
+      border: 1px solid #BDD6EE;
+      padding: 20px;
+    }
+
+    .watch-box-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      margin-bottom: 14px;
+      display: block;
+    }
+
+    .watch-item {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 12px;
+      align-items: flex-start;
+    }
+
+    .watch-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--accent);
+      font-weight: 500;
+      min-width: 18px;
+      padding-top: 2px;
+    }
+
+    .watch-text {
+      font-family: 'Noto Sans JP', 'Inter', sans-serif;
+      font-size: 0.82rem;
+      line-height: 1.5;
+      color: var(--text-body);
+    }
+
+    /* ============================================================
+       HIGHLIGHT BOX
+    ============================================================ */
+    .highlight-box {
+      background: var(--bg-highlight);
+      border-left: 3px solid var(--accent);
+      padding: 16px 20px;
+      margin: 1.6em 0;
+      border-radius: 0 4px 4px 0;
+    }
+
+    .highlight-box p {
+      font-family: 'Noto Sans JP', 'Inter', sans-serif;
+      font-size: 0.9rem;
+      color: var(--text-body);
+      margin-bottom: 0 !important;
+    }
+
+    .highlight-box strong {
+      color: var(--accent);
+    }
+
+    /* ============================================================
+       BADGE
+    ============================================================ */
+    .badge {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 2px 7px;
+      border-radius: 2px;
+      vertical-align: middle;
+      margin-left: 4px;
+    }
+
+    .badge-official {
+      background: #E8F4FD;
+      color: var(--accent);
+      border: 1px solid #BDD6EE;
+    }
+
+    .badge-report {
+      background: var(--bg-subtle);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+    }
+
+    .badge-verify {
+      background: #FDF5E0;
+      color: #8A6300;
+      border: 1px solid #E8D48A;
+    }
+
+    /* ============================================================
+       SOURCES / FOOTER
+    ============================================================ */
+    .sources-section {
+      background: var(--bg-subtle);
+      border-top: 2px solid var(--accent);
+      padding: 32px 20px;
+      margin-top: 40px;
+    }
+
+    .sources-inner {
+      max-width: 1240px;
+      margin: 0 auto;
+    }
+
+    .sources-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    .sources-list {
+      list-style: none;
+      padding: 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 10px 24px;
+    }
+
+    .sources-list li {
+      font-family: 'Noto Sans JP', 'Inter', sans-serif;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      padding-left: 14px;
+      border-left: 2px solid var(--border-light);
+    }
+
+    .sources-list a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .sources-list a:hover {
+      text-decoration: underline;
+    }
+
+    .site-footer {
+      background: var(--bg-header);
+      color: #7A8099;
+      text-align: center;
+      padding: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.06em;
+    }
+
+    .site-footer span {
+      color: var(--donato-gold);
+    }
+
+    /* ============================================================
+       @MEDIA PRINT
+    ============================================================ */
+    @media print {
+      body {
+        background: #fff;
+        font-size: 11pt;
+        color: #000;
+      }
+
+      .site-header,
+      .article-meta-bar {
+        background: #000 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .article-grid {
+        display: block;
+      }
+
+      .article-sidebar {
+        display: none;
+      }
+
+      .article-body {
+        max-width: 100%;
+      }
+
+      .pullquote {
+        border-left: 3pt solid #000;
+        background: #f5f5f5;
+      }
+
+      a {
+        color: #000;
+        text-decoration: underline;
+      }
+
+      .sources-section {
+        border-top: 2pt solid #000;
+        background: #f5f5f5;
+      }
+
+      .chart-wrapper {
+        background: #f5f5f5;
+      }
+
+      table,
+      thead th,
+      tbody td {
+        border-color: #999 !important;
+      }
+
+      thead th {
+        background: #e0e0e0 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .watch-box,
+      .highlight-box {
+        background: #f5f5f5 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      h2 {
+        page-break-after: avoid;
+      }
+
+      p {
+        orphans: 3;
+        widows: 3;
+      }
+
+      .table-wrapper {
+        overflow: visible;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       SITE HEADER
+  ============================================================ -->
+  <header class="site-header">
+    <div class="site-header-inner">
+      <a class="site-name">Finance Professional × AI</a>
+      <span class="site-date">March 20, 2026 &nbsp;·&nbsp; Vol. 2026-03</span>
+    </div>
+  </header>
+
+  <!-- ============================================================
+       META BAR
+  ============================================================ -->
+  <div class="article-meta-bar">
+    <div class="article-meta-bar-inner">
+      <span class="section-label">AI Models &amp; Tools</span>
+      <span class="meta-separator">|</span>
+      <span class="meta-text">調査期間: 2026年2〜3月</span>
+      <span class="meta-separator">|</span>
+      <span class="meta-text">作成日: 2026-03-20</span>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       ARTICLE HEADER
+  ============================================================ -->
+  <div class="article-header">
+    <div class="article-header-inner">
+      <span class="article-category">Finance Professional × AI &rsaquo; AI Models &amp; Tools</span>
+      <h1 class="article-headline">AIモデル戦線レポート<br>— 2026年3月</h1>
+      <p class="article-standfirst">
+        主要AIラボが2〜3週間サイクルで新モデルを投入し、フロンティア性能が急速に商品化。
+        Finance Professionalのワークフローに直結する価格改定・新機能・活用事例を総括する。
+      </p>
+      <div class="article-byline-row">
+        <span class="byline">Finance Professional × AI 編集部</span>
+        <span class="tag">Monthly AI Report</span>
+        <span class="tag">2026-03</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MAIN CONTENT
+  ============================================================ -->
+  <div class="article-container">
+    <div class="article-grid">
+
+      <!-- BODY -->
+      <main class="article-body">
+
+        <!-- Executive Summary -->
+        <h2>エグゼクティブサマリー</h2>
+        <p>
+          2026年2〜3月、主要AIラボはわずか2〜3週間のサイクルで新モデルを投入し、フロンティア性能が急速に商品化されている。Claude Opus 4.6の大幅値下げ（<strong>▲67%</strong>）、GPT-5.4の100万トークンコンテキスト対応、Gemini 3.1 Proのベンチマーク制覇と、Finance Professionalのワークフローに直結する変化が相次いだ。AIによるDue Diligence・財務モデリング支援は「実験段階」から「実務導入段階」へと移行しつつある。
+        </p>
+
+        <div class="pullquote">
+          「フロンティアモデルの民主化が加速している。Claude Opus 4.6の▲67%値下げは、高精度AIタスクのROI計算を根本から変える。」
+        </div>
+
+        <!-- Section 1 -->
+        <h2>1. 主要モデルリリース動向（2〜3月）</h2>
+
+        <h3>GPT-5.4</h3>
+        <h4>ネイティブPC操作 × 100万トークン</h4>
+        <p>
+          <span class="badge badge-report">報道</span>
+          OpenAIは3月5日、ChatGPT Plus/ProユーザーにGPT-5.4をリリース。最大の変化は<strong>ネイティブコンピューター操作（computer use）</strong>と<strong>100万トークンコンテキストウィンドウ</strong>。長大な有価証券報告書・契約書群を一括投入できる容量は、財務・法務レビューの実務を変える可能性がある。
+        </p>
+        <p>
+          また「ChatGPT for Excel」ベータ版がExcel内に直接実装され、自然言語でDCFモデルやデータ分析の構築が可能に。
+        </p>
+        <div class="highlight-box">
+          <p><strong>API価格:</strong> 入力 $2.50/Mトークン &nbsp;·&nbsp; 出力 $15.00/Mトークン</p>
+        </div>
+
+        <h3>Claude Opus 4.6 / Sonnet 4.6</h3>
+        <h4>価格67%引き下げ</h4>
+        <p>
+          <span class="badge badge-official">公式</span>
+          AnthropicはClaude Opus 4.6（2/5）・Sonnet 4.6（2/17）をリリース。特筆すべきはOpus 4.6の大幅な価格改定——前世代Opus 4.1比で<strong>▲67%</strong>（入力 $5/M、出力 $25/M）。フロンティアモデルの民主化が加速している。
+        </p>
+        <p>
+          また3月2日、<strong>全プラン（無料含む）へのメモリ機能解放</strong>を発表。会話をまたいで文脈・好みを保持し、競合他社（ChatGPT・Gemini）からのメモリインポート機能も追加。Enterprise向けにはセルフサーブ購入が可能になり、営業を通さずにClaude + Claude Codeのエンタープライズ契約が取得できる。
+        </p>
+
+        <h3>Gemini 3.1 Pro</h3>
+        <h4>ベンチマーク制覇</h4>
+        <p>
+          <span class="badge badge-report">報道</span>
+          Googleは2月19日にGemini 3.1 Proをリリース。主要16ベンチマーク中13項目でトップを記録。価格は入力 $2.00/M、出力 $12.00/M（200kトークン以下）でフロンティア性能としては最安水準。Gemini 2.5 Flash-Liteは入力 $0.10/Mと超低コストで実用に耐える品質を提供。
+        </p>
+
+        <h3>Grok 4.20</h3>
+        <h4>マルチエージェント並列処理</h4>
+        <p>
+          <span class="badge badge-report">報道</span>
+          xAIは2月17日、4エージェント並列アーキテクチャの<strong>Grok 4.20</strong>をリリース。Grok（統括）・Harper（ファクトチェック・X連携）・Benjamin（ロジック・コーディング）・Lucas（クリエイティブ推論）が協調動作する設計。
+        </p>
+
+        <!-- Section 2 -->
+        <h2>2. APIコスト比較（2026年3月時点）</h2>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>モデル</th>
+                <th class="num">入力 $/Mトークン</th>
+                <th class="num">出力 $/Mトークン</th>
+                <th>特徴</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>GPT-5.4</td>
+                <td class="num">$2.50</td>
+                <td class="num">$15.00</td>
+                <td>100万トークンCW、computer use</td>
+              </tr>
+              <tr>
+                <td>Claude Opus 4.6</td>
+                <td class="num">$5.00</td>
+                <td class="num">$25.00</td>
+                <td>前世代比▲67%、長文推論</td>
+              </tr>
+              <tr>
+                <td>Claude Sonnet 4.6</td>
+                <td class="num">$3.00</td>
+                <td class="num">$15.00</td>
+                <td>バランス型</td>
+              </tr>
+              <tr>
+                <td>Claude Haiku 4.5</td>
+                <td class="num">$0.25</td>
+                <td class="num">$1.25</td>
+                <td>軽量・低コスト</td>
+              </tr>
+              <tr>
+                <td>Gemini 3.1 Pro</td>
+                <td class="num">$2.00</td>
+                <td class="num">$12.00</td>
+                <td>総合ベンチマーク首位</td>
+              </tr>
+              <tr>
+                <td>Gemini 2.5 Flash-Lite</td>
+                <td class="num">$0.10</td>
+                <td class="num">$0.40</td>
+                <td>最安値帯で実用品質</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="table-caption">出所: 各社公式API価格表 | 2026年3月時点</p>
+
+        <!-- SVG Bar Chart -->
+        <div class="chart-wrapper">
+          <div class="chart-title">主要LLM APIコスト比較（入力 $/Mトークン）— 2026年3月</div>
+          <svg viewBox="0 0 560 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="主要LLM APIコスト比較 横棒グラフ">
+            <defs>
+              <style>
+                .chart-axis-label {
+                  font-family: 'JetBrains Mono', monospace;
+                  font-size: 10px;
+                  fill: #565C70;
+                }
+                .chart-model-label {
+                  font-family: 'Noto Sans JP', 'Inter', sans-serif;
+                  font-size: 10.5px;
+                  fill: #2A2C3E;
+                }
+                .chart-value-label {
+                  font-family: 'JetBrains Mono', monospace;
+                  font-size: 10px;
+                  font-variant-numeric: tabular-nums;
+                  fill: #2A2C3E;
+                }
+                .chart-grid-line {
+                  stroke: #D4D2CC;
+                  stroke-width: 0.5;
+                  stroke-dasharray: 3,3;
+                }
+                .chart-axis-line {
+                  stroke: #D4D2CC;
+                  stroke-width: 1;
+                }
+              </style>
+            </defs>
+
+            <!-- Background -->
+            <rect x="0" y="0" width="560" height="260" fill="#F0EFEB" rx="2"/>
+
+            <!-- Plot area: x from 152 to 520, y from 16 to 236 -->
+            <!-- Grid lines at $0, $1, $2, $3, $4, $5 -->
+            <!-- Scale: $5 = max → plotWidth=368, 1$ = 73.6px -->
+
+            <!-- Grid lines -->
+            <!-- $0 = x:152 -->
+            <line x1="152" y1="16" x2="152" y2="236" class="chart-axis-line"/>
+            <!-- $1 = x:225.6 -->
+            <line x1="225.6" y1="16" x2="225.6" y2="236" class="chart-grid-line"/>
+            <!-- $2 = x:299.2 -->
+            <line x1="299.2" y1="16" x2="299.2" y2="236" class="chart-grid-line"/>
+            <!-- $3 = x:372.8 -->
+            <line x1="372.8" y1="16" x2="372.8" y2="236" class="chart-grid-line"/>
+            <!-- $4 = x:446.4 -->
+            <line x1="446.4" y1="16" x2="446.4" y2="236" class="chart-grid-line"/>
+            <!-- $5 = x:520 -->
+            <line x1="520" y1="16" x2="520" y2="236" class="chart-grid-line"/>
+
+            <!-- X-axis labels -->
+            <text x="152" y="250" text-anchor="middle" class="chart-axis-label">$0</text>
+            <text x="225.6" y="250" text-anchor="middle" class="chart-axis-label">$1</text>
+            <text x="299.2" y="250" text-anchor="middle" class="chart-axis-label">$2</text>
+            <text x="372.8" y="250" text-anchor="middle" class="chart-axis-label">$3</text>
+            <text x="446.4" y="250" text-anchor="middle" class="chart-axis-label">$4</text>
+            <text x="520" y="250" text-anchor="middle" class="chart-axis-label">$5</text>
+
+            <!-- Row height = (236-16)/6 = 36.67; center positions: 16 + 18.33, 55, 91.67, 128.33, 165, 201.67 -->
+            <!-- Bar height = 18px, centered vertically in each row -->
+
+            <!-- Row 1: GPT-5.4 — $2.50 — OpenAI #1A6EB0 — barWidth = 2.5*73.6=184 -->
+            <text x="146" y="43" text-anchor="end" class="chart-model-label">GPT-5.4</text>
+            <rect x="152" y="27" width="184" height="20" fill="#1A6EB0" rx="2"/>
+            <text x="342" y="41" x="342" class="chart-value-label" dx="5">$2.50</text>
+
+            <!-- Row 2: Claude Opus 4.6 — $5.00 — Anthropic #6B9FC4 — barWidth = 5*73.6=368 -->
+            <text x="146" y="80" text-anchor="end" class="chart-model-label">Claude Opus 4.6</text>
+            <rect x="152" y="64" width="368" height="20" fill="#6B9FC4" rx="2"/>
+            <text x="526" y="78" class="chart-value-label" dx="2">$5.00</text>
+
+            <!-- Row 3: Claude Sonnet 4.6 — $3.00 — Anthropic #6B9FC4 — barWidth = 3*73.6=220.8 -->
+            <text x="146" y="116" text-anchor="end" class="chart-model-label">Claude Sonnet 4.6</text>
+            <rect x="152" y="100" width="220.8" height="20" fill="#6B9FC4" rx="2"/>
+            <text x="378.8" y="114" class="chart-value-label" dx="4">$3.00</text>
+
+            <!-- Row 4: Claude Haiku 4.5 — $0.25 — Anthropic #6B9FC4 — barWidth = 0.25*73.6=18.4 -->
+            <text x="146" y="152" text-anchor="end" class="chart-model-label">Claude Haiku 4.5</text>
+            <rect x="152" y="136" width="18.4" height="20" fill="#6B9FC4" rx="2"/>
+            <text x="176.4" y="150" class="chart-value-label" dx="2">$0.25</text>
+
+            <!-- Row 5: Gemini 3.1 Pro — $2.00 — Google #C9A84C — barWidth = 2*73.6=147.2 -->
+            <text x="146" y="189" text-anchor="end" class="chart-model-label">Gemini 3.1 Pro</text>
+            <rect x="152" y="173" width="147.2" height="20" fill="#C9A84C" rx="2"/>
+            <text x="304.2" y="187" class="chart-value-label" dx="4">$2.00</text>
+
+            <!-- Row 6: Gemini 2.5 Flash-Lite — $0.10 — Google #C9A84C — barWidth = 0.10*73.6=7.36 -->
+            <text x="146" y="225" text-anchor="end" class="chart-model-label">Gemini Flash-Lite</text>
+            <rect x="152" y="209" width="7.36" height="20" fill="#C9A84C" rx="2"/>
+            <text x="164.36" y="223" class="chart-value-label" dx="2">$0.10</text>
+
+            <!-- Legend -->
+            <rect x="156" y="0" width="10" height="10" fill="#1A6EB0" rx="1"/>
+            <text x="170" y="9" class="chart-axis-label">OpenAI</text>
+            <rect x="226" y="0" width="10" height="10" fill="#6B9FC4" rx="1"/>
+            <text x="240" y="9" class="chart-axis-label">Anthropic</text>
+            <rect x="310" y="0" width="10" height="10" fill="#C9A84C" rx="1"/>
+            <text x="324" y="9" class="chart-axis-label">Google</text>
+          </svg>
+          <div class="chart-source">出所: 各社公式API価格表 | 2026年3月時点</div>
+        </div>
+
+        <div class="highlight-box">
+          <p>
+            <strong>Finance Pro向け示唆:</strong> プロンプトキャッシュ（最大▲90%）とバッチ処理を組み合わせれば、実効コストを60〜80%削減可能。定型的な財務文書処理はHaiku/Flash-Liteに任せ、複雑な分析・推論のみOpus/GPT-5.4を使う<strong>モデルティアリング</strong>が最適解。
+          </p>
+        </div>
+
+        <!-- Section 3 -->
+        <h2>3. Finance Professional向け活用最前線</h2>
+
+        <h3>Due Diligence / M&amp;A支援</h3>
+        <p>
+          <span class="badge badge-report">報道</span>
+          2026年、AIによるDD支援は「実験」から「実務標準」へ移行しつつある。主要プラットフォームの実績:
+        </p>
+        <ul>
+          <li><strong>文書分析速度:</strong> VDRの構造化時間を最大 <strong>90%短縮</strong></li>
+          <li><strong>カバレッジ:</strong> 従来のサンプリング調査から <strong>全文書100%分析</strong> へ</li>
+          <li><strong>精度:</strong> リスク識別・文書分析で <strong>95%超</strong> の正答率</li>
+          <li><strong>主要ツール:</strong> Keye（PE特化・ゼロデータ保持ポリシー）、DealRoom（VDR+AI契約分析）、AlphaSense</li>
+        </ul>
+        <p>
+          財務専門家の役割は「AIが出した結果の批判的検証・意思決定」へシフト。human-in-the-loopの設計が業界標準となっている。
+        </p>
+
+        <h3>財務モデリング</h3>
+        <p>
+          <span class="badge badge-report">報道</span>
+          Wall Street Prepのランキングによると、財務モデリング補助ではClaudeとShortcutが他を大きくリード（Copilot・ChatGPTより優位）。ただし「最優秀ツールでもジュニアアナリストのパフォーマンスには及ばない」という評価も。
+        </p>
+        <p>
+          Excel直接統合（ChatGPT for Excel）の登場により、Python非使用者でもAIによる定量分析が現実的に。
+        </p>
+
+        <h3>フィナンシャルRAG・エージェント</h3>
+        <p>
+          <span class="badge badge-verify">要確認</span>
+          マルチエージェントRAGシステムの財務QAベンチマーク（FinanceBench）での正答率は<strong>56%</strong>（GPT-4 Turboの19%から大幅改善）。ただし本番環境での精度・ハルシネーション対策は継続課題。
+        </p>
+
+        <!-- Section 4 -->
+        <h2>4. Finance Proが今週注目すべきポイント</h2>
+        <ol>
+          <li><strong>Claude Enterpriseのセルフサーブ化</strong> — 監査法人・M&amp;Aアドバイザリーのチーム導入ハードルが大幅低下</li>
+          <li><strong>GPT-5.4の100万トークンCW</strong> — 長大な法令・基準書・DD資料の一括分析が現実的に</li>
+          <li><strong>Gemini 3.1 Pro のコスパ</strong> — フロンティア性能を$2/Mで調達。大量処理ユースケースに最適</li>
+          <li><strong>Claude Opus 4.6 ▲67%値下げ</strong> — 高精度分析タスクのROI計算を再評価する価値あり</li>
+          <li><strong>ChatGPT for Excel</strong> — Excelベースの財務モデリング補助。実務での有効性は今後の実証待ち</li>
+        </ol>
+
+      </main><!-- /.article-body -->
+
+      <!-- SIDEBAR -->
+      <aside class="article-sidebar">
+        <div class="sidebar-sticky">
+
+          <!-- Key Facts Box -->
+          <div class="fact-box">
+            <span class="fact-box-label">Key Facts</span>
+
+            <div class="fact-item">
+              <div class="fact-item-label">調査期間</div>
+              <div class="fact-item-value" style="font-size:1rem; font-family:'Noto Sans JP',sans-serif; font-weight:400;">2026年2〜3月</div>
+            </div>
+
+            <div class="fact-item">
+              <div class="fact-item-label">対象モデル数</div>
+              <div class="fact-item-value accent">4</div>
+              <div class="fact-item-sub">主要ラボのフロンティアモデル</div>
+            </div>
+
+            <div class="fact-item">
+              <div class="fact-item-label">最大コスト削減</div>
+              <div class="fact-item-value gold">最大▲67%</div>
+              <div class="fact-item-sub">Claude Opus比較（前世代比）</div>
+            </div>
+
+            <div class="fact-item">
+              <div class="fact-item-label">DD効率化</div>
+              <div class="fact-item-value accent">最大90%</div>
+              <div class="fact-item-sub">時間短縮（VDR構造化）</div>
+            </div>
+
+            <div class="fact-item">
+              <div class="fact-item-label">FinanceBench正答率</div>
+              <div class="fact-item-value">56%</div>
+              <div class="fact-item-sub">マルチエージェントRAG（GPT-4T比 +37pt）</div>
+            </div>
+          </div>
+
+          <!-- Watch List Box -->
+          <div class="watch-box">
+            <span class="watch-box-label">今週の注目点</span>
+
+            <div class="watch-item">
+              <span class="watch-num">01</span>
+              <span class="watch-text">Claude Enterpriseのセルフサーブ化で、監査法人のチーム導入が加速</span>
+            </div>
+            <div class="watch-item">
+              <span class="watch-num">02</span>
+              <span class="watch-text">GPT-5.4の100万トークンCW — DD資料の一括分析が現実的に</span>
+            </div>
+            <div class="watch-item">
+              <span class="watch-num">03</span>
+              <span class="watch-text">Gemini 3.1 Pro: フロンティア性能を$2/Mで調達</span>
+            </div>
+            <div class="watch-item">
+              <span class="watch-num">04</span>
+              <span class="watch-text">Opus 4.6 ▲67%値下げ — ROI計算を再評価せよ</span>
+            </div>
+            <div class="watch-item">
+              <span class="watch-num">05</span>
+              <span class="watch-text">ChatGPT for Excel — 財務モデリング補助の実証段階へ</span>
+            </div>
+          </div>
+
+        </div>
+      </aside><!-- /.article-sidebar -->
+
+    </div><!-- /.article-grid -->
+  </div><!-- /.article-container -->
+
+  <!-- ============================================================
+       SOURCES
+  ============================================================ -->
+  <section class="sources-section">
+    <div class="sources-inner">
+      <span class="sources-label">出典</span>
+      <ul class="sources-list">
+        <li>
+          <a href="https://www.labla.org/latest-ai-model-releases-past-24-hours/ai-model-releases-march-17-2026-claude-gets-memory-microsoft-pulls-back-and-the-race-continues/" target="_blank" rel="noopener">AI Model Releases March 17, 2026: Claude Memory, Grok 4.20</a>
+          &nbsp;<span class="badge badge-report">報道</span>
+        </li>
+        <li>
+          <a href="https://www.macrumors.com/2026/03/02/anthropic-memory-import-tool/" target="_blank" rel="noopener">Anthropic Adds Free Memory Feature and Import Tool</a>
+          &nbsp;<span class="badge badge-report">報道</span> MacRumors
+        </li>
+        <li>
+          <a href="https://www.bloomberg.com/news/articles/2026-03-03/anthropic-tries-to-win-users-from-chatgpt-with-memory-feature" target="_blank" rel="noopener">Anthropic Tries to Win Users From ChatGPT With Memory Feature</a>
+          &nbsp;<span class="badge badge-report">報道</span> Bloomberg
+        </li>
+        <li>
+          <a href="https://www.tldl.io/resources/llm-api-pricing-2026" target="_blank" rel="noopener">LLM API Pricing (March 2026)</a>
+          &nbsp;<span class="badge badge-report">報道</span>
+        </li>
+        <li>
+          <a href="https://intuitionlabs.ai/articles/ai-api-pricing-comparison-grok-gemini-openai-claude" target="_blank" rel="noopener">AI API Pricing Comparison (2026)</a>
+          &nbsp;<span class="badge badge-report">報道</span> IntuitionLabs
+        </li>
+        <li>
+          <a href="https://www.wallstreetprep.com/knowledge/ranking-the-best-ai-tools-for-financial-modeling-2026/" target="_blank" rel="noopener">Ranking the Best AI Tools for Financial Modeling (2026)</a>
+          &nbsp;<span class="badge badge-report">報道</span> Wall Street Prep
+        </li>
+        <li>
+          <a href="https://www.thirdbridge.com/en-us/about-us/media/perspectives/ai-due-diligence-private-equity" target="_blank" rel="noopener">PE Due Diligence with AI: The Complete Workflow (2026)</a>
+          &nbsp;<span class="badge badge-report">報道</span> Third Bridge
+        </li>
+        <li>
+          <a href="https://jinba.io/blog/10-best-ai-tools-for-investment-due-diligence-automation-in-2026" target="_blank" rel="noopener">10 Best AI Tools for Investment Due Diligence Automation in 2026</a>
+          &nbsp;<span class="badge badge-report">報道</span> Jinba
+        </li>
+        <li>
+          <a href="https://9to5mac.com/2026/03/02/free-claude-users-can-now-use-memory-and-import-context-from-rivals/" target="_blank" rel="noopener">Free Claude users can now use memory and import context from rivals</a>
+          &nbsp;<span class="badge badge-report">報道</span> 9to5Mac
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SITE FOOTER
+  ============================================================ -->
+  <footer class="site-footer">
+    <span>Finance Professional × AI</span>
+    &nbsp;·&nbsp;
+    dona<span>to</span> brand system
+    &nbsp;·&nbsp;
+    &copy; 2026
+  </footer>
+
+</body>
+</html>

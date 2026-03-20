@@ -14,8 +14,8 @@
       --bg2: #12141C;
       --bg3: #1A1D28;
       --border: #21253A;
-      --accent: #6B9FC4;   /* Slate Blue — Donato Primary */
-      --accent2: #C9A84C;  /* Warm Gold — Donato Secondary */
+      --accent: #1A6EB0;   /* Deep Nordic — Donato Primary */
+      --accent2: #F5C800;  /* Chrome Yellow — Donato Secondary */
       --text: #E4E2DC;
       --text2: #7A8099;
       --text3: #3D4260;
@@ -129,7 +129,7 @@
       position: absolute;
       top: -200px; right: -200px;
       width: 600px; height: 600px;
-      background: radial-gradient(circle, rgba(107,159,196,0.07) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(26,110,176,0.09) 0%, transparent 70%);
       pointer-events: none;
     }
 
@@ -138,7 +138,7 @@
       position: absolute;
       bottom: -100px; left: 20%;
       width: 400px; height: 400px;
-      background: radial-gradient(circle, rgba(201,168,76,0.05) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(245,200,0,0.06) 0%, transparent 70%);
       pointer-events: none;
     }
 
@@ -176,7 +176,7 @@
 
     h1 .gradient {
       font-style: italic;
-      background: linear-gradient(135deg, #6B9FC4 0%, #C9A84C 100%);
+      background: linear-gradient(135deg, #1A6EB0 0%, #F5C800 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -214,9 +214,9 @@
     }
 
     .badge.highlight {
-      border-color: rgba(0,200,150,0.3);
+      border-color: rgba(26,110,176,0.35);
       color: var(--accent);
-      background: rgba(0,200,150,0.05);
+      background: rgba(26,110,176,0.06);
     }
 
     .cta-btn {
@@ -224,7 +224,7 @@
       align-items: center;
       gap: 10px;
       padding: 14px 28px;
-      background: linear-gradient(135deg, #6B9FC4, #7BAED4);
+      background: linear-gradient(135deg, #1A6EB0, #2E88CA);
       color: #0A0B10;
       font-weight: 600;
       font-size: 15px;
@@ -282,7 +282,7 @@
       left: 10%;
       right: 10%;
       height: 1px;
-      background: linear-gradient(90deg, #6B9FC4, #C9A84C);
+      background: linear-gradient(90deg, #1A6EB0, #F5C800);
       opacity: 0.25;
     }
 
@@ -465,6 +465,58 @@
       footer { flex-direction: column; gap: 8px; text-align: center; }
     }
 
+    /* LIGHT MODE */
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg:      #F6F5F0;
+        --bg2:     #EDECEA;
+        --bg3:     #E4E3DF;
+        --border:  #CCCAC4;
+        --accent:  #1A6EB0;
+        --accent2: #D4A010;
+        --text:    #111320;
+        --text2:   #50566A;
+        --text3:   #9299A8;
+      }
+      nav { background: rgba(246,245,240,0.90); }
+      .hero::before { background: radial-gradient(circle, rgba(26,110,176,0.06) 0%, transparent 70%); }
+      .hero::after  { background: radial-gradient(circle, rgba(212,160,16,0.05) 0%, transparent 70%); }
+      h1 .gradient {
+        background: linear-gradient(135deg, #1A6EB0 0%, #D4A010 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .badge.highlight {
+        border-color: rgba(26,110,176,0.25);
+        background: rgba(26,110,176,0.06);
+      }
+      .process-flow::before { background: linear-gradient(90deg, #1A6EB0, #D4A010); }
+    }
+
+    /* LIGHT MODE — forced class toggle */
+    body.light {
+      --bg:      #F6F5F0;
+      --bg2:     #EDECEA;
+      --bg3:     #E4E3DF;
+      --border:  #CCCAC4;
+      --accent:  #1A6EB0;
+      --accent2: #D4A010;
+      --text:    #111320;
+      --text2:   #50566A;
+      --text3:   #9299A8;
+    }
+    body.light nav { background: rgba(246,245,240,0.90); }
+    body.light .hero::before { background: radial-gradient(circle, rgba(26,110,176,0.06) 0%, transparent 70%); }
+    body.light .hero::after  { background: radial-gradient(circle, rgba(212,160,16,0.05) 0%, transparent 70%); }
+    body.light h1 .gradient {
+      background: linear-gradient(135deg, #1A6EB0 0%, #D4A010 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    body.light .process-flow::before { background: linear-gradient(90deg, #1A6EB0, #D4A010); }
+
     /* LANGUAGE TOGGLE */
     [data-en], [data-ja] { transition: opacity 0.2s; }
     body.ja [data-en] { display: none; }
@@ -492,6 +544,7 @@
       <button class="lang-btn active" onclick="setLang('en')">EN</button>
       <button class="lang-btn" onclick="setLang('ja')">JP</button>
     </div>
+    <button id="theme-btn" onclick="toggleTheme()" style="background:none;border:1px solid var(--border);color:var(--text2);padding:6px 10px;border-radius:6px;cursor:pointer;font-size:14px;transition:all 0.2s;" title="Toggle light/dark">☀</button>
   </div>
 </nav>
 
@@ -691,11 +744,27 @@
 </footer>
 
 <script>
+  let _lang = 'en';
+  let _theme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+
   function setLang(lang) {
-    document.body.className = lang;
+    _lang = lang;
+    document.body.className = [_lang, _theme === 'light' ? 'light' : ''].filter(Boolean).join(' ');
     document.querySelectorAll('.lang-btn').forEach(btn => {
       btn.classList.toggle('active', btn.textContent.toLowerCase().startsWith(lang));
     });
+  }
+
+  function toggleTheme() {
+    _theme = _theme === 'dark' ? 'light' : 'dark';
+    document.body.className = [_lang, _theme === 'light' ? 'light' : ''].filter(Boolean).join(' ');
+    document.getElementById('theme-btn').textContent = _theme === 'dark' ? '☀' : '☾';
+  }
+
+  // init theme icon
+  if (_theme === 'light') {
+    document.body.classList.add('light');
+    document.getElementById('theme-btn').textContent = '☾';
   }
 
   // Smooth nav active state

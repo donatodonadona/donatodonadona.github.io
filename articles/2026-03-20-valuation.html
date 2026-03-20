@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terminal ValueはなぜDCFの70-80%を占めるのか | Valuation Theory Lab</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+JP:wght@300;400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:           #F8F7F4;
+      --bg-code:      #EEECEA;
+      --bg-highlight: #EBF3FB;
+      --bg-subtle:    #F0EFEB;
+      --text-primary: #111320;
+      --text-body:    #2A2C3E;
+      --text-muted:   #565C70;
+      --text-light:   #888EA0;
+      --accent:       #1A6EB0;
+      --accent-warm:  #D4A010;
+      --border:       #D4D2CC;
+      --border-quote: #B8B6B0;
+      --progress-bar: #1A6EB0;
+      --tag-bg:       #E4EFF8;
+      --tag-text:     #1A6EB0;
+      --table-stripe: #F0EFEB;
+      --positive:     #1A6EB0;
+      --negative:     #D4A010;
+      --rule:         #D4D2CC;
+    }
+
+    /* Progress Bar */
+    #progress-bar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      width: 0%;
+      background: var(--progress-bar);
+      z-index: 200;
+      transition: width 0.1s linear;
+    }
+
+    body {
+      font-family: 'Noto Serif JP', Georgia, serif;
+      font-size: 18px;
+      line-height: 1.85;
+      color: var(--text-body);
+      background: var(--bg);
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Nav */
+    nav {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.8rem;
+      padding: 14px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      background: rgba(248,247,244,0.95);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+    }
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .nav-brand {
+      font-weight: 700;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+    .nav-series {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      background: var(--tag-bg);
+      padding: 3px 8px;
+      border-radius: 3px;
+    }
+    #reading-time {
+      color: var(--text-muted);
+      font-size: 0.78rem;
+    }
+
+    /* Article container */
+    .article-wrap {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 56px 32px 80px;
+    }
+
+    /* Header */
+    .article-header {
+      margin-bottom: 48px;
+    }
+    .article-series {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+    h1 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-weight: 600;
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      line-height: 1.18;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+    }
+    .article-subtitle {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.3rem;
+      font-style: italic;
+      color: var(--text-muted);
+      margin-bottom: 28px;
+      line-height: 1.4;
+    }
+    .article-meta {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      align-items: center;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .meta-label {
+      color: var(--text-light);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    /* Body typography */
+    .article-body p {
+      margin-bottom: 1.5em;
+      max-width: 68ch;
+    }
+    .article-body > p:first-child::first-letter {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3.6em;
+      font-weight: 600;
+      float: left;
+      line-height: 0.85;
+      margin-right: 0.06em;
+      margin-top: 0.08em;
+      color: var(--text-primary);
+    }
+
+    h2 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-weight: 600;
+      font-size: 1.7rem;
+      line-height: 1.25;
+      color: var(--text-primary);
+      margin-top: 56px;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--accent);
+    }
+    h3 {
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 1rem;
+      letter-spacing: 0.02em;
+      color: var(--text-primary);
+      margin-top: 36px;
+      margin-bottom: 12px;
+    }
+
+    /* Math / formula display */
+    .formula {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.95em;
+      background: var(--bg-code);
+      border-left: 3px solid var(--accent);
+      padding: 14px 20px;
+      margin: 24px 0;
+      border-radius: 0 4px 4px 0;
+      color: var(--text-primary);
+      overflow-x: auto;
+      line-height: 1.6;
+    }
+
+    /* Calculation table */
+    .calc-block {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 20px 24px;
+      margin: 28px 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+      line-height: 1.8;
+    }
+    .calc-block .calc-row {
+      display: flex;
+      justify-content: space-between;
+      max-width: 400px;
+    }
+    .calc-block .calc-total {
+      border-top: 1px solid var(--border);
+      margin-top: 6px;
+      padding-top: 6px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .calc-block .calc-highlight {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    /* Key insight box */
+    .insight-box {
+      background: var(--bg-highlight);
+      border-left: 4px solid var(--accent);
+      padding: 20px 24px;
+      margin: 32px 0;
+      border-radius: 0 6px 6px 0;
+    }
+    .insight-box p {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: var(--text-primary);
+    }
+    .insight-box strong {
+      color: var(--accent);
+    }
+
+    /* Warning / trap box */
+    .trap-box {
+      background: #FEF9EC;
+      border-left: 4px solid var(--accent-warm);
+      padding: 18px 22px;
+      margin: 28px 0;
+      border-radius: 0 6px 6px 0;
+    }
+    .trap-box p {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      line-height: 1.65;
+      color: var(--text-body);
+    }
+    .trap-box .trap-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent-warm);
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+
+    /* TV visualization */
+    .tv-bar-wrap {
+      margin: 32px 0;
+    }
+    .tv-bar-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    .tv-bar {
+      display: flex;
+      height: 40px;
+      border-radius: 4px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .tv-bar-explicit {
+      background: #5A9FD4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: white;
+      width: 28%;
+    }
+    .tv-bar-tv {
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: white;
+      width: 72%;
+    }
+    .tv-bar-legend {
+      display: flex;
+      gap: 20px;
+      margin-top: 8px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+    }
+
+    /* ROIC-g table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.82rem;
+    }
+    th {
+      background: var(--text-primary);
+      color: white;
+      padding: 8px 14px;
+      text-align: left;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+    td {
+      padding: 8px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    tr:nth-child(even) td {
+      background: var(--table-stripe);
+    }
+    .td-accent {
+      color: var(--accent);
+      font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+    }
+    .td-warn {
+      color: var(--accent-warm);
+      font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+    }
+
+    /* Section sep */
+    .section-sep {
+      text-align: center;
+      color: var(--text-light);
+      font-size: 1.2rem;
+      letter-spacing: 0.5em;
+      margin: 48px 0;
+      user-select: none;
+    }
+
+    /* Pull quote */
+    blockquote {
+      border-left: 3px solid var(--border-quote);
+      padding: 2px 0 2px 20px;
+      margin: 28px 0;
+      font-style: italic;
+      color: var(--text-muted);
+      font-size: 1.05em;
+    }
+
+    /* Numbered section */
+    .numbered-list {
+      list-style: none;
+      padding: 0;
+      margin: 20px 0;
+    }
+    .numbered-list li {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 16px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.92rem;
+      line-height: 1.65;
+      color: var(--text-body);
+    }
+    .numbered-list li .num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: white;
+      background: var(--accent);
+      min-width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    /* Next article CTA */
+    .next-article {
+      background: var(--text-primary);
+      color: #E4E2DC;
+      border-radius: 8px;
+      padding: 28px 32px;
+      margin-top: 64px;
+    }
+    .next-article .next-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent-warm);
+      margin-bottom: 8px;
+    }
+    .next-article .next-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+    .next-article .next-desc {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.82rem;
+      color: #9299A8;
+      margin-top: 8px;
+    }
+
+    /* Footer */
+    footer {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 32px 32px 56px;
+      border-top: 1px solid var(--border);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-light);
+      line-height: 1.7;
+    }
+
+    strong { color: var(--text-primary); }
+    em { font-style: italic; }
+
+    @media print {
+      #progress-bar, nav { display: none; }
+      body { font-size: 11pt; background: white; color: black; }
+      h2 { border-bottom-color: #1A6EB0; }
+      @page { size: A4; margin: 20mm 18mm; }
+    }
+
+    @media (max-width: 600px) {
+      .article-wrap { padding: 36px 20px 60px; }
+      h1 { font-size: 1.8rem; }
+      .calc-block .calc-row { max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<nav>
+  <div class="nav-left">
+    <a class="nav-brand" href="../../../apps/personal-site/articles/index.html">Donato</a>
+    <span class="nav-series">Valuation Theory Lab</span>
+  </div>
+  <span id="reading-time">読了まで約8分</span>
+</nav>
+
+<article>
+  <div class="article-wrap">
+
+    <!-- Header -->
+    <header class="article-header">
+      <div class="article-series">Valuation Theory Lab &nbsp;#001</div>
+      <h1>Terminal ValueはなぜDCFの70-80%を占めるのか</h1>
+      <div class="article-subtitle">— そしてそれは何を意味するか</div>
+      <div class="article-meta">
+        <div class="meta-item">
+          <span class="meta-label">公開</span>
+          <span>2026年3月20日</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">著者</span>
+          <span>Donato Valuation Notes</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">分野</span>
+          <span>DCF理論 · Terminal Value</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Body -->
+    <div class="article-body">
+
+      <p>多くのバリュエーション実務家が一度は経験する不快感がある。精緻に構築したDCFモデルを眺めると、Enterprise Valueの70〜80%、場合によっては90%超が「Terminal Value」という一行から来ている。この数字を前にして「これは正常なのか」と自問した人はどれだけいるだろうか。多くの場合、答えは「そういうものだ」で終わる。</p>
+
+      <p>だが、それは本当か。TVが大きいことは「正常」なのか、それとも「モデルの限界の告白」なのか。この問いに正面から向き合うことが、DCFを理解するということだ。</p>
+
+      <h2>1. TVが大きくなる算術的理由</h2>
+
+      <p>まず数字で確認しよう。シンプルな例を使う。WACC = 10%、FCF（Year 1）= 100、以後毎年3%成長（g = 3%）、Explicit forecast period = 5年とする。</p>
+
+      <div class="calc-block">
+        <div style="font-size:0.78em;color:var(--text-muted);margin-bottom:10px;font-family:'Inter',sans-serif;">Explicit FCF の現在価値（WACC = 10%）</div>
+        <div class="calc-row"><span>Year 1: 100.0 → PV</span><span>90.9</span></div>
+        <div class="calc-row"><span>Year 2: 103.0 → PV</span><span>85.1</span></div>
+        <div class="calc-row"><span>Year 3: 106.1 → PV</span><span>79.7</span></div>
+        <div class="calc-row"><span>Year 4: 109.3 → PV</span><span>74.6</span></div>
+        <div class="calc-row"><span>Year 5: 112.6 → PV</span><span>70.0</span></div>
+        <div class="calc-row calc-total"><span>Σ Explicit PV</span><span>390</span></div>
+        <div style="margin-top:14px;font-size:0.78em;color:var(--text-muted);font-family:'Inter',sans-serif;">Terminal Value（Gordon Growth Model）</div>
+        <div class="calc-row" style="margin-top:6px;"><span>FCF₆ = 112.6 × 1.03</span><span>115.9</span></div>
+        <div class="calc-row"><span>TV = 115.9 / (0.10 − 0.03)</span><span>1,656</span></div>
+        <div class="calc-row"><span>PV of TV = 1,656 / (1.10)⁵</span><span>1,029</span></div>
+        <div class="calc-row calc-total"><span>Enterprise Value</span><span>1,419</span></div>
+        <div class="calc-row" style="margin-top:8px;"><span>TV 比率</span><span class="calc-highlight">72%</span></div>
+      </div>
+
+      <div class="tv-bar-wrap">
+        <div class="tv-bar-label">Enterprise Value の構成（WACC=10%, g=3%, Explicit 5年）</div>
+        <div class="tv-bar">
+          <div class="tv-bar-explicit">Explicit 28%</div>
+          <div class="tv-bar-tv">Terminal Value 72%</div>
+        </div>
+        <div class="tv-bar-legend">
+          <div class="legend-item"><div class="legend-dot" style="background:#5A9FD4;"></div>Explicit period FCF</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#1A6EB0;"></div>Terminal Value</div>
+        </div>
+      </div>
+
+      <p>これは特殊な設定ではない。WACC=10%、g=3%という平凡な仮定で、Explicit period 5年なら7割超がTVから来るのは算術的な必然だ。</p>
+
+      <div class="insight-box">
+        <p>TVの大きさは、Explicit period FCFの「小ささ」の裏返しだ。成長企業では再投資（Capex + ΔWC − Dep）が大きく、FCFFが抑制される。その再投資が生むリターンは未来のFCFに体化される。<strong>成長すればするほど、価値は未来に先送りされる。</strong></p>
+      </div>
+
+      <h2>2. Gordon Growth Modelの成立条件</h2>
+
+      <p>ここが核心だ。TVの計算式は一見シンプルだが、いくつかの厳格な成立条件に依存する。これを無視して「g = 3%」と置くのは、暗黙の仮定を抱えたまま前進することだ。</p>
+
+      <div class="formula">TV = FCF_{n+1} / (WACC − g)</div>
+
+      <h3>条件①：g &lt; WACC（絶対条件）</h3>
+
+      <p>分母が正でなければ式は破綻する。より本質的には、g ≥ WACCが成立する企業は「永久に市場全体よりも速く成長し続ける」ことを意味し、これは不可能だ。Terminal growth rateが名目GDP成長率の代理として使われる理由はここにある。</p>
+
+      <div class="trap-box">
+        <div class="trap-label">実務でよくある罠</div>
+        <p>gとWACCを別々に名目・実質ベースで計算する不整合。WACCが名目ベースで計算されているなら、gも名目ベースにすべきだ。「実質GDP成長2% ＋ インフレ1% = g 3%」という正規化は一見正しいが、WACCが実質ベースになっていれば矛盾する。</p>
+      </div>
+
+      <h3>条件②：g = ROIC × 再投資率（ROICとの整合性）</h3>
+
+      <p>これがより重要だ。持続可能な成長率は以下で表される：</p>
+
+      <div class="formula">g = ROIC × 再投資率（Reinvestment Rate）</div>
+
+      <p>つまり、<strong>gを外から与えるのではなく、gはROICと再投資率から導出されるべきだ。</strong> Terminal period（安定成長段階）で g = 3% と設定するなら、再投資率もそれと整合的でなければならない。</p>
+
+      <table>
+        <thead>
+          <tr><th>ROIC仮定</th><th>g = 3%のとき必要な再投資率</th><th>Terminal FCF = NOPAT の</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>8%</td><td class="td-warn">37.5%</td><td class="td-warn">62.5%</td></tr>
+          <tr><td>12%</td><td class="td-accent">25.0%</td><td class="td-accent">75.0%</td></tr>
+          <tr><td>15%</td><td class="td-accent">20.0%</td><td class="td-accent">80.0%</td></tr>
+          <tr><td>20%</td><td class="td-accent">15.0%</td><td class="td-accent">85.0%</td></tr>
+        </tbody>
+      </table>
+
+      <div class="trap-box">
+        <div class="trap-label">よくある内部矛盾</div>
+        <p>多くの実務モデルでは、TVのFCFとして「Capex ≈ Depreciation（≒ 再投資ゼロ）」と仮定したNormalized FCFを使う。これは再投資率 = 0%、すなわち g = 0% と矛盾する。<strong>gとFCFの間に内部矛盾がある。</strong>これはDamodaranが繰り返し指摘する問題だ。</p>
+      </div>
+
+      <h3>条件③：資本効率の安定性とROIC-WACC関係</h3>
+
+      <p>Terminal periodでは、ROICとWACCの関係が価値創出の方向性を決める。</p>
+
+      <ul class="numbered-list">
+        <li>
+          <span class="num">▲</span>
+          <div><strong>ROIC &gt; WACC</strong>：再投資によって価値が生まれる（プラスNPV投資）。成長は企業価値を高める。</div>
+        </li>
+        <li>
+          <span class="num">＝</span>
+          <div><strong>ROIC = WACC</strong>：再投資は価値中立。成長しても企業価値は増えない。株主にとって成長は意味がない。</div>
+        </li>
+        <li>
+          <span class="num">▼</span>
+          <div><strong>ROIC &lt; WACC</strong>：成長すれば価値が破壊される。この状態でg = 3%を仮定するのは、意図せず価値破壊を織り込んでいることになる。</div>
+        </li>
+      </ul>
+
+      <p>Terminal periodでROIC &gt; WACCが持続するという仮定は、競争優位性が永久に続くことを意味する。多くの産業では、超過利益は長期的に競争によって侵食される。成熟企業のTerminal ROICとしては、WACCに近い水準が理論的には妥当だろう。</p>
+
+      <div class="section-sep">· · ·</div>
+
+      <h2>3. Exit MultipleとGordon Growthの「循環性」</h2>
+
+      <p>Terminal Valueを推計するもう一つの方法は、Exit Multiple法だ。実務でこれを好む理由は明快だ。「市場の評価を使うから現実的」「Gordon Growthの恣意的なgを避けられる」というものだ。</p>
+
+      <div class="formula">TV = EBITDA(terminal) × EV/EBITDA(exit multiple)</div>
+
+      <p>しかし、これは理論的に問題がある。Exit multipleは現在の類似企業の取引倍率から取ってくることが多い。だが、<strong>そのExit multipleには現在のWACCやg期待値が織り込まれている。</strong>つまり、DCFという「独立した」評価手法を使いながら、結果的に市場評価に依存してしまう。</p>
+
+      <p>さらに言えば、Gordon GrowthとExit multipleは以下の関係にある：</p>
+
+      <div class="formula">EV/EBITDA = (FCF margin × (1 − Tax rate)) / (WACC − g)
+      ↑ これはGordon Growthの変形にすぎない</div>
+
+      <div class="insight-box">
+        <p><strong>両者は同じコインの表と裏だ。</strong>どちらを使ってもgとWACCとFCF marginの仮定から逃れることはできない。Exit multipleを「客観的」と呼ぶのは幻想だ。</p>
+      </div>
+
+      <div class="section-sep">· · ·</div>
+
+      <h2>4. TVが70-80%を占めることの本質的な意味</h2>
+
+      <p>ここが最も重要な問いだ。TVがEVの70-80%を占めるということは、<strong>モデルが示す企業価値の大部分が、Explicit forecast期間外の「見えない未来」の仮定から来ている</strong>ということだ。</p>
+
+      <blockquote>これはDCFの欠点ではない。これはDCFの本質だ。</blockquote>
+
+      <p>企業価値とは「この会社が今後永続的に生み出す価値の総和」だ。Explicit forecast period（5〜10年）はその一部にすぎない。残りの価値が未来から来るのは論理的に当然だ。だが、ここに重要な実務的含意がある。</p>
+
+      <h3>① Sensitivity分析の設計が変わる</h3>
+
+      <p>WACCを±1%、gを±0.5%で変化させたときの感度は、TVの占有率が高いほど大きい。感度分析は「Explicit period FCFの精度」よりも「TVの仮定」に焦点を当てるべきだ。とりわけ、gとROICの組み合わせによる感度テーブルは、単純なWACC/gのクロス表よりも情報量が多い。</p>
+
+      <h3>② DCFは「発見的手法」ではなく「前提確認ツール」だ</h3>
+
+      <p>DCFの結論（Enterprise Value）よりも重要なのは、そのDCFが「何を仮定しているか」の確認だ。特にTerminal growth rate gとROICの整合性、WACCの構成要素が問われるべきだ。モデルが出した数字を信頼するのではなく、モデルが要求している前提が現実的かどうかを問う。</p>
+
+      <h3>③ Reverse DCFという視点</h3>
+
+      <p>M&Aシナリオでは、買収価格を正当化するためにDCFが作られることがある。TVの感度が大きい構造上、gを少し上げれば目標価格が出る。これがDCFの「バックワード・エンジニアリング」だ。</p>
+
+      <div class="insight-box">
+        <p>むしろ「この価格を正当化するgとROICは何か」という<strong>Reverse DCF</strong>の方が、正直な分析になることがある。「このマルチプルは暗黙的にROIC 20%・g 4%を前提としているが、その産業でそれは達成可能か」という問いは、純フォワードのDCFよりも鋭い。</p>
+      </div>
+
+      <div class="section-sep">· · ·</div>
+
+      <h2>5. 実務的な含意：では何をすべきか</h2>
+
+      <ul class="numbered-list">
+        <li>
+          <span class="num">1</span>
+          <div><strong>gとROICの整合性チェックを必ず行う。</strong>Terminal FCFの再投資率が、gとROICと整合しているかを確認する。矛盾があれば修正するか、明示的に注記する。NOPAT × (1 − 再投資率) = Terminal FCF という式が成立しているかを確かめる。</div>
+        </li>
+        <li>
+          <span class="num">2</span>
+          <div><strong>Explicit periodを延ばすことで「仮定の先送り」は解決しない。</strong>10年にしても20年にしてもTVは残る。Competitive Advantage Period（CAP）がいつ終わるかを考える方が本質的だ。その産業で超過利益が侵食されるまでの時間を、価格競争・技術変化・規制の観点から見積もる。</div>
+        </li>
+        <li>
+          <span class="num">3</span>
+          <div><strong>Reverse DCFを補完的に使う。</strong>現在の株価（または買収価格）が「どんなgとROICを織り込んでいるか」を逆算する。その仮定が達成可能かを問うことで、「価格の妥当性」ではなく「仮定の妥当性」を評価できる。</div>
+        </li>
+      </ul>
+
+      <p>TVが大きいことは、DCFの欠陥ではない。だが、それを「そういうものだ」で済ませるのは、最も重要な仮定の検証を放棄することだ。DCFの価値は、その数字ではなく、その数字が何を前提としているかを明示する点にある。</p>
+
+      <!-- Next article CTA -->
+      <div class="next-article">
+        <div class="next-label">次回 · Valuation Theory Lab #002</div>
+        <div class="next-title">WACCは本当に計算できるのか<br>— CAPM限界論と代替アプローチ</div>
+        <div class="next-desc">CAPM単一ファクターの限界、歴史的ERP vs. インプライドERPの選択根拠、Fama-Frenchファクターの経済的解釈まで。</div>
+      </div>
+
+    </div><!-- /article-body -->
+  </div><!-- /article-wrap -->
+</article>
+
+<footer>
+  <div>本稿はDonato Valuation Notesによるバリュエーション理論シリーズです。実際の投資判断・M&A意思決定には専門家への確認を要します。</div>
+  <div style="margin-top:8px;">参考文献：Damodaran, A. (2012). <em>Investment Valuation</em>, 3rd ed. | Koller, T., et al. (2020). <em>Valuation: Measuring and Managing the Value of Companies</em>, 7th ed.</div>
+</footer>
+
+<script>
+  // Progress bar
+  window.addEventListener('scroll', function() {
+    var h = document.documentElement;
+    var pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    document.getElementById('progress-bar').style.width = Math.min(pct, 100) + '%';
+  });
+
+  // Reading time (500字/分)
+  (function() {
+    var text = document.querySelector('.article-body').textContent || '';
+    var chars = text.length;
+    var minutes = Math.ceil(chars / 500);
+    document.getElementById('reading-time').textContent = '読了まで約' + minutes + '分';
+  })();
+</script>
+</body>
+</html>

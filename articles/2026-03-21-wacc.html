@@ -79,6 +79,18 @@
       letter-spacing: 0.04em;
     }
     .site-header-right { display: flex; align-items: center; gap: 12px; }
+    #lang-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      padding: 4px 10px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    #lang-btn:hover { border-color: var(--accent); color: var(--accent); }
     .header-date {
       font-family: 'JetBrains Mono', monospace;
       font-size: 10px;
@@ -587,6 +599,9 @@
       line-height: 1.45;
     }
 
+    /* ===== LANG TOGGLE ===== */
+    .lang-en { display: none; }
+
     /* ===== FOOTER ===== */
     .site-footer {
       border-top: 1px solid var(--border-light);
@@ -631,6 +646,7 @@
     <span class="header-media">Valuation Theory Lab</span>
   </div>
   <div class="site-header-right">
+    <button id="lang-btn" onclick="toggleLang()" style="font-family:'JetBrains Mono',monospace;font-size:10px;background:var(--tag-bg);color:var(--tag-text);border:1px solid var(--border-light);padding:2px 10px;cursor:pointer;letter-spacing:0.08em;">EN</button>
     <time class="header-date">2026-03-21</time>
   </div>
 </header>
@@ -639,11 +655,11 @@
 <div id="sticky-bar">
   <span class="sbar-cat">VALUATION THEORY LAB</span>
   <span class="sbar-sep">|</span>
-  <span class="sbar-text">Series #002 · 資本コスト理論</span>
+  <span class="sbar-text"><span class="lang-ja">Series #002 · 資本コスト理論</span><span class="lang-en">Series #002 · Cost of Capital Theory</span></span>
   <span class="sbar-sep">|</span>
   <span class="sbar-text">2026-03-21</span>
   <span class="sbar-sep">|</span>
-  <span class="sbar-badge" id="reading-time-badge">約12分</span>
+  <span class="sbar-badge" id="reading-time-badge"><span class="lang-ja">約12分</span><span class="lang-en">~12 min</span></span>
 </div>
 
 <main style="padding: 0 0 3em;">
@@ -657,16 +673,22 @@
         <div style="padding: 36px 0 24px;">
           <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
             <div class="section-label">Valuation Theory Lab &nbsp;#002</div>
-            <span class="sbar-badge" id="reading-time-badge2">約12分</span>
+            <span class="sbar-badge" id="reading-time-badge2"><span class="lang-ja">約12分</span><span class="lang-en">~12 min</span></span>
           </div>
-          <h1 class="article-headline">WACCは本当に計算できるのか<br>— CAPM限界論と代替アプローチ</h1>
-          <p class="article-standfirst">WACCの株式コスト（Ke）はCAPMによって計算される——その仮定は理論的に美しいが実証的には脆弱だ。β推計は推計期間・頻度次第で0.3以上変動し、ERPはDamodaran implied vs. DMS historicalで1ポイント以上争われている。WACCを「計算できる」という感覚は精度ではなく一貫性の産物だ。</p>
+          <h1 class="article-headline">
+            <span class="lang-ja">WACCは本当に計算できるのか<br>— CAPM限界論と代替アプローチ</span>
+            <span class="lang-en">Can WACC Really Be Calculated?<br>— CAPM Limitations and Alternative Approaches</span>
+          </h1>
+          <p class="article-standfirst">
+            <span class="lang-ja">WACCの株式コスト（Ke）はCAPMによって計算される——その仮定は理論的に美しいが実証的には脆弱だ。β推計は推計期間・頻度次第で0.3以上変動し、ERPはDamodaran implied vs. DMS historicalで1ポイント以上争われている。WACCを「計算できる」という感覚は精度ではなく一貫性の産物だ。</span>
+            <span class="lang-en">Ke in WACC depends on CAPM — theoretically elegant but empirically fragile. Beta varies by estimation window and frequency by 0.3 or more; ERP is contested by over 1 percentage point between historical and implied approaches. The sense that WACC can be "calculated" is a product of consistency, not precision.</span>
+          </p>
           <div style="display:flex; gap:16px; align-items:center; border-top:1px solid var(--border-light); border-bottom:1px solid var(--border-light); padding:10px 0;">
             <span class="byline">By <strong>Donato Valuation Notes</strong></span>
             <span style="color:var(--border);">|</span>
-            <time class="byline" datetime="2026-03-21">2026年3月21日</time>
+            <time class="byline" datetime="2026-03-21"><span class="lang-ja">2026年3月21日</span><span class="lang-en">March 21, 2026</span></time>
             <span style="color:var(--border);">|</span>
-            <span class="byline">資本コスト · CAPM · ERP</span>
+            <span class="byline"><span class="lang-ja">資本コスト · CAPM · ERP</span><span class="lang-en">Cost of Capital · CAPM · ERP</span></span>
           </div>
         </div>
 
@@ -676,52 +698,73 @@
           <!-- TL;DR -->
           <div class="exec-block">
             <div class="section-label">TL;DR</div>
-            <p class="exec-tldr">WACCの株式コスト(Ke = Rf + β·ERP)はCAPMという「理論的には美しいが実証的には脆弱な」モデルに依存する。βは推計期間・頻度・Hamada変換の選択次第で大きく変わり、ERPはHistorical vs. Implied vs. DMS methodで1ポイント以上の幅がある。WACCに「正確な答え」はない——しかしその不確実性の構造を理解した上で感度分析をデザインすることが、誠実な実務家の姿勢だ。</p>
+            <p class="exec-tldr">
+              <span class="lang-ja">WACCの株式コスト(Ke = Rf + β·ERP)はCAPMという「理論的には美しいが実証的には脆弱な」モデルに依存する。βは推計期間・頻度・Hamada変換の選択次第で大きく変わり、ERPはHistorical vs. Implied vs. DMS methodで1ポイント以上の幅がある。WACCに「正確な答え」はない——しかしその不確実性の構造を理解した上で感度分析をデザインすることが、誠実な実務家の姿勢だ。</span>
+              <span class="lang-en">Ke = Rf + β·ERP depends on CAPM — "theoretically elegant but empirically fragile." Beta changes materially with estimation window, frequency, and Hamada transform choices. ERP spans over 1 percentage point between historical and implied methods. There is no "correct" WACC — but understanding the structure of its uncertainty and designing sensitivity analysis around it is the honest practitioner's responsibility.</span>
+            </p>
           </div>
 
           <!-- 論点 -->
           <div class="exec-block">
-            <div class="section-label">本稿の論点</div>
+            <div class="section-label"><span class="lang-ja">本稿の論点</span><span class="lang-en">Key Questions</span></div>
             <ul class="issues-list">
               <li class="issue-item">
                 <span class="issue-q">Q1</span>
-                <span class="issue-text"><strong>CAPMのβは信頼できるか？</strong> — 推計期間を24ヶ月から60ヶ月に変えただけで同一企業のβが0.3以上変動することがある。月次・週次・日次でも値は異なる。Hamada変換でunlever/releverすると誤差がさらに増幅する。βは「測定する」というより「選択する」数字だ。</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>CAPMのβは信頼できるか？</strong> — 推計期間を24ヶ月から60ヶ月に変えただけで同一企業のβが0.3以上変動することがある。月次・週次・日次でも値は異なる。Hamada変換でunlever/releverすると誤差がさらに増幅する。βは「測定する」というより「選択する」数字だ。</span>
+                  <span class="lang-en"><strong>Can CAPM's beta be trusted?</strong> — The same company's beta can shift by 0.3+ simply by changing the estimation window from 24 to 60 months. Daily, weekly, and monthly returns also yield different values. Hamada unlever/relever operations amplify the error further. Beta is more "chosen" than "measured."</span>
+                </span>
               </li>
               <li class="issue-item">
                 <span class="issue-q">Q2</span>
-                <span class="issue-text"><strong>ERPはどこから取るべきか？</strong> — Historical ERP（長期株式超過リターン）はサーバイバーシップバイアスと期間依存性の問題を持つ。Damodaran implied ERPはリアルタイム性があるが年度間変動が大きい。どちらを選ぶかで最終的なWACCが1〜2%変わりうる。</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>ERPはどこから取るべきか？</strong> — Historical ERP（長期株式超過リターン）はサーバイバーシップバイアスと期間依存性の問題を持つ。Damodaran implied ERPはリアルタイム性があるが年度間変動が大きい。どちらを選ぶかで最終的なWACCが1〜2%変わりうる。</span>
+                  <span class="lang-en"><strong>Where should ERP come from?</strong> — Historical ERP suffers from survivorship bias and period dependency. Damodaran's implied ERP has real-time relevance but high year-over-year volatility. The choice between methods can move the final WACC by 1–2%.</span>
+                </span>
               </li>
               <li class="issue-item">
                 <span class="issue-q">Q3</span>
-                <span class="issue-text"><strong>Fama-FrenchはCAPMの代替になるか？</strong> — SizeとValueファクターを追加することで実証的なfitは改善する。しかしそれらが「リスク補償」なのか「ミスプライシング」なのかという根本的な解釈は決着していない。ファクターが増えても「資本コストが計算できる」という問題は解消しない。</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>Fama-FrenchはCAPMの代替になるか？</strong> — SizeとValueファクターを追加することで実証的なfitは改善する。しかしそれらが「リスク補償」なのか「ミスプライシング」なのかという根本的な解釈は決着していない。ファクターが増えても「資本コストが計算できる」という問題は解消しない。</span>
+                  <span class="lang-en"><strong>Does Fama-French replace CAPM?</strong> — Adding Size (SMB) and Value (HML) factors improves empirical fit, but whether they represent risk compensation or mispricing correction remains unresolved. More factors do not resolve the fundamental problem of computing cost of capital.</span>
+                </span>
               </li>
             </ul>
           </div>
 
           <!-- 実務家への含意 -->
           <div class="exec-block">
-            <div class="section-label">Valuation実務家への含意</div>
+            <div class="section-label"><span class="lang-ja">Valuation実務家への含意</span><span class="lang-en">Implications for Practitioners</span></div>
             <ul class="implications-list">
-              <li class="implication-item"><strong>WACCのsensitivity開示は義務だ</strong> — WACC ±1%でTerminal ValueとEVがどれだけ変わるかを必ず計算・開示する。#001で示した「g-ROIC三角形」とのクロス感度テーブルが最も情報量が多い。</li>
-              <li class="implication-item"><strong>ERPの出所・時点を明記せよ</strong> — 「ERP=5.5%」ではなく「Damodaran implied ERP（2026年1月時点4.5%）」のように出所と時点を必ず記載する。それだけで読み手の信頼度が変わる。</li>
-              <li class="implication-item"><strong>βはBlume調整後のunlever/releverを使え</strong> — Raw βではなくBlume調整（2/3 × raw β + 1/3 × 1.0）を基準とし、Hamada変換で資本構成を考慮する。詳細はSeries #003で論じる。</li>
+              <li class="implication-item">
+                <span class="lang-ja"><strong>WACCのsensitivity開示は義務だ</strong> — WACC ±1%でTerminal ValueとEVがどれだけ変わるかを必ず計算・開示する。#001で示した「g-ROIC三角形」とのクロス感度テーブルが最も情報量が多い。</span>
+                <span class="lang-en"><strong>Disclosing WACC as a range is an obligation</strong> — Always calculate and disclose how much Terminal Value and EV change with WACC ±1%. The cross-sensitivity table combining the g-ROIC triangle from #001 carries the most information.</span>
+              </li>
+              <li class="implication-item">
+                <span class="lang-ja"><strong>ERPの出所・時点を明記せよ</strong> — 「ERP=5.5%」ではなく「Damodaran implied ERP（2026年1月時点4.5%）」のように出所と時点を必ず記載する。それだけで読み手の信頼度が変わる。</span>
+                <span class="lang-en"><strong>Specify the source and date of ERP</strong> — Write "Damodaran implied ERP (US, January 2026, 4.5%)" not just "ERP = 5.5%". The source and date matter enormously to the reader's ability to replicate or challenge your assumptions.</span>
+              </li>
+              <li class="implication-item">
+                <span class="lang-ja"><strong>βはBlume調整後のunlever/releverを使え</strong> — Raw βではなくBlume調整（2/3 × raw β + 1/3 × 1.0）を基準とし、Hamada変換で資本構成を考慮する。詳細はSeries #003で論じる。</span>
+                <span class="lang-en"><strong>Use Blume-adjusted beta after Hamada unlever/relever</strong> — Apply the Blume adjustment (2/3 × raw β + 1/3 × 1.0) and then Hamada-transform for capital structure. Details in Series #003.</span>
+              </li>
             </ul>
           </div>
 
           <!-- 読み進め判断 -->
           <div class="exec-block">
-            <div class="section-label">この記事を読み進めるべきか</div>
+            <div class="section-label"><span class="lang-ja">この記事を読み進めるべきか</span><span class="lang-en">Who Should Read This?</span></div>
             <div class="read-grid">
               <div>
-                <div class="read-col-label read-label-yes">読むべき人</div>
-                <div class="read-item">DCFでWACCを計算する全ての実務家（M&A・PE・IR・CF）</div>
-                <div class="read-item">「CAPM以外に方法はないか」と感じた人</div>
-                <div class="read-item">ERPやβの出所について問われたことがある人</div>
+                <div class="read-col-label read-label-yes"><span class="lang-ja">読むべき人</span><span class="lang-en">READ IF</span></div>
+                <div class="read-item"><span class="lang-ja">DCFでWACCを計算する全ての実務家（M&amp;A・PE・IR・CF）</span><span class="lang-en">Every practitioner who computes WACC in M&amp;A, PE, IR, or corporate finance</span></div>
+                <div class="read-item"><span class="lang-ja">「CAPM以外に方法はないか」と感じた人</span><span class="lang-en">Anyone who has felt unsatisfied with "just use CAPM"</span></div>
+                <div class="read-item"><span class="lang-ja">ERPやβの出所について問われたことがある人</span><span class="lang-en">Anyone who has been challenged on ERP or beta sourcing</span></div>
               </div>
               <div>
-                <div class="read-col-label read-label-no">スキップしてよい人</div>
-                <div class="skip-item">WACCの計算式（Ke・Kd・資本構成）の基礎知識がない方（先に基礎テキストを参照されたい）</div>
-                <div class="skip-item">実務上のExcel操作手順のみを求める方</div>
+                <div class="read-col-label read-label-no"><span class="lang-ja">スキップしてよい人</span><span class="lang-en">SKIP IF</span></div>
+                <div class="skip-item"><span class="lang-ja">WACCの計算式（Ke・Kd・資本構成）の基礎知識がない方（先に基礎テキストを参照されたい）</span><span class="lang-en">Readers without basic WACC fundamentals (Ke, Kd, capital structure) — consult an introductory text first</span></div>
+                <div class="skip-item"><span class="lang-ja">実務上のExcel操作手順のみを求める方</span><span class="lang-en">Those seeking only Excel calculation steps</span></div>
               </div>
             </div>
           </div>
@@ -729,363 +772,515 @@
         </section>
 
         <!-- 本文導入 -->
-        <p>WACCを計算したことのある実務家であれば、一度は奇妙な感覚を覚えたことがあるはずだ。式は明快に見える。しかし株式コスト（Ke）の計算に入った瞬間、どこか砂の上に立つような不安定さを感じる。βはどの期間で取るべきか。ERPは何パーセントか。リスクフリーレートは10年国債か30年国債か。</p>
+        <p>
+          <span class="lang-ja">WACCを計算したことのある実務家であれば、一度は奇妙な感覚を覚えたことがあるはずだ。式は明快に見える。しかし株式コスト（Ke）の計算に入った瞬間、どこか砂の上に立つような不安定さを感じる。βはどの期間で取るべきか。ERPは何パーセントか。リスクフリーレートは10年国債か30年国債か。</span>
+          <span class="lang-en">Any practitioner who has computed WACC will have felt a strange unease at some point. The formula looks clean. But the moment you step into calculating the cost of equity (Ke), you feel as though you are standing on sand. Which estimation window for beta? What percentage for ERP? Is the risk-free rate the 10-year or 30-year bond?</span>
+        </p>
 
-        <p>この問いには「正解」がない。だが、それを「どうせ見積もりだから」と処理して終わりにするのは知的怠慢だ。WACCを誠実に使うためには、その不確実性の構造を理解し、どの仮定が最もセンシティブかを把握した上で感度分析をデザインしなければならない。</p>
+        <p>
+          <span class="lang-ja">この問いには「正解」がない。だが、それを「どうせ見積もりだから」と処理して終わりにするのは知的怠慢だ。WACCを誠実に使うためには、その不確実性の構造を理解し、どの仮定が最もセンシティブかを把握した上で感度分析をデザインしなければならない。</span>
+          <span class="lang-en">There is no "correct" answer to these questions. But dismissing them as "just estimates" is intellectual laziness. To use WACC honestly, you must understand the structure of its uncertainty, identify which assumptions are most sensitive, and design your sensitivity analysis accordingly.</span>
+        </p>
 
         <!-- ======================================================== -->
-        <h2>0. WACCの構造 — 式の解剖</h2>
+        <h2><span class="lang-ja">0. WACCの構造 — 式の解剖</span><span class="lang-en">0. Dissecting WACC — Anatomy of the Formula</span></h2>
 
-        <p>まず基本を確認する。WACCは以下の式で定義される：</p>
+        <p>
+          <span class="lang-ja">まず基本を確認する。WACCは以下の式で定義される：</span>
+          <span class="lang-en">Let us start with the basics. WACC is defined as:</span>
+        </p>
 
         <div class="formula">WACC = Ke × [E/(D+E)] + Kd × (1−t) × [D/(D+E)]</div>
 
-        <p>ここで各項の推計難易度は大きく異なる：</p>
+        <p>
+          <span class="lang-ja">ここで各項の推計難易度は大きく異なる：</span>
+          <span class="lang-en">The estimation difficulty varies considerably across components:</span>
+        </p>
 
         <div class="data-table-wrap">
           <table>
             <thead>
-              <tr><th>変数</th><th>定義</th><th>推計の難しさ</th></tr>
+              <tr>
+                <th><span class="lang-ja">変数</span><span class="lang-en">Variable</span></th>
+                <th><span class="lang-ja">定義</span><span class="lang-en">Definition</span></th>
+                <th><span class="lang-ja">推計の難しさ</span><span class="lang-en">Estimation Difficulty</span></th>
+              </tr>
             </thead>
             <tbody>
               <tr>
                 <td><strong>Kd × (1−t)</strong></td>
-                <td>税引後負債コスト</td>
-                <td class="td-accent">低 — 借入金利・社債YTMから直接推計できる</td>
+                <td><span class="lang-ja">税引後負債コスト</span><span class="lang-en">After-tax cost of debt</span></td>
+                <td class="td-accent"><span class="lang-ja">低 — 借入金利・社債YTMから直接推計できる</span><span class="lang-en">Low — directly estimable from borrowing rates or bond YTM</span></td>
               </tr>
               <tr>
                 <td><strong>E/(D+E), D/(D+E)</strong></td>
-                <td>時価ベース資本構成</td>
-                <td class="td-accent">中 — 時価vs.簿価、Target vs. Currentの選択問題</td>
+                <td><span class="lang-ja">時価ベース資本構成</span><span class="lang-en">Market-value capital structure</span></td>
+                <td class="td-accent"><span class="lang-ja">中 — 時価vs.簿価、Target vs. Currentの選択問題</span><span class="lang-en">Medium — market vs. book, target vs. current capital structure choices</span></td>
               </tr>
               <tr>
                 <td><strong>Ke</strong></td>
-                <td>株式コスト（CAPM依存）</td>
-                <td class="td-warn">高 — β・ERP・Rfの推計問題が全て集中する</td>
+                <td><span class="lang-ja">株式コスト（CAPM依存）</span><span class="lang-en">Cost of equity (CAPM-dependent)</span></td>
+                <td class="td-warn"><span class="lang-ja">高 — β・ERP・Rfの推計問題が全て集中する</span><span class="lang-en">High — all estimation problems in β, ERP, and Rf converge here</span></td>
               </tr>
             </tbody>
           </table>
         </div>
 
-        <p>WACCの不確実性はほぼ全てKeに起因する。そしてKeの計算式は：</p>
+        <p>
+          <span class="lang-ja">WACCの不確実性はほぼ全てKeに起因する。そしてKeの計算式は：</span>
+          <span class="lang-en">Nearly all of WACC's uncertainty originates in Ke. And the formula for Ke is:</span>
+        </p>
 
         <div class="formula">Ke = Rf + β × ERP</div>
 
-        <p>シンプルな式の中に、三つの独立した推計問題が潜んでいる。Rf（リスクフリーレート）、β（市場感応度）、ERP（市場リスクプレミアム）——それぞれに固有の論争がある。</p>
+        <p>
+          <span class="lang-ja">シンプルな式の中に、三つの独立した推計問題が潜んでいる。Rf（リスクフリーレート）、β（市場感応度）、ERP（市場リスクプレミアム）——それぞれに固有の論争がある。</span>
+          <span class="lang-en">Within this simple formula lie three independent estimation problems: Rf (the risk-free rate), β (market sensitivity), and ERP (equity risk premium) — each with its own debate.</span>
+        </p>
 
         <div class="insight-box">
-          <p><strong>Rfは比較的クリーンだ。</strong>一般的には対象案件のキャッシュフロー期間に合わせた国債利回りを使う。10年DCFなら10年国債、長期インフラなら30年国債。インフレ調整の一貫性（名目vs.実質）に注意すれば、Rfは争点が少ない。問題はβとERPだ。</p>
+          <p>
+            <span class="lang-ja"><strong>Rfは比較的クリーンだ。</strong>一般的には対象案件のキャッシュフロー期間に合わせた国債利回りを使う。10年DCFなら10年国債、長期インフラなら30年国債。インフレ調整の一貫性（名目vs.実質）に注意すれば、Rfは争点が少ない。問題はβとERPだ。</span>
+            <span class="lang-en"><strong>Rf is relatively clean.</strong> Generally, use the government bond yield matching the cash flow duration of the project — 10-year for a 10-year DCF, 30-year for long-duration infrastructure. As long as you maintain consistency on inflation treatment (nominal vs. real), Rf is rarely the battleground. The problems are β and ERP.</span>
+          </p>
         </div>
 
         <!-- ======================================================== -->
-        <h2>1. CAPM — 理論の美しさと実証的脆弱性</h2>
+        <h2><span class="lang-ja">1. CAPM — 理論の美しさと実証的脆弱性</span><span class="lang-en">1. CAPM — Theoretical Elegance, Empirical Fragility</span></h2>
 
-        <p><a href="https://pages.stern.nyu.edu/~adamodar/" target="_blank" rel="noopener">Damodaran</a>がしばしば指摘するように、CAPMは「唯一の理論的に整合したリスク-リターンモデル」ではなく、「使いやすさゆえに広く使われているモデル」だ。それは実務家の怠慢ではなく、代替の難しさを示している。</p>
+        <p>
+          <span class="lang-ja"><a href="https://pages.stern.nyu.edu/~adamodar/" target="_blank" rel="noopener">Damodaran</a>がしばしば指摘するように、CAPMは「唯一の理論的に整合したリスク-リターンモデル」ではなく、「使いやすさゆえに広く使われているモデル」だ。それは実務家の怠慢ではなく、代替の難しさを示している。</span>
+          <span class="lang-en">As <a href="https://pages.stern.nyu.edu/~adamodar/" target="_blank" rel="noopener">Damodaran</a> often notes, CAPM is not "the only theoretically consistent risk-return model" but rather "the model that is widely used because it is convenient." This is not practitioner laziness — it reflects the genuine difficulty of finding a better alternative.</span>
+        </p>
 
-        <h3>CAPMの仮定</h3>
+        <h3><span class="lang-ja">CAPMの仮定</span><span class="lang-en">CAPM's Assumptions</span></h3>
 
-        <p>CAPMは以下の仮定の上に成立する：</p>
+        <p>
+          <span class="lang-ja">CAPMは以下の仮定の上に成立する：</span>
+          <span class="lang-en">CAPM rests on the following assumptions:</span>
+        </p>
 
         <ul class="numbered-list">
           <li>
             <span class="num">1</span>
-            <div>投資家は平均分散効率的なポートフォリオを保有する（完全分散化）</div>
+            <div><span class="lang-ja">投資家は平均分散効率的なポートフォリオを保有する（完全分散化）</span><span class="lang-en">Investors hold mean-variance efficient portfolios (perfect diversification)</span></div>
           </li>
           <li>
             <span class="num">2</span>
-            <div>全ての投資家は同一の情報と期待を持つ（同質的期待）</div>
+            <div><span class="lang-ja">全ての投資家は同一の情報と期待を持つ（同質的期待）</span><span class="lang-en">All investors share identical information and expectations (homogeneous expectations)</span></div>
           </li>
           <li>
             <span class="num">3</span>
-            <div>取引コスト・税金はなく、完全流動的な市場が存在する</div>
+            <div><span class="lang-ja">取引コスト・税金はなく、完全流動的な市場が存在する</span><span class="lang-en">No transaction costs or taxes; perfectly liquid markets exist</span></div>
           </li>
           <li>
             <span class="num">4</span>
-            <div>投資家はリスクフリーレートで無制限に借入・貸付できる</div>
+            <div><span class="lang-ja">投資家はリスクフリーレートで無制限に借入・貸付できる</span><span class="lang-en">Investors can borrow and lend without limit at the risk-free rate</span></div>
           </li>
         </ul>
 
-        <p>これらの仮定はいずれも現実には成立しない。しかし理論としての一貫性ゆえ、「より良い代替がない」という理由でCAPMは実務の標準になっている。</p>
+        <p>
+          <span class="lang-ja">これらの仮定はいずれも現実には成立しない。しかし理論としての一貫性ゆえ、「より良い代替がない」という理由でCAPMは実務の標準になっている。</span>
+          <span class="lang-en">None of these assumptions holds in reality. Yet CAPM has become the industry standard not because these assumptions are plausible, but because no clearly superior alternative exists.</span>
+        </p>
 
-        <h3>単一ファクターの限界</h3>
+        <h3><span class="lang-ja">単一ファクターの限界</span><span class="lang-en">The Limits of a Single Factor</span></h3>
 
-        <p>CAPMの核心的主張は「市場ポートフォリオとの共変動（β）だけが価格付けされるリスクだ」というものだ。しかしFama and Frenchが1992年の著名な論文「The Cross-Section of Expected Stock Returns」で実証したように、市場βだけでは株式リターンの截面的な差異を十分に説明できない。サイズ効果（小型株の超過リターン）とバリュー効果（低PBR株の超過リターン）が、市場βを超えた系統的なリターンの説明力を持つことが示された。</p>
+        <p>
+          <span class="lang-ja">CAPMの核心的主張は「市場ポートフォリオとの共変動（β）だけが価格付けされるリスクだ」というものだ。しかしFama and Frenchが1992年の著名な論文「The Cross-Section of Expected Stock Returns」で実証したように、市場βだけでは株式リターンの截面的な差異を十分に説明できない。サイズ効果（小型株の超過リターン）とバリュー効果（低PBR株の超過リターン）が、市場βを超えた系統的なリターンの説明力を持つことが示された。</span>
+          <span class="lang-en">CAPM's core claim is that only covariation with the market portfolio (β) is priced as risk. But as Fama and French demonstrated in their landmark 1992 paper "The Cross-Section of Expected Stock Returns," market β alone cannot adequately explain the cross-sectional variation in stock returns. Size (the excess return of small-cap stocks) and Value (the excess return of low P/B stocks) were shown to have systematic explanatory power beyond market β.</span>
+        </p>
 
         <div class="pull-quote">
           <p>"Our tests do not support the most basic prediction of the SLB Model, that average stock returns are positively related to market βs."</p>
           <footer>— Fama &amp; French, The Journal of Finance, 1992</footer>
         </div>
 
-        <p>これはCAPMの「βだけがリスクだ」という命題への強力な反証だった。
+        <p>
+          <span class="lang-ja">これはCAPMの「βだけがリスクだ」という命題への強力な反証だった。</span>
+          <span class="lang-en">This was a powerful empirical refutation of CAPM's proposition that β alone captures priced risk.</span>
+        </p>
 
         <!-- ======================================================== -->
-        <h2>2. β推計の問題 — 「測定する」より「選択する」</h2>
+        <h2><span class="lang-ja">2. β推計の問題 — 「測定する」より「選択する」</span><span class="lang-en">2. The Beta Estimation Problem — "Choosing" More Than "Measuring"</span></h2>
 
-        <p>βは過去のリターンデータから回帰によって推計される：</p>
+        <p>
+          <span class="lang-ja">βは過去のリターンデータから回帰によって推計される：</span>
+          <span class="lang-en">Beta is estimated by regressing historical return data:</span>
+        </p>
 
         <div class="formula">R<sub>i</sub> = α + β × R<sub>m</sub> + ε</div>
 
-        <p>しかしこの推計は、いくつかの選択に敏感だ：</p>
+        <p>
+          <span class="lang-ja">しかしこの推計は、いくつかの選択に敏感だ：</span>
+          <span class="lang-en">But this estimation is sensitive to several choices:</span>
+        </p>
 
         <div class="data-table-wrap">
           <table>
             <thead>
-              <tr><th>選択項目</th><th>一般的な選択肢</th><th>影響</th></tr>
+              <tr>
+                <th><span class="lang-ja">選択項目</span><span class="lang-en">Choice</span></th>
+                <th><span class="lang-ja">一般的な選択肢</span><span class="lang-en">Common Options</span></th>
+                <th><span class="lang-ja">影響</span><span class="lang-en">Impact</span></th>
+              </tr>
             </thead>
             <tbody>
               <tr>
-                <td><strong>推計期間</strong></td>
-                <td>24ヶ月 / 36ヶ月 / 60ヶ月</td>
-                <td class="td-warn">同一企業で0.3以上の差が生じることがある</td>
+                <td><strong><span class="lang-ja">推計期間</span><span class="lang-en">Estimation Window</span></strong></td>
+                <td><span class="lang-ja">24ヶ月 / 36ヶ月 / 60ヶ月</span><span class="lang-en">24 / 36 / 60 months</span></td>
+                <td class="td-warn"><span class="lang-ja">同一企業で0.3以上の差が生じることがある</span><span class="lang-en">Can produce 0.3+ difference for the same company</span></td>
               </tr>
               <tr>
-                <td><strong>リターン頻度</strong></td>
-                <td>日次 / 週次 / 月次</td>
-                <td class="td-warn">日次βはマーケットマイクロストラクチャーノイズに汚染される</td>
+                <td><strong><span class="lang-ja">リターン頻度</span><span class="lang-en">Return Frequency</span></strong></td>
+                <td><span class="lang-ja">日次 / 週次 / 月次</span><span class="lang-en">Daily / Weekly / Monthly</span></td>
+                <td class="td-warn"><span class="lang-ja">日次βはマーケットマイクロストラクチャーノイズに汚染される</span><span class="lang-en">Daily beta is contaminated by market microstructure noise</span></td>
               </tr>
               <tr>
-                <td><strong>ベンチマーク</strong></td>
-                <td>TOPIX / 日経225 / 対象市場指数</td>
-                <td class="td-accent">グローバル企業は地域指数か世界指数かで結果が異なる</td>
+                <td><strong><span class="lang-ja">ベンチマーク</span><span class="lang-en">Benchmark</span></strong></td>
+                <td><span class="lang-ja">TOPIX / 日経225 / 対象市場指数</span><span class="lang-en">TOPIX / Nikkei 225 / relevant market index</span></td>
+                <td class="td-accent"><span class="lang-ja">グローバル企業は地域指数か世界指数かで結果が異なる</span><span class="lang-en">Global firms yield different results with local vs. global index</span></td>
               </tr>
               <tr>
-                <td><strong>Blume調整</strong></td>
-                <td>Raw β / Adjusted β (2/3 raw + 1/3 × 1.0)</td>
-                <td class="td-accent">βは長期的に1.0に回帰する傾向（Mean reversion）があるため調整が標準</td>
+                <td><strong><span class="lang-ja">Blume調整</span><span class="lang-en">Blume Adjustment</span></strong></td>
+                <td><span class="lang-ja">Raw β / Adjusted β (2/3 raw + 1/3 × 1.0)</span><span class="lang-en">Raw β / Adjusted β (2/3 raw + 1/3 × 1.0)</span></td>
+                <td class="td-accent"><span class="lang-ja">βは長期的に1.0に回帰する傾向（Mean reversion）があるため調整が標準</span><span class="lang-en">Beta mean-reverts to 1.0 over time; adjustment is standard practice</span></td>
               </tr>
             </tbody>
           </table>
         </div>
 
         <div class="trap-box">
-          <div class="trap-label">実務でよくある罠</div>
-          <p>Bloomberg等のデータベンダーからβを「一つ」取ってきてそのまま使う。Bloombergのデフォルトβは週次・2年間・Blume調整なしであることが多い。自社の選択基準と整合しているか、必ず確認する必要がある。</p>
+          <div class="trap-label"><span class="lang-ja">実務でよくある罠</span><span class="lang-en">Common Practitioner Trap</span></div>
+          <p>
+            <span class="lang-ja">Bloomberg等のデータベンダーからβを「一つ」取ってきてそのまま使う。Bloombergのデフォルトβは週次・2年間・Blume調整なしであることが多い。自社の選択基準と整合しているか、必ず確認する必要がある。</span>
+            <span class="lang-en">Taking a single beta from a data vendor like Bloomberg and using it without question. Bloomberg's default beta is often weekly, 2-year, without Blume adjustment. Always verify whether the vendor's methodology aligns with your own selection criteria.</span>
+          </p>
         </div>
 
-        <h3>βの不安定性：具体例</h3>
+        <h3><span class="lang-ja">βの不安定性：具体例</span><span class="lang-en">Beta Instability: A Worked Example</span></h3>
 
-        <p>例として、ある製造業企業のβを異なる推計期間で計算したとする：</p>
+        <p>
+          <span class="lang-ja">例として、ある製造業企業のβを異なる推計期間で計算したとする：</span>
+          <span class="lang-en">Consider a hypothetical manufacturing company with beta estimated over different windows:</span>
+        </p>
 
         <div class="calc-block">
-          <div style="font-size:0.78em;color:var(--text-muted);margin-bottom:10px;font-family:'Inter',sans-serif;">同一企業、月次リターン、TOPIX対比（仮想例）</div>
-          <div class="calc-row"><span>24ヶ月推計 (raw β)</span><span>0.85</span></div>
-          <div class="calc-row"><span>36ヶ月推計 (raw β)</span><span>1.05</span></div>
-          <div class="calc-row"><span>60ヶ月推計 (raw β)</span><span>1.18</span></div>
-          <div class="calc-row" style="margin-top:10px;"><span>60ヶ月 Blume調整後</span><span class="calc-highlight">1.12</span></div>
+          <div style="font-size:0.78em;color:var(--text-muted);margin-bottom:10px;font-family:'Inter',sans-serif;"><span class="lang-ja">同一企業、月次リターン、TOPIX対比（仮想例）</span><span class="lang-en">Same company, monthly returns, vs. TOPIX (hypothetical example)</span></div>
+          <div class="calc-row"><span><span class="lang-ja">24ヶ月推計 (raw β)</span><span class="lang-en">24-month estimate (raw β)</span></span><span>0.85</span></div>
+          <div class="calc-row"><span><span class="lang-ja">36ヶ月推計 (raw β)</span><span class="lang-en">36-month estimate (raw β)</span></span><span>1.05</span></div>
+          <div class="calc-row"><span><span class="lang-ja">60ヶ月推計 (raw β)</span><span class="lang-en">60-month estimate (raw β)</span></span><span>1.18</span></div>
+          <div class="calc-row" style="margin-top:10px;"><span><span class="lang-ja">60ヶ月 Blume調整後</span><span class="lang-en">60-month Blume-adjusted</span></span><span class="calc-highlight">1.12</span></div>
           <div class="calc-row calc-total" style="border-top:1px dashed var(--border-light);margin-top:10px;padding-top:10px;">
-            <span>WACC差（ERP=5%、Rf=1%として）</span>
+            <span><span class="lang-ja">WACC差（ERP=5%、Rf=1%として）</span><span class="lang-en">WACC spread (ERP=5%, Rf=1%)</span></span>
             <span class="calc-highlight">±1.65%</span>
           </div>
         </div>
 
-        <p>β = 0.85 vs. 1.18 は、ERP=5%の環境ではKe = 5.25% vs. 6.9%を意味する。これはWACC全体で1%以上の差になりうる。そして#001で見たように、WACCが1%変わるとTerminal Valueは大きく変動する。</p>
+        <p>
+          <span class="lang-ja">β = 0.85 vs. 1.18 は、ERP=5%の環境ではKe = 5.25% vs. 6.9%を意味する。これはWACC全体で1%以上の差になりうる。そして#001で見たように、WACCが1%変わるとTerminal Valueは大きく変動する。</span>
+          <span class="lang-en">β = 0.85 vs. 1.18 means Ke = 5.25% vs. 6.9% when ERP = 5%. This can translate to a 1%+ difference in overall WACC. And as shown in #001, a 1% shift in WACC produces a dramatic change in Terminal Value.</span>
+        </p>
 
         <div class="insight-box">
-          <p><strong>βの「点推計」ではなく「範囲」で考えよ。</strong>推計期間・頻度・調整方法の主要な選択肢を試してβの分布を把握し、それをWACC感度分析に反映する。一つのβに固執するのは、精度があるように見えて本質的な不確実性を隠蔽している。</p>
+          <p>
+            <span class="lang-ja"><strong>βの「点推計」ではなく「範囲」で考えよ。</strong>推計期間・頻度・調整方法の主要な選択肢を試してβの分布を把握し、それをWACC感度分析に反映する。一つのβに固執するのは、精度があるように見えて本質的な不確実性を隠蔽している。</span>
+            <span class="lang-en"><strong>Think of beta as a range, not a point estimate.</strong> Test the major choices of estimation window, frequency, and adjustment method to understand the distribution of beta, and reflect that in your WACC sensitivity analysis. Fixing on a single beta creates a false appearance of precision while concealing fundamental uncertainty.</span>
+          </p>
         </div>
 
         <!-- ======================================================== -->
-        <h2>3. ERPをどこから取るか — 三つのアプローチ</h2>
+        <h2><span class="lang-ja">3. ERPをどこから取るか — 三つのアプローチ</span><span class="lang-en">3. Sourcing ERP — Three Approaches</span></h2>
 
-        <p>ERP（Equity Risk Premium）の推計は資本コスト理論の最大の論争地帯だ。大きく三つのアプローチがある：</p>
+        <p>
+          <span class="lang-ja">ERP（Equity Risk Premium）の推計は資本コスト理論の最大の論争地帯だ。大きく三つのアプローチがある：</span>
+          <span class="lang-en">Estimating ERP (Equity Risk Premium) is the most contested terrain in cost of capital theory. There are broadly three approaches:</span>
+        </p>
 
-        <h3>① Historical ERP（歴史的超過リターン）</h3>
+        <h3><span class="lang-ja">① Historical ERP（歴史的超過リターン）</span><span class="lang-en">① Historical ERP</span></h3>
 
-        <p>長期間の株式リターンから国債リターンを引いた平均値を使う。Dimson, Marsh, and Staunton（DMS）による分析が最も包括的で、1900年以降の25カ国以上のデータをカバーする。</p>
+        <p>
+          <span class="lang-ja">長期間の株式リターンから国債リターンを引いた平均値を使う。Dimson, Marsh, and Staunton（DMS）による分析が最も包括的で、1900年以降の25カ国以上のデータをカバーする。</span>
+          <span class="lang-en">Uses the average excess return of equities over government bonds over a long historical period. The Dimson, Marsh, and Staunton (DMS) dataset is the most comprehensive, covering 25+ countries from 1900 onward.</span>
+        </p>
 
         <div class="erp-bar-wrap">
-          <div class="erp-bar-label">ERP推計値の比較（概算、米国ベース）</div>
+          <div class="erp-bar-label"><span class="lang-ja">ERP推計値の比較（概算、米国ベース）</span><span class="lang-en">ERP Estimate Comparison (approximate, US-based)</span></div>
           <div class="erp-bar-row">
             <div class="erp-bar-name">DMS Historical (Geometric)</div>
             <div class="erp-bar-track">
-              <div class="erp-bar-fill dms" style="width:53%;">約4.8%</div>
+              <div class="erp-bar-fill dms" style="width:53%;"><span class="lang-ja">約4.8%</span><span class="lang-en">~4.8%</span></div>
             </div>
           </div>
           <div class="erp-bar-row">
             <div class="erp-bar-name">Historical (Arithmetic, US)</div>
             <div class="erp-bar-track">
-              <div class="erp-bar-fill historical" style="width:67%;">約6.0%</div>
+              <div class="erp-bar-fill historical" style="width:67%;"><span class="lang-ja">約6.0%</span><span class="lang-en">~6.0%</span></div>
             </div>
           </div>
           <div class="erp-bar-row">
             <div class="erp-bar-name">Damodaran Implied ERP</div>
             <div class="erp-bar-track">
-              <div class="erp-bar-fill implied" style="width:50%;">約4.5%</div>
+              <div class="erp-bar-fill implied" style="width:50%;"><span class="lang-ja">約4.5%</span><span class="lang-en">~4.5%</span></div>
             </div>
           </div>
         </div>
 
-        <p>歴史的ERPの問題点：</p>
+        <p><span class="lang-ja">歴史的ERPの問題点：</span><span class="lang-en">Problems with historical ERP:</span></p>
         <ul class="numbered-list">
           <li>
             <span class="num">1</span>
-            <div><strong>サーバイバーシップバイアス</strong> — 特に米国市場は歴史的に最も成功した市場の一つだ。米国のHistorical ERPを世界標準として使うと、将来の期待値を過大評価する。DMS(Dimson-Marsh-Staunton)が国際データを重視するのはこの理由だ。</div>
+            <div>
+              <span class="lang-ja"><strong>サーバイバーシップバイアス</strong> — 特に米国市場は歴史的に最も成功した市場の一つだ。米国のHistorical ERPを世界標準として使うと、将来の期待値を過大評価する。DMS(Dimson-Marsh-Staunton)が国際データを重視するのはこの理由だ。</span>
+              <span class="lang-en"><strong>Survivorship bias</strong> — The US market is one of history's most successful. Using US historical ERP as a global benchmark overestimates future expected returns. This is precisely why DMS prioritizes international data.</span>
+            </div>
           </li>
           <li>
             <span class="num">2</span>
-            <div><strong>期間依存性</strong> — 1926〜2025年の平均か、1945〜2025年の平均かで、Arithmetic meanで1〜2%の差が生じることがある。</div>
+            <div>
+              <span class="lang-ja"><strong>期間依存性</strong> — 1926〜2025年の平均か、1945〜2025年の平均かで、Arithmetic meanで1〜2%の差が生じることがある。</span>
+              <span class="lang-en"><strong>Period dependency</strong> — The choice between 1926–2025 and 1945–2025 as the estimation window can move the arithmetic mean ERP by 1–2%.</span>
+            </div>
           </li>
           <li>
             <span class="num">3</span>
-            <div><strong>Arithmetic vs. Geometric mean</strong> — 単年度の資本コスト計算にはArithmetic meanが理論的に適切とされるが、Geometric meanは長期的な複利成長の代理として使われる。この選択だけで0.5〜1.5%の差になる。</div>
+            <div>
+              <span class="lang-ja"><strong>Arithmetic vs. Geometric mean</strong> — 単年度の資本コスト計算にはArithmetic meanが理論的に適切とされるが、Geometric meanは長期的な複利成長の代理として使われる。この選択だけで0.5〜1.5%の差になる。</span>
+              <span class="lang-en"><strong>Arithmetic vs. Geometric mean</strong> — Arithmetic mean is theoretically appropriate for single-period cost of capital, while geometric mean is used as a proxy for long-term compound growth. This choice alone creates a 0.5–1.5% difference.</span>
+            </div>
           </li>
         </ul>
 
         <h3>② Implied ERP（Damodaran Method）</h3>
 
-        <p><a href="https://pages.stern.nyu.edu/~adamodar/New_Home_Page/data.html" target="_blank" rel="noopener">Damodaran implied ERP</a>は、S&amp;P500の現在株価・配当・アナリストコンセンサス利益予測から逆算して、「市場が織り込んでいるERP」を推計する。2026年1月時点では約4.4〜4.6%のレンジにある（年度によって変動）。</p>
+        <p>
+          <span class="lang-ja"><a href="https://pages.stern.nyu.edu/~adamodar/New_Home_Page/data.html" target="_blank" rel="noopener">Damodaran implied ERP</a>は、S&amp;P500の現在株価・配当・アナリストコンセンサス利益予測から逆算して、「市場が織り込んでいるERP」を推計する。2026年1月時点では約4.4〜4.6%のレンジにある（年度によって変動）。</span>
+          <span class="lang-en"><a href="https://pages.stern.nyu.edu/~adamodar/New_Home_Page/data.html" target="_blank" rel="noopener">Damodaran's implied ERP</a> back-calculates the "ERP priced into the market" from current S&amp;P 500 prices, dividends, and analyst consensus earnings forecasts. As of January 2026, the range is approximately 4.4–4.6% (subject to year-to-year variation).</span>
+        </p>
 
         <div class="insight-box">
-          <p><strong>Implied ERPの長所は「前向き」であること。</strong>Historical ERPが過去の平均を使うのに対し、Implied ERPは現在の市場価格に含まれる期待リターンを逆算する。市場が高バリュエーションにある時期は、Implied ERPが歴史的平均を下回ることもある——それは「市場は将来のリターンに対してより少ないリスクプレミアムを要求している」というシグナルとして解釈できる。</p>
+          <p>
+            <span class="lang-ja"><strong>Implied ERPの長所は「前向き」であること。</strong>Historical ERPが過去の平均を使うのに対し、Implied ERPは現在の市場価格に含まれる期待リターンを逆算する。市場が高バリュエーションにある時期は、Implied ERPが歴史的平均を下回ることもある——それは「市場は将来のリターンに対してより少ないリスクプレミアムを要求している」というシグナルとして解釈できる。</span>
+            <span class="lang-en"><strong>The key advantage of implied ERP is its forward-looking nature.</strong> While historical ERP uses past averages, implied ERP back-calculates the expected return embedded in current market prices. During periods of high market valuation, implied ERP can fall below historical averages — this can be interpreted as a signal that "the market is demanding less risk premium for future returns."</span>
+          </p>
         </div>
 
-        <p>Implied ERPの問題点は「変動性」だ。アナリスト予測と株価の両方が動くため、短期間で0.5%以上変わることもある。これを使って計算したWACCが毎四半期変動するのは、安定的なバリュエーションツールとして使いにくい面がある。</p>
+        <p>
+          <span class="lang-ja">Implied ERPの問題点は「変動性」だ。アナリスト予測と株価の両方が動くため、短期間で0.5%以上変わることもある。これを使って計算したWACCが毎四半期変動するのは、安定的なバリュエーションツールとして使いにくい面がある。</span>
+          <span class="lang-en">The problem with implied ERP is volatility. Because both analyst forecasts and stock prices move, it can shift by 0.5%+ in a short period. A WACC that fluctuates quarter-to-quarter is difficult to use as a stable valuation tool.</span>
+        </p>
 
-        <h3>③ どちらを選ぶべきか</h3>
+        <h3><span class="lang-ja">③ どちらを選ぶべきか</span><span class="lang-en">③ Which Should You Choose?</span></h3>
 
         <div class="data-table-wrap">
           <table>
             <thead>
-              <tr><th>状況</th><th>推奨アプローチ</th></tr>
+              <tr>
+                <th><span class="lang-ja">状況</span><span class="lang-en">Context</span></th>
+                <th><span class="lang-ja">推奨アプローチ</span><span class="lang-en">Recommended Approach</span></th>
+              </tr>
             </thead>
             <tbody>
               <tr>
-                <td>M&A・DCF（長期投資判断）</td>
-                <td class="td-accent">Historical ERP（Arithmetic、DMS準拠）+ Implied ERPで整合性チェック</td>
+                <td><span class="lang-ja">M&A・DCF（長期投資判断）</span><span class="lang-en">M&amp;A / DCF (long-term investment)</span></td>
+                <td class="td-accent"><span class="lang-ja">Historical ERP（Arithmetic、DMS準拠）+ Implied ERPで整合性チェック</span><span class="lang-en">Historical ERP (Arithmetic, DMS-based) + Implied ERP for consistency check</span></td>
               </tr>
               <tr>
-                <td>上場企業の資本コスト開示（IR）</td>
-                <td class="td-accent">期間・データソースを明記した上でImplied ERPを優先（前向き性のため）</td>
+                <td><span class="lang-ja">上場企業の資本コスト開示（IR）</span><span class="lang-en">Listed company cost of capital disclosure (IR)</span></td>
+                <td class="td-accent"><span class="lang-ja">期間・データソースを明記した上でImplied ERPを優先（前向き性のため）</span><span class="lang-en">Prefer implied ERP (for forward-looking nature), with source and date stated</span></td>
               </tr>
               <tr>
-                <td>レバレッジドバイアウト（PE）</td>
-                <td class="td-accent">Historical ERP（Geometric）が保守的で長期に適合する傾向</td>
+                <td><span class="lang-ja">レバレッジドバイアウト（PE）</span><span class="lang-en">Leveraged buyout (PE)</span></td>
+                <td class="td-accent"><span class="lang-ja">Historical ERP（Geometric）が保守的で長期に適合する傾向</span><span class="lang-en">Historical ERP (Geometric) tends to be conservative and suitable for long-duration holdings</span></td>
               </tr>
             </tbody>
           </table>
         </div>
 
-        <p>最も重要なのは「どれを使ったか」を明記することだ。「ERP = 5.5%」と記載するだけでは不十分だ。「DMS arithmetic mean、1900〜2024年、米国ベース」のように出所・期間・方法を明示する。</p>
+        <p>
+          <span class="lang-ja">最も重要なのは「どれを使ったか」を明記することだ。「ERP = 5.5%」と記載するだけでは不十分だ。「DMS arithmetic mean、1900〜2024年、米国ベース」のように出所・期間・方法を明示する。</span>
+          <span class="lang-en">Most importantly, document which approach you used. Writing "ERP = 5.5%" is insufficient. Be explicit: "DMS arithmetic mean, 1900–2024, US-based." Source, period, and method all matter.</span>
+        </p>
 
         <!-- ======================================================== -->
-        <h2>4. Fama-French — より多くのファクターは答えか</h2>
+        <h2><span class="lang-ja">4. Fama-French — より多くのファクターは答えか</span><span class="lang-en">4. Fama-French — Is More Factors the Answer?</span></h2>
 
-        <p>CAPMへの実証的反証を受けて、Fama and Frenchは1993年に3ファクターモデルを提唱した：</p>
+        <p>
+          <span class="lang-ja">CAPMへの実証的反証を受けて、Fama and Frenchは1993年に3ファクターモデルを提唱した：</span>
+          <span class="lang-en">In response to empirical challenges to CAPM, Fama and French proposed the three-factor model in 1993:</span>
+        </p>
 
         <div class="formula">E(R<sub>i</sub>) = Rf + β<sub>mkt</sub>·ERP + β<sub>SMB</sub>·SMB + β<sub>HML</sub>·HML</div>
 
-        <p>ここで：</p>
+        <p><span class="lang-ja">ここで：</span><span class="lang-en">Where:</span></p>
         <ul class="article-body" style="margin-bottom:1.5em; list-style:none; padding:0;">
           <li style="display:flex; gap:12px; align-items:baseline; margin-bottom:8px; font-family:'Inter',sans-serif; font-size:0.93rem; color:var(--text-body);">
             <span style="font-family:'JetBrains Mono',monospace; font-size:0.78rem; color:var(--accent); min-width:40px;">SMB</span>
-            <span>Small Minus Big — 小型株と大型株のリターン差（サイズプレミアム）</span>
+            <span><span class="lang-ja">Small Minus Big — 小型株と大型株のリターン差（サイズプレミアム）</span><span class="lang-en">Small Minus Big — return spread between small- and large-cap stocks (size premium)</span></span>
           </li>
           <li style="display:flex; gap:12px; align-items:baseline; margin-bottom:8px; font-family:'Inter',sans-serif; font-size:0.93rem; color:var(--text-body);">
             <span style="font-family:'JetBrains Mono',monospace; font-size:0.78rem; color:var(--accent); min-width:40px;">HML</span>
-            <span>High Minus Low — 高PBR株と低PBR株のリターン差（バリュープレミアム）</span>
+            <span><span class="lang-ja">High Minus Low — 高PBR株と低PBR株のリターン差（バリュープレミアム）</span><span class="lang-en">High Minus Low — return spread between high- and low-P/B stocks (value premium)</span></span>
           </li>
         </ul>
 
-        <p>後にMomentum（過去リターンの持続性）を加えた4ファクターモデル（Carhart, 1997）、Quality・Profitability・Investment等を加えた5ファクターモデルへと発展した。</p>
+        <p>
+          <span class="lang-ja">後にMomentum（過去リターンの持続性）を加えた4ファクターモデル（Carhart, 1997）、Quality・Profitability・Investment等を加えた5ファクターモデルへと発展した。</span>
+          <span class="lang-en">The model was later extended to the 4-factor model adding Momentum (Carhart, 1997) and the 5-factor model incorporating Quality, Profitability, and Investment.</span>
+        </p>
 
-        <h3>Fama-Frenchの問題：ファクターの経済的解釈</h3>
+        <h3><span class="lang-ja">Fama-Frenchの問題：ファクターの経済的解釈</span><span class="lang-en">The Fama-French Problem: Economic Interpretation of Factors</span></h3>
 
-        <p>Fama-Frenchモデルは実証的なfitはCAPMより優れる。しかし根本的な問いが残る：<strong>SMBとHMLは何のリスクに対する補償か？</strong></p>
+        <p>
+          <span class="lang-ja">Fama-Frenchモデルは実証的なfitはCAPMより優れる。しかし根本的な問いが残る：<strong>SMBとHMLは何のリスクに対する補償か？</strong></span>
+          <span class="lang-en">Fama-French fits the data better than CAPM empirically. But a fundamental question remains: <strong>What risk do SMB and HML compensate for?</strong></span>
+        </p>
 
         <ul class="numbered-list">
           <li>
             <span class="num">▲</span>
-            <div><strong>リスク補償説（Fama-French自身の見解）</strong>：小型株・バリュー株は経済的に脆弱で、景気後退期に大きく下落する。この「見えにくいリスク」への補償として超過リターンが存在する。</div>
+            <div>
+              <span class="lang-ja"><strong>リスク補償説（Fama-French自身の見解）</strong>：小型株・バリュー株は経済的に脆弱で、景気後退期に大きく下落する。この「見えにくいリスク」への補償として超過リターンが存在する。</span>
+              <span class="lang-en"><strong>Risk compensation view (Fama-French's own position)</strong>: Small-cap and value stocks are economically fragile and suffer disproportionately in recessions. The excess return compensates for this "hidden risk."</span>
+            </div>
           </li>
           <li>
             <span class="num">?</span>
-            <div><strong>ミスプライシング説（Behavioral Finance寄り）</strong>：バリュー株の超過リターンは投資家の過剰反応・過小反応によるミスプライシングが平均回帰するプロセスだ。これは「価格付けされたリスク」ではなく「誤った価格の修正」だ。</div>
+            <div>
+              <span class="lang-ja"><strong>ミスプライシング説（Behavioral Finance寄り）</strong>：バリュー株の超過リターンは投資家の過剰反応・過小反応によるミスプライシングが平均回帰するプロセスだ。これは「価格付けされたリスク」ではなく「誤った価格の修正」だ。</span>
+              <span class="lang-en"><strong>Mispricing view (Behavioral Finance perspective)</strong>: The excess return of value stocks is the mean-reversion of mispricing caused by investor over- and under-reaction. This is not "priced risk" but a "correction of incorrect prices."</span>
+            </div>
           </li>
         </ul>
 
-        <p>この解釈の違いは決定的だ。「リスク補償」ならSMBは正当なリスクファクターとして資本コストに含まれる。「ミスプライシング」ならSMBを資本コストに含めることは理論的に誤りだ。</p>
+        <p>
+          <span class="lang-ja">この解釈の違いは決定的だ。「リスク補償」ならSMBは正当なリスクファクターとして資本コストに含まれる。「ミスプライシング」ならSMBを資本コストに含めることは理論的に誤りだ。</span>
+          <span class="lang-en">This interpretive difference is decisive. If SMB represents risk compensation, it is a legitimate factor in the cost of capital. If it represents mispricing correction, including SMB in the cost of capital is theoretically incorrect.</span>
+        </p>
 
         <div class="trap-box">
-          <div class="trap-label">実務での使い方の注意</div>
-          <p>Fama-Frenchモデルを投資判断（アクティブ株式運用のリスク分解）に使うのは正当だ。しかしDCFの資本コストとしてFama-Frenchの多ファクターKeを使うことは、ファクターの経済的解釈が決着していないため、学術的には論争が続いている。実務では引き続きCAPMがWACCの標準だ——限界を理解した上で使うという前提で。</p>
+          <div class="trap-label"><span class="lang-ja">実務での使い方の注意</span><span class="lang-en">Caution for Practitioners</span></div>
+          <p>
+            <span class="lang-ja">Fama-Frenchモデルを投資判断（アクティブ株式運用のリスク分解）に使うのは正当だ。しかしDCFの資本コストとしてFama-Frenchの多ファクターKeを使うことは、ファクターの経済的解釈が決着していないため、学術的には論争が続いている。実務では引き続きCAPMがWACCの標準だ——限界を理解した上で使うという前提で。</span>
+            <span class="lang-en">Using Fama-French for investment decision-making (risk decomposition in active equity management) is legitimate. But using multi-factor Ke from Fama-French as the cost of capital in a DCF remains academically contested, because the economic interpretation of the factors is unresolved. In practice, CAPM remains the standard for WACC — with the explicit understanding of its limitations.</span>
+          </p>
         </div>
 
         <!-- ======================================================== -->
-        <h2>5. 代替アプローチ — CAPMを補完する視点</h2>
+        <h2><span class="lang-ja">5. 代替アプローチ — CAPMを補完する視点</span><span class="lang-en">5. Alternative Approaches — Perspectives That Complement CAPM</span></h2>
 
-        <p>CAPMの限界を踏まえ、実務では以下の補完的アプローチが使われることがある：</p>
+        <p>
+          <span class="lang-ja">CAPMの限界を踏まえ、実務では以下の補完的アプローチが使われることがある：</span>
+          <span class="lang-en">Given CAPM's limitations, the following complementary approaches are used in practice:</span>
+        </p>
 
         <h3>① Build-up Method</h3>
 
-        <p>産業リスク・カントリーリスク・企業固有リスクを個別に積み上げてKeを推計する：</p>
+        <p>
+          <span class="lang-ja">産業リスク・カントリーリスク・企業固有リスクを個別に積み上げてKeを推計する：</span>
+          <span class="lang-en">Estimates Ke by stacking individual risk premiums for industry, country, and company-specific risk:</span>
+        </p>
 
         <div class="formula">Ke = Rf + ERP + Size premium + Company-specific risk premium + Country risk premium</div>
 
-        <p>CAPMのような市場データへの依存を減らし、非上場企業・新興国企業のバリュエーションで広く使われる。欠点は各プレミアムの推計が恣意的になりやすいことだ。</p>
+        <p>
+          <span class="lang-ja">CAPMのような市場データへの依存を減らし、非上場企業・新興国企業のバリュエーションで広く使われる。欠点は各プレミアムの推計が恣意的になりやすいことだ。</span>
+          <span class="lang-en">Reduces reliance on market data compared to CAPM and is widely used for valuing private or emerging market companies. The drawback is that each premium component is prone to subjective judgment.</span>
+        </p>
 
-        <h3>② Implied Cost of Capital（逆算アプローチ）</h3>
+        <h3><span class="lang-ja">② Implied Cost of Capital（逆算アプローチ）</span><span class="lang-en">② Implied Cost of Capital (Back-Calculation)</span></h3>
 
-        <p>株価を所与として、アナリスト予測利益からKeを逆算する：</p>
+        <p>
+          <span class="lang-ja">株価を所与として、アナリスト予測利益からKeを逆算する：</span>
+          <span class="lang-en">Takes the stock price as given and back-calculates Ke from analyst earnings forecasts:</span>
+        </p>
 
         <div class="formula">P = EPS₁/(Ke − g) &nbsp;→&nbsp; Ke = EPS₁/P + g</div>
 
-        <p>これはDamodaranが「implied ERP」に使う方法論の個別株版だ。「市場が現在の株価に織り込んでいる資本コスト」を推計できる。Reverse DCFの文脈（#001参照）とも接続する。</p>
+        <p>
+          <span class="lang-ja">これはDamodaranが「implied ERP」に使う方法論の個別株版だ。「市場が現在の株価に織り込んでいる資本コスト」を推計できる。Reverse DCFの文脈（#001参照）とも接続する。</span>
+          <span class="lang-en">This is the individual-stock version of Damodaran's implied ERP methodology. It estimates "the cost of capital the market is pricing into the current stock price." It connects naturally to the Reverse DCF context covered in #001.</span>
+        </p>
 
-        <h3>③ APVアプローチとの関係</h3>
+        <h3><span class="lang-ja">③ APVアプローチとの関係</span><span class="lang-en">③ Relationship to the APV Approach</span></h3>
 
-        <p>WACCの問題（特にTax shieldの現在価値を負債コストで割り引くか株式コストで割り引くかという議論）を回避するAPV（Adjusted Present Value）アプローチも存在する。これはSeries #006で詳しく扱う予定だ。</p>
+        <p>
+          <span class="lang-ja">WACCの問題（特にTax shieldの現在価値を負債コストで割り引くか株式コストで割り引くかという議論）を回避するAPV（Adjusted Present Value）アプローチも存在する。これはSeries #006で詳しく扱う予定だ。</span>
+          <span class="lang-en">The APV (Adjusted Present Value) approach exists as an alternative that sidesteps some of WACC's complications — particularly the debate over whether to discount the tax shield at the cost of debt or cost of equity. This will be covered in detail in Series #006.</span>
+        </p>
 
         <div class="section-sep">· · ·</div>
 
         <!-- ======================================================== -->
-        <h2>6. 実務への含意 — 「正確な」WACCではなく「誠実な」WACC</h2>
+        <h2><span class="lang-ja">6. 実務への含意 — 「正確な」WACCではなく「誠実な」WACC</span><span class="lang-en">6. Practical Implications — "Honest" WACC, Not "Precise" WACC</span></h2>
 
-        <h3>① WACCは点推計ではなく範囲として開示する</h3>
+        <h3><span class="lang-ja">① WACCは点推計ではなく範囲として開示する</span><span class="lang-en">① Disclose WACC as a range, not a point estimate</span></h3>
 
-        <p>β・ERP・Rfのそれぞれについて「合理的な選択肢の範囲」を定義し、その組み合わせでWACCの範囲を計算する。例えば：</p>
+        <p>
+          <span class="lang-ja">β・ERP・Rfのそれぞれについて「合理的な選択肢の範囲」を定義し、その組み合わせでWACCの範囲を計算する。例えば：</span>
+          <span class="lang-en">Define a "range of reasonable choices" for each of β, ERP, and Rf, then compute the resulting WACC range across combinations. For example:</span>
+        </p>
 
         <div class="calc-block">
-          <div style="font-size:0.78em;color:var(--text-muted);margin-bottom:10px;font-family:'Inter',sans-serif;">WACC感度テーブル（仮想例：ERP × β）</div>
-          <div class="calc-row"><span>ERP = 4.5%（Implied）、β = 0.9</span><span>WACC ≈ 9.1%</span></div>
-          <div class="calc-row"><span>ERP = 5.5%（Historical）、β = 1.1</span><span>WACC ≈ 10.5%</span></div>
-          <div class="calc-row calc-total"><span>TV変化（g=3%固定、#001の式）</span><span class="calc-highlight">最大 ±25%</span></div>
+          <div style="font-size:0.78em;color:var(--text-muted);margin-bottom:10px;font-family:'Inter',sans-serif;"><span class="lang-ja">WACC感度テーブル（仮想例：ERP × β）</span><span class="lang-en">WACC sensitivity table (hypothetical: ERP × β)</span></div>
+          <div class="calc-row"><span><span class="lang-ja">ERP = 4.5%（Implied）、β = 0.9</span><span class="lang-en">ERP = 4.5% (Implied), β = 0.9</span></span><span>WACC ≈ 9.1%</span></div>
+          <div class="calc-row"><span><span class="lang-ja">ERP = 5.5%（Historical）、β = 1.1</span><span class="lang-en">ERP = 5.5% (Historical), β = 1.1</span></span><span>WACC ≈ 10.5%</span></div>
+          <div class="calc-row calc-total"><span><span class="lang-ja">TV変化（g=3%固定、#001の式）</span><span class="lang-en">TV change (g=3% fixed, #001 formula)</span></span><span class="calc-highlight"><span class="lang-ja">最大 ±25%</span><span class="lang-en">up to ±25%</span></span></div>
         </div>
 
-        <p>この範囲の大きさが、WACCの「不確実性の構造」を正直に表現する。「WACC = 9.8%」という点推計よりも、「8.5〜11%の範囲で合理的、中心推計は9.8%」という表現の方が誠実だ。</p>
+        <p>
+          <span class="lang-ja">この範囲の大きさが、WACCの「不確実性の構造」を正直に表現する。「WACC = 9.8%」という点推計よりも、「8.5〜11%の範囲で合理的、中心推計は9.8%」という表現の方が誠実だ。</span>
+          <span class="lang-en">The width of this range honestly represents the "structure of WACC's uncertainty." "8.5–11% is a reasonable range, with a central estimate of 9.8%" is more honest than the point estimate "WACC = 9.8%."</span>
+        </p>
 
-        <h3>② ERPとβの出所を必ず明記する</h3>
+        <h3><span class="lang-ja">② ERPとβの出所を必ず明記する</span><span class="lang-en">② Always document the source of ERP and β</span></h3>
 
-        <p>バリュエーションレポートには以下を明記することを習慣にしたい：</p>
+        <p>
+          <span class="lang-ja">バリュエーションレポートには以下を明記することを習慣にしたい：</span>
+          <span class="lang-en">Make it a habit to document the following in every valuation report:</span>
+        </p>
 
         <ul>
-          <li>ERP：「Damodaran implied ERP（米国、2026年1月推計）4.5%」または「DMS arithmetic mean（1900-2024）6.0%」</li>
-          <li>β：「Adjusted β（Blume、60ヶ月月次、TOPIX対比）1.12、その後Hamada変換でunleverし再lever」</li>
-          <li>Rf：「10年国債利回り（2026年3月時点）1.5%、名目ベース」</li>
+          <li><span class="lang-ja">ERP：「Damodaran implied ERP（米国、2026年1月推計）4.5%」または「DMS arithmetic mean（1900-2024）6.0%」</span><span class="lang-en">ERP: "Damodaran implied ERP (US, January 2026 estimate) 4.5%" or "DMS arithmetic mean (1900–2024) 6.0%"</span></li>
+          <li><span class="lang-ja">β：「Adjusted β（Blume、60ヶ月月次、TOPIX対比）1.12、その後Hamada変換でunleverし再lever」</span><span class="lang-en">β: "Adjusted β (Blume, 60-month monthly, vs. TOPIX) 1.12, then Hamada-transformed to unlever and relever"</span></li>
+          <li><span class="lang-ja">Rf：「10年国債利回り（2026年3月時点）1.5%、名目ベース」</span><span class="lang-en">Rf: "10-year government bond yield (March 2026) 1.5%, nominal basis"</span></li>
         </ul>
 
-        <p>このような記載があることで、前提の違いによる見解の差異が建設的な議論に昇華する。出所が不明なWACCは、後から検証も反論もできない「ブラックボックス」になる。</p>
+        <p>
+          <span class="lang-ja">このような記載があることで、前提の違いによる見解の差異が建設的な議論に昇華する。出所が不明なWACCは、後から検証も反論もできない「ブラックボックス」になる。</span>
+          <span class="lang-en">With this level of documentation, disagreements arising from different assumptions become constructive discussions. A WACC without sourcing is a "black box" that cannot be verified or challenged after the fact.</span>
+        </p>
 
-        <h3>③ WACCよりもTV仮定（g・ROIC）の感度が高い</h3>
+        <h3><span class="lang-ja">③ WACCよりもTV仮定（g・ROIC）の感度が高い</span><span class="lang-en">③ TV assumptions (g, ROIC) are more sensitive than WACC</span></h3>
 
-        <p>#001で示したように、Terminal Valueの感度はg・ROICの仮定が最も大きい。WACCはその次の感度を持つ。実務での優先順位は「g-ROICの整合性チェック」→「WACCの範囲推計」→「クロス感度テーブル」の順だ。WACCの精緻化に時間をかけすぎるよりも、TV仮定の経済的根拠を深めることの方が分析の価値を高める。</p>
+        <p>
+          <span class="lang-ja">#001で示したように、Terminal Valueの感度はg・ROICの仮定が最も大きい。WACCはその次の感度を持つ。実務での優先順位は「g-ROICの整合性チェック」→「WACCの範囲推計」→「クロス感度テーブル」の順だ。WACCの精緻化に時間をかけすぎるよりも、TV仮定の経済的根拠を深めることの方が分析の価値を高める。</span>
+          <span class="lang-en">As shown in #001, Terminal Value is most sensitive to g and ROIC assumptions. WACC is the next most sensitive driver. The practical priority order is: "g-ROIC consistency check" → "WACC range estimation" → "cross-sensitivity table." Spending more time on the economic rationale for TV assumptions adds more analytical value than perfecting the WACC calculation.</span>
+        </p>
 
         <!-- ======================================================== -->
-        <h2>出典</h2>
+        <h2><span class="lang-ja">出典</span><span class="lang-en">References</span></h2>
 
         <ul class="source-list">
-          <li><a href="https://pages.stern.nyu.edu/~adamodar/New_Home_Page/data.html" target="_blank" rel="noopener">Damodaran, A. — Implied Equity Risk Premium (Annual Updates), NYU Stern</a><span class="source-tag">[公式/データ]</span></li>
-          <li><a href="http://aswathdamodaran.blogspot.com/" target="_blank" rel="noopener">Damodaran, A. — Musings on Markets（Cost of Capital 関連記事多数）</a><span class="source-tag">[ブログ]</span></li>
-          <li><a href="https://openlibrary.org/isbn/9781118011522" target="_blank" rel="noopener">Damodaran, A. — Investment Valuation: Tools and Techniques for Determining the Value of Any Asset, 3rd ed. (Wiley 2012)</a><span class="source-tag">[書籍]</span></li>
-          <li><a href="https://openlibrary.org/isbn/9781119610885" target="_blank" rel="noopener">Koller, T., Goedhart, M., Wessels, D. — Valuation: Measuring and Managing the Value of Companies, 7th ed. (McKinsey, Wiley 2020)</a><span class="source-tag">[書籍]</span></li>
-          <li><a href="https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html" target="_blank" rel="noopener">Fama, E. &amp; French, K. — The Cross-Section of Expected Stock Returns, Journal of Finance 47(2), 1992（データ：Kenneth French Data Library）</a><span class="source-tag">[論文/データ]</span></li>
-          <li><a href="https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html" target="_blank" rel="noopener">Kenneth French Data Library — Fama-French Factors (Dartmouth)</a><span class="source-tag">[データ]</span></li>
+          <li><a href="https://pages.stern.nyu.edu/~adamodar/New_Home_Page/data.html" target="_blank" rel="noopener">Damodaran, A. — Implied Equity Risk Premium (Annual Updates), NYU Stern</a><span class="source-tag"><span class="lang-ja">[公式/データ]</span><span class="lang-en">[Official/Data]</span></span></li>
+          <li><a href="http://aswathdamodaran.blogspot.com/" target="_blank" rel="noopener">Damodaran, A. — Musings on Markets<span class="lang-ja">（Cost of Capital 関連記事多数）</span><span class="lang-en"> (extensive posts on Cost of Capital)</span></a><span class="source-tag"><span class="lang-ja">[ブログ]</span><span class="lang-en">[Blog]</span></span></li>
+          <li><a href="https://openlibrary.org/isbn/9781118011522" target="_blank" rel="noopener">Damodaran, A. — Investment Valuation: Tools and Techniques for Determining the Value of Any Asset, 3rd ed. (Wiley 2012)</a><span class="source-tag"><span class="lang-ja">[書籍]</span><span class="lang-en">[Book]</span></span></li>
+          <li><a href="https://openlibrary.org/isbn/9781119610885" target="_blank" rel="noopener">Koller, T., Goedhart, M., Wessels, D. — Valuation: Measuring and Managing the Value of Companies, 7th ed. (McKinsey, Wiley 2020)</a><span class="source-tag"><span class="lang-ja">[書籍]</span><span class="lang-en">[Book]</span></span></li>
+          <li><a href="https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html" target="_blank" rel="noopener">Fama, E. &amp; French, K. — The Cross-Section of Expected Stock Returns, Journal of Finance 47(2), 1992<span class="lang-ja">（データ：Kenneth French Data Library）</span><span class="lang-en"> (data: Kenneth French Data Library)</span></a><span class="source-tag"><span class="lang-ja">[論文/データ]</span><span class="lang-en">[Paper/Data]</span></span></li>
+          <li><a href="https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html" target="_blank" rel="noopener">Kenneth French Data Library — Fama-French Factors (Dartmouth)</a><span class="source-tag"><span class="lang-ja">[データ]</span><span class="lang-en">[Data]</span></span></li>
         </ul>
 
         <!-- Next CTA -->
         <div class="next-article">
-          <div class="next-label">次回 · Valuation Theory Lab #003</div>
-          <div class="next-title">Betaを信じる前に考えること<br>— 推計期間・頻度・Hamada変換</div>
-          <div class="next-desc">Levered β → Unlevered β → Relevered βの操作でどこに誤差が蓄積するか。Hamada式の仮定と限界、Miles-Ezzell vs. Modigliani-Miller Tax shieldの選択まで。</div>
+          <div class="next-label"><span class="lang-ja">次回 · Valuation Theory Lab #003</span><span class="lang-en">Next · Valuation Theory Lab #003</span></div>
+          <div class="next-title">
+            <span class="lang-ja">Betaを信じる前に考えること<br>— 推計期間・頻度・Hamada変換</span>
+            <span class="lang-en">Before You Trust Beta<br>— Estimation Window, Frequency, and the Hamada Transform</span>
+          </div>
+          <div class="next-desc">
+            <span class="lang-ja">Levered β → Unlevered β → Relevered βの操作でどこに誤差が蓄積するか。Hamada式の仮定と限界、Miles-Ezzell vs. Modigliani-Miller Tax shieldの選択まで。</span>
+            <span class="lang-en">Where does error accumulate when transforming levered β to unlevered β and back? The Hamada equation's assumptions, Miles-Ezzell vs. MM tax shield choice, and its impact on WACC.</span>
+          </div>
         </div>
 
       </article>
@@ -1098,27 +1293,27 @@
           <div class="keyfacts-grid">
             <div class="fact-card highlight">
               <div class="fact-value">±1%</div>
-              <div class="fact-desc">WACC誤差がTerminal Valueに与える影響（目安：±15%以上）</div>
+              <div class="fact-desc"><span class="lang-ja">WACC誤差がTerminal Valueに与える影響（目安：±15%以上）</span><span class="lang-en">WACC error impact on Terminal Value (indicative: ±15%+)</span></div>
             </div>
             <div class="fact-card">
               <div class="fact-value">4.5%</div>
-              <div class="fact-desc">Damodaran implied ERP（US, 2026年初・概算）</div>
+              <div class="fact-desc"><span class="lang-ja">Damodaran implied ERP（US, 2026年初・概算）</span><span class="lang-en">Damodaran implied ERP (US, early 2026, approx.)</span></div>
             </div>
             <div class="fact-card">
               <div class="fact-value">4.8%</div>
-              <div class="fact-desc">DMS historical ERP（US, geometric mean, 1900-2024）</div>
+              <div class="fact-desc"><span class="lang-ja">DMS historical ERP（US, geometric mean, 1900-2024）</span><span class="lang-en">DMS historical ERP (US, geometric mean, 1900–2024)</span></div>
             </div>
             <div class="fact-card">
               <div class="fact-value">60M</div>
-              <div class="fact-desc">β推計の標準的な期間（月次データ）</div>
+              <div class="fact-desc"><span class="lang-ja">β推計の標準的な期間（月次データ）</span><span class="lang-en">Standard beta estimation window (monthly data)</span></div>
             </div>
             <div class="fact-card">
               <div class="fact-value">≈0.3</div>
-              <div class="fact-desc">CAPMのR²（株式リターン截面の説明率の目安）</div>
+              <div class="fact-desc"><span class="lang-ja">CAPMのR²（株式リターン截面の説明率の目安）</span><span class="lang-en">CAPM R² (cross-sectional return explanatory power, indicative)</span></div>
             </div>
             <div class="fact-card">
               <div class="fact-value">3 / 5</div>
-              <div class="fact-desc">Fama-Frenchファクター数（3F / 5Fモデル）</div>
+              <div class="fact-desc"><span class="lang-ja">Fama-Frenchファクター数（3F / 5Fモデル）</span><span class="lang-en">Fama-French factor count (3F / 5F models)</span></div>
             </div>
           </div>
         </div>
@@ -1128,27 +1323,27 @@
           <ol class="highlights-list">
             <li class="highlight-item">
               <span class="hl-num">01</span>
-              <span class="hl-text"><a href="./2026-03-20-valuation.html" style="color:var(--text-body);text-decoration:none;">Terminal ValueはなぜDCFの70-80%を占めるのか</a></span>
+              <span class="hl-text"><a href="./2026-03-20-valuation.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">Terminal ValueはなぜDCFの70-80%を占めるのか</span><span class="lang-en">Why Terminal Value Drives 70-80% of DCF</span></a></span>
             </li>
             <li class="highlight-item">
               <span class="hl-num" style="color:var(--accent-warm);font-weight:700;">02</span>
-              <span class="hl-text"><strong>WACCは本当に計算できるのか — CAPM限界論と代替アプローチ</strong> — 本稿</span>
+              <span class="hl-text"><strong><span class="lang-ja">WACCは本当に計算できるのか — CAPM限界論と代替アプローチ</span><span class="lang-en">Can WACC Really Be Calculated? — CAPM Limitations and Alternatives</span></strong> — <span class="lang-ja">本稿</span><span class="lang-en">this article</span></span>
             </li>
             <li class="highlight-item">
               <span class="hl-num">03</span>
-              <span class="hl-text">Betaを信じる前に考えること — 推計期間・頻度・Hamada変換</span>
+              <span class="hl-text"><span class="lang-ja">Betaを信じる前に考えること — 推計期間・頻度・Hamada変換</span><span class="lang-en">Before You Trust Beta — Estimation Window, Frequency, Hamada Transform</span></span>
             </li>
             <li class="highlight-item">
               <span class="hl-num">04</span>
-              <span class="hl-text">シクリカル企業のLTMが罠である理由 — Mid-cycle正規化</span>
+              <span class="hl-text"><span class="lang-ja">シクリカル企業のLTMが罠である理由 — Mid-cycle正規化</span><span class="lang-en">Why Cyclical Companies' LTM Is a Trap — Mid-cycle Normalization</span></span>
             </li>
             <li class="highlight-item">
               <span class="hl-num">05</span>
-              <span class="hl-text">IFRS16後のEV bridgeを再考する — EV/EBITDA vs. EBITDAR</span>
+              <span class="hl-text"><span class="lang-ja">IFRS16後のEV bridgeを再考する — EV/EBITDA vs. EBITDAR</span><span class="lang-en">Rethinking EV Bridge Post-IFRS16 — EV/EBITDA vs. EBITDAR</span></span>
             </li>
             <li class="highlight-item">
               <span class="hl-num">06</span>
-              <span class="hl-text">APVアプローチ再考 — MM命題・Tax shieldの現在価値</span>
+              <span class="hl-text"><span class="lang-ja">APVアプローチ再考 — MM命題・Tax shieldの現在価値</span><span class="lang-en">APV Reconsidered — MM Propositions and Tax Shield PV</span></span>
             </li>
           </ol>
         </div>
@@ -1171,7 +1366,7 @@
 
 <footer class="site-footer">
   <span>Valuation Theory Lab #002 | donato Valuation Notes | 2026-03-21</span>
-  <span>本稿は理論解説目的です。実際の投資判断・M&amp;A意思決定には専門家への確認を要します。</span>
+  <span><span class="lang-ja">本稿は理論解説目的です。実際の投資判断・M&amp;A意思決定には専門家への確認を要します。</span><span class="lang-en">For educational purposes only. Consult qualified professionals before making investment or M&amp;A decisions.</span></span>
 </footer>
 
 <script>
@@ -1190,9 +1385,22 @@
     var label = '約' + minutes + '分';
     var el1 = document.getElementById('reading-time-badge');
     var el2 = document.getElementById('reading-time-badge2');
-    if (el1) el1.textContent = label;
-    if (el2) el2.textContent = label;
+    if (el1) el1.querySelector('.lang-ja').textContent = label;
+    if (el2) el2.querySelector('.lang-ja').textContent = label;
   })();
+
+  // Lang toggle
+  let currentLang = 'ja';
+  function toggleLang() {
+    currentLang = currentLang === 'ja' ? 'en' : 'ja';
+    document.querySelectorAll('.lang-ja').forEach(el => el.style.display = currentLang === 'ja' ? 'inline' : 'none');
+    document.querySelectorAll('.lang-en').forEach(el => el.style.display = currentLang === 'en' ? 'inline' : 'none');
+    document.getElementById('lang-btn').textContent = currentLang === 'ja' ? 'EN' : 'JA';
+    document.documentElement.lang = currentLang;
+  }
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.lang-en').forEach(el => el.style.display = 'none');
+  });
 </script>
 
 </body>

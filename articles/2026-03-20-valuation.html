@@ -79,6 +79,18 @@
       letter-spacing: 0.04em;
     }
     .site-header-right { display: flex; align-items: center; gap: 12px; }
+    #lang-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      padding: 4px 10px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    #lang-btn:hover { border-color: var(--accent); color: var(--accent); }
     .header-date {
       font-family: 'JetBrains Mono', monospace;
       font-size: 10px;
@@ -596,6 +608,9 @@
       line-height: 1.45;
     }
 
+    /* ===== LANG TOGGLE ===== */
+    .lang-en { display: none; }
+
     /* ===== FOOTER ===== */
     .site-footer {
       border-top: 1px solid var(--border-light);
@@ -637,11 +652,10 @@
   <div class="site-header-left">
     <a class="wordmark" href="../index.html">dona<span>to</span></a>
     <span class="header-sep">—</span>
-    <a href="./index.html" style="font-family:'Inter',sans-serif; font-size:12px; color:var(--text-muted); text-decoration:none; transition:color 0.15s;" onmouseover="this.style.color='var(--accent)';" onmouseout="this.style.color='var(--text-muted)';">Articles</a>
-    <span class="header-sep">—</span>
     <span class="header-media">Valuation Theory Lab</span>
   </div>
   <div class="site-header-right">
+    <button id="lang-btn" onclick="toggleLang()">EN</button>
     <time class="header-date">2026-03-20</time>
   </div>
 </header>
@@ -650,11 +664,17 @@
 <div id="sticky-bar">
   <span class="sbar-cat">VALUATION THEORY LAB</span>
   <span class="sbar-sep">|</span>
-  <span class="sbar-text">Series #001 · DCF理論</span>
+  <span class="sbar-text">
+    <span class="lang-ja">Series #001 · DCF理論</span>
+    <span class="lang-en">Series #001 · DCF Theory</span>
+  </span>
   <span class="sbar-sep">|</span>
   <span class="sbar-text">2026-03-20</span>
   <span class="sbar-sep">|</span>
-  <span class="sbar-badge" id="reading-time-badge">約10分</span>
+  <span class="sbar-badge" id="reading-time-badge">
+    <span class="lang-ja">約10分</span>
+    <span class="lang-en">~10 min read</span>
+  </span>
 </div>
 
 <main style="padding: 0 0 3em;">
@@ -668,16 +688,31 @@
         <div style="padding: 36px 0 24px;">
           <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
             <div class="section-label">Valuation Theory Lab &nbsp;#001</div>
-            <span class="sbar-badge" id="reading-time-badge2">約10分</span>
+            <span class="sbar-badge" id="reading-time-badge2">
+              <span class="lang-ja">約10分</span>
+              <span class="lang-en">~10 min read</span>
+            </span>
           </div>
-          <h1 class="article-headline">Terminal ValueはなぜDCFの70-80%を占めるのか</h1>
-          <p class="article-standfirst">Sustainable Growth Model（g = ROIC × 再投資率）の基礎から、Gordon Growth Modelの成立条件、Exit multipleとの循環性、そしてReverse DCFという視点まで。TVが大きいことの算術的必然と、その仮定の検証方法を論じる。</p>
+          <h1 class="article-headline">
+            <span class="lang-ja">Terminal ValueはなぜDCFの70-80%を占めるのか</span>
+            <span class="lang-en">Why Terminal Value Accounts for 70–80% of DCF</span>
+          </h1>
+          <p class="article-standfirst">
+            <span class="lang-ja">Sustainable Growth Model（g = ROIC × 再投資率）の基礎から、Gordon Growth Modelの成立条件、Exit multipleとの循環性、そしてReverse DCFという視点まで。TVが大きいことの算術的必然と、その仮定の検証方法を論じる。</span>
+            <span class="lang-en">From the arithmetic of the Sustainable Growth Model (g = ROIC × reinvestment rate) to the conditions for Gordon Growth validity, the circularity with exit multiples, and the Reverse DCF lens — this article examines why TV dominates DCF and how to stress-test the assumptions that drive it.</span>
+          </p>
           <div style="display:flex; gap:16px; align-items:center; border-top:1px solid var(--border-light); border-bottom:1px solid var(--border-light); padding:10px 0;">
             <span class="byline">By <strong>Donato Valuation Notes</strong></span>
             <span style="color:var(--border);">|</span>
-            <time class="byline" datetime="2026-03-20">2026年3月20日</time>
+            <time class="byline" datetime="2026-03-20">
+              <span class="lang-ja">2026年3月20日</span>
+              <span class="lang-en">March 20, 2026</span>
+            </time>
             <span style="color:var(--border);">|</span>
-            <span class="byline">DCF理論 · Terminal Value</span>
+            <span class="byline">
+              <span class="lang-ja">DCF理論 · Terminal Value</span>
+              <span class="lang-en">DCF Theory · Terminal Value</span>
+            </span>
           </div>
         </div>
 
@@ -687,52 +722,103 @@
           <!-- TL;DR -->
           <div class="exec-block">
             <div class="section-label">TL;DR</div>
-            <p class="exec-tldr">WACC=10%・g=3%・5年Explicit期間という「普通の仮定」でTerminal Valueは企業価値の72%を占める——これは算術的必然だ。だが問題はその大きさではなく、gとROICと再投資率の「三角形」に内部矛盾が潜んでいることだ。多くの実務モデルはCapex≈Depを前提にg=3%を置いており、これは「再投資ゼロでg=3%成長する」という矛盾を孕んでいる。</p>
+            <p class="exec-tldr">
+              <span class="lang-ja">WACC=10%・g=3%・5年Explicit期間という「普通の仮定」でTerminal Valueは企業価値の72%を占める——これは算術的必然だ。だが問題はその大きさではなく、gとROICと再投資率の「三角形」に内部矛盾が潜んでいることだ。多くの実務モデルはCapex≈Depを前提にg=3%を置いており、これは「再投資ゼロでg=3%成長する」という矛盾を孕んでいる。</span>
+              <span class="lang-en">With WACC=10%, g=3%, and a 5-year explicit forecast period, Terminal Value accounts for 72% of enterprise value — this is arithmetic inevitability. The real problem is not its size but the internal inconsistency lurking in the g-ROIC-reinvestment "triangle." Most practitioner models set Capex≈Dep and g=3% simultaneously, implying "3% growth with zero reinvestment" — a mathematical contradiction.</span>
+            </p>
           </div>
 
           <!-- 論点 -->
           <div class="exec-block">
-            <div class="section-label">本稿の論点</div>
+            <div class="section-label">
+              <span class="lang-ja">本稿の論点</span>
+              <span class="lang-en">Key Questions</span>
+            </div>
             <ul class="issues-list">
               <li class="issue-item">
                 <span class="issue-q">Q1</span>
-                <span class="issue-text"><strong>なぜTerminal ValueはEVの70-80%を占めるのか？</strong> — WACC=10%・g=3%・5年Explicitという平凡な仮定で72%になるのは算術的必然。TVが大きい理由はExplicit期間FCFの「小ささ」の裏返しであり、成長すればするほど価値が未来に先送りされる構造から来る。</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>なぜTerminal ValueはEVの70-80%を占めるのか？</strong> — WACC=10%・g=3%・5年Explicitという平凡な仮定で72%になるのは算術的必然。TVが大きい理由はExplicit期間FCFの「小ささ」の裏返しであり、成長すればするほど価値が未来に先送りされる構造から来る。</span>
+                  <span class="lang-en"><strong>Why does Terminal Value account for 70–80% of EV?</strong> — With WACC=10%, g=3%, and 5-year explicit period, 72% is arithmetic necessity. TV is large because explicit-period FCFs are small by construction — the faster a company grows, the more value shifts to the terminal period.</span>
+                </span>
               </li>
               <li class="issue-item">
                 <span class="issue-q">Q2</span>
-                <span class="issue-text"><strong>g=3%という仮定はROICと整合しているか？</strong> — 持続可能成長率はg = ROIC × 再投資率として導出される。g=3%を設定するならROIC=12%で再投資率25%が必要。しかし多くのモデルはCapex≈Dep（再投資率≈0%）とg=3%を同時に置いており、内部矛盾がある。</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>g=3%という仮定はROICと整合しているか？</strong> — 持続可能成長率はg = ROIC × 再投資率として導出される。g=3%を設定するならROIC=12%で再投資率25%が必要。しかし多くのモデルはCapex≈Dep（再投資率≈0%）とg=3%を同時に置いており、内部矛盾がある。</span>
+                  <span class="lang-en"><strong>Is g=3% consistent with ROIC?</strong> — Sustainable growth is g = ROIC × reinvestment rate. To sustain g=3% with ROIC=12%, reinvestment rate must be 25%. Yet most models set Capex≈Dep (implying ≈0% reinvestment) alongside g=3% — an internal contradiction.</span>
+                </span>
               </li>
               <li class="issue-item">
                 <span class="issue-q">Q3</span>
-                <span class="issue-text"><strong>Exit MultipleはGordon Growthより「客観的」か？</strong> — EV/EBITDA = FCF margin / (WACC − g) という恒等式が示す通り、Exit multipleとGordon Growthは同じコインの表と裏だ。どちらもgとWACCの仮定から逃れられない。</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>Exit MultipleはGordon Growthより「客観的」か？</strong> — EV/EBITDA = FCF margin / (WACC − g) という恒等式が示す通り、Exit multipleとGordon Growthは同じコインの表と裏だ。どちらもgとWACCの仮定から逃れられない。</span>
+                  <span class="lang-en"><strong>Is Exit Multiple more "objective" than Gordon Growth?</strong> — The identity EV/EBITDA = FCF margin / (WACC − g) shows that exit multiples and Gordon Growth are two sides of the same coin. Neither escapes the WACC and g assumptions.</span>
+                </span>
               </li>
             </ul>
           </div>
 
           <!-- 実務家への含意 -->
           <div class="exec-block">
-            <div class="section-label">Valuation実務家への含意</div>
+            <div class="section-label">
+              <span class="lang-ja">Valuation実務家への含意</span>
+              <span class="lang-en">Implications for Practitioners</span>
+            </div>
             <ul class="implications-list">
-              <li class="implication-item"><strong>gとROICの整合性チェックは必須</strong> — Terminal FCFの再投資率がgとROICと整合しているかを常に確認する。NOPAT × (1 − b) = Terminal FCF が成立しているか。</li>
-              <li class="implication-item"><strong>Sensitivity分析はTV仮定を中心に</strong> — Explicit期間FCFの精度よりもg・ROICのクロス感度テーブルに情報量がある。</li>
-              <li class="implication-item"><strong>Reverse DCFで「価格が織り込む前提」を問う</strong> — 株価や買収価格を所与としてgとROICを逆算する。「この仮定は達成可能か」という問いの方が正直な分析になる。</li>
+              <li class="implication-item">
+                <span class="lang-ja"><strong>gとROICの整合性チェックは必須</strong> — Terminal FCFの再投資率がgとROICと整合しているかを常に確認する。NOPAT × (1 − b) = Terminal FCF が成立しているか。</span>
+                <span class="lang-en"><strong>g-ROIC consistency check is mandatory</strong> — Always verify that terminal FCF's reinvestment rate is consistent with g and ROIC. Confirm that NOPAT × (1 − b) = Terminal FCF holds.</span>
+              </li>
+              <li class="implication-item">
+                <span class="lang-ja"><strong>Sensitivity分析はTV仮定を中心に</strong> — Explicit期間FCFの精度よりもg・ROICのクロス感度テーブルに情報量がある。</span>
+                <span class="lang-en"><strong>Sensitivity analysis should center on TV assumptions</strong> — The information content of g×ROIC cross-sensitivity tables exceeds that of simple WACC/g tables.</span>
+              </li>
+              <li class="implication-item">
+                <span class="lang-ja"><strong>Reverse DCFで「価格が織り込む前提」を問う</strong> — 株価や買収価格を所与としてgとROICを逆算する。「この仮定は達成可能か」という問いの方が正直な分析になる。</span>
+                <span class="lang-en"><strong>Use Reverse DCF to interrogate the price</strong> — Back-solve g and ROIC from the current stock price or acquisition price. Asking "are these assumptions achievable?" is more honest than reading the DCF output at face value.</span>
+              </li>
             </ul>
           </div>
 
           <!-- 読み進め判断 -->
           <div class="exec-block">
-            <div class="section-label">この記事を読み進めるべきか</div>
+            <div class="section-label">
+              <span class="lang-ja">この記事を読み進めるべきか</span>
+              <span class="lang-en">Who Should Read This?</span>
+            </div>
             <div class="read-grid">
               <div>
-                <div class="read-col-label read-label-yes">読むべき人</div>
-                <div class="read-item">M&A・PE・企業価値算定でDCFを実際に使う実務家</div>
-                <div class="read-item">Terminal Valueの「感度が大きい理由」を理解したい人</div>
-                <div class="read-item">モデルの「使い方」より「なぜそうか」に関心がある人</div>
+                <div class="read-col-label read-label-yes">
+                  <span class="lang-ja">読むべき人</span>
+                  <span class="lang-en">READ IF</span>
+                </div>
+                <div class="read-item">
+                  <span class="lang-ja">M&amp;A・PE・企業価値算定でDCFを実際に使う実務家</span>
+                  <span class="lang-en">M&amp;A, PE, and corporate finance practitioners who actually build DCF models</span>
+                </div>
+                <div class="read-item">
+                  <span class="lang-ja">Terminal Valueの「感度が大きい理由」を理解したい人</span>
+                  <span class="lang-en">Anyone who wants to understand <em>why</em> Terminal Value has such high sensitivity</span>
+                </div>
+                <div class="read-item">
+                  <span class="lang-ja">モデルの「使い方」より「なぜそうか」に関心がある人</span>
+                  <span class="lang-en">Those interested in the "why" of valuation, not just the "how"</span>
+                </div>
               </div>
               <div>
-                <div class="read-col-label read-label-no">スキップしてよい人</div>
-                <div class="skip-item">DCF基礎（FCFF・WACC・Enterprise Value）の知識がない方（本稿はその理解を前提とする）</div>
-                <div class="skip-item">実務上の計算手順のみを求める方</div>
+                <div class="read-col-label read-label-no">
+                  <span class="lang-ja">スキップしてよい人</span>
+                  <span class="lang-en">SKIP IF</span>
+                </div>
+                <div class="skip-item">
+                  <span class="lang-ja">DCF基礎（FCFF・WACC・Enterprise Value）の知識がない方（本稿はその理解を前提とする）</span>
+                  <span class="lang-en">Readers without basic DCF knowledge (FCFF, WACC, Enterprise Value) — please read an introductory text first</span>
+                </div>
+                <div class="skip-item">
+                  <span class="lang-ja">実務上の計算手順のみを求める方</span>
+                  <span class="lang-en">Those seeking only step-by-step Excel mechanics</span>
+                </div>
               </div>
             </div>
           </div>
@@ -740,75 +826,126 @@
         </section>
 
         <!-- 本文導入 -->
-        <p>多くのバリュエーション実務家が一度は経験する不快感がある。精緻に構築したDCFモデルを眺めると、Enterprise Valueの70〜80%、場合によっては90%超が「Terminal Value」という一行から来ている。この数字を前にして「これは正常なのか」と自問した人はどれだけいるだろうか。多くの場合、答えは「そういうものだ」で終わる。</p>
+        <p>
+          <span class="lang-ja">多くのバリュエーション実務家が一度は経験する不快感がある。精緻に構築したDCFモデルを眺めると、Enterprise Valueの70〜80%、場合によっては90%超が「Terminal Value」という一行から来ている。この数字を前にして「これは正常なのか」と自問した人はどれだけいるだろうか。多くの場合、答えは「そういうものだ」で終わる。</span>
+          <span class="lang-en">Most valuation practitioners encounter this discomfort at least once. Looking at a carefully built DCF model, 70–80% — sometimes over 90% — of Enterprise Value comes from a single line: "Terminal Value." How many have stared at that number and asked, "Is this normal?" The usual answer is simply, "That's just how it works."</span>
+        </p>
 
-        <p>だが、それは本当か。TVが大きいことは「正常」なのか、それとも「モデルの限界の告白」なのか。この問いに正面から向き合うことが、DCFを理解するということだ。</p>
+        <p>
+          <span class="lang-ja">だが、それは本当か。TVが大きいことは「正常」なのか、それとも「モデルの限界の告白」なのか。この問いに正面から向き合うことが、DCFを理解するということだ。</span>
+          <span class="lang-en">But is that true? Is a dominant Terminal Value "normal," or is it an admission of the model's limits? Confronting this question head-on is what it means to truly understand DCF.</span>
+        </p>
 
         <!-- ======================================================== -->
-        <h2>0. Sustainable Growth Model：gを「外から与える」前に</h2>
+        <h2>
+          <span class="lang-ja">0. Sustainable Growth Model：gを「外から与える」前に</span>
+          <span class="lang-en">0. Sustainable Growth Model: Before You "Set g" Exogenously</span>
+        </h2>
 
-        <p>Terminal Valueの議論に入る前に、本稿全体の基盤となる概念を整理しよう。<strong>Sustainable Growth Model（持続可能成長モデル）</strong>だ。この式を理解せずにTerminal Valueを議論しても、根拠のない数字を操作しているにすぎない。</p>
+        <p>
+          <span class="lang-ja">Terminal Valueの議論に入る前に、本稿全体の基盤となる概念を整理しよう。<strong>Sustainable Growth Model（持続可能成長モデル）</strong>だ。この式を理解せずにTerminal Valueを議論しても、根拠のない数字を操作しているにすぎない。</span>
+          <span class="lang-en">Before entering the Terminal Value discussion, let us establish the conceptual foundation for the entire article: the <strong>Sustainable Growth Model</strong>. Discussing Terminal Value without understanding this equation is merely manipulating numbers without grounding.</span>
+        </p>
 
         <div class="formula">g &nbsp;= &nbsp;ROIC &nbsp;× &nbsp;b（再投資率、Reinvestment Rate）</div>
 
-        <p>ここで各変数は以下のとおりだ：</p>
+        <p>
+          <span class="lang-ja">ここで各変数は以下のとおりだ：</span>
+          <span class="lang-en">The variables are defined as follows:</span>
+        </p>
 
         <div class="data-table-wrap">
           <table>
             <thead>
-              <tr><th>変数</th><th>定義</th><th>計算式</th></tr>
+              <tr>
+                <th><span class="lang-ja">変数</span><span class="lang-en">Variable</span></th>
+                <th><span class="lang-ja">定義</span><span class="lang-en">Definition</span></th>
+                <th><span class="lang-ja">計算式</span><span class="lang-en">Formula</span></th>
+              </tr>
             </thead>
             <tbody>
               <tr>
                 <td><strong>ROIC</strong></td>
-                <td>投下資本利益率（Return on Invested Capital）</td>
-                <td class="td-accent">NOPAT ÷ 投下資本</td>
+                <td><span class="lang-ja">投下資本利益率（Return on Invested Capital）</span><span class="lang-en">Return on Invested Capital</span></td>
+                <td class="td-accent">NOPAT ÷ <span class="lang-ja">投下資本</span><span class="lang-en">Invested Capital</span></td>
               </tr>
               <tr>
-                <td><strong>b（再投資率）</strong></td>
-                <td>NOPATのうち成長投資に回す割合</td>
+                <td><strong>b (<span class="lang-ja">再投資率</span><span class="lang-en">reinvestment rate</span>)</strong></td>
+                <td><span class="lang-ja">NOPATのうち成長投資に回す割合</span><span class="lang-en">Fraction of NOPAT allocated to growth investment</span></td>
                 <td class="td-accent">(Net Capex + ΔNWC) ÷ NOPAT</td>
               </tr>
               <tr>
                 <td><strong>g</strong></td>
-                <td>持続可能な成長率（導出値）</td>
+                <td><span class="lang-ja">持続可能な成長率（導出値）</span><span class="lang-en">Sustainable growth rate (derived value)</span></td>
                 <td class="td-accent">ROIC × b</td>
               </tr>
             </tbody>
           </table>
         </div>
 
-        <p>この式が示すことは単純だが深い。<strong>gは「外から与えるパラメータ」ではなく、ROICとbから「導出される値」だ。</strong>gを独立変数として「3%」と置くのは、理論的には後ろ向きの操作だ。正しくは、ROICとbを経済的根拠から設定し、gはその積として決まる。</p>
+        <p>
+          <span class="lang-ja">この式が示すことは単純だが深い。<strong>gは「外から与えるパラメータ」ではなく、ROICとbから「導出される値」だ。</strong>gを独立変数として「3%」と置くのは、理論的には後ろ向きの操作だ。正しくは、ROICとbを経済的根拠から設定し、gはその積として決まる。</span>
+          <span class="lang-en">What this equation tells us is simple but profound. <strong>g is not a parameter set exogenously — it is a value derived from ROIC and b.</strong> Treating g as an independent variable and simply setting it to "3%" is theoretically backward. The correct approach is to set ROIC and b from economic reasoning, with g emerging as their product.</span>
+        </p>
 
         <div class="insight-box">
-          <p>g・ROIC・bの三者は<strong>「三角形」の関係</strong>にある。うち二つを決めれば、三つ目は自動的に決まる。Terminal Valueモデルに入力するg・ROIC・Terminal FCFの三者は、この関係を通じて相互に拘束されている。これを理解した上で、次のセクションの「算術的理由」と「成立条件」を読んでほしい。</p>
+          <p>
+            <span class="lang-ja">g・ROIC・bの三者は<strong>「三角形」の関係</strong>にある。うち二つを決めれば、三つ目は自動的に決まる。Terminal Valueモデルに入力するg・ROIC・Terminal FCFの三者は、この関係を通じて相互に拘束されている。これを理解した上で、次のセクションの「算術的理由」と「成立条件」を読んでほしい。</span>
+            <span class="lang-en">g, ROIC, and b form a <strong>"triangle" of mutual constraint</strong>: fix any two and the third is determined. The three inputs to a Terminal Value model — g, ROIC, and Terminal FCF — are bound together through this relationship. Keep this in mind as you read the next sections on the arithmetic driver and the validity conditions.</span>
+          </p>
         </div>
 
-        <p>例えば、Terminal periodでROIC = 12%、g = 3%を設定するなら、b = g / ROIC = 3% / 12% = <strong>25%</strong> でなければならない。Terminal FCFはNOPATの75%（= 1 − 0.25）になる。ところが多くの実務モデルはCapex ≈ Depを前提にNormalized FCFを構築するため、暗黙的にb ≈ 0%となっており、g = 0%との矛盾が生まれる。この点については Section 2 で詳しく論じる。</p>
+        <p>
+          <span class="lang-ja">例えば、Terminal periodでROIC = 12%、g = 3%を設定するなら、b = g / ROIC = 3% / 12% = <strong>25%</strong> でなければならない。Terminal FCFはNOPATの75%（= 1 − 0.25）になる。ところが多くの実務モデルはCapex ≈ Depを前提にNormalized FCFを構築するため、暗黙的にb ≈ 0%となっており、g = 0%との矛盾が生まれる。この点については Section 2 で詳しく論じる。</span>
+          <span class="lang-en">For example, if the terminal period assumes ROIC = 12% and g = 3%, then b = g / ROIC = 3% / 12% = <strong>25%</strong>. Terminal FCF must equal 75% of NOPAT (= 1 − 0.25). Yet many practitioner models build normalized FCF assuming Capex ≈ Dep, which implicitly sets b ≈ 0% — contradicting g = 0%. We examine this in detail in Section 2.</span>
+        </p>
 
         <!-- ======================================================== -->
-        <h2>1. TVが大きくなる算術的理由</h2>
+        <h2>
+          <span class="lang-ja">1. TVが大きくなる算術的理由</span>
+          <span class="lang-en">1. The Arithmetic Behind Terminal Value's Dominance</span>
+        </h2>
 
-        <p>まず数字で確認しよう。WACC = 10%、FCF（Year 1）= 100、以後毎年3%成長（g = 3%）、Explicit forecast period = 5年とする。</p>
+        <p>
+          <span class="lang-ja">まず数字で確認しよう。WACC = 10%、FCF（Year 1）= 100、以後毎年3%成長（g = 3%）、Explicit forecast period = 5年とする。</span>
+          <span class="lang-en">Let us verify with numbers. Assume WACC = 10%, FCF (Year 1) = 100, 3% annual growth thereafter (g = 3%), and an explicit forecast period of 5 years.</span>
+        </p>
 
         <div class="calc-block">
-          <div style="font-size:0.78em;color:var(--text-muted);margin-bottom:10px;font-family:'Inter',sans-serif;">Explicit FCF の現在価値（WACC = 10%）</div>
+          <div style="font-size:0.78em;color:var(--text-muted);margin-bottom:10px;font-family:'Inter',sans-serif;">
+            <span class="lang-ja">Explicit FCF の現在価値（WACC = 10%）</span>
+            <span class="lang-en">Present Value of Explicit FCFs (WACC = 10%)</span>
+          </div>
           <div class="calc-row"><span>Year 1: 100.0 → PV</span><span>90.9</span></div>
           <div class="calc-row"><span>Year 2: 103.0 → PV</span><span>85.1</span></div>
           <div class="calc-row"><span>Year 3: 106.1 → PV</span><span>79.7</span></div>
           <div class="calc-row"><span>Year 4: 109.3 → PV</span><span>74.6</span></div>
           <div class="calc-row"><span>Year 5: 112.6 → PV</span><span>70.0</span></div>
-          <div class="calc-row calc-total"><span>Σ Explicit PV</span><span>390</span></div>
-          <div style="margin-top:14px;font-size:0.78em;color:var(--text-muted);font-family:'Inter',sans-serif;">Terminal Value（Gordon Growth Model）</div>
+          <div class="calc-row calc-total">
+            <span>Σ Explicit PV</span><span>390</span>
+          </div>
+
+          <div style="margin-top:14px;font-size:0.78em;color:var(--text-muted);font-family:'Inter',sans-serif;">
+            <span class="lang-ja">Terminal Value（Gordon Growth Model）</span>
+            <span class="lang-en">Terminal Value (Gordon Growth Model)</span>
+          </div>
           <div class="calc-row" style="margin-top:6px;"><span>FCF₆ = 112.6 × 1.03</span><span>115.9</span></div>
           <div class="calc-row"><span>TV = 115.9 / (0.10 − 0.03)</span><span>1,656</span></div>
           <div class="calc-row"><span>PV of TV = 1,656 / (1.10)⁵</span><span>1,029</span></div>
-          <div class="calc-row calc-total"><span>Enterprise Value</span><span>1,419</span></div>
-          <div class="calc-row" style="margin-top:8px;"><span>TV 比率</span><span class="calc-highlight">72%</span></div>
+          <div class="calc-row calc-total">
+            <span>Enterprise Value</span><span>1,419</span>
+          </div>
+          <div class="calc-row" style="margin-top:8px;">
+            <span><span class="lang-ja">TV 比率</span><span class="lang-en">TV share</span></span>
+            <span class="calc-highlight">72%</span>
+          </div>
         </div>
 
         <div class="tv-bar-wrap">
-          <div class="tv-bar-label">Enterprise Value の構成（WACC=10%, g=3%, Explicit 5年）</div>
+          <div class="tv-bar-label">
+            <span class="lang-ja">Enterprise Value の構成（WACC=10%, g=3%, Explicit 5年）</span>
+            <span class="lang-en">Enterprise Value composition (WACC=10%, g=3%, 5yr explicit)</span>
+          </div>
           <div class="tv-bar">
             <div class="tv-bar-explicit">Explicit 28%</div>
             <div class="tv-bar-tv">Terminal Value 72%</div>
@@ -819,40 +956,77 @@
           </div>
         </div>
 
-        <p>これは特殊な設定ではない。WACC=10%、g=3%という平凡な仮定で、Explicit period 5年なら7割超がTVから来るのは算術的な必然だ。</p>
+        <p>
+          <span class="lang-ja">これは特殊な設定ではない。WACC=10%、g=3%という平凡な仮定で、Explicit period 5年なら7割超がTVから来るのは算術的な必然だ。</span>
+          <span class="lang-en">This is not a special case. With the unremarkable assumptions of WACC=10% and g=3%, having more than 70% of value come from TV over a 5-year explicit period is arithmetic inevitability.</span>
+        </p>
 
         <div class="insight-box">
-          <p>TVの大きさは、Explicit period FCFの「小ささ」の裏返しだ。成長企業では再投資（Capex + ΔWC − Dep）が大きく、FCFFが抑制される。その再投資が生むリターンは未来のFCFに体化される。<strong>成長すればするほど、価値は未来に先送りされる。</strong></p>
+          <p>
+            <span class="lang-ja">TVの大きさは、Explicit period FCFの「小ささ」の裏返しだ。成長企業では再投資（Capex + ΔWC − Dep）が大きく、FCFFが抑制される。その再投資が生むリターンは未来のFCFに体化される。<strong>成長すればするほど、価値は未来に先送りされる。</strong></span>
+            <span class="lang-en">The dominance of TV is the mirror image of the "smallness" of explicit-period FCFs. In growth companies, large reinvestment (Capex + ΔWC − Dep) suppresses FCFF. The returns on that reinvestment materialize as future FCFs. <strong>The faster a company grows, the more value is deferred into the future.</strong></span>
+          </p>
         </div>
 
         <!-- ======================================================== -->
-        <h2>2. Gordon Growth Modelの成立条件</h2>
+        <h2>
+          <span class="lang-ja">2. Gordon Growth Modelの成立条件</span>
+          <span class="lang-en">2. The Conditions for Gordon Growth Model Validity</span>
+        </h2>
 
-        <p>ここが核心だ。TVの計算式は一見シンプルだが、いくつかの厳格な成立条件に依存する。これを無視して「g = 3%」と置くのは、暗黙の仮定を抱えたまま前進することだ。</p>
+        <p>
+          <span class="lang-ja">ここが核心だ。TVの計算式は一見シンプルだが、いくつかの厳格な成立条件に依存する。これを無視して「g = 3%」と置くのは、暗黙の仮定を抱えたまま前進することだ。</span>
+          <span class="lang-en">This is the crux. The TV formula looks simple, but it depends on several strict validity conditions. Ignoring them and simply writing "g = 3%" means advancing while carrying hidden assumptions.</span>
+        </p>
 
         <div class="formula">TV = FCF<sub>n+1</sub> / (WACC − g)</div>
 
-        <h3>条件①：g &lt; WACC（絶対条件）</h3>
+        <h3>
+          <span class="lang-ja">条件①：g &lt; WACC（絶対条件）</span>
+          <span class="lang-en">Condition 1: g &lt; WACC (Absolute Requirement)</span>
+        </h3>
 
-        <p>分母が正でなければ式は破綻する。より本質的には、g ≥ WACCが成立する企業は「永久に市場全体よりも速く成長し続ける」ことを意味し、これは不可能だ。Terminal growth rateが名目GDP成長率の代理として使われる理由はここにある。</p>
+        <p>
+          <span class="lang-ja">分母が正でなければ式は破綻する。より本質的には、g ≥ WACCが成立する企業は「永久に市場全体よりも速く成長し続ける」ことを意味し、これは不可能だ。Terminal growth rateが名目GDP成長率の代理として使われる理由はここにある。</span>
+          <span class="lang-en">The denominator must be positive or the formula breaks down. More fundamentally, a firm where g ≥ WACC holds forever would grow faster than the entire economy indefinitely — an impossibility. This is why terminal growth rates are typically proxied by nominal GDP growth.</span>
+        </p>
 
         <div class="trap-box">
-          <div class="trap-label">実務でよくある罠</div>
-          <p>gとWACCを別々に名目・実質ベースで計算する不整合。WACCが名目ベースで計算されているなら、gも名目ベースにすべきだ。「実質GDP成長2% ＋ インフレ1% = g 3%」という正規化は一見正しいが、WACCが実質ベースになっていれば矛盾する。</p>
+          <div class="trap-label">
+            <span class="lang-ja">実務でよくある罠</span>
+            <span class="lang-en">Common Practitioner Trap</span>
+          </div>
+          <p>
+            <span class="lang-ja">gとWACCを別々に名目・実質ベースで計算する不整合。WACCが名目ベースで計算されているなら、gも名目ベースにすべきだ。「実質GDP成長2% ＋ インフレ1% = g 3%」という正規化は一見正しいが、WACCが実質ベースになっていれば矛盾する。</span>
+            <span class="lang-en">A mismatch between nominal and real bases when computing g and WACC separately. If WACC is computed on a nominal basis, g must also be nominal. "Real GDP growth 2% + inflation 1% = g 3%" looks correct, but is inconsistent if WACC is on a real basis.</span>
+          </p>
         </div>
 
-        <h3>条件②：g = ROIC × 再投資率（ROICとの整合性）</h3>
+        <h3>
+          <span class="lang-ja">条件②：g = ROIC × 再投資率（ROICとの整合性）</span>
+          <span class="lang-en">Condition 2: Consistency in the g-ROIC-Reinvestment Triangle</span>
+        </h3>
 
-        <p>Section 0 で示したとおり、持続可能な成長率はROICと再投資率の積として導出される。これを再掲しよう：</p>
+        <p>
+          <span class="lang-ja">Section 0 で示したとおり、持続可能な成長率はROICと再投資率の積として導出される。これを再掲しよう：</span>
+          <span class="lang-en">As shown in Section 0, sustainable growth is derived as the product of ROIC and reinvestment rate. To restate:</span>
+        </p>
 
-        <div class="formula">g = ROIC × b &nbsp;&nbsp;（b = 再投資率 = Net Capex + ΔNWC / NOPAT）</div>
+        <div class="formula">g = ROIC × b &nbsp;&nbsp;（b = <span class="lang-ja">再投資率</span><span class="lang-en">reinvestment rate</span> = Net Capex + ΔNWC / NOPAT）</div>
 
-        <p>つまり、<strong>gを外から与えるのではなく、gはROICと再投資率から導出されるべきだ。</strong> Terminal period（安定成長段階）で g = 3% と設定するなら、再投資率もそれと整合的でなければならない。</p>
+        <p>
+          <span class="lang-ja">つまり、<strong>gを外から与えるのではなく、gはROICと再投資率から導出されるべきだ。</strong> Terminal period（安定成長段階）で g = 3% と設定するなら、再投資率もそれと整合的でなければならない。</span>
+          <span class="lang-en">In other words, <strong>g should not be assigned exogenously — it must be derived from ROIC and reinvestment rate.</strong> If the terminal period assumes g = 3%, the reinvestment rate must be consistent with that.</span>
+        </p>
 
         <div class="data-table-wrap">
           <table>
             <thead>
-              <tr><th>ROIC仮定</th><th>g = 3%のとき必要な再投資率（b）</th><th>Terminal FCF = NOPAT の</th></tr>
+              <tr>
+                <th><span class="lang-ja">ROIC仮定</span><span class="lang-en">ROIC Assumption</span></th>
+                <th><span class="lang-ja">g = 3%のとき必要な再投資率（b）</span><span class="lang-en">Required Reinvestment Rate (b) when g=3%</span></th>
+                <th><span class="lang-ja">Terminal FCF = NOPAT の</span><span class="lang-en">Terminal FCF as % of NOPAT</span></th>
+              </tr>
             </thead>
             <tbody>
               <tr><td>8%</td><td class="td-warn">37.5%</td><td class="td-warn">62.5%</td></tr>
@@ -864,117 +1038,216 @@
         </div>
 
         <div class="trap-box">
-          <div class="trap-label">よくある内部矛盾</div>
-          <p>多くの実務モデルでは、TVのFCFとして「Capex ≈ Depreciation（≒ 再投資ゼロ）」と仮定したNormalized FCFを使う。これは b ≈ 0%、すなわち g = ROIC × 0% = 0% と矛盾する。<strong>gとFCFの間に内部矛盾がある。</strong>これは<a href="http://aswathdamodaran.blogspot.com/" target="_blank" rel="noopener">Damodaran</a>が繰り返し指摘する問題だ（参照：<a href="https://pages.stern.nyu.edu/~adamodar/" target="_blank" rel="noopener">NYU Stern, Investment Valuation 3rd ed.</a>）。</p>
+          <div class="trap-label">
+            <span class="lang-ja">よくある内部矛盾</span>
+            <span class="lang-en">Common Internal Contradiction</span>
+          </div>
+          <p>
+            <span class="lang-ja">多くの実務モデルでは、TVのFCFとして「Capex ≈ Depreciation（≒ 再投資ゼロ）」と仮定したNormalized FCFを使う。これは b ≈ 0%、すなわち g = ROIC × 0% = 0% と矛盾する。<strong>gとFCFの間に内部矛盾がある。</strong>これは<a href="http://aswathdamodaran.blogspot.com/" target="_blank" rel="noopener">Damodaran</a>が繰り返し指摘する問題だ（参照：<a href="https://pages.stern.nyu.edu/~adamodar/" target="_blank" rel="noopener">NYU Stern, Investment Valuation 3rd ed.</a>）。</span>
+            <span class="lang-en">Many practitioner models use a normalized FCF for TV that assumes "Capex ≈ Depreciation (≈ zero net reinvestment)." This implies b ≈ 0%, which means g = ROIC × 0% = 0% — contradicting the g = 3% assumption. <strong>There is an internal contradiction between g and FCF.</strong> This is a problem <a href="http://aswathdamodaran.blogspot.com/" target="_blank" rel="noopener">Damodaran</a> has repeatedly flagged (see: <a href="https://pages.stern.nyu.edu/~adamodar/" target="_blank" rel="noopener">NYU Stern, Investment Valuation 3rd ed.</a>).</span>
+          </p>
         </div>
 
-        <h3>条件③：資本効率の安定性とROIC-WACC関係</h3>
+        <h3>
+          <span class="lang-ja">条件③：資本効率の安定性とROIC-WACC関係</span>
+          <span class="lang-en">Condition 3: Capital Efficiency Stability and the ROIC-WACC Relationship</span>
+        </h3>
 
-        <p>Terminal periodでは、ROICとWACCの関係が価値創出の方向性を決める。</p>
+        <p>
+          <span class="lang-ja">Terminal periodでは、ROICとWACCの関係が価値創出の方向性を決める。</span>
+          <span class="lang-en">In the terminal period, the relationship between ROIC and WACC determines the direction of value creation.</span>
+        </p>
 
         <ul class="numbered-list">
           <li>
             <span class="num" style="background:var(--accent);">▲</span>
-            <div><strong>ROIC &gt; WACC</strong>：再投資によって価値が生まれる（プラスNPV投資）。成長は企業価値を高める。</div>
+            <div>
+              <span class="lang-ja"><strong>ROIC &gt; WACC</strong>：再投資によって価値が生まれる（プラスNPV投資）。成長は企業価値を高める。</span>
+              <span class="lang-en"><strong>ROIC &gt; WACC</strong>: Reinvestment creates value (positive NPV investment). Growth increases enterprise value.</span>
+            </div>
           </li>
           <li>
             <span class="num" style="background:var(--text-muted);">＝</span>
-            <div><strong>ROIC = WACC</strong>：再投資は価値中立。成長しても企業価値は増えない。株主にとって成長は意味がない。</div>
+            <div>
+              <span class="lang-ja"><strong>ROIC = WACC</strong>：再投資は価値中立。成長しても企業価値は増えない。株主にとって成長は意味がない。</span>
+              <span class="lang-en"><strong>ROIC = WACC</strong>: Reinvestment is value-neutral. Growth does not increase enterprise value — it is irrelevant to shareholders.</span>
+            </div>
           </li>
           <li>
             <span class="num" style="background:var(--accent-warm);">▼</span>
-            <div><strong>ROIC &lt; WACC</strong>：成長すれば価値が破壊される。この状態でg = 3%を仮定するのは、意図せず価値破壊を織り込んでいることになる。</div>
+            <div>
+              <span class="lang-ja"><strong>ROIC &lt; WACC</strong>：成長すれば価値が破壊される。この状態でg = 3%を仮定するのは、意図せず価値破壊を織り込んでいることになる。</span>
+              <span class="lang-en"><strong>ROIC &lt; WACC</strong>: Growth destroys value. Assuming g = 3% in this condition inadvertently embeds value destruction in the model.</span>
+            </div>
           </li>
         </ul>
 
-        <p>Terminal periodでROIC &gt; WACCが持続するという仮定は、競争優位性が永久に続くことを意味する。多くの産業では、超過利益は長期的に競争によって侵食される。成熟企業のTerminal ROICとしては、WACCに近い水準が理論的には妥当だろう。</p>
+        <p>
+          <span class="lang-ja">Terminal periodでROIC &gt; WACCが持続するという仮定は、競争優位性が永久に続くことを意味する。多くの産業では、超過利益は長期的に競争によって侵食される。成熟企業のTerminal ROICとしては、WACCに近い水準が理論的には妥当だろう。</span>
+          <span class="lang-en">Assuming ROIC &gt; WACC persists into perpetuity implies a permanent competitive advantage. In most industries, excess returns are eroded over time by competition. For mature firms, a terminal ROIC close to WACC is theoretically more defensible.</span>
+        </p>
 
         <div class="section-sep">· · ·</div>
 
         <!-- ======================================================== -->
-        <h2>3. Exit MultipleとGordon Growthの「循環性」</h2>
+        <h2>
+          <span class="lang-ja">3. Exit MultipleとGordon Growthの「循環性」</span>
+          <span class="lang-en">3. Is the Exit Multiple Truly "Objective"?</span>
+        </h2>
 
-        <p>Terminal Valueを推計するもう一つの方法は、Exit Multiple法だ。実務でこれを好む理由は明快だ。「市場の評価を使うから現実的」「Gordon Growthの恣意的なgを避けられる」というものだ。</p>
+        <p>
+          <span class="lang-ja">Terminal Valueを推計するもう一つの方法は、Exit Multiple法だ。実務でこれを好む理由は明快だ。「市場の評価を使うから現実的」「Gordon Growthの恣意的なgを避けられる」というものだ。</span>
+          <span class="lang-en">The Exit Multiple method is the other common approach to estimating Terminal Value. Practitioners often prefer it for clear reasons: "It uses market pricing so it's realistic" and "It avoids the arbitrary g in Gordon Growth."</span>
+        </p>
 
         <div class="formula">TV = EBITDA(terminal) × EV/EBITDA(exit multiple)</div>
 
-        <p>しかし、これは理論的に問題がある。Exit multipleは現在の類似企業の取引倍率から取ってくることが多い。だが、<strong>そのExit multipleには現在のWACCやg期待値が織り込まれている。</strong>つまり、DCFという「独立した」評価手法を使いながら、結果的に市場評価に依存してしまう。</p>
+        <p>
+          <span class="lang-ja">しかし、これは理論的に問題がある。Exit multipleは現在の類似企業の取引倍率から取ってくることが多い。だが、<strong>そのExit multipleには現在のWACCやg期待値が織り込まれている。</strong>つまり、DCFという「独立した」評価手法を使いながら、結果的に市場評価に依存してしまう。</span>
+          <span class="lang-en">However, this approach has a theoretical problem. Exit multiples are typically derived from comparable company transaction multiples. But <strong>those multiples already embed current WACC and g expectations.</strong> In other words, even while using DCF as an "independent" valuation method, the result remains dependent on market pricing.</span>
+        </p>
 
-        <p>さらに言えば、Gordon GrowthとExit multipleは以下の関係にある：</p>
+        <p>
+          <span class="lang-ja">さらに言えば、Gordon GrowthとExit multipleは以下の関係にある：</span>
+          <span class="lang-en">Furthermore, Gordon Growth and the Exit Multiple are related by the following identity:</span>
+        </p>
 
         <div class="formula">EV/EBITDA = (FCF margin × (1 − Tax rate)) / (WACC − g)
-  ↑ Gordon Growthの変形にすぎない</div>
+  ↑ <span class="lang-ja">Gordon Growthの変形にすぎない</span><span class="lang-en">This is simply a rearrangement of Gordon Growth</span></div>
 
         <div class="insight-box">
-          <p><strong>両者は同じコインの表と裏だ。</strong>どちらを使ってもgとWACCとFCF marginの仮定から逃れることはできない。Exit multipleを「客観的」と呼ぶのは幻想だ。</p>
+          <p>
+            <span class="lang-ja"><strong>両者は同じコインの表と裏だ。</strong>どちらを使ってもgとWACCとFCF marginの仮定から逃れることはできない。Exit multipleを「客観的」と呼ぶのは幻想だ。</span>
+            <span class="lang-en"><strong>They are two sides of the same coin.</strong> Whichever method you use, you cannot escape the assumptions about g, WACC, and FCF margin. Calling the Exit Multiple "objective" is an illusion.</span>
+          </p>
         </div>
 
         <div class="section-sep">· · ·</div>
 
         <!-- ======================================================== -->
-        <h2>4. TVが70-80%を占めることの本質的な意味</h2>
+        <h2>
+          <span class="lang-ja">4. TVが70-80%を占めることの本質的な意味</span>
+          <span class="lang-en">4. Using DCF Honestly</span>
+        </h2>
 
-        <p>ここが最も重要な問いだ。TVがEVの70-80%を占めるということは、<strong>モデルが示す企業価値の大部分が、Explicit forecast期間外の「見えない未来」の仮定から来ている</strong>ということだ。</p>
+        <p>
+          <span class="lang-ja">ここが最も重要な問いだ。TVがEVの70-80%を占めるということは、<strong>モデルが示す企業価値の大部分が、Explicit forecast期間外の「見えない未来」の仮定から来ている</strong>ということだ。</span>
+          <span class="lang-en">This is the most important question. When TV accounts for 70–80% of EV, it means <strong>the majority of the model's enterprise value estimate comes from assumptions about an "invisible future" beyond the explicit forecast period.</strong></span>
+        </p>
 
         <div class="pull-quote">
-          <p>これはDCFの欠点ではない。これはDCFの本質だ。</p>
+          <p>
+            <span class="lang-ja">これはDCFの欠点ではない。これはDCFの本質だ。</span>
+            <span class="lang-en">This is not a flaw of DCF. It is the essence of DCF.</span>
+          </p>
         </div>
 
-        <p>企業価値とは「この会社が今後永続的に生み出す価値の総和」だ。Explicit forecast period（5〜10年）はその一部にすぎない。残りの価値が未来から来るのは論理的に当然だ。だが、ここに重要な実務的含意がある。</p>
+        <p>
+          <span class="lang-ja">企業価値とは「この会社が今後永続的に生み出す価値の総和」だ。Explicit forecast period（5〜10年）はその一部にすぎない。残りの価値が未来から来るのは論理的に当然だ。だが、ここに重要な実務的含意がある。</span>
+          <span class="lang-en">Enterprise value is "the sum of all value this company will generate in perpetuity." The explicit forecast period (5–10 years) is only a fraction of that. It is logically inevitable that the remainder comes from the future. But this carries important practical implications.</span>
+        </p>
 
-        <h3>① Sensitivity分析の設計が変わる</h3>
+        <h3>
+          <span class="lang-ja">① Sensitivity分析の設計が変わる</span>
+          <span class="lang-en">① Sensitivity Analysis Design Changes</span>
+        </h3>
 
-        <p>WACCを±1%、gを±0.5%で変化させたときの感度は、TVの占有率が高いほど大きい。感度分析は「Explicit period FCFの精度」よりも「TVの仮定」に焦点を当てるべきだ。とりわけ、gとROICの組み合わせによる感度テーブル（Section 0 の三角形をクロス表にしたもの）は、単純なWACC/gのクロス表よりも情報量が多い。</p>
+        <p>
+          <span class="lang-ja">WACCを±1%、gを±0.5%で変化させたときの感度は、TVの占有率が高いほど大きい。感度分析は「Explicit period FCFの精度」よりも「TVの仮定」に焦点を当てるべきだ。とりわけ、gとROICの組み合わせによる感度テーブル（Section 0 の三角形をクロス表にしたもの）は、単純なWACC/gのクロス表よりも情報量が多い。</span>
+          <span class="lang-en">Sensitivity to ±1% WACC or ±0.5% g is amplified the larger TV's share of EV. Sensitivity analysis should focus on TV assumptions rather than the accuracy of explicit-period FCFs. In particular, a cross-sensitivity table of g × ROIC (the triangle from Section 0 in tabular form) contains more information than a simple WACC/g cross table.</span>
+        </p>
 
-        <h3>② DCFは「発見的手法」ではなく「前提確認ツール」だ</h3>
+        <h3>
+          <span class="lang-ja">② DCFは「発見的手法」ではなく「前提確認ツール」だ</span>
+          <span class="lang-en">② DCF Is a Tool for Verifying Assumptions, Not Discovering Value</span>
+        </h3>
 
-        <p>DCFの結論（Enterprise Value）よりも重要なのは、そのDCFが「何を仮定しているか」の確認だ。特にTerminal growth rate gとROICの整合性、WACCの構成要素が問われるべきだ。モデルが出した数字を信頼するのではなく、モデルが要求している前提が現実的かどうかを問う。</p>
+        <p>
+          <span class="lang-ja">DCFの結論（Enterprise Value）よりも重要なのは、そのDCFが「何を仮定しているか」の確認だ。特にTerminal growth rate gとROICの整合性、WACCの構成要素が問われるべきだ。モデルが出した数字を信頼するのではなく、モデルが要求している前提が現実的かどうかを問う。</span>
+          <span class="lang-en">More important than the DCF's output (Enterprise Value) is confirming "what assumptions does this DCF require." Consistency between terminal growth rate g and ROIC, and the components of WACC, should be interrogated. Rather than trusting the model's number, ask whether the assumptions the model demands are realistic.</span>
+        </p>
 
-        <h3>③ Reverse DCFという視点</h3>
+        <h3>
+          <span class="lang-ja">③ Reverse DCFという視点</span>
+          <span class="lang-en">③ The Reverse DCF Lens</span>
+        </h3>
 
-        <p>M&Aシナリオでは、買収価格を正当化するためにDCFが作られることがある。TVの感度が大きい構造上、gを少し上げれば目標価格が出る。これがDCFの「バックワード・エンジニアリング」だ。</p>
+        <p>
+          <span class="lang-ja">M&Aシナリオでは、買収価格を正当化するためにDCFが作られることがある。TVの感度が大きい構造上、gを少し上げれば目標価格が出る。これがDCFの「バックワード・エンジニアリング」だ。</span>
+          <span class="lang-en">In M&amp;A scenarios, DCFs are sometimes constructed to justify an acquisition price. Given TV's high sensitivity, slightly raising g can produce the target valuation. This is DCF "backward engineering."</span>
+        </p>
 
         <div class="insight-box">
-          <p>むしろ「この価格を正当化するgとROICは何か」という<strong>Reverse DCF</strong>の方が、正直な分析になることがある。「このマルチプルは暗黙的にROIC 20%・g 4%を前提としているが、その産業でそれは達成可能か」という問いは、純フォワードのDCFよりも鋭い。</p>
+          <p>
+            <span class="lang-ja">むしろ「この価格を正当化するgとROICは何か」という<strong>Reverse DCF</strong>の方が、正直な分析になることがある。「このマルチプルは暗黙的にROIC 20%・g 4%を前提としているが、その産業でそれは達成可能か」という問いは、純フォワードのDCFよりも鋭い。</span>
+            <span class="lang-en">Asking instead "what g and ROIC justify this price" — the <strong>Reverse DCF</strong> — is often the more honest analysis. "This multiple implicitly assumes ROIC 20% and g 4% — is that achievable in this industry?" is a sharper question than a pure forward DCF.</span>
+          </p>
         </div>
 
         <div class="section-sep">· · ·</div>
 
         <!-- ======================================================== -->
-        <h2>5. 実務的な含意：では何をすべきか</h2>
+        <h2>
+          <span class="lang-ja">5. 実務的な含意：では何をすべきか</span>
+          <span class="lang-en">5. Practical Implications: What Should You Do?</span>
+        </h2>
 
         <ul class="numbered-list">
           <li>
             <span class="num">1</span>
-            <div><strong>gとROICの整合性チェックを必ず行う。</strong>Terminal FCFの再投資率が、gとROICと整合しているかを確認する。矛盾があれば修正するか、明示的に注記する。NOPAT × (1 − b) = Terminal FCF という式が成立しているかを確かめる。</div>
+            <div>
+              <span class="lang-ja"><strong>gとROICの整合性チェックを必ず行う。</strong>Terminal FCFの再投資率が、gとROICと整合しているかを確認する。矛盾があれば修正するか、明示的に注記する。NOPAT × (1 − b) = Terminal FCF という式が成立しているかを確かめる。</span>
+              <span class="lang-en"><strong>Always run a g-ROIC consistency check.</strong> Confirm that the terminal FCF reinvestment rate is consistent with g and ROIC. If there is a contradiction, correct it or note it explicitly. Verify that NOPAT × (1 − b) = Terminal FCF holds.</span>
+            </div>
           </li>
           <li>
             <span class="num">2</span>
-            <div><strong>Explicit periodを延ばすことで「仮定の先送り」は解決しない。</strong>10年にしても20年にしてもTVは残る。Competitive Advantage Period（CAP）がいつ終わるかを考える方が本質的だ。その産業で超過利益が侵食されるまでの時間を、価格競争・技術変化・規制の観点から見積もる。</div>
+            <div>
+              <span class="lang-ja"><strong>Explicit periodを延ばすことで「仮定の先送り」は解決しない。</strong>10年にしても20年にしてもTVは残る。Competitive Advantage Period（CAP）がいつ終わるかを考える方が本質的だ。その産業で超過利益が侵食されるまでの時間を、価格競争・技術変化・規制の観点から見積もる。</span>
+              <span class="lang-en"><strong>Extending the explicit period does not resolve "deferred assumptions."</strong> TV remains whether the period is 10 or 20 years. The more substantive question is when the Competitive Advantage Period (CAP) ends. Estimate how long excess returns will persist against competitive pressure, technological change, and regulation.</span>
+            </div>
           </li>
           <li>
             <span class="num">3</span>
-            <div><strong>Reverse DCFを補完的に使う。</strong>現在の株価（または買収価格）が「どんなgとROICを織り込んでいるか」を逆算する。その仮定が達成可能かを問うことで、「価格の妥当性」ではなく「仮定の妥当性」を評価できる。</div>
+            <div>
+              <span class="lang-ja"><strong>Reverse DCFを補完的に使う。</strong>現在の株価（または買収価格）が「どんなgとROICを織り込んでいるか」を逆算する。その仮定が達成可能かを問うことで、「価格の妥当性」ではなく「仮定の妥当性」を評価できる。</span>
+              <span class="lang-en"><strong>Use Reverse DCF as a complement.</strong> Back-solve from the current stock price (or acquisition price) to find what g and ROIC it implies. By asking whether those assumptions are achievable, you can evaluate "assumption validity" rather than "price validity."</span>
+            </div>
           </li>
         </ul>
 
-        <p>TVが大きいことは、DCFの欠陥ではない。だが、それを「そういうものだ」で済ませるのは、最も重要な仮定の検証を放棄することだ。DCFの価値は、その数字ではなく、その数字が何を前提としているかを明示する点にある。</p>
+        <p>
+          <span class="lang-ja">TVが大きいことは、DCFの欠陥ではない。だが、それを「そういうものだ」で済ませるのは、最も重要な仮定の検証を放棄することだ。DCFの価値は、その数字ではなく、その数字が何を前提としているかを明示する点にある。</span>
+          <span class="lang-en">A dominant Terminal Value is not a defect of DCF. But accepting it as "just the way things are" means abandoning the verification of the most critical assumptions. DCF's value lies not in the number it produces, but in making explicit what assumptions that number requires.</span>
+        </p>
 
         <!-- 出典 -->
-        <h2 style="margin-top:3em;">参考文献</h2>
+        <h2 style="margin-top:3em;">
+          <span class="lang-ja">参考文献</span>
+          <span class="lang-en">References</span>
+        </h2>
         <ul class="source-list">
-          <li><a href="http://aswathdamodaran.blogspot.com/" target="_blank" rel="noopener">Damodaran, A. — Musings on Markets（ブログ）</a><span class="source-tag">[理論参照]</span></li>
-          <li><a href="https://pages.stern.nyu.edu/~adamodar/" target="_blank" rel="noopener">Damodaran, A. — NYU Stern Faculty Page（データ・Teaching材料）</a><span class="source-tag">[理論参照]</span></li>
-          <li><a href="https://pages.stern.nyu.edu/~adamodar/New_Home_Page/data.html" target="_blank" rel="noopener">Damodaran Online Data（ERP・Beta・ROIC業種別データ）</a><span class="source-tag">[データ]</span></li>
-          <li><a href="https://openlibrary.org/isbn/9781119610885" target="_blank" rel="noopener">Koller, T., Goedhart, M., Wessels, D. — Valuation: Measuring and Managing the Value of Companies, 7th ed. (McKinsey, Wiley 2020)</a><span class="source-tag">[書籍]</span></li>
-          <li><a href="https://openlibrary.org/isbn/9781118011522" target="_blank" rel="noopener">Damodaran, A. — Investment Valuation: Tools and Techniques for Determining the Value of Any Asset, 3rd ed. (Wiley 2012)</a><span class="source-tag">[書籍]</span></li>
+          <li><a href="http://aswathdamodaran.blogspot.com/" target="_blank" rel="noopener">Damodaran, A. — Musings on Markets</a><span class="source-tag"><span class="lang-ja">[理論参照]</span><span class="lang-en">[Theory]</span></span></li>
+          <li><a href="https://pages.stern.nyu.edu/~adamodar/" target="_blank" rel="noopener">Damodaran, A. — NYU Stern Faculty Page</a><span class="source-tag"><span class="lang-ja">[理論参照]</span><span class="lang-en">[Theory]</span></span></li>
+          <li><a href="https://pages.stern.nyu.edu/~adamodar/New_Home_Page/data.html" target="_blank" rel="noopener">Damodaran Online Data (ERP, Beta, ROIC by Industry)</a><span class="source-tag"><span class="lang-ja">[データ]</span><span class="lang-en">[Data]</span></span></li>
+          <li><a href="https://openlibrary.org/isbn/9781119610885" target="_blank" rel="noopener">Koller, T., Goedhart, M., Wessels, D. — Valuation: Measuring and Managing the Value of Companies, 7th ed. (McKinsey, Wiley 2020)</a><span class="source-tag"><span class="lang-ja">[書籍]</span><span class="lang-en">[Book]</span></span></li>
+          <li><a href="https://openlibrary.org/isbn/9781118011522" target="_blank" rel="noopener">Damodaran, A. — Investment Valuation: Tools and Techniques for Determining the Value of Any Asset, 3rd ed. (Wiley 2012)</a><span class="source-tag"><span class="lang-ja">[書籍]</span><span class="lang-en">[Book]</span></span></li>
         </ul>
 
         <!-- Next CTA -->
         <div class="next-article">
-          <div class="next-label">次回 · Valuation Theory Lab #002</div>
-          <div class="next-title">WACCは本当に計算できるのか<br>— CAPM限界論と代替アプローチ</div>
-          <div class="next-desc">CAPM単一ファクターの限界、歴史的ERP vs. インプライドERPの選択根拠、Fama-Frenchファクターの経済的解釈まで。</div>
+          <div class="next-label">
+            <span class="lang-ja">次回 · Valuation Theory Lab #002</span>
+            <span class="lang-en">Next · Valuation Theory Lab #002</span>
+          </div>
+          <div class="next-title">
+            <span class="lang-ja">WACCは本当に計算できるのか<br>— CAPM限界論と代替アプローチ</span>
+            <span class="lang-en">Can WACC Really Be Calculated?<br>— CAPM Limitations and Alternative Approaches</span>
+          </div>
+          <div class="next-desc">
+            <span class="lang-ja">CAPM単一ファクターの限界、歴史的ERP vs. インプライドERPの選択根拠、Fama-Frenchファクターの経済的解釈まで。</span>
+            <span class="lang-en">CAPM's single-factor limits, historical ERP vs. implied ERP selection rationale, and the economic interpretation of Fama-French factors.</span>
+          </div>
         </div>
 
       </article>
@@ -987,27 +1260,45 @@
           <div class="keyfacts-grid">
             <div class="fact-card highlight">
               <div class="fact-value">72%</div>
-              <div class="fact-desc">Terminal Value比率（WACC=10%, g=3%, Explicit 5年）</div>
+              <div class="fact-desc">
+                <span class="lang-ja">Terminal Value比率（WACC=10%, g=3%, Explicit 5年）</span>
+                <span class="lang-en">Terminal Value share (WACC=10%, g=3%, 5yr explicit)</span>
+              </div>
             </div>
             <div class="fact-card">
               <div class="fact-value">10%</div>
-              <div class="fact-desc">本稿例のWACC（名目ベース）</div>
+              <div class="fact-desc">
+                <span class="lang-ja">本稿例のWACC（名目ベース）</span>
+                <span class="lang-en">Example WACC (nominal basis)</span>
+              </div>
             </div>
             <div class="fact-card">
               <div class="fact-value">3%</div>
-              <div class="fact-desc">Terminal growth rate（名目GDP成長率の代理）</div>
+              <div class="fact-desc">
+                <span class="lang-ja">Terminal growth rate（名目GDP成長率の代理）</span>
+                <span class="lang-en">Terminal growth rate (proxy for nominal GDP growth)</span>
+              </div>
             </div>
             <div class="fact-card">
               <div class="fact-value">25%</div>
-              <div class="fact-desc">g=3%・ROIC=12%のとき必要な再投資率</div>
+              <div class="fact-desc">
+                <span class="lang-ja">g=3%・ROIC=12%のとき必要な再投資率</span>
+                <span class="lang-en">Required reinvestment rate when g=3%, ROIC=12%</span>
+              </div>
             </div>
             <div class="fact-card">
               <div class="fact-value">g=ROIC×b</div>
-              <div class="fact-desc">Sustainable Growth Model：gは導出値</div>
+              <div class="fact-desc">
+                <span class="lang-ja">Sustainable Growth Model：gは導出値</span>
+                <span class="lang-en">Sustainable Growth Model: g is a derived value</span>
+              </div>
             </div>
             <div class="fact-card">
-              <div class="fact-value">5年</div>
-              <div class="fact-desc">本稿例のExplicit forecast期間</div>
+              <div class="fact-value">5<span class="lang-ja">年</span><span class="lang-en">yr</span></div>
+              <div class="fact-desc">
+                <span class="lang-ja">本稿例のExplicit forecast期間</span>
+                <span class="lang-en">Explicit forecast period in this example</span>
+              </div>
             </div>
           </div>
         </div>
@@ -1017,27 +1308,45 @@
           <ol class="highlights-list">
             <li class="highlight-item">
               <span class="hl-num" style="color:var(--accent-warm);font-weight:700;">01</span>
-              <span class="hl-text"><strong>Terminal ValueはなぜDCFの70-80%を占めるのか</strong> — 本稿</span>
+              <span class="hl-text">
+                <span class="lang-ja"><strong>Terminal ValueはなぜDCFの70-80%を占めるのか</strong> — 本稿</span>
+                <span class="lang-en"><strong>Why Terminal Value Accounts for 70–80% of DCF</strong> — this issue</span>
+              </span>
             </li>
             <li class="highlight-item">
               <span class="hl-num">02</span>
-              <span class="hl-text">WACCは本当に計算できるのか — CAPM限界論と代替アプローチ</span>
+              <span class="hl-text">
+                <span class="lang-ja">WACCは本当に計算できるのか — CAPM限界論と代替アプローチ</span>
+                <span class="lang-en">Can WACC Really Be Calculated? — CAPM Limitations and Alternatives</span>
+              </span>
             </li>
             <li class="highlight-item">
               <span class="hl-num">03</span>
-              <span class="hl-text">Betaを信じる前に考えること — 推計期間・頻度・Hamada変換</span>
+              <span class="hl-text">
+                <span class="lang-ja">Betaを信じる前に考えること — 推計期間・頻度・Hamada変換</span>
+                <span class="lang-en">Before Trusting Beta — Estimation Period, Frequency, and Hamada Adjustment</span>
+              </span>
             </li>
             <li class="highlight-item">
               <span class="hl-num">04</span>
-              <span class="hl-text">シクリカル企業のLTMが罠である理由 — Mid-cycle正規化</span>
+              <span class="hl-text">
+                <span class="lang-ja">シクリカル企業のLTMが罠である理由 — Mid-cycle正規化</span>
+                <span class="lang-en">Why LTM Is a Trap for Cyclical Companies — Mid-Cycle Normalization</span>
+              </span>
             </li>
             <li class="highlight-item">
               <span class="hl-num">05</span>
-              <span class="hl-text">IFRS16後のEV bridgeを再考する — EV/EBITDA vs. EBITDAR</span>
+              <span class="hl-text">
+                <span class="lang-ja">IFRS16後のEV bridgeを再考する — EV/EBITDA vs. EBITDAR</span>
+                <span class="lang-en">Rethinking the EV Bridge After IFRS 16 — EV/EBITDA vs. EBITDAR</span>
+              </span>
             </li>
             <li class="highlight-item">
               <span class="hl-num">06</span>
-              <span class="hl-text">APVアプローチ再考 — MM命題・Tax shieldの現在価値</span>
+              <span class="hl-text">
+                <span class="lang-ja">APVアプローチ再考 — MM命題・Tax shieldの現在価値</span>
+                <span class="lang-en">Revisiting APV — Modigliani-Miller Propositions and the PV of Tax Shields</span>
+              </span>
             </li>
           </ol>
         </div>
@@ -1059,7 +1368,10 @@
 
 <footer class="site-footer">
   <span>Valuation Theory Lab #001 | donato Valuation Notes | 2026-03-20</span>
-  <span>本稿は理論解説を目的とするものです。特定の投資・M&A判断を推奨するものではなく、実際の意思決定には専門家への確認を要します。</span>
+  <span>
+    <span class="lang-ja">本稿は理論解説を目的とするものです。特定の投資・M&amp;A判断を推奨するものではなく、実際の意思決定には専門家への確認を要します。</span>
+    <span class="lang-en">For educational purposes only. Consult qualified professionals before making investment or M&amp;A decisions.</span>
+  </span>
 </footer>
 
 <script>
@@ -1075,12 +1387,26 @@
     var text = document.querySelector('.article-body') ? document.querySelector('.article-body').textContent : '';
     var chars = text.length;
     var minutes = Math.ceil(chars / 500);
-    var label = '約' + minutes + '分';
     var el1 = document.getElementById('reading-time-badge');
     var el2 = document.getElementById('reading-time-badge2');
-    if (el1) el1.textContent = label;
-    if (el2) el2.textContent = label;
+    if (el1) el1.querySelector('.lang-ja').textContent = '約' + minutes + '分';
+    if (el2) el2.querySelector('.lang-ja').textContent = '約' + minutes + '分';
+    if (el1) el1.querySelector('.lang-en').textContent = '~' + minutes + ' min read';
+    if (el2) el2.querySelector('.lang-en').textContent = '~' + minutes + ' min read';
   })();
+
+  // Lang toggle
+  let currentLang = 'ja';
+  function toggleLang() {
+    currentLang = currentLang === 'ja' ? 'en' : 'ja';
+    document.querySelectorAll('.lang-ja').forEach(el => el.style.display = currentLang === 'ja' ? 'inline' : 'none');
+    document.querySelectorAll('.lang-en').forEach(el => el.style.display = currentLang === 'en' ? 'inline' : 'none');
+    document.getElementById('lang-btn').textContent = currentLang === 'ja' ? 'EN' : 'JA';
+    document.documentElement.lang = currentLang;
+  }
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.lang-en').forEach(el => el.style.display = 'none');
+  });
 </script>
 
 </body>

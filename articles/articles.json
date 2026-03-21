@@ -1,6 +1,17 @@
 [
   {
     "date": "2026-03-21",
+    "category": "valuation",
+    "genre_en": "Valuation Theory Lab",
+    "genre_ja": "Valuation Theory Lab",
+    "href": "./articles/2026-03-21-beta-hamada.html",
+    "title_en": "Before You Trust That Beta — Hamada Transform Assumptions and Compounding Error",
+    "title_ja": "Betaを信じる前に考えること — Hamada変換の仮定と誤差の蓄積",
+    "summary_en": "Unlevering and relevering beta is daily routine, but the Hamada equation rests on perpetual-debt and certain-tax-shield assumptions that rarely hold. At D/E=2.0, a small βU error compounds into ±1.8% of Ke. Miles-Ezzell's alternative and where errors accumulate across three stages.",
+    "summary_ja": "βのUnlever/Releverは実務の日常だが、Hamada式は永続負債・確実Tax Shieldという現実には成立しにくい仮定に依存する。D/E=2.0では小さなβU推計誤差がKeの±1.8%まで増幅される3段階の複合誤差を解説する。"
+  },
+  {
+    "date": "2026-03-21",
     "category": "career",
     "genre_en": "Career",
     "genre_ja": "キャリア",

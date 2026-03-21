@@ -1,0 +1,1393 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="βのunlever/releverはバリュエーション実務の日常だが、Hamada式が成立するのは永続負債・確実Tax Shieldという現実には成立しにくい仮定の下。Miles-Ezzellとの違い、誤差が蓄積する3段階を解説。Valuation Theory Lab #003。">
+  <title>Betaを信じる前に考えること — Hamada変換の仮定と誤差の蓄積 | Valuation Theory Lab #003 | donato</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+JP:wght@300;400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:           #F8F7F4;
+      --bg-code:      #EEECEA;
+      --bg-quote:     #EEECEA;
+      --bg-highlight: #EBF3FB;
+      --bg-subtle:    #F0EFEB;
+      --bg-card:      #F0EFEB;
+      --bg-header:    #F8F7F4;
+      --text-primary: #111320;
+      --text-body:    #2A2C3E;
+      --text-muted:   #565C70;
+      --text-light:   #888EA0;
+      --accent:       #1A6EB0;
+      --accent-warm:  #D4A010;
+      --border:       #D4D2CC;
+      --border-quote: #B8B6B0;
+      --border-light: #D4D2CC;
+      --tag-bg:       #E4EFF8;
+      --tag-text:     #1A6EB0;
+      --table-stripe: #F0EFEB;
+    }
+
+    /* ===== PROGRESS BAR ===== */
+    #progress-bar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      width: 0%;
+      background: var(--accent);
+      z-index: 300;
+      transition: width 0.1s linear;
+    }
+
+    body {
+      font-family: 'Noto Serif JP', Georgia, serif;
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--text-primary);
+      background: var(--bg);
+    }
+
+    /* ===== SITE HEADER ===== */
+    .site-header {
+      background: var(--bg-header);
+      border-bottom: 2px solid var(--accent);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .site-header-left { display: flex; align-items: center; gap: 12px; }
+    .wordmark {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: lowercase;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+    .wordmark span { color: var(--accent-warm); }
+    .header-sep { color: var(--border-quote); font-size: 13px; }
+    .header-media {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+    }
+    .site-header-right { display: flex; align-items: center; gap: 12px; }
+    .header-back-link {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .header-back-link:hover { color: var(--accent); }
+    .lang-toggle-bar {
+      display: flex;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .art-lang-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      padding: 3px 10px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .art-lang-btn.active { background: #F5C800; color: #111320; }
+    #theme-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      padding: 3px 9px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.15s;
+    }
+    #theme-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .header-date {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-light);
+      letter-spacing: 0.08em;
+    }
+
+    /* ===== STICKY INFO BAR ===== */
+    #sticky-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg-subtle);
+      border-bottom: 1px solid var(--border-light);
+      padding: 7px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .sbar-cat {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+    }
+    .sbar-sep { color: var(--border-quote); font-size: 11px; }
+    .sbar-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+    .sbar-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      padding: 2px 8px;
+    }
+
+    /* ===== LAYOUT ===== */
+    .article-container { max-width: 1240px; margin: 0 auto; padding: 0 20px; }
+    .article-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 24px;
+    }
+    .article-body { grid-column: 2 / 10; max-width: 68ch; }
+    .article-sidebar {
+      grid-column: 10 / 13;
+      position: sticky;
+      top: 44px;
+      align-self: start;
+      max-height: calc(100vh - 56px);
+      overflow-y: auto;
+    }
+    .article-sidebar::-webkit-scrollbar { width: 4px; }
+    .article-sidebar::-webkit-scrollbar-track { background: transparent; }
+    .article-sidebar::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 2px; }
+
+    /* ===== TYPOGRAPHY ===== */
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+    }
+    .article-headline {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(2rem, 4vw, 2.6rem);
+      font-weight: 600;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+    .article-standfirst {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      font-weight: 400;
+    }
+    .byline {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    h2 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.45rem;
+      font-weight: 600;
+      line-height: 1.25;
+      color: var(--text-primary);
+      margin: 2em 0 0.75em;
+      border-top: 1px solid var(--border);
+      padding-top: 1em;
+    }
+    h3 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin: 1.75em 0 0.5em;
+    }
+    .article-body p { margin-bottom: 1.4em; font-size: 0.97rem; line-height: 1.8; }
+    .article-body ul, .article-body ol { margin: 0 0 1.4em 1.4em; }
+    .article-body li { margin-bottom: 0.4em; font-size: 0.95rem; line-height: 1.7; }
+    strong { color: var(--text-primary); font-weight: 600; }
+
+    /* ===== EXEC SUMMARY ===== */
+    .exec-summary {
+      background: var(--bg-highlight);
+      border: 1px solid var(--border-light);
+      border-left: 4px solid var(--accent);
+      padding: 24px;
+      margin: 0 0 2.5em;
+    }
+    .exec-block { margin-bottom: 20px; }
+    .exec-block:last-child { margin-bottom: 0; }
+    .exec-block + .exec-block { padding-top: 18px; border-top: 1px solid var(--border-light); }
+    .exec-tldr {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.02rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      line-height: 1.55;
+      margin-top: 8px;
+    }
+    .issues-list, .implications-list {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .issue-item { display: flex; gap: 10px; align-items: baseline; }
+    .issue-q {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--accent);
+      flex-shrink: 0;
+      min-width: 20px;
+    }
+    .issue-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: var(--text-body);
+      line-height: 1.55;
+    }
+    .implication-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: var(--text-body);
+      line-height: 1.55;
+      padding-left: 14px;
+      border-left: 2px solid var(--accent);
+    }
+    .read-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
+    .read-col-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.66rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 6px;
+    }
+    .read-label-yes { color: var(--accent); }
+    .read-label-no { color: var(--text-muted); }
+    .read-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-body);
+      line-height: 1.45;
+      padding-left: 10px;
+      border-left: 2px solid var(--accent);
+      margin-bottom: 5px;
+    }
+    .skip-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+      padding-left: 10px;
+      border-left: 2px solid var(--border-light);
+      margin-bottom: 5px;
+    }
+
+    /* ===== FORMULA / CALC ===== */
+    .formula {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.93em;
+      background: var(--bg-code);
+      border-left: 3px solid var(--accent);
+      padding: 14px 20px;
+      margin: 20px 0;
+      color: var(--text-primary);
+      overflow-x: auto;
+      line-height: 1.7;
+    }
+    .calc-block {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      padding: 20px 24px;
+      margin: 24px 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+      line-height: 1.8;
+    }
+    .calc-block .calc-row {
+      display: flex;
+      justify-content: space-between;
+      max-width: 480px;
+    }
+    .calc-block .calc-total {
+      border-top: 1px solid var(--border);
+      margin-top: 6px;
+      padding-top: 6px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .calc-block .calc-highlight {
+      color: var(--accent);
+      font-weight: 700;
+    }
+    .calc-block .calc-warn {
+      color: var(--accent-warm);
+      font-weight: 700;
+    }
+
+    /* ===== INSIGHT / TRAP BOX ===== */
+    .insight-box {
+      background: var(--bg-highlight);
+      border-left: 4px solid var(--accent);
+      padding: 18px 22px;
+      margin: 28px 0;
+    }
+    .insight-box p {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: var(--text-primary);
+    }
+    .insight-box strong { color: var(--accent); }
+    .trap-box {
+      background: #FEF9EC;
+      border-left: 4px solid var(--accent-warm);
+      padding: 18px 22px;
+      margin: 24px 0;
+    }
+    .trap-box p {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      line-height: 1.65;
+      color: var(--text-body);
+    }
+    .trap-box .trap-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent-warm);
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+
+    /* ===== DATA TABLE ===== */
+    .data-table-wrap { overflow-x: auto; margin: 1.5em 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      background: var(--bg-subtle);
+      padding: 8px 12px;
+      text-align: left;
+      border-bottom: 2px solid var(--border);
+    }
+    td {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border-light);
+      color: var(--text-body);
+      font-family: 'Inter', sans-serif;
+    }
+    tr:nth-child(even) td { background: var(--table-stripe); }
+    .td-accent {
+      color: var(--accent);
+      font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+    }
+    .td-warn {
+      color: var(--accent-warm);
+      font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+    }
+
+    /* ===== PULL QUOTE ===== */
+    .pull-quote {
+      border-left: 4px solid var(--accent);
+      margin: 2em 0;
+      padding: 1em 20px;
+      background: var(--bg-card);
+    }
+    .pull-quote p {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.2rem;
+      font-style: italic;
+      color: var(--text-primary);
+      line-height: 1.5;
+      margin-bottom: 6px !important;
+    }
+    .pull-quote footer {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* ===== NUMBERED LIST ===== */
+    .numbered-list {
+      list-style: none;
+      padding: 0;
+      margin: 20px 0;
+    }
+    .numbered-list li {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 16px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.92rem;
+      line-height: 1.65;
+      color: var(--text-body);
+    }
+    .numbered-list li .num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: white;
+      background: var(--accent);
+      min-width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    /* ===== SECTION SEP ===== */
+    .section-sep {
+      text-align: center;
+      color: var(--text-light);
+      font-size: 1.2rem;
+      letter-spacing: 0.5em;
+      margin: 48px 0;
+      user-select: none;
+    }
+
+    /* ===== SOURCE LIST ===== */
+    .source-list { list-style: none; padding: 0; }
+    .source-list li { margin-bottom: 6px; }
+    .source-list a {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--accent);
+      text-decoration: none;
+      line-height: 1.5;
+    }
+    .source-list a:hover { text-decoration: underline; }
+    .source-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      margin-left: 4px;
+    }
+
+    /* ===== NEXT ARTICLE CTA ===== */
+    .next-article {
+      background: var(--text-primary);
+      color: #E4E2DC;
+      padding: 28px 32px;
+      margin-top: 56px;
+    }
+    .next-article .next-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent-warm);
+      margin-bottom: 8px;
+    }
+    .next-article .next-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+    .next-article .next-desc {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.82rem;
+      color: #9299A8;
+      margin-top: 8px;
+    }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .keyfacts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+    .fact-card {
+      background: var(--bg-highlight);
+      padding: 10px 8px;
+    }
+    .fact-card.highlight {
+      background: #FDF8EC;
+      border: 1px solid #E8D88A;
+    }
+    .fact-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--accent);
+      line-height: 1.2;
+    }
+    .fact-card.highlight .fact-value { color: #8A6A00; }
+    .fact-desc {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.64rem;
+      color: var(--text-muted);
+      margin-top: 3px;
+      line-height: 1.35;
+    }
+    .fact-card.highlight .fact-desc { color: #7A6020; }
+    .highlights-list { list-style: none; padding: 0; margin-top: 12px; }
+    .highlight-item {
+      padding: 9px 0;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      gap: 10px;
+      align-items: baseline;
+    }
+    .highlight-item:last-child { border-bottom: none; }
+    .hl-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--accent);
+      flex-shrink: 0;
+      min-width: 18px;
+    }
+    .hl-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.76rem;
+      color: var(--text-body);
+      line-height: 1.45;
+    }
+
+    /* ===== LANG TOGGLE ===== */
+    .lang-en { display: none; }
+
+    /* ===== FOOTER ===== */
+    .site-footer {
+      border-top: 1px solid var(--border-light);
+      margin-top: 4em;
+      padding: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* ===== PRINT ===== */
+    @media print {
+      body { background: white; font-size: 11pt; }
+      .site-header, #sticky-bar, #progress-bar { display: none; }
+      .article-sidebar { position: static; max-height: none; overflow: visible; }
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+    @page { size: A4; margin: 20mm 15mm; }
+
+    /* ===== MOBILE ===== */
+    @media (max-width: 900px) {
+      .article-body { grid-column: 1 / -1; }
+      .article-sidebar { position: static; max-height: none; overflow: visible; grid-column: 1 / -1; }
+      .article-grid { display: block; }
+      .read-grid { grid-template-columns: 1fr; }
+      #sticky-bar { flex-wrap: wrap; gap: 6px; }
+    }
+
+    body.dark {
+      --bg:           #0D1117;
+      --bg-code:      #161B22;
+      --bg-quote:     #161B22;
+      --bg-highlight: #0E1A2B;
+      --bg-subtle:    #161B22;
+      --bg-card:      #161B22;
+      --bg-header:    #0D1117;
+      --text-primary: #E4E2DC;
+      --text-body:    #C4C2BC;
+      --text-muted:   #8B93A8;
+      --text-light:   #575E70;
+      --accent:       #3A8FD0;
+      --accent-warm:  #F5C800;
+      --border:       #21253A;
+      --border-quote: #2A2D3E;
+      --border-light: #21253A;
+      --tag-bg:       #0E1A2B;
+      --tag-text:     #3A8FD0;
+      --table-stripe: #161B22;
+    }
+    body.dark svg [fill="#F0EFEB"] { fill: #161B22; }
+    body.dark svg [fill="#EEECEA"] { fill: #1A1F2B; }
+    body.dark svg [fill="#E0DDD9"] { fill: #141920; }
+    body.dark svg [fill="#EBF3FB"] { fill: #0E1A2B; }
+    body.dark svg [fill="#D4D2CC"] { fill: #21253A; }
+    body.dark svg [stroke="#D4D2CC"] { stroke: #21253A; }
+    body.dark svg [fill="#2A2C3E"] { fill: #C4C2BC; }
+    body.dark svg [fill="#888EA0"] { fill: #575E70; }
+    body.dark svg [fill="#565C70"] { fill: #8B93A8; }
+    body.dark .trap-box { background: #1C1800; }
+    body.dark .fact-card.highlight { background: #1A1600; border-color: #3A2D00; }
+    body.dark .fact-card.highlight .fact-value { color: #C4900E; }
+    body.dark .fact-card.highlight .fact-desc { color: #A07828; }
+    body.dark .next-article { background: #111320; }
+  </style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<!-- 1. サイトヘッダー -->
+<header class="site-header">
+  <div class="site-header-left">
+    <a class="wordmark" href="../index.html">dona<span>to</span></a>
+    <span class="header-sep">—</span>
+    <a class="header-back-link" href="./index.html"><span class="lang-ja">記事一覧</span><span class="lang-en">Articles</span></a>
+    <span class="header-sep">—</span>
+    <span class="header-media">Valuation Theory Lab</span>
+  </div>
+  <div class="site-header-right">
+    <div class="lang-toggle-bar">
+      <button class="art-lang-btn active" data-lang="ja" onclick="setLang('ja')">JP</button>
+      <button class="art-lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+    </div>
+    <button id="theme-btn" onclick="toggleTheme()" title="ダーク/ライト切替">☀</button>
+    <time class="header-date">2026-03-21</time>
+  </div>
+</header>
+
+<!-- 2. スティッキー情報バー -->
+<div id="sticky-bar">
+  <span class="sbar-cat">VALUATION THEORY LAB</span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-text"><span class="lang-ja">Series #003 · Beta変換理論</span><span class="lang-en">Series #003 · Beta Transformation Theory</span></span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-text">2026-03-21</span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-badge" id="reading-time-badge"><span class="lang-ja">約12分</span><span class="lang-en">~12 min</span></span>
+</div>
+
+<main style="padding: 0 0 3em;">
+  <div class="article-container">
+    <div class="article-grid">
+
+      <!-- 3. 記事本文 -->
+      <article class="article-body">
+
+        <!-- 記事ヘッダー -->
+        <div style="padding: 36px 0 24px;">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+            <div class="section-label">Valuation Theory Lab &nbsp;#003</div>
+            <span class="sbar-badge" id="reading-time-badge2"><span class="lang-ja">約12分</span><span class="lang-en">~12 min</span></span>
+          </div>
+          <h1 class="article-headline">
+            <span class="lang-ja">Betaを信じる前に考えること<br>— Hamada変換の仮定と誤差の蓄積</span>
+            <span class="lang-en">Before You Trust That Beta<br>— Hamada Transform Assumptions and Compounding Error</span>
+          </h1>
+          <p class="article-standfirst">
+            <span class="lang-ja">βのUnlever/Releverはバリュエーション実務の日常だ。しかしHamada式が成立するのは「永続的な負債残高」と「確実なTax Shield」という、現実には成立しにくい仮定の下だ。Miles-Ezzelのより厳密な代替式を知り、3段階で誤差が蓄積するプロセスを理解することが、βを「選択する」ではなく「検証する」実務家への第一歩だ。</span>
+            <span class="lang-en">Unlevering and relevering beta is a daily routine in valuation practice. But the Hamada equation holds only under two assumptions — perpetual debt and a certain tax shield — that rarely hold in practice. Understanding the Miles-Ezzell alternative and the three stages where error compounds is the first step toward verifying beta rather than simply choosing it.</span>
+          </p>
+          <div style="display:flex; gap:16px; align-items:center; border-top:1px solid var(--border-light); border-bottom:1px solid var(--border-light); padding:10px 0;">
+            <span class="byline">By <strong>Donato Valuation Notes</strong></span>
+            <span style="color:var(--border);">|</span>
+            <time class="byline" datetime="2026-03-21"><span class="lang-ja">2026年3月21日</span><span class="lang-en">March 21, 2026</span></time>
+            <span style="color:var(--border);">|</span>
+            <span class="byline"><span class="lang-ja">Beta · Hamada · 資本構成</span><span class="lang-en">Beta · Hamada · Capital Structure</span></span>
+          </div>
+        </div>
+
+        <!-- 構造化エグゼクティブサマリー -->
+        <section class="exec-summary">
+
+          <!-- TL;DR -->
+          <div class="exec-block">
+            <div class="section-label">TL;DR</div>
+            <p class="exec-tldr">
+              <span class="lang-ja">Hamada式（βL = βU × (1 + (1-t) × D/E)）は理論的にエレガントだが、MM Proposition II（Tax Shieldを負債コストで割り引く）という強い仮定に依存する。負債が毎期リバランスされる現実に近いのはMiles-Ezzelだ。しかし問題の核心は仮定の選択だけではない——Raw βの推計誤差 → Hamada変換での誤差増幅 → Relevered β誤差、という3段階の複合誤差が最終WACCに与える影響は、単一のβ推計誤差よりも大きくなりうる。</span>
+              <span class="lang-en">The Hamada equation (βL = βU × (1 + (1-t) × D/E)) is theoretically elegant but relies on a strong assumption from MM Proposition II — that tax shields are discounted at the cost of debt. Miles-Ezzell, which assumes debt is rebalanced each period, is closer to reality. But the deeper problem is not just which formula you choose. The compounding error across three stages — raw beta estimation → Hamada amplification → relevered beta error — can produce larger final WACC errors than any single assumption misstep.</span>
+            </p>
+          </div>
+
+          <!-- 論点 -->
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">本稿の論点</span><span class="lang-en">Key Questions</span></div>
+            <ul class="issues-list">
+              <li class="issue-item">
+                <span class="issue-q">Q1</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>なぜUnlever/Releverが必要か？</strong> — 自社に非上場の類似企業βを適用する時、またはLBO後の資本構成変化をモデルに反映する時、βを資本構成中立に変換してから使い直す操作が不可欠になる。</span>
+                  <span class="lang-en"><strong>Why is unlever/relever necessary?</strong> — When applying a comparable company's beta to a target with a different capital structure, or reflecting post-LBO leverage changes in a model, you must strip out the capital structure effect from the observed beta before reapplying it.</span>
+                </span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">Q2</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>Hamada式は何を仮定しているか？</strong> — 「負債は永続的（perpetual）」「Tax ShieldはKdで割り引く（MM仮定）」の2つが核心だ。現実の企業は負債水準を利益・EBITDAに合わせてリバランスする——その場合のTax ShieldはKdではなくKuで割り引くべきだとMiles-Ezzelは主張する。</span>
+                  <span class="lang-en"><strong>What does the Hamada equation assume?</strong> — Two core assumptions: debt is perpetual, and the tax shield is discounted at Kd (the MM assumption). In reality, firms rebalance debt to EBITDA targets each period — in that case, Miles-Ezzell argues the tax shield should be discounted at Ku (the unlevered cost of equity), not Kd.</span>
+                </span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">Q3</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>誤差はどこで蓄積するか？</strong> — ①Raw β推計の不確実性（#002で論じた）、②Hamadaによる変換での乗数増幅、③Releverで使う目標資本構成の仮定誤差。この3段階が複合する。最初の誤差が小さくても、レバレッジの高い企業では変換倍率が大きく、最終誤差は非線形に拡大する。</span>
+                  <span class="lang-en"><strong>Where does error compound?</strong> — Three stages: ① uncertainty in the raw beta estimate (discussed in #002), ② amplification through the Hamada multiplier, and ③ the assumption error in the target capital structure used for relevering. These errors multiply. Even a small initial beta estimation error can produce large final errors for highly levered companies, because the conversion multiplier is large.</span>
+                </span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- 実務家への含意 -->
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">Valuation実務家への含意</span><span class="lang-en">Implications for Practitioners</span></div>
+            <ul class="implications-list">
+              <li class="implication-item">
+                <span class="lang-ja"><strong>Hamadaを使う場合は仮定を明記する</strong> — 「Hamada変換（MM仮定）」なのか「Miles-Ezzell変換」なのかを必ず記載する。大半の実務書はHamadaをデフォルトとするが、LBOや財務的に不安定な企業では選択が重要になる。</span>
+                <span class="lang-en"><strong>Always document which formula was used</strong> — Specify whether you applied the Hamada transform (MM assumption) or the Miles-Ezzell transform. Most valuation guides default to Hamada, but the choice matters materially for LBO models and financially distressed companies.</span>
+              </li>
+              <li class="implication-item">
+                <span class="lang-ja"><strong>目標資本構成はTarget D/(D+E)を使え（Current ではなく）</strong> — Relever時に現在の資本構成ではなく、中長期の目標（Target）資本構成を使うのが標準だ。ただしその「目標」自体が主観的なため、感度分析の対象に含める。</span>
+                <span class="lang-en"><strong>Relever using target capital structure, not current</strong> — When relevering, use the long-term target D/(D+E), not the current ratio. But since the "target" itself is subjective, include it in your sensitivity analysis.</span>
+              </li>
+              <li class="implication-item">
+                <span class="lang-ja"><strong>高レバレッジ企業ではβ感度分析が特に重要</strong> — D/E = 2の企業では、βU誤差が最終βLに2〜3倍に増幅される。このレバレッジ感応度を把握した上で感度テーブルを構築すること。</span>
+                <span class="lang-en"><strong>Beta sensitivity analysis is especially critical for high-leverage companies</strong> — At D/E = 2, a βU estimation error is amplified 2–3× into the final βL. Build sensitivity tables that capture this leverage amplification explicitly.</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- 読み進め判断 -->
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">この記事を読み進めるべきか</span><span class="lang-en">Who Should Read This?</span></div>
+            <div class="read-grid">
+              <div>
+                <div class="read-col-label read-label-yes"><span class="lang-ja">読むべき人</span><span class="lang-en">READ IF</span></div>
+                <div class="read-item"><span class="lang-ja">非上場企業・クロスボーダー案件でcomparable betaを使うM&amp;A / PE実務家</span><span class="lang-en">M&amp;A / PE practitioners applying comparable betas to private companies or cross-border deals</span></div>
+                <div class="read-item"><span class="lang-ja">LBOモデルで資本構成変化をβに反映させる必要がある人</span><span class="lang-en">Anyone building LBO models that require reflecting capital structure changes in beta</span></div>
+                <div class="read-item"><span class="lang-ja">#002を読んでβ推計の不確実性を理解した上で次のステップを求める人</span><span class="lang-en">Readers of #002 who understand beta estimation uncertainty and want to go deeper</span></div>
+              </div>
+              <div>
+                <div class="read-col-label read-label-no"><span class="lang-ja">スキップしてよい人</span><span class="lang-en">SKIP IF</span></div>
+                <div class="skip-item"><span class="lang-ja">上場企業のみを対象とし、資本構成変化のないケースだけを扱う実務家</span><span class="lang-en">Practitioners working only with listed companies where capital structure changes are negligible</span></div>
+                <div class="skip-item"><span class="lang-ja">#002のβ推計基礎をまだ読んでいない方（先にそちらをお読みください）</span><span class="lang-en">Those who haven't read #002's beta estimation fundamentals — start there first</span></div>
+              </div>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- 本文導入 -->
+        <p>
+          <span class="lang-ja">実務家がβを「取ってくる」場面は二種類ある。ひとつは対象企業自身が上場しているケースで、Bloomberg等から直接βを取得できる。もうひとつは、対象が非上場または資本構成が大きく変わるケース——LBOで負債比率が急上昇するとか、スピンオフ後の単独事業体にβを付与するとか——で、この場合は類似上場企業（Comparable）のβを「借りてくる」必要がある。</span>
+          <span class="lang-en">There are two situations where practitioners must "source" a beta. The first is when the target company is publicly listed — you can pull the beta directly from Bloomberg or a similar service. The second is when the target is private or its capital structure is about to change dramatically — an LBO pushing leverage sharply higher, or a newly spun-off entity needing its own beta. In these cases, you must "borrow" a beta from comparable listed companies.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">問題は、comparableのβにはそのcomparableの資本構成の影響が混入していることだ。財務レバレッジはβを増幅する——同じ事業リスクを持つ2社でも、負債比率が高い方がβは大きくなる。だから「事業リスク」を純粋に比較するには、まずβを資本構成の影響から分離（Unlever）し、対象企業の資本構成で再計算（Relever）する必要がある。この操作がHamada変換だ。</span>
+          <span class="lang-en">The problem is that a comparable's beta already embeds that comparable's capital structure. Financial leverage amplifies beta — two companies with identical business risk will have different betas if their debt levels differ. To isolate pure business risk, you must first strip out the capital structure effect (unlever) and then reapply the target company's capital structure (relever). This operation is the Hamada transform.</span>
+        </p>
+
+        <!-- ======================================================== -->
+        <h2><span class="lang-ja">0. なぜUnlever/Releverが必要か</span><span class="lang-en">0. Why Unlever/Relever Is Necessary</span></h2>
+
+        <p>
+          <span class="lang-ja">βは二種類のリスクを混在させた数字だ：</span>
+          <span class="lang-en">Beta conflates two distinct types of risk:</span>
+        </p>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">リスク区分</span><span class="lang-en">Risk Type</span></th>
+                <th><span class="lang-ja">定義</span><span class="lang-en">Definition</span></th>
+                <th><span class="lang-ja">対応するβ</span><span class="lang-en">Corresponding Beta</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong><span class="lang-ja">事業リスク（Operating Risk）</span><span class="lang-en">Operating Risk</span></strong></td>
+                <td><span class="lang-ja">売上・利益の変動性。業種・競合・価格転嫁力に依存する。資本構成とは独立</span><span class="lang-en">Volatility of revenue and earnings. Depends on industry, competition, pricing power. Independent of capital structure</span></td>
+                <td class="td-accent">βU（Unlevered Beta）</td>
+              </tr>
+              <tr>
+                <td><strong><span class="lang-ja">財務リスク（Financial Risk）</span><span class="lang-en">Financial Risk</span></strong></td>
+                <td><span class="lang-ja">固定負債コストの存在による利益のボラティリティ増幅。負債比率が高いほど大きくなる</span><span class="lang-en">Earnings volatility amplification from fixed debt obligations. Increases with leverage</span></td>
+                <td class="td-warn">βL − βU の差分</td>
+              </tr>
+              <tr>
+                <td><strong><span class="lang-ja">観測βL（Levered Beta）</span><span class="lang-en">Observed βL</span></strong></td>
+                <td><span class="lang-ja">Bloomberg等で直接取得できるβ。現在の資本構成における事業＋財務リスクの合算</span><span class="lang-en">Beta directly observable from Bloomberg etc. The combined business + financial risk at the current capital structure</span></td>
+                <td class="td-warn">βL（直接観測値）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>Unleverの目的は「資本構成の影響を除いた純粋な事業リスク（βU）を得ること」</strong>だ。そのβUを使い、評価対象企業の資本構成でReveleverすることで、「この資本構成でこの事業を行う場合のβ」が得られる。このプロセスなしにcomparable betaを直接使うと、資本構成の違いによる系統的な誤差が生じる。</span>
+            <span class="lang-en"><strong>The purpose of unlevering is to isolate pure business risk (βU) by removing the capital structure effect.</strong> Using that βU and relevering with the target company's capital structure gives you "the beta for this business at this capital structure." Using a comparable's levered beta directly without this adjustment introduces systematic error from capital structure differences.</span>
+          </p>
+        </div>
+
+        <!-- ======================================================== -->
+        <h2><span class="lang-ja">1. Hamada式 — 導出と実装</span><span class="lang-en">1. The Hamada Equation — Derivation and Implementation</span></h2>
+
+        <p>
+          <span class="lang-ja">Hamada (1972) は、MM命題 II（Modigliani-Miller, 1963）をβの文脈で展開した。MM命題 IIは「レバレッジがあることで、株主は事業リスクに加えて財務リスクを負い、それに対するリターンを要求する」という関係を示す。この関係をCAPMのβ表現に変換すると：</span>
+          <span class="lang-en">Hamada (1972) extended MM Proposition II (Modigliani-Miller, 1963) to the beta framework. MM Proposition II shows that leverage causes shareholders to bear financial risk on top of business risk, and they demand additional return for it. Translating this into CAPM's beta expression yields:</span>
+        </p>
+
+        <div class="formula">βL = βU × [1 + (1 − t) × D/E]</div>
+
+        <p><span class="lang-ja">変形すると：</span><span class="lang-en">Rearranging:</span></p>
+
+        <div class="formula">βU = βL ÷ [1 + (1 − t) × D/E]</div>
+
+        <p>
+          <span class="lang-ja">ここで：<strong>βL</strong> = 観測されたレバレッジドβ、<strong>βU</strong> = アンレバレッジドβ（純粋事業リスク）、<strong>t</strong> = 実効税率、<strong>D/E</strong> = 時価ベースの負債株式比率。</span>
+          <span class="lang-en">Where: <strong>βL</strong> = observed levered beta, <strong>βU</strong> = unlevered beta (pure business risk), <strong>t</strong> = effective tax rate, <strong>D/E</strong> = debt-to-equity ratio at market value.</span>
+        </p>
+
+        <h3><span class="lang-ja">実装の流れ（業種別comparable beta法）</span><span class="lang-en">Implementation Steps (Industry Comparable Beta Method)</span></h3>
+
+        <ul class="numbered-list">
+          <li>
+            <span class="num">1</span>
+            <div>
+              <span class="lang-ja"><strong>Comparable企業群のβLを収集</strong> — 推計期間・頻度・Blume調整のルールを統一する（#002参照）。1社だけでなく5〜10社の中央値または平均値を使う。</span>
+              <span class="lang-en"><strong>Collect βL for each comparable</strong> — Apply consistent rules for estimation window, frequency, and Blume adjustment (#002). Use the median or mean of 5–10 companies, not a single company.</span>
+            </div>
+          </li>
+          <li>
+            <span class="num">2</span>
+            <div>
+              <span class="lang-ja"><strong>各comparableのβLをUnlever</strong> — 各社のD/E（時価ベース）と実効税率を使いHamadaでβUを計算する。この段階でIndustry βU（純粋業種リスク）が得られる。</span>
+              <span class="lang-en"><strong>Unlever each comparable's βL</strong> — Use each company's market-value D/E and effective tax rate to compute βU via Hamada. This yields the Industry βU (pure sector risk).</span>
+            </div>
+          </li>
+          <li>
+            <span class="num">3</span>
+            <div>
+              <span class="lang-ja"><strong>評価対象のTarget D/EでRelever</strong> — ①の中央値βUを使い、評価対象企業の目標資本構成（Target D/E）と実効税率でReleverしてβLを計算する。これが最終的なDCFで使うβだ。</span>
+              <span class="lang-en"><strong>Relever using the target's D/E</strong> — Apply the median βU from step ①, using the target company's target D/E and tax rate to compute the final βL for use in the DCF.</span>
+            </div>
+          </li>
+        </ul>
+
+        <div class="calc-block">
+          <div style="font-size:0.78em;color:var(--text-muted);margin-bottom:10px;font-family:'Inter',sans-serif;"><span class="lang-ja">仮想例：製造業comparable 3社のβU平均 → 評価対象Relever</span><span class="lang-en">Hypothetical example: Average βU of 3 manufacturing comparables → relever for target</span></div>
+          <div class="calc-row"><span><span class="lang-ja">CompA: βL=1.20、D/E=0.40、t=30%</span><span class="lang-en">CompA: βL=1.20, D/E=0.40, t=30%</span></span><span>βU = 0.94</span></div>
+          <div class="calc-row"><span><span class="lang-ja">CompB: βL=0.95、D/E=0.15、t=28%</span><span class="lang-en">CompB: βL=0.95, D/E=0.15, t=28%</span></span><span>βU = 0.85</span></div>
+          <div class="calc-row"><span><span class="lang-ja">CompC: βL=1.35、D/E=0.70、t=32%</span><span class="lang-en">CompC: βL=1.35, D/E=0.70, t=32%</span></span><span>βU = 0.89</span></div>
+          <div class="calc-row calc-total"><span><span class="lang-ja">中央値 βU</span><span class="lang-en">Median βU</span></span><span class="calc-highlight">0.89</span></div>
+          <div class="calc-row" style="margin-top:14px;"><span><span class="lang-ja">評価対象 Target D/E=1.50、t=30%でRelever</span><span class="lang-en">Target D/E=1.50, t=30% → relever</span></span><span class="calc-highlight">βL = 1.83</span></div>
+          <div class="calc-row"><span style="font-size:0.75em;color:var(--text-muted);">0.89 × [1 + 0.70 × 1.50]</span><span></span></div>
+        </div>
+
+        <p>
+          <span class="lang-ja">この例では、βUが0.89という控えめな値でも、D/E=1.5というレバレッジの高い目標資本構成でReleverするとβLは1.83に拡大する。レバレッジによる増幅係数（[1 + (1-t)×D/E]）は2.05倍だ。このことは後で論じる「誤差の増幅」に直結する。</span>
+          <span class="lang-en">In this example, even a modest βU of 0.89 expands to βL of 1.83 after relevering at D/E = 1.5. The leverage multiplier ([1 + (1-t)×D/E]) is 2.05×. This has direct implications for the "error amplification" discussed later.</span>
+        </p>
+
+        <!-- ======================================================== -->
+        <h2><span class="lang-ja">2. Hamada式が依存する2つの仮定</span><span class="lang-en">2. The Two Assumptions Hamada Depends On</span></h2>
+
+        <p>
+          <span class="lang-ja">Hamada式の導出はMM命題 II + CAPMの融合だ。MM命題 IIには2つの強い仮定が内包されている。</span>
+          <span class="lang-en">The Hamada equation is derived by fusing MM Proposition II with CAPM. MM Proposition II embeds two strong assumptions.</span>
+        </p>
+
+        <h3><span class="lang-ja">仮定①：負債は永続的（Perpetual Debt）</span><span class="lang-en">Assumption ①: Perpetual Debt</span></h3>
+
+        <p>
+          <span class="lang-ja">Hamada式のTax Shield（t × D）はModigliani-Miller (1963)の「永続的負債のTax Shield現在価値 = t × D」に基づく。これは「会社が永遠に同じ水準の負債を維持し続ける」という仮定だ。</span>
+          <span class="lang-en">The tax shield term (t × D) in the Hamada equation rests on Modigliani-Miller (1963)'s formula for the PV of a perpetual debt tax shield: t × D. This assumes the company will maintain the same debt level forever.</span>
+        </p>
+
+        <div class="trap-box">
+          <div class="trap-label"><span class="lang-ja">現実との乖離</span><span class="lang-en">Deviation from Reality</span></div>
+          <p>
+            <span class="lang-ja">ほとんどの企業は負債をEBITDAまたは企業価値の一定比率に維持しようとする——利益が増えれば負債も増やし、利益が減れば負債も返済する。この動態的なリバランス行動のもとでは、Tax ShieldはKdで割り引くべきではなく、より不確実なキャッシュフローとして扱われるべきだ。これがMiles-Ezzelが出発点とする現実だ。</span>
+            <span class="lang-en">Most companies manage debt as a fixed percentage of EBITDA or enterprise value — they borrow more when earnings rise and repay when earnings fall. Under this dynamic rebalancing, the tax shield is no longer certain; it should be discounted at a higher rate than Kd. This is the empirical reality that Miles-Ezzell starts from.</span>
+          </p>
+        </div>
+
+        <h3><span class="lang-ja">仮定②：Tax ShieldはKdで割り引く（確実なキャッシュフロー）</span><span class="lang-en">Assumption ②: Tax Shield Discounted at Kd</span></h3>
+
+        <p>
+          <span class="lang-ja">MMの論理では「Tax ShieldはKd（負債コスト）で割り引く」——なぜなら負債のInterest Expenseと同じ確実性を持つからだ。この確実性の仮定が、βL = βU × [1 + (1-t) × D/E] という乗数を生む。</span>
+          <span class="lang-en">In MM's logic, the tax shield is discounted at Kd (cost of debt) — because it has the same certainty as the interest expense on the debt. This certainty assumption produces the multiplier [1 + (1-t) × D/E] in the Hamada equation.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">しかし利息控除ができるかどうかは企業の課税所得に依存する。業績悪化・損失・DTA計上など、Tax Shieldが「実現しないリスク」は実務上無視できない。特に高レバレッジ企業（LBO後やディストレスト企業）では、Tax Shieldの実現可能性は確実ではない。</span>
+          <span class="lang-en">But whether interest is actually deductible depends on the company's taxable income. The risk of the tax shield "failing to materialize" — from operating losses, DTA positions, or earnings shortfalls — is not negligible in practice. For highly levered companies after LBOs or in financial distress, the realizability of the tax shield is genuinely uncertain.</span>
+        </p>
+
+        <!-- ======================================================== -->
+        <h2><span class="lang-ja">3. Miles-Ezzell — よりリアルな代替式</span><span class="lang-en">3. Miles-Ezzell — A More Realistic Alternative</span></h2>
+
+        <p>
+          <span class="lang-ja">Miles and Ezzell (1980) はHamadaの基になるMM Tax Shield仮定に異議を唱えた。彼らは「負債が企業価値に比例してリバランスされる」という仮定のもとでTax Shieldの割引率を再導出した。</span>
+          <span class="lang-en">Miles and Ezzell (1980) challenged the MM tax shield assumption underlying Hamada. They re-derived the discount rate for the tax shield under the assumption that debt is rebalanced proportionally to firm value.</span>
+        </p>
+
+        <div class="formula">βL(ME) = βU × [1 + (1 − t × Kd/(Ku + Kd)) × D/E]</div>
+
+        <p>
+          <span class="lang-ja">ここで<strong>Ku</strong>はUnlevered cost of equity（事業リスクのみに対するリターン要求）。Hamadaと比較すると：</span>
+          <span class="lang-en">Where <strong>Ku</strong> is the unlevered cost of equity (return required for business risk only). Comparing to Hamada:</span>
+        </p>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">項目</span><span class="lang-en">Item</span></th>
+                <th>Hamada (MM)</th>
+                <th>Miles-Ezzell</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="lang-ja">負債の仮定</span><span class="lang-en">Debt assumption</span></td>
+                <td><span class="lang-ja">永続的・固定水準</span><span class="lang-en">Perpetual, fixed level</span></td>
+                <td class="td-accent"><span class="lang-ja">毎期リバランス（企業価値比例）</span><span class="lang-en">Rebalanced each period (proportional to firm value)</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">Tax ShieldのPV</span><span class="lang-en">Tax Shield PV</span></td>
+                <td><span class="lang-ja">t × D（確実なCFとして）</span><span class="lang-en">t × D (as certain CF)</span></td>
+                <td class="td-accent"><span class="lang-ja">より小さい（不確実性を反映）</span><span class="lang-en">Smaller (reflecting uncertainty)</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">Tax Shield割引率</span><span class="lang-en">Tax Shield discount rate</span></td>
+                <td><span class="lang-ja">Kd（負債コスト）</span><span class="lang-en">Kd (cost of debt)</span></td>
+                <td class="td-accent"><span class="lang-ja">Ku（1期目はKd、それ以降はKu）</span><span class="lang-en">Ku (first period at Kd, subsequent at Ku)</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">Levered βへの影響</span><span class="lang-en">Impact on levered β</span></td>
+                <td><span class="lang-ja">Tax Shieldを大きく評価 → βL小さめ</span><span class="lang-en">Overvalues Tax Shield → smaller βL</span></td>
+                <td class="td-accent"><span class="lang-ja">Tax Shieldを保守的評価 → βL大きめ</span><span class="lang-en">Conservative Tax Shield → larger βL</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">実務での使い方</span><span class="lang-en">Practical usage</span></td>
+                <td><span class="lang-ja">標準的なM&amp;A・一般的なDCF</span><span class="lang-en">Standard M&amp;A and general DCF</span></td>
+                <td class="td-accent"><span class="lang-ja">高レバレッジ・LBO・ディストレスト</span><span class="lang-en">High-leverage, LBO, distressed situations</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="pull-quote">
+          <p>
+            <span class="lang-ja">「どちらの式が『正しい』かではなく、どちらの負債行動の仮定が評価対象企業に近いかで選ぶべきだ。」</span>
+            <span class="lang-en">"The choice is not which formula is 'correct,' but which debt-behavior assumption better fits the company being valued."</span>
+          </p>
+          <footer>— Damodaran, Investment Valuation, 3rd ed.</footer>
+        </div>
+
+        <h3><span class="lang-ja">実務上の選択指針</span><span class="lang-en">Practical Selection Guidelines</span></h3>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">ケース</span><span class="lang-en">Case</span></th>
+                <th><span class="lang-ja">推奨</span><span class="lang-en">Recommended</span></th>
+                <th><span class="lang-ja">理由</span><span class="lang-en">Reason</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="lang-ja">安定成長の上場企業DCF</span><span class="lang-en">Stable-growth listed company DCF</span></td>
+                <td class="td-accent">Hamada</td>
+                <td><span class="lang-ja">差異は小さく、Hamadaが業界標準</span><span class="lang-en">Difference is small; Hamada is industry standard</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">LBO / PE取引後のモデル</span><span class="lang-en">Post-LBO / PE deal model</span></td>
+                <td class="td-accent">Miles-Ezzell</td>
+                <td><span class="lang-ja">D/Eが動態的に変化する設計が多い</span><span class="lang-en">Debt typically follows a dynamic schedule</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">ディストレスト企業</span><span class="lang-en">Distressed company</span></td>
+                <td class="td-accent">Miles-Ezzell or APV</td>
+                <td><span class="lang-ja">Tax Shield実現可能性が不確実</span><span class="lang-en">Tax shield realizability is genuinely uncertain</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">非公開企業（Private Equity）</span><span class="lang-en">Private company (general)</span></td>
+                <td class="td-accent">Hamada（感度分析でMEも併記）</td>
+                <td><span class="lang-ja">標準として開示しつつ、代替式との差を示す</span><span class="lang-en">Use as standard but show difference with ME</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ======================================================== -->
+        <h2><span class="lang-ja">4. 誤差が蓄積する3段階</span><span class="lang-en">4. Three Stages Where Errors Compound</span></h2>
+
+        <p>
+          <span class="lang-ja">#002では「βは測定するというより選択する数字だ」と述べた。その推計誤差がHamada変換を経るとどうなるか。3段階で誤差が増幅・蓄積するプロセスを追う。</span>
+          <span class="lang-en">In #002 we noted that "beta is more chosen than measured." Once that estimation error passes through the Hamada transform, what happens? Let us trace the compounding across three stages.</span>
+        </p>
+
+        <h3><span class="lang-ja">Stage 1 — Raw βLの推計誤差（#002の続き）</span><span class="lang-en">Stage 1 — Raw βL Estimation Error (#002 Recap)</span></h3>
+
+        <p>
+          <span class="lang-ja">推計期間・頻度・Blume調整の選択次第で、同一企業のβLが±0.2〜0.3変動することを#002で示した。この±0.3を出発点の不確実性としよう。</span>
+          <span class="lang-en">As shown in #002, the same company's βL can vary by ±0.2–0.3 depending on estimation window, frequency, and Blume adjustment. Take this ±0.3 as the starting uncertainty.</span>
+        </p>
+
+        <h3><span class="lang-ja">Stage 2 — Unleverによる誤差の「移し替え」</span><span class="lang-en">Stage 2 — Error "Transfer" Through Unlevering</span></h3>
+
+        <p>
+          <span class="lang-ja">UnleverするとβLの誤差がβUに移行する。ここでの問題は誤差が消えないことだ。乗数[1 + (1-t)×D/E]で除すため、高レバレッジのcomparableのβLを使う場合、βU自体の不確実性はβLより小さくなるが、ゼロにはならない。</span>
+          <span class="lang-en">Unlevering transfers the βL error into βU. The problem is that the error does not disappear. Dividing by the multiplier [1 + (1-t)×D/E] reduces the absolute uncertainty in βU compared to βL for a high-leverage comparable, but it does not reach zero.</span>
+        </p>
+
+        <h3><span class="lang-ja">Stage 3 — Releverによる誤差の増幅</span><span class="lang-en">Stage 3 — Error Amplification Through Relevering</span></h3>
+
+        <p>
+          <span class="lang-ja">最も影響が大きい段階だ。Target D/EでReleverする際、βUの誤差は[1 + (1-t)×TargetD/E]倍に増幅される。TargetD/Eが大きいほど増幅が大きい。</span>
+          <span class="lang-en">This is the stage with the largest impact. When relevering at the target D/E, the βU error is amplified by the multiplier [1 + (1-t)×Target D/E]. The higher the target D/E, the larger the amplification.</span>
+        </p>
+
+        <div class="calc-block">
+          <div style="font-size:0.78em;color:var(--text-muted);margin-bottom:10px;font-family:'Inter',sans-serif;"><span class="lang-ja">誤差蓄積の数値例（t=30%、全段階で±0.15の推計誤差を仮定）</span><span class="lang-en">Numerical illustration of error compounding (t=30%, assume ±0.15 estimation error at each stage)</span></div>
+          <div class="calc-row"><span><span class="lang-ja">中央値βU（推計）</span><span class="lang-en">Median βU (estimated)</span></span><span>0.80</span></div>
+          <div class="calc-row"><span><span class="lang-ja">βUの誤差レンジ</span><span class="lang-en">βU error range</span></span><span class="calc-warn">0.65 〜 0.95</span></div>
+          <div class="calc-row" style="margin-top:8px;"><span><span class="lang-ja">Target D/E=2.0でRelever（乗数=2.40）</span><span class="lang-en">Relever at Target D/E=2.0 (multiplier=2.40)</span></span><span></span></div>
+          <div class="calc-row"><span><span class="lang-ja">βU=0.65 → βL</span><span class="lang-en">βU=0.65 → βL</span></span><span>1.56</span></div>
+          <div class="calc-row"><span><span class="lang-ja">βU=0.80 → βL（中央値）</span><span class="lang-en">βU=0.80 → βL (central)</span></span><span class="calc-highlight">1.92</span></div>
+          <div class="calc-row"><span><span class="lang-ja">βU=0.95 → βL</span><span class="lang-en">βU=0.95 → βL</span></span><span>2.28</span></div>
+          <div class="calc-row calc-total"><span><span class="lang-ja">最終βLの誤差レンジ</span><span class="lang-en">Final βL error range</span></span><span class="calc-warn">±0.36（中央値比 ±19%）</span></div>
+          <div class="calc-row"><span><span class="lang-ja">ERP=5%とすると、Ke誤差</span><span class="lang-en">With ERP=5%, Ke error</span></span><span class="calc-warn">±1.8%</span></div>
+        </div>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>レバレッジが高いほど、βの推計誤差がWACCに与える影響は非線形に拡大する。</strong>D/E=2.0というLBO後の高レバレッジ環境では、最初の±0.15のβU誤差が最終的にKeの±1.8%という誤差に増幅される。これは#002で示したWACC ±1%の感度テーブルをはるかに超える影響だ。</span>
+            <span class="lang-en"><strong>The higher the leverage, the more nonlinearly a beta estimation error amplifies into WACC.</strong> In a post-LBO environment with D/E = 2.0, an initial ±0.15 βU error amplifies into a Ke error of ±1.8%. This far exceeds the ±1% WACC sensitivity shown in #002.</span>
+          </p>
+        </div>
+
+        <!-- ======================================================== -->
+        <h2><span class="lang-ja">5. Target資本構成の選択問題</span><span class="lang-en">5. The Target Capital Structure Problem</span></h2>
+
+        <p>
+          <span class="lang-ja">Relever時に使う「Target D/E」は何から取るべきか。これ自体がもう一つの推計問題だ。</span>
+          <span class="lang-en">What should the "Target D/E" used in relevering be sourced from? This is itself another estimation problem.</span>
+        </p>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">選択肢</span><span class="lang-en">Option</span></th>
+                <th><span class="lang-ja">内容</span><span class="lang-en">Description</span></th>
+                <th><span class="lang-ja">問題点</span><span class="lang-en">Problem</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong><span class="lang-ja">現在の資本構成</span><span class="lang-en">Current capital structure</span></strong></td>
+                <td><span class="lang-ja">評価時点のD/(D+E)を使う</span><span class="lang-en">Use D/(D+E) at the valuation date</span></td>
+                <td class="td-warn"><span class="lang-ja">一時的な資本構成変化（LBO直後・増資直後）を長期βに反映してしまう</span><span class="lang-en">Locks in temporary capital structure changes (post-LBO, post-equity raise) into a long-term beta</span></td>
+              </tr>
+              <tr>
+                <td><strong><span class="lang-ja">業種平均資本構成</span><span class="lang-en">Industry average capital structure</span></strong></td>
+                <td><span class="lang-ja">comparable企業群の平均D/Eを使う</span><span class="lang-en">Use the comparable group's average D/E</span></td>
+                <td class="td-accent"><span class="lang-ja">対象企業固有の財務戦略が無視される</span><span class="lang-en">Ignores the target's specific financial strategy</span></td>
+              </tr>
+              <tr>
+                <td><strong><span class="lang-ja">経営計画Target</span><span class="lang-en">Management target</span></strong></td>
+                <td><span class="lang-ja">経営陣の中長期目標D/E（例：ネット有利子負債/EBITDA=2.5×維持）</span><span class="lang-en">Management's medium-term target D/E (e.g., net debt/EBITDA = 2.5× maintained)</span></td>
+                <td class="td-accent"><span class="lang-ja">実現可能性・信頼性の検証が必要。M&amp;A文脈では利益相反も存在</span><span class="lang-en">Realizability and credibility must be verified. Conflicts of interest in M&amp;A contexts</span></td>
+              </tr>
+              <tr>
+                <td><strong><span class="lang-ja">Damodaran業種別データ</span><span class="lang-en">Damodaran sector data</span></strong></td>
+                <td><span class="lang-ja">NYU Sternの業種別Unlevered/Levered betaを参照値として使う</span><span class="lang-en">Use NYU Stern sector-level unlevered/levered beta data as a reference point</span></td>
+                <td class="td-accent"><span class="lang-ja">米国市場ベースのため、日本企業適用時は整合性確認が必要</span><span class="lang-en">US market-based; verify applicability when applied to Japanese companies</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="trap-box">
+          <div class="trap-label"><span class="lang-ja">実務でよくある罠</span><span class="lang-en">Common Practitioner Trap</span></div>
+          <p>
+            <span class="lang-ja">LBO後の高いD/Eをそのまま永続的なTarget D/EとしてReleverしてしまう。LBOのデット返済スケジュールを前提とすれば、Term年数経過後のD/Eは大きく低下する。永続成長価値（Terminal Value）の計算ではLBO後の安定期を想定したTarget D/Eを使うべきだ。</span>
+            <span class="lang-en">Relevering using post-LBO D/E as if it were the permanent target. If the LBO includes a debt repayment schedule, D/E will decline significantly over the holding period. For Terminal Value, use the target D/E in the stable post-deleveraging phase, not the entry leverage.</span>
+          </p>
+        </div>
+
+        <div class="section-sep">· · ·</div>
+
+        <!-- ======================================================== -->
+        <h2><span class="lang-ja">6. 実務への含意 — 「正確なβ変換」ではなく「透明なβ変換」</span><span class="lang-en">6. Practical Implications — "Transparent Beta" Not "Precise Beta"</span></h2>
+
+        <h3><span class="lang-ja">① 変換プロセスを文書化する</span><span class="lang-en">① Document the transformation process</span></h3>
+
+        <p>
+          <span class="lang-ja">βの変換には少なくとも以下を記録する：① 使用したcomparable企業群と各社のβL・D/E・t、② Unlever式の選択（Hamada or Miles-Ezzell）とその理由、③ Target D/Eの出所と選択根拠、④ 最終Levered βとその感度レンジ。</span>
+          <span class="lang-en">At minimum, document: ① the comparable company set with each company's βL, D/E, and t; ② the unlever formula choice (Hamada or Miles-Ezzell) and the rationale; ③ the source and justification for the target D/E; ④ the final levered beta and its sensitivity range.</span>
+        </p>
+
+        <h3><span class="lang-ja">② βU感度テーブルとD/E感度テーブルをセットで作る</span><span class="lang-en">② Build a βU sensitivity table alongside a D/E sensitivity table</span></h3>
+
+        <p>
+          <span class="lang-ja">βUの合理的な範囲（例：0.70〜1.00）とTarget D/Eの合理的な範囲（例：1.0〜2.5）の組み合わせで、最終βLの分布を示す2次元感度テーブルが最も情報量が多い。</span>
+          <span class="lang-en">A two-dimensional sensitivity table showing the distribution of final βL across a reasonable βU range (e.g., 0.70–1.00) and a reasonable target D/E range (e.g., 1.0–2.5) carries the most information and most honestly represents the uncertainty structure.</span>
+        </p>
+
+        <div class="calc-block">
+          <div style="font-size:0.78em;color:var(--text-muted);margin-bottom:10px;font-family:'Inter',sans-serif;"><span class="lang-ja">βL感度テーブル例（t=30%、Hamada）</span><span class="lang-en">βL sensitivity table example (t=30%, Hamada)</span></div>
+          <div style="overflow-x:auto;">
+            <table style="font-family:'JetBrains Mono',monospace; font-size:0.78em; border-collapse:collapse; min-width:360px;">
+              <thead>
+                <tr>
+                  <th style="padding:6px 12px; background:var(--bg-subtle); border:1px solid var(--border-light); text-align:center;">βU \ D/E</th>
+                  <th style="padding:6px 12px; background:var(--bg-subtle); border:1px solid var(--border-light); text-align:center;">0.5</th>
+                  <th style="padding:6px 12px; background:var(--bg-subtle); border:1px solid var(--border-light); text-align:center;">1.0</th>
+                  <th style="padding:6px 12px; background:var(--bg-subtle); border:1px solid var(--border-light); text-align:center;">1.5</th>
+                  <th style="padding:6px 12px; background:var(--bg-subtle); border:1px solid var(--border-light); text-align:center;">2.0</th>
+                  <th style="padding:6px 12px; background:var(--bg-subtle); border:1px solid var(--border-light); text-align:center;">2.5</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="padding:5px 12px; border:1px solid var(--border-light); background:var(--bg-subtle); font-weight:600;">0.70</td>
+                  <td style="padding:5px 12px; border:1px solid var(--border-light); text-align:center;">0.95</td>
+                  <td style="padding:5px 12px; border:1px solid var(--border-light); text-align:center;">1.19</td>
+                  <td style="padding:5px 12px; border:1px solid var(--border-light); text-align:center;">1.44</td>
+                  <td style="padding:5px 12px; border:1px solid var(--border-light); text-align:center;">1.68</td>
+                  <td style="padding:5px 12px; border:1px solid var(--border-light); text-align:center;">1.93</td>
+                </tr>
+                <tr style="background:var(--table-stripe);">
+                  <td style="padding:5px 12px; border:1px solid var(--border-light); background:var(--bg-subtle); font-weight:600;">0.80</td>
+                  <td style="padding:5px 12px; border:1px solid var(--border-light); text-align:center;">1.08</td>
+                  <td style="padding:5px 12px; border:1px solid var(--border-light); text-align:center; font-weight:700; color:var(--accent);">1.36</td>
+                  <td style="padding:5px 12px; border:1px solid var(--border-light); text-align:center;">1.64</td>
+                  <td style="padding:5px 12px; border:1px solid var(--border-light); text-align:center;">1.92</td>
+                  <td style="padding:5px 12px; border:1px solid var(--border-light); text-align:center;">2.20</td>
+                </tr>
+                <tr>
+                  <td style="padding:5px 12px; border:1px solid var(--border-light); background:var(--bg-subtle); font-weight:600;">0.90</td>
+                  <td style="padding:5px 12px; border:1px solid var(--border-light); text-align:center;">1.22</td>
+                  <td style="padding:5px 12px; border:1px solid var(--border-light); text-align:center;">1.53</td>
+                  <td style="padding:5px 12px; border:1px solid var(--border-light); text-align:center;">1.85</td>
+                  <td style="padding:5px 12px; border:1px solid var(--border-light); text-align:center;">2.16</td>
+                  <td style="padding:5px 12px; border:1px solid var(--border-light); text-align:center;">2.48</td>
+                </tr>
+                <tr style="background:var(--table-stripe);">
+                  <td style="padding:5px 12px; border:1px solid var(--border-light); background:var(--bg-subtle); font-weight:600;">1.00</td>
+                  <td style="padding:5px 12px; border:1px solid var(--border-light); text-align:center;">1.35</td>
+                  <td style="padding:5px 12px; border:1px solid var(--border-light); text-align:center;">1.70</td>
+                  <td style="padding:5px 12px; border:1px solid var(--border-light); text-align:center;">2.05</td>
+                  <td style="padding:5px 12px; border:1px solid var(--border-light); text-align:center;">2.40</td>
+                  <td style="padding:5px 12px; border:1px solid var(--border-light); text-align:center;">2.75</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div style="font-size:0.7em;color:var(--text-muted);margin-top:8px;font-family:'Inter',sans-serif;"><span class="lang-ja">βU=0.80、D/E=1.0が中央推計（太字）。テーブルの端へ行くほどWACCへの影響が拡大する。</span><span class="lang-en">βU=0.80, D/E=1.0 is the central estimate (bold). The further from center, the larger the WACC impact.</span></div>
+        </div>
+
+        <h3><span class="lang-ja">③ 高レバレッジ案件ではHamada vs. Miles-Ezzellの差を必ず定量化する</span><span class="lang-en">③ For high-leverage deals, always quantify the Hamada vs. Miles-Ezzell gap</span></h3>
+
+        <p>
+          <span class="lang-ja">D/E &gt; 1.5を超える案件（LBO・再建局面）では、HamadaとMiles-Ezzelで最終βLに0.1〜0.3以上の差が生じることがある。この差をWACC感度の一つとして明示することで、「どちらの式を選んだか」が分析の透明性を高め、相手方とのディスカッションを具体化させる。</span>
+          <span class="lang-en">For deals exceeding D/E &gt; 1.5 (LBOs, restructuring situations), Hamada and Miles-Ezzell can produce βL differences of 0.1–0.3 or more. Explicitly showing this as part of your WACC sensitivity table makes clear which formula was chosen, increases analytical transparency, and concretizes discussions with counterparties.</span>
+        </p>
+
+        <!-- ======================================================== -->
+        <h2><span class="lang-ja">出典</span><span class="lang-en">References</span></h2>
+
+        <ul class="source-list">
+          <li><a href="https://pages.stern.nyu.edu/~adamodar/New_Home_Page/data.html" target="_blank" rel="noopener">Damodaran, A. — Levered and Unlevered Betas by Sector (Annual), NYU Stern</a><span class="source-tag"><span class="lang-ja">[データ]</span><span class="lang-en">[Data]</span></span></li>
+          <li><a href="https://openlibrary.org/isbn/9781118011522" target="_blank" rel="noopener">Damodaran, A. — Investment Valuation: Tools and Techniques for Determining the Value of Any Asset, 3rd ed. (Wiley 2012)</a><span class="source-tag"><span class="lang-ja">[書籍]</span><span class="lang-en">[Book]</span></span></li>
+          <li><a href="https://openlibrary.org/isbn/9781119610885" target="_blank" rel="noopener">Koller, T., Goedhart, M., Wessels, D. — Valuation: Measuring and Managing the Value of Companies, 7th ed. (McKinsey, Wiley 2020)</a><span class="source-tag"><span class="lang-ja">[書籍]</span><span class="lang-en">[Book]</span></span></li>
+          <li><a href="https://www.jstor.org/stable/2326210" target="_blank" rel="noopener">Hamada, R.S. — The Effect of the Firm's Capital Structure on the Systematic Risk of Common Stocks, Journal of Finance 27(2), 1972</a><span class="source-tag"><span class="lang-ja">[論文]</span><span class="lang-en">[Paper]</span></span></li>
+          <li><a href="https://www.jstor.org/stable/2327518" target="_blank" rel="noopener">Miles, J. & Ezzell, J.R. — The Weighted Average Cost of Capital, Perfect Capital Markets, and Project Life: A Clarification, Journal of Financial and Quantitative Analysis 15(3), 1980</a><span class="source-tag"><span class="lang-ja">[論文]</span><span class="lang-en">[Paper]</span></span></li>
+          <li><a href="https://www.jstor.org/stable/2325917" target="_blank" rel="noopener">Modigliani, F. & Miller, M. — Corporate Income Taxes and the Cost of Capital: A Correction, American Economic Review 53(3), 1963</a><span class="source-tag"><span class="lang-ja">[論文]</span><span class="lang-en">[Paper]</span></span></li>
+        </ul>
+
+        <!-- Next CTA -->
+        <div class="next-article">
+          <div class="next-label"><span class="lang-ja">次回 · Valuation Theory Lab #004</span><span class="lang-en">Next · Valuation Theory Lab #004</span></div>
+          <div class="next-title">
+            <span class="lang-ja">シクリカル企業のLTMが罠である理由<br>— Mid-cycle正規化とNormalized Earnings</span>
+            <span class="lang-en">Why Cyclical Companies' LTM Is a Trap<br>— Mid-cycle Normalization and Normalized Earnings</span>
+          </div>
+          <div class="next-desc">
+            <span class="lang-ja">景気サイクルのピーク・トラフどちらかを掴んでしまったLTMはバリュエーションを歪める。Mid-cycle EBITDAの推計方法、Normalized Earningsの業種別アプローチ、そして感度分析への組み込み方。</span>
+            <span class="lang-en">LTM earnings captured at a cycle peak or trough will distort your valuation. Mid-cycle EBITDA estimation, industry-specific normalized earnings approaches, and how to incorporate the uncertainty into your sensitivity framework.</span>
+          </div>
+        </div>
+
+      </article>
+
+      <!-- 4. サイドバー -->
+      <aside class="article-sidebar">
+
+        <div class="sidebar-card">
+          <div class="section-label">KEY FACTS</div>
+          <div class="keyfacts-grid">
+            <div class="fact-card highlight">
+              <div class="fact-value">2.05×</div>
+              <div class="fact-desc"><span class="lang-ja">D/E=2.0、t=30%でのHamada乗数（βU誤差がこの倍率で増幅）</span><span class="lang-en">Hamada multiplier at D/E=2.0, t=30% (βU error amplified by this factor)</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">Kd vs Ku</div>
+              <div class="fact-desc"><span class="lang-ja">Hamada vs. Miles-Ezzellの核心：Tax Shield割引率の違い</span><span class="lang-en">The core distinction: tax shield discounted at Kd (Hamada) vs. Ku (ME)</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">±1.8%</div>
+              <div class="fact-desc"><span class="lang-ja">D/E=2.0でのβU誤差±0.15がKeに与える影響（ERP=5%時）</span><span class="lang-en">Ke error from βU error ±0.15 at D/E=2.0 with ERP=5%</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">3段階</div>
+              <div class="fact-desc"><span class="lang-ja">誤差蓄積：①Raw β推計 → ②Unlever → ③Relever</span><span class="lang-en">Error stages: ①Raw β → ②Unlever → ③Relever</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">Target</div>
+              <div class="fact-desc"><span class="lang-ja">Relever時はCurrentではなくTarget D/Eを使う（長期・安定時点）</span><span class="lang-en">Use Target (not Current) D/E when relevering — the long-run stable ratio</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">LBO ≠</div>
+              <div class="fact-desc"><span class="lang-ja">LBOのEntry D/EをTerminal ValueのTarget D/Eに使ってはいけない</span><span class="lang-en">Never use LBO entry D/E as the Terminal Value target capital structure</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-card">
+          <div class="section-label">SERIES PLAN</div>
+          <ol class="highlights-list">
+            <li class="highlight-item">
+              <span class="hl-num">01</span>
+              <span class="hl-text"><a href="./2026-03-20-valuation.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">Terminal ValueはなぜDCFの70-80%を占めるのか</span><span class="lang-en">Why Terminal Value Drives 70-80% of DCF</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">02</span>
+              <span class="hl-text"><a href="./2026-03-21-wacc.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">WACCは本当に計算できるのか — CAPM限界論と代替アプローチ</span><span class="lang-en">Can WACC Really Be Calculated? — CAPM Limitations and Alternatives</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num" style="color:var(--accent-warm);font-weight:700;">03</span>
+              <span class="hl-text"><strong><span class="lang-ja">Betaを信じる前に考えること — Hamada変換の仮定と誤差の蓄積</span><span class="lang-en">Before You Trust That Beta — Hamada Transform Assumptions and Compounding Error</span></strong> — <span class="lang-ja">本稿</span><span class="lang-en">this article</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">04</span>
+              <span class="hl-text"><span class="lang-ja">シクリカル企業のLTMが罠である理由 — Mid-cycle正規化</span><span class="lang-en">Why Cyclical Companies' LTM Is a Trap — Mid-cycle Normalization</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">05</span>
+              <span class="hl-text"><span class="lang-ja">IFRS16後のEV bridgeを再考する — EV/EBITDA vs. EBITDAR</span><span class="lang-en">Rethinking EV Bridge Post-IFRS16 — EV/EBITDA vs. EBITDAR</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">06</span>
+              <span class="hl-text"><span class="lang-ja">APVアプローチ再考 — MM命題・Tax shieldの現在価値</span><span class="lang-en">APV Reconsidered — MM Propositions and Tax Shield PV</span></span>
+            </li>
+          </ol>
+        </div>
+
+        <div class="sidebar-card">
+          <div class="section-label">KEY REFERENCES</div>
+          <ul class="source-list" style="margin-top:10px;">
+            <li><a href="https://pages.stern.nyu.edu/~adamodar/New_Home_Page/data.html" target="_blank" rel="noopener">Damodaran — Betas by Sector Data</a></li>
+            <li><a href="http://aswathdamodaran.blogspot.com/" target="_blank" rel="noopener">Damodaran — Musings on Markets</a></li>
+            <li><a href="https://openlibrary.org/isbn/9781119610885" target="_blank" rel="noopener">McKinsey Valuation 7th ed.</a></li>
+            <li><a href="https://www.jstor.org/stable/2326210" target="_blank" rel="noopener">Hamada (1972) — JSTOR</a></li>
+            <li><a href="https://www.jstor.org/stable/2327518" target="_blank" rel="noopener">Miles &amp; Ezzell (1980) — JSTOR</a></li>
+          </ul>
+        </div>
+
+      </aside>
+
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <span>Valuation Theory Lab #003 | donato Valuation Notes | 2026-03-21</span>
+  <span><span class="lang-ja">本稿は理論解説目的です。実際の投資判断・M&amp;A意思決定には専門家への確認を要します。</span><span class="lang-en">For educational purposes only. Consult qualified professionals before making investment or M&amp;A decisions.</span></span>
+</footer>
+
+<script>
+  // Progress bar
+  window.addEventListener('scroll', function() {
+    var h = document.documentElement;
+    var pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    document.getElementById('progress-bar').style.width = Math.min(pct, 100) + '%';
+  });
+
+  // Reading time (500字/分)
+  (function() {
+    var text = document.querySelector('.article-body') ? document.querySelector('.article-body').textContent : '';
+    var chars = text.length;
+    var minutes = Math.ceil(chars / 500);
+    var label = '約' + minutes + '分';
+    var el1 = document.getElementById('reading-time-badge');
+    var el2 = document.getElementById('reading-time-badge2');
+    if (el1) el1.querySelector('.lang-ja').textContent = label;
+    if (el2) el2.querySelector('.lang-ja').textContent = label;
+  })();
+
+  // Lang toggle
+  let currentLang = localStorage.getItem('hp-lang') || 'ja';
+  let currentTheme = localStorage.getItem('hp-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('hp-lang', lang);
+    document.querySelectorAll('.lang-ja').forEach(el => el.style.display = lang === 'ja' ? 'inline' : 'none');
+    document.querySelectorAll('.lang-en').forEach(el => el.style.display = lang === 'en' ? 'inline' : 'none');
+    document.querySelectorAll('.art-lang-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+    document.documentElement.lang = lang === 'ja' ? 'ja' : 'en';
+  }
+  function toggleTheme() {
+    currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+    localStorage.setItem('hp-theme', currentTheme);
+    document.body.classList.toggle('dark', currentTheme === 'dark');
+    document.getElementById('theme-btn').textContent = currentTheme === 'light' ? '☀' : '☾';
+  }
+  document.addEventListener('DOMContentLoaded', () => {
+    setLang(currentLang);
+    if (currentTheme === 'dark') {
+      document.body.classList.add('dark');
+      document.getElementById('theme-btn').textContent = '☾';
+    }
+  });
+</script>
+
+</body>
+</html>

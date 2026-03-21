@@ -271,6 +271,16 @@
       align-items: center;
     }
     .article-card .read-more { color: var(--accent); font-size: 0.65rem; }
+    .read-time-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.06em;
+      color: var(--text2);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      padding: 2px 6px;
+    }
 
     /* Footer */
     footer {
@@ -380,7 +390,7 @@
   <main>
     <div class="articles-grid" id="articles-grid">
       <a class="article-card" data-category="career" href="./2026-03-21-career.html">
-        <p class="category">Career › AIエラのFinance人材戦略</p>
+        <p class="category"><span data-en>Career › Finance Career in the AI Era</span><span data-ja>Career › AIエラのFinance人材戦略</span></p>
         <h2>
           <span data-en>Finance Career Strategy in the AI Era — Where Roles Survive and Where They Don't</span>
           <span data-ja>AIエラのFinanceキャリア戦略 — 生き残る人材と消える仕事の分岐点</span>
@@ -389,11 +399,12 @@
         <p class="summary" data-ja>AIが代替するのは「タスク」であり「職種」ではない。同一職種内でAI活用者と非活用者の格差が拡大する二極化時代に、Finance Professionalが今投資すべきスキルスタックを整理する。</p>
         <div class="meta">
           <span>2026-03-21</span>
+          <span class="read-time-badge"><span data-en>10 min read</span><span data-ja>約10分</span></span>
           <span class="read-more"><span data-en>Read →</span><span data-ja>読む →</span></span>
         </div>
       </a>
       <a class="article-card" data-category="accounting" href="./2026-03-21-ifrs18.html">
-        <p class="category">会計基準 / Accounting Standards › IFRS 18</p>
+        <p class="category"><span data-en>Accounting Standards › IFRS 18</span><span data-ja>会計基準 › IFRS 18</span></p>
         <h2>
           <span data-en>IFRS 18 Explained — The Three-Category P&amp;L and Mandatory MPM Disclosures</span>
           <span data-ja>IFRS 18 完全解説 — 損益計算書の3区分化と経営者業績指標の開示義務</span>
@@ -402,11 +413,12 @@
         <p class="summary" data-ja>IAS 1を全面代替するIFRS 18が2027年1月発効。損益計算書に3区分を義務付け、調整後EBITDAなどのMPMに注記調整表を義務化。遡及適用のため準備期間は実質2026年のみ。</p>
         <div class="meta">
           <span>2026-03-21</span>
+          <span class="read-time-badge"><span data-en>12 min read</span><span data-ja>約12分</span></span>
           <span class="read-more"><span data-en>Read →</span><span data-ja>読む →</span></span>
         </div>
       </a>
       <a class="article-card" data-category="valuation" href="./2026-03-21-wacc.html">
-        <p class="category">Valuation Theory Lab › #002 · 資本コスト</p>
+        <p class="category"><span data-en>Valuation Theory Lab › #002 · Cost of Capital</span><span data-ja>Valuation Theory Lab › #002 · 資本コスト</span></p>
         <h2>
           <span data-en>Can WACC Really Be Calculated? — CAPM Limitations and Alternatives</span>
           <span data-ja>WACCは本当に計算できるのか — CAPM限界論と代替アプローチ</span>
@@ -415,6 +427,7 @@
         <p class="summary" data-ja>株式コスト（Ke）はCAPMに依存する。βは推計期間次第で0.3以上変動し、ERPはHistorical vs. Implied で1ポイント以上争われる。不確実性の構造を理解することが誠実な実務家の出発点だ。</p>
         <div class="meta">
           <span>2026-03-21</span>
+          <span class="read-time-badge"><span data-en>10 min read</span><span data-ja>約10分</span></span>
           <span class="read-more"><span data-en>Read →</span><span data-ja>読む →</span></span>
         </div>
       </a>
@@ -428,6 +441,7 @@
         <p class="summary" data-ja>Gordon Growth Modelの成立条件、ROIC-g-再投資率の三角形、Exit multipleとの循環性。「そういうものだ」で済ませるのは最も重要な仮定の検証を放棄することだ。</p>
         <div class="meta">
           <span>2026-03-20</span>
+          <span class="read-time-badge"><span data-en>10 min read</span><span data-ja>約10分</span></span>
           <span class="read-more"><span data-en>Read →</span><span data-ja>読む →</span></span>
         </div>
       </a>
@@ -441,6 +455,7 @@
         <p class="summary" data-ja>Claude Opus 4.6が▲67%値下げ、GPT-5.4が100万トークンCW対応、Gemini 3.1 Proがベンチマーク制覇。Finance Professionalのワークフローに直結する変化が相次いだ2〜3月の総括。</p>
         <div class="meta">
           <span>2026-03-20</span>
+          <span class="read-time-badge"><span data-en>8 min read</span><span data-ja>約8分</span></span>
           <span class="read-more"><span data-en>Read →</span><span data-ja>読む →</span></span>
         </div>
       </a>

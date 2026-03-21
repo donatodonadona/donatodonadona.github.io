@@ -1,0 +1,57 @@
+[
+  {
+    "date": "2026-03-21",
+    "category": "career",
+    "genre_en": "Career",
+    "genre_ja": "キャリア",
+    "href": "./articles/2026-03-21-career.html",
+    "title_en": "Finance Career Strategy in the AI Era — Where Roles Survive and Where They Don't",
+    "title_ja": "AIエラのFinanceキャリア戦略 — 生き残る人材と消える仕事の分岐点",
+    "summary_en": "AI displaces tasks, not whole roles. Within the same title, the gap between AI-literate and non-literate professionals is widening fast. Here is the skill stack Finance Professionals should build in 2026.",
+    "summary_ja": "AIが代替するのは「タスク」であり「職種」ではない。同一職種内でAI活用者と非活用者の格差が拡大する二極化時代に、Finance Professionalが今投資すべきスキルスタックを整理する。"
+  },
+  {
+    "date": "2026-03-21",
+    "category": "accounting",
+    "genre_en": "Accounting Standards",
+    "genre_ja": "会計基準",
+    "href": "./articles/2026-03-21-ifrs18.html",
+    "title_en": "IFRS 18 Explained — The Three-Category P&L and Mandatory MPM Disclosures",
+    "title_ja": "IFRS 18 完全解説 — 損益計算書の3区分化と経営者業績指標の開示義務",
+    "summary_en": "IAS 1 is replaced. IFRS 18 mandates operating/investing/financing categories and subjects adjusted EBITDA to formal reconciliation requirements. Practical preparation time is 2026 alone.",
+    "summary_ja": "IAS 1を全面代替するIFRS 18が2027年1月発効。損益計算書に3区分を義務付け、調整後EBITDAなどのMPMに注記調整表を義務化。遡及適用のため準備期間は実質2026年のみ。"
+  },
+  {
+    "date": "2026-03-21",
+    "category": "valuation",
+    "genre_en": "Valuation Theory Lab",
+    "genre_ja": "Valuation Theory Lab",
+    "href": "./articles/2026-03-21-wacc.html",
+    "title_en": "Can WACC Really Be Calculated? — CAPM Limitations and Alternatives",
+    "title_ja": "WACCは本当に計算できるのか — CAPM限界論と代替アプローチ",
+    "summary_en": "Ke depends on CAPM — theoretically elegant but empirically fragile. Beta varies by estimation window; ERP is disputed by over 1%. Understanding WACC's uncertainty structure is the honest practitioner's starting point.",
+    "summary_ja": "株式コスト（Ke）はCAPMに依存する。βは推計期間次第で0.3以上変動し、ERPはHistorical vs. Implied で1ポイント以上争われる。不確実性の構造を理解することが誠実な実務家の出発点だ。"
+  },
+  {
+    "date": "2026-03-20",
+    "category": "valuation",
+    "genre_en": "Valuation Theory Lab",
+    "genre_ja": "Valuation Theory Lab",
+    "href": "./articles/2026-03-20-valuation.html",
+    "title_en": "Why Terminal Value Accounts for 70–80% of DCF",
+    "title_ja": "Terminal ValueはなぜDCFの70-80%を占めるのか",
+    "summary_en": "The conditions for Gordon Growth Model validity, the ROIC–g–reinvestment triangle, and the circularity with exit multiples. Accepting it as given is surrendering scrutiny of the most critical assumption.",
+    "summary_ja": "Gordon Growth Modelの成立条件、ROIC-g-再投資率の三角形、Exit multipleとの循環性。「そういうものだ」で済ませるのは最も重要な仮定の検証を放棄することだ。"
+  },
+  {
+    "date": "2026-03-20",
+    "category": "ai",
+    "genre_en": "AI Models & Tools",
+    "genre_ja": "AI Models & Tools",
+    "href": "./articles/2026-03-20-ai.html",
+    "title_en": "AI Model Front Report — March 2026",
+    "title_ja": "AIモデル戦線レポート — 2026年3月",
+    "summary_en": "Claude Opus 4.6 cuts prices 67%, GPT-5.4 launches with 1M-token context, Gemini 3.1 Pro tops benchmarks. A summary of shifts that directly affect Finance Professional workflows in Feb–March.",
+    "summary_ja": "Claude Opus 4.6が▲67%値下げ、GPT-5.4が100万トークンCW対応、Gemini 3.1 Proがベンチマーク制覇。Finance Professionalのワークフローに直結する変化が相次いだ2〜3月の総括。"
+  }
+]

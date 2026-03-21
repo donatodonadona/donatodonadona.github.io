@@ -7,103 +7,192 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+JP:wght@300;400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
     :root {
-      --donato-bg:      #0A0B10;
-      --donato-surface: #12141C;
-      --donato-border:  #21253A;
-      --donato-accent:  #6B9FC4;
-      --donato-gold:    #C9A84C;
-      --donato-text:    #E4E2DC;
-      --donato-text2:   #7A8099;
+      --bg:      #0A0B10;
+      --surface: #12141C;
+      --border:  #21253A;
+      --accent:  #1A6EB0;
+      --gold:    #F5C800;
+      --text:    #E4E2DC;
+      --text2:   #7A8099;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      background: var(--donato-bg);
-      color: var(--donato-text);
+      background: var(--bg);
+      color: var(--text);
       font-family: 'Noto Serif JP', serif;
       font-weight: 300;
       min-height: 100vh;
+      transition: background 0.2s, color 0.2s;
     }
 
-    /* Header */
-    header {
-      border-bottom: 1px solid var(--donato-border);
+    /* Light mode */
+    body.light {
+      --bg:      #F6F5F0;
+      --surface: #EDECEA;
+      --border:  #CCCAC4;
+      --accent:  #1A6EB0;
+      --gold:    #D4A010;
+      --text:    #111320;
+      --text2:   #50566A;
+    }
+    body.light .donato-nav { background: rgba(246,245,240,0.92); }
+
+    /* EN/JP visibility */
+    [data-en], [data-ja] { transition: opacity 0.15s; }
+    body.en [data-ja] { display: none; }
+    body.ja [data-en] { display: none; }
+    body.en [data-en] { display: block; }
+    body.ja [data-ja] { display: block; }
+    span[data-en], span[data-ja] { display: inline !important; }
+    body.ja span[data-en] { display: none !important; }
+    body.en span[data-ja] { display: none !important; }
+
+    /* Donato site nav */
+    .donato-nav {
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 2rem;
+      background: rgba(10,11,16,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .wordmark {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: lowercase;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .wordmark span { color: var(--gold); }
+    .donato-nav-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .donato-nav-links {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+    .donato-nav-links a {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text2);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .donato-nav-links a:hover { color: var(--text); }
+    .donato-nav-links a.current { color: var(--gold); }
+
+    /* Lang toggle */
+    .lang-toggle {
+      display: flex;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .lang-btn {
+      padding: 5px 12px;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text2);
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .lang-btn.active {
+      background: var(--gold);
+      color: #0A0B10;
+    }
+
+    /* Theme toggle */
+    #theme-btn {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text2);
+      padding: 5px 9px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.15s;
+    }
+    #theme-btn:hover { border-color: var(--accent); color: var(--text); }
+
+    /* Page header */
+    .page-header {
+      border-bottom: 1px solid var(--border);
       padding: 2rem 0 1.5rem;
     }
-    .header-inner {
+    .page-header-inner {
       max-width: 960px;
       margin: 0 auto;
       padding: 0 2rem;
     }
-    .site-label {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.7rem;
-      letter-spacing: 0.15em;
-      color: var(--donato-gold);
-      text-transform: uppercase;
-      margin-bottom: 0.5rem;
-    }
-    h1 {
+    .page-header h1 {
       font-family: 'Cormorant Garamond', Georgia, serif;
       font-weight: 600;
-      font-size: 2.4rem;
+      font-size: 2.2rem;
       line-height: 1.15;
       letter-spacing: -0.01em;
     }
-    .tagline {
+    .page-header .tagline {
       font-family: 'Inter', sans-serif;
       font-size: 0.875rem;
-      color: var(--donato-text2);
+      color: var(--text2);
       margin-top: 0.5rem;
     }
 
     /* Category nav */
-    nav {
+    .cat-nav {
       max-width: 960px;
       margin: 0 auto;
       padding: 1.25rem 2rem;
       display: flex;
       gap: 0.5rem;
       flex-wrap: wrap;
-      border-bottom: 1px solid var(--donato-border);
+      border-bottom: 1px solid var(--border);
     }
     .cat-btn {
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.7rem;
       letter-spacing: 0.08em;
       padding: 0.3rem 0.75rem;
-      border: 1px solid var(--donato-border);
+      border: 1px solid var(--border);
       border-radius: 2px;
       background: transparent;
-      color: var(--donato-text2);
+      color: var(--text2);
       cursor: pointer;
       transition: all 0.15s;
       text-decoration: none;
     }
     .cat-btn:hover,
-    .cat-btn.active {
-      border-color: var(--donato-accent);
-      color: var(--donato-accent);
-    }
-    .cat-btn.all.active {
-      border-color: var(--donato-gold);
-      color: var(--donato-gold);
-    }
+    .cat-btn.active { border-color: var(--accent); color: var(--accent); }
+    .cat-btn.all.active { border-color: var(--gold); color: var(--gold); }
 
-    /* お知らせ */
+    /* Announcements */
     .announcements {
       max-width: 960px;
       margin: 0 auto;
       padding: 1rem 2rem;
-      border-bottom: 1px solid var(--donato-border);
+      border-bottom: 1px solid var(--border);
     }
     .announce-header {
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.65rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--donato-gold);
+      letter-spacing: 0.12em;
+      color: var(--gold);
       margin-bottom: 0.6rem;
     }
     .announce-list {
@@ -123,27 +212,15 @@
     .announce-date {
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.65rem;
-      color: var(--donato-text2);
+      color: var(--text2);
       flex-shrink: 0;
     }
-    .announce-text {
-      color: var(--donato-text);
-      line-height: 1.45;
-    }
-    .announce-text a {
-      color: var(--donato-accent);
-      text-decoration: none;
-    }
-    .announce-text a:hover {
-      text-decoration: underline;
-    }
+    .announce-text { color: var(--text); line-height: 1.45; }
+    .announce-text a { color: var(--accent); text-decoration: none; }
+    .announce-text a:hover { text-decoration: underline; }
 
     /* Main */
-    main {
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 2rem;
-    }
+    main { max-width: 960px; margin: 0 auto; padding: 2rem; }
 
     /* Article grid */
     .articles-grid {
@@ -151,28 +228,22 @@
       grid-template-columns: 1fr 1fr;
       gap: 1.5rem;
     }
-    @media (max-width: 640px) {
-      .articles-grid { grid-template-columns: 1fr; }
-    }
+    @media (max-width: 640px) { .articles-grid { grid-template-columns: 1fr; } }
 
     .article-card {
-      background: var(--donato-surface);
-      border: 1px solid var(--donato-border);
+      background: var(--surface);
+      border: 1px solid var(--border);
       padding: 1.5rem;
       text-decoration: none;
       display: block;
       transition: border-color 0.15s;
-      position: relative;
     }
-    .article-card:hover {
-      border-color: var(--donato-accent);
-    }
+    .article-card:hover { border-color: var(--accent); }
     .article-card .category {
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.65rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--donato-gold);
+      letter-spacing: 0.1em;
+      color: var(--gold);
       margin-bottom: 0.6rem;
     }
     .article-card h2 {
@@ -180,54 +251,30 @@
       font-weight: 600;
       font-size: 1.2rem;
       line-height: 1.35;
-      color: var(--donato-text);
+      color: var(--text);
       margin-bottom: 0.5rem;
     }
     .article-card .summary {
-      font-family: 'Noto Serif JP', serif;
       font-size: 0.8rem;
-      color: var(--donato-text2);
+      color: var(--text2);
       line-height: 1.65;
     }
+    .article-card .summary[data-en] { font-family: 'Inter', sans-serif; }
+    .article-card .summary[data-ja] { font-family: 'Noto Serif JP', serif; }
     .article-card .meta {
       margin-top: 1rem;
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.65rem;
-      color: var(--donato-text2);
+      color: var(--text2);
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-    .article-card .read-more {
-      color: var(--donato-accent);
-      font-size: 0.65rem;
-      letter-spacing: 0.08em;
-    }
-
-    /* Empty state */
-    .empty-state {
-      grid-column: 1 / -1;
-      padding: 4rem 0;
-      text-align: center;
-      color: var(--donato-text2);
-      font-family: 'Inter', sans-serif;
-      font-size: 0.875rem;
-    }
-    .empty-state .icon {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-      opacity: 0.3;
-    }
-    .empty-code {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.75rem;
-      color: var(--donato-accent);
-      margin-top: 0.75rem;
-    }
+    .article-card .read-more { color: var(--accent); font-size: 0.65rem; }
 
     /* Footer */
     footer {
-      border-top: 1px solid var(--donato-border);
+      border-top: 1px solid var(--border);
       padding: 1.5rem 2rem;
       max-width: 960px;
       margin: 4rem auto 0;
@@ -239,52 +286,72 @@
       font-family: 'Cormorant Garamond', serif;
       font-size: 1rem;
       font-weight: 600;
-      color: var(--donato-text2);
+      color: var(--text2);
     }
     footer .note {
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.65rem;
-      color: var(--donato-text2);
+      color: var(--text2);
     }
+    footer .note a { color: inherit; text-decoration: none; }
 
-    @media print {
-      body { background: white; color: black; }
-    }
+    @media print { body { background: white; color: black; } }
   </style>
 </head>
-<body>
+<body class="ja">
 
-  <header>
-    <div class="header-inner">
-      <a href="../index.html" style="display:inline-flex; align-items:center; gap:6px; font-family:'JetBrains Mono',monospace; font-size:0.65rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--donato-text2); text-decoration:none; margin-bottom:1rem; transition:color 0.15s;" onmouseover="this.style.color='var(--donato-accent)';" onmouseout="this.style.color='var(--donato-text2)';">← Home</a>
-      <p class="site-label">Finance Professional x AI</p>
-      <h1>Articles</h1>
-      <p class="tagline">AI・会計基準・税法・企業法・M&A・キャリア — Finance Proのための情報キュレーション</p>
+  <nav class="donato-nav">
+    <a href="../index.html" class="wordmark">dona<span>to</span></a>
+    <div class="donato-nav-right">
+      <ul class="donato-nav-links">
+        <li><a href="../index.html"><span data-en>Home</span><span data-ja>ホーム</span></a></li>
+        <li><a href="./index.html" class="current"><span data-en>Articles</span><span data-ja>記事</span></a></li>
+      </ul>
+      <div class="lang-toggle">
+        <button class="lang-btn" onclick="setLang('en')">EN</button>
+        <button class="lang-btn active" onclick="setLang('ja')">JP</button>
+      </div>
+      <button id="theme-btn" onclick="toggleTheme()" title="Toggle light/dark">☀</button>
     </div>
-  </header>
-
-  <nav>
-    <a href="#" class="cat-btn all active" onclick="filterArticles('all'); return false;">All</a>
-    <a href="#" class="cat-btn" onclick="filterArticles('ai'); return false;">AI Models</a>
-    <a href="#" class="cat-btn" onclick="filterArticles('accounting'); return false;">会計基準</a>
-    <a href="#" class="cat-btn" onclick="filterArticles('tax'); return false;">税法</a>
-    <a href="#" class="cat-btn" onclick="filterArticles('law'); return false;">企業法・金商法</a>
-    <a href="#" class="cat-btn" onclick="filterArticles('ma'); return false;">M&A</a>
-    <a href="#" class="cat-btn" onclick="filterArticles('career'); return false;">Career</a>
-    <a href="#" class="cat-btn" onclick="filterArticles('valuation'); return false;">Valuation</a>
   </nav>
 
-  <!-- お知らせ欄: article releases and reader-relevant updates -->
+  <div class="page-header">
+    <div class="page-header-inner">
+      <h1><span data-en>Articles</span><span data-ja>記事</span></h1>
+      <p class="tagline">
+        <span data-en>AI Models · Accounting Standards · Tax · M&amp;A · Valuation — curated for Finance Professionals</span>
+        <span data-ja>AI・会計基準・税法・企業法・M&amp;A・キャリア — Finance Proのための情報キュレーション</span>
+      </p>
+    </div>
+  </div>
+
+  <div class="cat-nav">
+    <a href="#" class="cat-btn all active" onclick="filterArticles('all', event); return false;">All</a>
+    <a href="#" class="cat-btn" onclick="filterArticles('ai', event); return false;">AI Models</a>
+    <a href="#" class="cat-btn" onclick="filterArticles('accounting', event); return false;"><span data-en>Accounting</span><span data-ja>会計基準</span></a>
+    <a href="#" class="cat-btn" onclick="filterArticles('tax', event); return false;"><span data-en>Tax</span><span data-ja>税法</span></a>
+    <a href="#" class="cat-btn" onclick="filterArticles('law', event); return false;"><span data-en>Corp. Law</span><span data-ja>企業法・金商法</span></a>
+    <a href="#" class="cat-btn" onclick="filterArticles('ma', event); return false;">M&amp;A</a>
+    <a href="#" class="cat-btn" onclick="filterArticles('career', event); return false;">Career</a>
+    <a href="#" class="cat-btn" onclick="filterArticles('valuation', event); return false;">Valuation</a>
+  </div>
+
   <section class="announcements" id="announcements">
-    <div class="announce-header">お知らせ</div>
+    <div class="announce-header"><span data-en>Updates</span><span data-ja>お知らせ</span></div>
     <ul class="announce-list" id="announce-list">
       <li class="announce-item">
         <span class="announce-date">2026-03-20</span>
-        <span class="announce-text">新連載開始: <a href="./2026-03-20-valuation.html">Valuation Theory Lab #1 — Terminal ValueはなぜDCFの70-80%を占めるのか</a> を公開しました</span>
+        <span class="announce-text">
+          <span data-en>New series: <a href="./2026-03-20-valuation.html">Valuation Theory Lab #1 — Why Terminal Value Accounts for 70–80% of DCF</a> is now live</span>
+          <span data-ja>新連載開始: <a href="./2026-03-20-valuation.html">Valuation Theory Lab #1 — Terminal ValueはなぜDCFの70-80%を占めるのか</a> を公開しました</span>
+        </span>
       </li>
       <li class="announce-item">
         <span class="announce-date">2026-03-20</span>
-        <span class="announce-text">新着記事: <a href="./2026-03-20-ai.html">AIモデル戦線レポート — 2026年3月</a> を公開しました</span>
+        <span class="announce-text">
+          <span data-en>New article: <a href="./2026-03-20-ai.html">AI Model Front Report — March 2026</a> is now live</span>
+          <span data-ja>新着記事: <a href="./2026-03-20-ai.html">AIモデル戦線レポート — 2026年3月</a> を公開しました</span>
+        </span>
       </li>
     </ul>
   </section>
@@ -292,50 +359,72 @@
   <main>
     <div class="articles-grid" id="articles-grid">
       <a class="article-card" data-category="valuation" href="./2026-03-20-valuation.html">
-        <p class="category">Valuation Theory Lab › #001 · DCF理論</p>
-        <h2>Terminal ValueはなぜDCFの70-80%を占めるのか</h2>
-        <p class="summary">Gordon Growth Modelの成立条件、ROIC-g-再投資率の三角形、Exit multipleとの循環性。「そういうものだ」で済ませるのは最も重要な仮定の検証を放棄することだ。</p>
+        <p class="category">Valuation Theory Lab › #001 · DCF</p>
+        <h2>
+          <span data-en>Why Terminal Value Accounts for 70–80% of DCF</span>
+          <span data-ja>Terminal ValueはなぜDCFの70-80%を占めるのか</span>
+        </h2>
+        <p class="summary" data-en>The conditions for Gordon Growth Model validity, the ROIC–g–reinvestment triangle, and the circularity with exit multiples. Accepting it as given is surrendering scrutiny of the most critical assumption.</p>
+        <p class="summary" data-ja>Gordon Growth Modelの成立条件、ROIC-g-再投資率の三角形、Exit multipleとの循環性。「そういうものだ」で済ませるのは最も重要な仮定の検証を放棄することだ。</p>
         <div class="meta">
           <span>2026-03-20</span>
-          <span class="read-more">Read →</span>
+          <span class="read-more"><span data-en>Read →</span><span data-ja>読む →</span></span>
         </div>
       </a>
       <a class="article-card" data-category="ai" href="./2026-03-20-ai.html">
-        <p class="category">Finance Professional x AI › AI Models &amp; Tools</p>
-        <h2>AIモデル戦線レポート — 2026年3月</h2>
-        <p class="summary">Claude Opus 4.6が▲67%値下げ、GPT-5.4が100万トークンCW対応、Gemini 3.1 Proがベンチマーク制覇。Finance Professionalのワークフローに直結する変化が相次いだ2〜3月の総括。</p>
+        <p class="category">Finance Professional × AI › AI Models &amp; Tools</p>
+        <h2>
+          <span data-en>AI Model Front Report — March 2026</span>
+          <span data-ja>AIモデル戦線レポート — 2026年3月</span>
+        </h2>
+        <p class="summary" data-en>Claude Opus 4.6 cuts prices 67%, GPT-5.4 launches with 1M-token context, Gemini 3.1 Pro tops benchmarks. A summary of the shifts that directly affect Finance Professional workflows in Feb–March.</p>
+        <p class="summary" data-ja>Claude Opus 4.6が▲67%値下げ、GPT-5.4が100万トークンCW対応、Gemini 3.1 Proがベンチマーク制覇。Finance Professionalのワークフローに直結する変化が相次いだ2〜3月の総括。</p>
         <div class="meta">
           <span>2026-03-20</span>
-          <span class="read-more">Read →</span>
+          <span class="read-more"><span data-en>Read →</span><span data-ja>読む →</span></span>
         </div>
       </a>
     </div>
   </main>
 
   <footer>
-    <span class="brand">Finance Professional x AI</span>
-    <span class="note">Generated with Claude Code · Donato Brand System</span>
+    <span class="brand">Finance Professional × AI</span>
+    <span class="note">© <span id="copyright-year"></span> Donato · <a href="../privacy.html">Privacy Policy</a></span>
   </footer>
 
   <script>
-    function filterArticles(category) {
-      // カテゴリフィルター
-      document.querySelectorAll('.cat-btn').forEach(btn => btn.classList.remove('active'));
-      event.target.classList.add('active');
+    let _lang = 'ja';
+    let _theme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
 
-      const cards = document.querySelectorAll('.article-card[data-category]');
-      cards.forEach(card => {
-        if (category === 'all' || card.dataset.category === category) {
-          card.style.display = 'block';
-        } else {
-          card.style.display = 'none';
-        }
+    function setLang(lang) {
+      _lang = lang;
+      document.body.className = [_lang, _theme === 'light' ? 'light' : ''].filter(Boolean).join(' ');
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.textContent.toLowerCase().startsWith(lang));
       });
     }
 
-    // 記事カードの追加ヘルパー（ニュースレターエージェントが呼び出す想定のテンプレート）
-    // addArticle({ title, summary, category, date, filename })
-    // → <a class="article-card" data-category="..." href="./...html"> ... </a>
+    function toggleTheme() {
+      _theme = _theme === 'dark' ? 'light' : 'dark';
+      document.body.className = [_lang, _theme === 'light' ? 'light' : ''].filter(Boolean).join(' ');
+      document.getElementById('theme-btn').textContent = _theme === 'dark' ? '☀' : '☾';
+    }
+
+    // Init
+    if (_theme === 'light') {
+      document.body.classList.add('light');
+      document.getElementById('theme-btn').textContent = '☾';
+    }
+
+    document.getElementById('copyright-year').textContent = new Date().getFullYear();
+
+    function filterArticles(category, event) {
+      document.querySelectorAll('.cat-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.closest('.cat-btn').classList.add('active');
+      document.querySelectorAll('.article-card[data-category]').forEach(card => {
+        card.style.display = (category === 'all' || card.dataset.category === category) ? 'block' : 'none';
+      });
+    }
   </script>
 
 </body>

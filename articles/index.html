@@ -453,11 +453,13 @@
   </footer>
 
   <script>
-    let _lang = 'ja';
-    let _theme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    // Persist EN/JP and Dark/Light across all pages via localStorage
+    let _lang = localStorage.getItem('hp-lang') || 'ja';
+    let _theme = localStorage.getItem('hp-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
 
     function setLang(lang) {
       _lang = lang;
+      localStorage.setItem('hp-lang', lang);
       document.body.className = [_lang, _theme === 'light' ? 'light' : ''].filter(Boolean).join(' ');
       document.querySelectorAll('.lang-btn').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.lang === lang);
@@ -466,13 +468,14 @@
 
     function toggleTheme() {
       _theme = _theme === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('hp-theme', _theme);
       document.body.className = [_lang, _theme === 'light' ? 'light' : ''].filter(Boolean).join(' ');
       document.getElementById('theme-btn').textContent = _theme === 'dark' ? '☀' : '☾';
     }
 
-    // Init
+    // Apply saved preferences on load
+    setLang(_lang);
     if (_theme === 'light') {
-      document.body.classList.add('light');
       document.getElementById('theme-btn').textContent = '☾';
     }
 

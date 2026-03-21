@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AIが財務・会計・監査の業務を再編する2026年、Finance Professionalのキャリア戦略は根本から問い直される。生き残る職種と代替される職種の分岐点、今投資すべきスキルスタックを整理する。">
+  <title>AIエラのFinanceキャリア戦略 — 生き残る人材と消える仕事の分岐点 | donato Finance Professional × AI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+JP:wght@300;400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:           #F8F7F4;
+      --bg-code:      #EEECEA;
+      --bg-quote:     #EEECEA;
+      --bg-highlight: #EBF3FB;
+      --bg-subtle:    #F0EFEB;
+      --bg-card:      #F0EFEB;
+      --bg-header:    #F8F7F4;
+      --text-primary: #111320;
+      --text-body:    #2A2C3E;
+      --text-muted:   #565C70;
+      --text-light:   #888EA0;
+      --accent:       #1A6EB0;
+      --accent-warm:  #D4A010;
+      --border:       #D4D2CC;
+      --border-quote: #B8B6B0;
+      --border-light: #D4D2CC;
+      --tag-bg:       #E4EFF8;
+      --tag-text:     #1A6EB0;
+      --table-stripe: #F0EFEB;
+    }
+
+    body {
+      font-family: 'Noto Serif JP', Georgia, serif;
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--text-primary);
+      background: var(--bg);
+    }
+
+    /* ===== SITE HEADER ===== */
+    .site-header {
+      background: var(--bg-header);
+      border-bottom: 2px solid var(--accent);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .site-header-left { display: flex; align-items: center; gap: 12px; }
+    .wordmark {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: lowercase;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+    .wordmark span { color: var(--accent-warm); }
+    .header-sep { color: var(--border-quote); font-size: 13px; }
+    .header-media {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+    }
+    .site-header-right { display: flex; align-items: center; gap: 12px; }
+    #lang-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      padding: 4px 10px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    #lang-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .header-date {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-light);
+      letter-spacing: 0.08em;
+    }
+
+    /* ===== STICKY INFO BAR ===== */
+    #sticky-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg-subtle);
+      border-bottom: 1px solid var(--border-light);
+      padding: 7px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .sbar-cat {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+    }
+    .sbar-sep { color: var(--border-quote); font-size: 11px; }
+    .sbar-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+    .sbar-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      padding: 2px 8px;
+    }
+
+    /* ===== LAYOUT ===== */
+    .article-container { max-width: 1240px; margin: 0 auto; padding: 0 20px; }
+    .article-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 24px;
+    }
+    .article-body { grid-column: 2 / 10; max-width: 68ch; }
+    .article-sidebar {
+      grid-column: 10 / 13;
+      position: sticky;
+      top: 44px;
+      align-self: start;
+      max-height: calc(100vh - 56px);
+      overflow-y: auto;
+    }
+    .article-sidebar::-webkit-scrollbar { width: 4px; }
+    .article-sidebar::-webkit-scrollbar-track { background: transparent; }
+    .article-sidebar::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 2px; }
+
+    /* ===== TYPOGRAPHY ===== */
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+    }
+    .article-headline {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(2rem, 4vw, 2.6rem);
+      font-weight: 600;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+    .article-standfirst {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 1.1rem;
+      line-height: 1.55;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      font-weight: 400;
+    }
+    .byline {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    h2 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.45rem;
+      font-weight: 600;
+      line-height: 1.25;
+      color: var(--text-primary);
+      margin: 2em 0 0.75em;
+      border-top: 1px solid var(--border);
+      padding-top: 1em;
+    }
+    h3 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin: 1.75em 0 0.5em;
+    }
+    .article-body p { margin-bottom: 1.4em; font-size: 0.97rem; line-height: 1.8; }
+    .article-body ul, .article-body ol { margin: 0 0 1.4em 1.4em; }
+    .article-body li { margin-bottom: 0.4em; font-size: 0.95rem; line-height: 1.7; }
+    strong { color: var(--text-primary); font-weight: 600; }
+
+    /* ===== DATA TABLE ===== */
+    .data-table-wrap { overflow-x: auto; margin: 1.5em 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      background: var(--bg-subtle);
+      padding: 8px 12px;
+      text-align: left;
+      border-bottom: 2px solid var(--border);
+    }
+    td {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border-light);
+      color: var(--text-body);
+      font-family: 'Inter', sans-serif;
+    }
+    tr:nth-child(even) td { background: var(--table-stripe); }
+    td.mono { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; }
+    td.accent { color: var(--accent); font-weight: 600; }
+    td.warm { color: var(--accent-warm); font-weight: 600; }
+
+    /* ===== CHART ===== */
+    .chart-wrap {
+      background: var(--bg-card);
+      padding: 20px;
+      margin: 2em 0;
+      border: 1px solid var(--border-light);
+    }
+    .chart-title {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 14px;
+    }
+    .chart-legend {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+    .legend-dot { width: 10px; height: 10px; border-radius: 1px; flex-shrink: 0; }
+    .chart-source {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text-light);
+      margin-top: 8px;
+    }
+
+    /* ===== EXEC SUMMARY ===== */
+    .exec-summary {
+      background: var(--bg-highlight);
+      border: 1px solid var(--border-light);
+      border-left: 4px solid var(--accent);
+      padding: 24px;
+      margin: 0 0 2.5em;
+    }
+    .exec-block { margin-bottom: 20px; }
+    .exec-block:last-child { margin-bottom: 0; }
+    .exec-block + .exec-block { padding-top: 18px; border-top: 1px solid var(--border-light); }
+    .exec-tldr {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.02rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      line-height: 1.55;
+      margin-top: 8px;
+    }
+    .issues-list, .implications-list {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .issue-item { display: flex; gap: 10px; align-items: baseline; }
+    .issue-q {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--accent);
+      flex-shrink: 0;
+      min-width: 20px;
+    }
+    .issue-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: var(--text-body);
+      line-height: 1.55;
+    }
+    .implication-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: var(--text-body);
+      line-height: 1.55;
+      padding-left: 14px;
+      border-left: 2px solid var(--accent);
+    }
+    .read-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
+    .read-col-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.66rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 6px;
+    }
+    .read-label-yes { color: var(--accent); }
+    .read-label-no { color: var(--text-muted); }
+    .read-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-body);
+      line-height: 1.45;
+      padding-left: 10px;
+      border-left: 2px solid var(--accent);
+      margin-bottom: 5px;
+    }
+    .skip-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+      padding-left: 10px;
+      border-left: 2px solid var(--border-light);
+      margin-bottom: 5px;
+    }
+
+    /* ===== PULL QUOTE ===== */
+    .pull-quote {
+      border-left: 4px solid var(--accent);
+      margin: 2em 0;
+      padding: 1em 20px;
+      background: var(--bg-card);
+    }
+    .pull-quote p {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.2rem;
+      font-style: italic;
+      color: var(--text-primary);
+      line-height: 1.5;
+      margin-bottom: 6px !important;
+    }
+    .pull-quote footer {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .keyfacts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+    .fact-card {
+      background: var(--bg-highlight);
+      padding: 10px 8px;
+      border-radius: 2px;
+    }
+    .fact-card.highlight {
+      background: #FDF8EC;
+      border: 1px solid #E8D88A;
+    }
+    .fact-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--accent);
+      line-height: 1.2;
+    }
+    .fact-card.highlight .fact-value { color: #8A6A00; }
+    .fact-desc {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.64rem;
+      color: var(--text-muted);
+      margin-top: 3px;
+      line-height: 1.35;
+    }
+    .fact-card.highlight .fact-desc { color: #7A6020; }
+    .highlights-list { list-style: none; padding: 0; margin-top: 12px; }
+    .highlight-item {
+      padding: 9px 0;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      gap: 10px;
+      align-items: baseline;
+    }
+    .highlight-item:last-child { border-bottom: none; }
+    .hl-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--accent);
+      flex-shrink: 0;
+      min-width: 18px;
+    }
+    .hl-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.76rem;
+      color: var(--text-body);
+      line-height: 1.45;
+    }
+
+    /* ===== SOURCE LIST ===== */
+    .source-list { list-style: none; padding: 0; }
+    .source-list li { margin-bottom: 6px; }
+    .source-list a {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--accent);
+      text-decoration: none;
+      line-height: 1.5;
+    }
+    .source-list a:hover { text-decoration: underline; }
+    .source-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      margin-left: 4px;
+    }
+
+    /* ===== LANG TOGGLE ===== */
+    .lang-en { display: none; }
+
+    /* ===== FOOTER ===== */
+    .site-footer {
+      border-top: 1px solid var(--border-light);
+      margin-top: 4em;
+      padding: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* ===== PRINT ===== */
+    @media print {
+      body { background: white; font-size: 11pt; }
+      .site-header, #sticky-bar { display: none; }
+      .article-sidebar { position: static; max-height: none; overflow: visible; }
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+    @page { size: A4; margin: 20mm 15mm; }
+
+    /* ===== MOBILE ===== */
+    @media (max-width: 900px) {
+      .article-body { grid-column: 1 / -1; }
+      .article-sidebar { position: static; max-height: none; overflow: visible; grid-column: 1 / -1; }
+      .article-grid { display: block; }
+      .read-grid { grid-template-columns: 1fr; }
+      #sticky-bar { flex-wrap: wrap; gap: 6px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1. サイトヘッダー -->
+  <header class="site-header">
+    <div class="site-header-left">
+      <a href="../index.html" class="wordmark">dona<span>to</span></a>
+      <span class="header-sep">—</span>
+      <span class="header-media">Finance Professional × Career</span>
+    </div>
+    <div class="site-header-right">
+      <button id="lang-btn" onclick="toggleLang()">EN</button>
+      <time class="header-date">2026-03-21</time>
+    </div>
+  </header>
+
+  <!-- 2. スティッキー情報バー -->
+  <div id="sticky-bar">
+    <span class="sbar-cat">Career</span>
+    <span class="sbar-sep">|</span>
+    <span class="sbar-text">
+      <span class="lang-ja">対象: Finance Professional全般</span>
+      <span class="lang-en">Topic: All Finance Professionals</span>
+    </span>
+    <span class="sbar-sep">|</span>
+    <span class="sbar-text">
+      <span class="lang-ja">作成日: 2026-03-21</span>
+      <span class="lang-en">Published: 2026-03-21</span>
+    </span>
+    <span class="sbar-sep">|</span>
+    <span class="sbar-badge">
+      <span class="lang-ja">約8分</span>
+      <span class="lang-en">~8 min read</span>
+    </span>
+  </div>
+
+  <main style="padding: 0 0 3em;">
+    <div class="article-container">
+      <div class="article-grid">
+
+        <!-- 3. 記事本文 -->
+        <article class="article-body">
+
+          <!-- 記事ヘッダー -->
+          <div style="padding: 36px 0 24px;">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+              <div class="section-label">
+                <span class="lang-ja">Career</span>
+                <span class="lang-en">Career</span>
+              </div>
+              <span class="sbar-badge">
+                <span class="lang-ja">約8分</span>
+                <span class="lang-en">~8 min read</span>
+              </span>
+            </div>
+            <h1 class="article-headline">
+              <span class="lang-ja">AIエラのFinanceキャリア戦略 — 生き残る人材と消える仕事の分岐点</span>
+              <span class="lang-en">Finance Career Strategy in the AI Era — Where Roles Survive and Where They Don't</span>
+            </h1>
+            <p class="article-standfirst">
+              <span class="lang-ja">生成AIは財務・会計・監査の業務構造を根本から変えつつある。ルーティン分析・仕訳・報告書作成はAIに吸収され、残るのは「AIが出した答えを批判的に検証し、判断する人間」だ。2026年時点でFinance Professionalが今すぐ投資すべきスキルと、逆に時代遅れになりつつある能力を整理する。</span>
+              <span class="lang-en">Generative AI is fundamentally restructuring finance, accounting, and audit workflows. Routine analysis, journal entries, and report generation are being absorbed by AI — what remains is the human who critically validates AI outputs and makes judgments. Here is a clear-eyed look at which skills Finance Professionals should invest in now, and which are becoming obsolete.</span>
+            </p>
+            <div style="display:flex; gap:16px; align-items:center; border-top:1px solid var(--border-light); border-bottom:1px solid var(--border-light); padding:10px 0;">
+              <span class="byline">By <strong>donato Research</strong></span>
+              <span style="color:var(--border);">|</span>
+              <time class="byline" datetime="2026-03-21">
+                <span class="lang-ja">2026年3月21日</span>
+                <span class="lang-en">March 21, 2026</span>
+              </time>
+            </div>
+          </div>
+
+          <!-- 構造化エグゼクティブサマリー -->
+          <section class="exec-summary">
+
+            <!-- ① 概要 -->
+            <div class="exec-block">
+              <div class="section-label"><span class="lang-ja">概要</span><span class="lang-en">Summary</span></div>
+              <p class="exec-tldr">
+                <span class="lang-ja">AIによるFinance業務の代替は「全職種に均等に来る」のではない。代替されるのはタスク単位の話であり、職種全体が消えるケースは稀だ。現実は「同じ職種でも、AIを使いこなせる人とそうでない人の年収格差が拡大する」という二極化。Finance Professionalが今すべきことは、AIリテラシーを武器として積み上げることだ。</span>
+                <span class="lang-en">AI displacement in Finance is not arriving uniformly across all roles. Displacement happens at the task level, not the job level — whole roles disappearing is rare. The real dynamic is bifurcation: within the same job title, the income gap between those who can leverage AI and those who cannot is widening sharply. The imperative for Finance Professionals is to build AI literacy as a core professional asset.</span>
+              </p>
+            </div>
+
+            <!-- ② 論点 -->
+            <div class="exec-block">
+              <div class="section-label">
+                <span class="lang-ja">論点</span>
+                <span class="lang-en">Key Issues</span>
+              </div>
+              <ul class="issues-list">
+                <li class="issue-item">
+                  <span class="issue-q">Q1</span>
+                  <span class="issue-text">
+                    <span class="lang-ja"><strong>どの「タスク」が消えるか？</strong> — データ収集・仕訳入力・定型レポート生成・バリエーション分析の初稿作成はすでにAIで代替可能。一方で「なぜその数字が重要か」を解釈し意思決定者に伝える能力はAIが苦手とする。</span>
+                    <span class="lang-en"><strong>Which tasks are disappearing?</strong> — Data gathering, journal entry, routine report generation, and first-draft variance analysis are already AI-substitutable. What AI struggles with: interpreting why a number matters and communicating it to decision-makers.</span>
+                  </span>
+                </li>
+                <li class="issue-item">
+                  <span class="issue-q">Q2</span>
+                  <span class="issue-text">
+                    <span class="lang-ja"><strong>CFA・公認会計士の資格価値は変わるか？</strong> — 資格そのものの廃止リスクはないが、「資格＋AIリテラシー」の組み合わせが新しい採用基準になりつつある。資格だけでは差別化できない時代が始まっている。</span>
+                    <span class="lang-en"><strong>Does the value of CFA or CPA credentials change?</strong> — Credentials themselves won't be abolished, but "credential + AI literacy" is becoming the new hiring baseline. Credentials alone are losing their differentiating power.</span>
+                  </span>
+                </li>
+                <li class="issue-item">
+                  <span class="issue-q">Q3</span>
+                  <span class="issue-text">
+                    <span class="lang-ja"><strong>どのFinance職種がAIの恩恵を最も受けるか？</strong> — M&AアドバイザーとPEアナリストは100万トークンCWによるDD高速化・契約レビュー自動化で生産性が大幅向上する。AIを使える前提で、より高い付加価値業務に集中できる。</span>
+                    <span class="lang-en"><strong>Which Finance roles benefit most from AI?</strong> — M&amp;A advisors and PE analysts gain most: 1M-token context enables rapid DD and automated contract review, freeing them to focus on higher-value judgment work. AI becomes a productivity multiplier rather than a threat.</span>
+                  </span>
+                </li>
+                <li class="issue-item">
+                  <span class="issue-q">Q4</span>
+                  <span class="issue-text">
+                    <span class="lang-ja"><strong>Pythonは必須か、それともプロンプトで十分か？</strong> — 2026年時点では「プロンプトエンジニアリング＋Excelの高度活用」で多くのユースケースは対応可能。ただしデータパイプライン・API連携・自動化ワークフロー構築にはPythonの基礎が必要になってきている。</span>
+                    <span class="lang-en"><strong>Is Python required, or is prompt engineering enough?</strong> — In 2026, advanced prompt engineering + Excel handles most Finance AI use cases. However, Python fundamentals are increasingly needed for data pipelines, API integration, and automated workflows.</span>
+                  </span>
+                </li>
+                <li class="issue-item">
+                  <span class="issue-q">Q5</span>
+                  <span class="issue-text">
+                    <span class="lang-ja"><strong>新卒・若手Finance人材はどう戦略を立てるべきか？</strong> — 「エクセルを速く打てる」「資料をきれいに作れる」という従来の若手バリューはAIに食われる。代わりに価値が上がるのは「AIが出した答えの何が間違っているか指摘できる判断力」だ。</span>
+                    <span class="lang-en"><strong>How should early-career Finance professionals position themselves?</strong> — The traditional junior value proposition — fast Excel, clean presentation decks — is being commoditized by AI. The rising premium is on judgment: the ability to identify what is wrong with an AI-generated answer.</span>
+                  </span>
+                </li>
+              </ul>
+            </div>
+
+            <!-- ③ Finance Proへの示唆 -->
+            <div class="exec-block">
+              <div class="section-label">
+                <span class="lang-ja">Finance Proへの示唆</span>
+                <span class="lang-en">Implications for Finance Professionals</span>
+              </div>
+              <ul class="implications-list">
+                <li class="implication-item">
+                  <span class="lang-ja"><strong>「AIに仕事を奪われるか」より「AIを使って何ができるか」に集中せよ</strong> — 業界内での競争は、AI採用者とAI非採用者の間で起きる。資格が同じなら、AIを使いこなす人が生産性で圧倒する。</span>
+                  <span class="lang-en"><strong>Shift from "will AI take my job" to "what can I do with AI"</strong> — Competition within the industry is between AI adopters and non-adopters. When credentials are equal, the AI-literate professional wins on productivity.</span>
+                </li>
+                <li class="implication-item">
+                  <span class="lang-ja"><strong>ドメイン専門性 × AIリテラシーの掛け算が最強</strong> — AIだけ使えても財務の本質を知らなければハルシネーションを見抜けない。逆に財務知識だけあってもAIを使えなければ生産性で劣る。両方の組み合わせが圧倒的な差別化要因になる。</span>
+                  <span class="lang-en"><strong>Domain expertise × AI literacy is the winning combination</strong> — AI skills without Finance depth means you can't catch hallucinations. Finance depth without AI skills means you lose on productivity. The combination is the real differentiator.</span>
+                </li>
+                <li class="implication-item">
+                  <span class="lang-ja"><strong>「AIが出した答えを批判的に検証する能力」を意識的に鍛えよ</strong> — この能力は財務・会計・法律の深い専門知識があって初めて発揮できる。AIの普及はドメイン専門性の価値を下げるのではなく、むしろ高める。</span>
+                  <span class="lang-en"><strong>Deliberately develop the ability to critically validate AI outputs</strong> — This skill only works if you have deep Finance, accounting, or legal domain knowledge. AI proliferation does not reduce the value of domain expertise — it amplifies it.</span>
+                </li>
+              </ul>
+            </div>
+
+            <!-- ④ 読み進め判断 -->
+            <div class="exec-block">
+              <div class="section-label">
+                <span class="lang-ja">この記事を読み進めるべきか</span>
+                <span class="lang-en">Should You Read On?</span>
+              </div>
+              <div class="read-grid">
+                <div>
+                  <div class="read-col-label read-label-yes">
+                    <span class="lang-ja">読むべき人</span>
+                    <span class="lang-en">Read If You Are</span>
+                  </div>
+                  <div class="read-item"><span class="lang-ja">Finance・会計・監査キャリアのスキル戦略を見直したい方</span><span class="lang-en">Reviewing your Finance/accounting/audit skill strategy</span></div>
+                  <div class="read-item"><span class="lang-ja">AIリテラシー投資の優先度を判断したい実務家・管理職</span><span class="lang-en">Practitioner or manager deciding AI upskilling priority</span></div>
+                  <div class="read-item"><span class="lang-ja">Finance業界への就職・転職を検討している学生・求職者</span><span class="lang-en">Student or career-changer targeting Finance roles</span></div>
+                  <div class="read-item"><span class="lang-ja">チームのAI人材育成計画を立てているCFO・部門長</span><span class="lang-en">CFO or department head planning team AI upskilling</span></div>
+                </div>
+                <div>
+                  <div class="read-col-label read-label-no">
+                    <span class="lang-ja">スキップしてよい人</span>
+                    <span class="lang-en">Skip If</span>
+                  </div>
+                  <div class="skip-item"><span class="lang-ja">AI活用のキャリア戦略をすでに明確に確立している方</span><span class="lang-en">You have already established a clear AI-era career strategy</span></div>
+                  <div class="skip-item"><span class="lang-ja">Finance業界のキャリアに興味がない方</span><span class="lang-en">Finance careers are not on your radar</span></div>
+                </div>
+              </div>
+            </div>
+
+          </section>
+
+          <!-- 本文 -->
+          <h2>
+            <span class="lang-ja">1. 「職種が消える」より「タスクが消える」</span>
+            <span class="lang-en">1. Tasks Disappear, Not Whole Roles</span>
+          </h2>
+
+          <p>
+            <span class="lang-ja"><strong>[調査]</strong> McKinsey Global Instituteの試算によると、現在の金融・保険業務のうち<strong>約43%が自動化のポテンシャルを持つ</strong>。ただしこの数字は「職種ごとの全タスクが一括代替される」という意味ではない。同一職種の中で、ルーティンタスクは代替され、高度な判断・交渉・関係構築タスクは人間に残る構造が標準になる。</span>
+            <span class="lang-en"><strong>[Research]</strong> McKinsey Global Institute estimates approximately <strong>43% of current finance and insurance activities have automation potential</strong>. This does not mean entire jobs disappear wholesale. The emerging structure is intra-role bifurcation: routine tasks within a given job title are automated while judgment, negotiation, and relationship tasks remain with humans.</span>
+          </p>
+          <p>
+            <span class="lang-ja">WEFの「Future of Jobs Report 2025」も同様の構造を指摘している。財務アナリスト職は消えないが、「Excelで数字を集計してレポートにまとめる」タスクの価値はゼロに近づく。残るのは「その数字が意味することを解釈し、意思決定者に判断材料を提供する能力」だ。</span>
+            <span class="lang-en">The WEF Future of Jobs Report 2025 identifies the same structure. Financial analyst roles are not disappearing, but the value of "aggregating numbers in Excel and formatting a report" approaches zero. What remains valuable: interpreting what the numbers mean and equipping decision-makers with the context to act.</span>
+          </p>
+
+          <!-- 職種別AIリスクチャート -->
+          <div class="chart-wrap">
+            <div class="chart-title">
+              <span class="lang-ja">Finance職種別 — タスク自動化リスクスコア（100点満点）</span>
+              <span class="lang-en">Finance Roles — Task Automation Risk Score (out of 100)</span>
+            </div>
+            <div class="chart-legend">
+              <div class="legend-item">
+                <div class="legend-dot" style="background:#1A6EB0;"></div>
+                <span class="lang-ja">低〜中リスク職種</span><span class="lang-en">Low–medium risk roles</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-dot" style="background:#D4A010;"></div>
+                <span class="lang-ja">高リスク職種（ルーティン比率が高い）</span><span class="lang-en">High-risk roles (high routine task ratio)</span>
+              </div>
+            </div>
+            <svg viewBox="0 0 500 270" xmlns="http://www.w3.org/2000/svg" style="width:100%; font-family:'Inter',Arial,sans-serif;">
+              <rect x="0" y="0" width="500" height="270" fill="#F0EFEB"/>
+              <!-- grid -->
+              <line x1="155" y1="8" x2="155" y2="252" stroke="#D4D2CC" stroke-width="1"/>
+              <line x1="280" y1="8" x2="280" y2="252" stroke="#D4D2CC" stroke-width="0.5" stroke-dasharray="3,2"/>
+              <line x1="405" y1="8" x2="405" y2="252" stroke="#D4D2CC" stroke-width="0.5" stroke-dasharray="3,2"/>
+              <!-- x-axis labels -->
+              <text x="155" y="265" text-anchor="middle" font-size="10" fill="#888EA0" font-family="'JetBrains Mono',monospace">0</text>
+              <text x="280" y="265" text-anchor="middle" font-size="10" fill="#888EA0" font-family="'JetBrains Mono',monospace">50</text>
+              <text x="405" y="265" text-anchor="middle" font-size="10" fill="#888EA0" font-family="'JetBrains Mono',monospace">100</text>
+
+              <!-- Bookkeeper / 記帳担当: 82 → 82/100 * 250 = 205 -->
+              <text x="151" y="28" text-anchor="end" font-size="10" fill="#565C70"><tspan class="lang-ja">記帳・仕訳担当</tspan><tspan class="lang-en">Bookkeeper</tspan></text>
+              <rect x="155" y="16" width="205" height="16" fill="#D4A010"/>
+              <text x="366" y="28" font-size="9.5" fill="#8A6A00" font-family="'JetBrains Mono',monospace">82</text>
+
+              <!-- Tax Preparer / 税務申告担当: 74 → 185 -->
+              <text x="151" y="55" text-anchor="end" font-size="10" fill="#565C70"><tspan class="lang-ja">税務申告担当</tspan><tspan class="lang-en">Tax Preparer</tspan></text>
+              <rect x="155" y="43" width="185" height="16" fill="#D4A010"/>
+              <text x="346" y="55" font-size="9.5" fill="#8A6A00" font-family="'JetBrains Mono',monospace">74</text>
+
+              <!-- Junior Financial Analyst: 65 → 162.5 -->
+              <text x="151" y="82" text-anchor="end" font-size="10" fill="#565C70"><tspan class="lang-ja">財務アナリスト（若手）</tspan><tspan class="lang-en">Jr. Financial Analyst</tspan></text>
+              <rect x="155" y="70" width="163" height="16" fill="#D4A010"/>
+              <text x="324" y="82" font-size="9.5" fill="#8A6A00" font-family="'JetBrains Mono',monospace">65</text>
+
+              <!-- FP&A Manager: 42 → 105 -->
+              <text x="151" y="109" text-anchor="end" font-size="10" fill="#565C70"><tspan class="lang-ja">FP&amp;Aマネージャー</tspan><tspan class="lang-en">FP&amp;A Manager</tspan></text>
+              <rect x="155" y="97" width="105" height="16" fill="#1A6EB0"/>
+              <text x="266" y="109" font-size="9.5" fill="#565C70" font-family="'JetBrains Mono',monospace">42</text>
+
+              <!-- Financial Controller: 38 → 95 -->
+              <text x="151" y="136" text-anchor="end" font-size="10" fill="#565C70"><tspan class="lang-ja">経理・コントローラー</tspan><tspan class="lang-en">Financial Controller</tspan></text>
+              <rect x="155" y="124" width="95" height="16" fill="#1A6EB0"/>
+              <text x="256" y="136" font-size="9.5" fill="#565C70" font-family="'JetBrains Mono',monospace">38</text>
+
+              <!-- M&A Analyst: 31 → 77.5 -->
+              <text x="151" y="163" text-anchor="end" font-size="10" fill="#565C70"><tspan class="lang-ja">M&amp;Aアナリスト</tspan><tspan class="lang-en">M&amp;A Analyst</tspan></text>
+              <rect x="155" y="151" width="78" height="16" fill="#1A6EB0"/>
+              <text x="239" y="163" font-size="9.5" fill="#565C70" font-family="'JetBrains Mono',monospace">31</text>
+
+              <!-- CFO: 22 → 55 -->
+              <text x="151" y="190" text-anchor="end" font-size="10" fill="#565C70"><tspan class="lang-ja">CFO</tspan><tspan class="lang-en">CFO</tspan></text>
+              <rect x="155" y="178" width="55" height="16" fill="#2E88CA"/>
+              <text x="216" y="190" font-size="9.5" fill="#565C70" font-family="'JetBrains Mono',monospace">22</text>
+
+              <!-- PE Partner / IB MD: 18 → 45 -->
+              <text x="151" y="217" text-anchor="end" font-size="10" fill="#565C70"><tspan class="lang-ja">PEパートナー / IBD MD</tspan><tspan class="lang-en">PE Partner / IBD MD</tspan></text>
+              <rect x="155" y="205" width="45" height="16" fill="#2E88CA"/>
+              <text x="206" y="217" font-size="9.5" fill="#565C70" font-family="'JetBrains Mono',monospace">18</text>
+
+              <!-- Audit Partner: 20 → 50 -->
+              <text x="151" y="244" text-anchor="end" font-size="10" fill="#565C70"><tspan class="lang-ja">監査パートナー</tspan><tspan class="lang-en">Audit Partner</tspan></text>
+              <rect x="155" y="232" width="50" height="16" fill="#2E88CA"/>
+              <text x="211" y="244" font-size="9.5" fill="#565C70" font-family="'JetBrains Mono',monospace">20</text>
+            </svg>
+            <div class="chart-source">
+              <span class="lang-ja">出所: McKinsey Global Institute「The economic potential of generative AI」(2023)・WEF「Future of Jobs Report 2025」をもとにdonato推計</span>
+              <span class="lang-en">Source: McKinsey Global Institute "The economic potential of generative AI" (2023), WEF Future of Jobs Report 2025 — donato estimates</span>
+            </div>
+          </div>
+
+          <h2>
+            <span class="lang-ja">2. 代替されるスキル vs 強化されるスキル</span>
+            <span class="lang-en">2. Skills Being Displaced vs. Skills Being Amplified</span>
+          </h2>
+
+          <div class="data-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th><span class="lang-ja">スキルカテゴリー</span><span class="lang-en">Skill Category</span></th>
+                  <th><span class="lang-ja">AIによる影響</span><span class="lang-en">AI Impact</span></th>
+                  <th><span class="lang-ja">実務への示唆</span><span class="lang-en">Practical Implication</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="lang-ja">定型データ集計・転記</span><span class="lang-en">Routine data aggregation</span></td>
+                  <td class="warm"><span class="lang-ja">▼ 代替される</span><span class="lang-en">▼ Displaced</span></td>
+                  <td><span class="lang-ja">今すぐAIに移行。時間コスト回収が先決</span><span class="lang-en">Migrate to AI now; reclaim time first</span></td>
+                </tr>
+                <tr>
+                  <td><span class="lang-ja">財務モデル初稿作成</span><span class="lang-en">First-draft financial modeling</span></td>
+                  <td class="warm"><span class="lang-ja">▼ 大幅効率化</span><span class="lang-en">▼ Highly accelerated</span></td>
+                  <td><span class="lang-ja">初稿はAI、検証・ストーリー構築は人間</span><span class="lang-en">AI drafts, human validates and narrates</span></td>
+                </tr>
+                <tr>
+                  <td><span class="lang-ja">定型レポート・議事録作成</span><span class="lang-en">Routine report / minutes writing</span></td>
+                  <td class="warm"><span class="lang-ja">▼ 代替される</span><span class="lang-en">▼ Displaced</span></td>
+                  <td><span class="lang-ja">AIドラフトのレビューが新たな業務になる</span><span class="lang-en">Reviewing AI drafts becomes the new task</span></td>
+                </tr>
+                <tr>
+                  <td><span class="lang-ja">会計基準・法令の検索・要約</span><span class="lang-en">Standards / regulation search &amp; summary</span></td>
+                  <td class="warm"><span class="lang-ja">▼ 効率化</span><span class="lang-en">▼ Accelerated</span></td>
+                  <td><span class="lang-ja">AIの要約を批判的に読む能力が必要</span><span class="lang-en">Critical reading of AI summaries is the new skill</span></td>
+                </tr>
+                <tr>
+                  <td><span class="lang-ja">異常値・リスクの判断</span><span class="lang-en">Anomaly detection &amp; risk judgment</span></td>
+                  <td class="accent"><span class="lang-ja">▲ 人間に残る</span><span class="lang-en">▲ Remains with humans</span></td>
+                  <td><span class="lang-ja">AIのフラグを評価する専門判断が核心</span><span class="lang-en">Evaluating AI-flagged items requires expert judgment</span></td>
+                </tr>
+                <tr>
+                  <td><span class="lang-ja">ステークホルダーとの交渉・説明</span><span class="lang-en">Stakeholder negotiation &amp; explanation</span></td>
+                  <td class="accent"><span class="lang-ja">▲ 強化される</span><span class="lang-en">▲ Amplified</span></td>
+                  <td><span class="lang-ja">AIが背景調査を担い、人間は対話に集中</span><span class="lang-en">AI handles background research; humans focus on dialogue</span></td>
+                </tr>
+                <tr>
+                  <td><span class="lang-ja">AIハルシネーションの検証</span><span class="lang-en">Validating AI hallucinations</span></td>
+                  <td class="accent"><span class="lang-ja">▲ 新規スキル</span><span class="lang-en">▲ New skill required</span></td>
+                  <td><span class="lang-ja">ドメイン専門性なしには実行不可能</span><span class="lang-en">Impossible without domain expertise — key differentiator</span></td>
+                </tr>
+                <tr>
+                  <td><span class="lang-ja">AIワークフロー設計・自動化</span><span class="lang-en">AI workflow design &amp; automation</span></td>
+                  <td class="accent"><span class="lang-ja">▲ 新規スキル</span><span class="lang-en">▲ New skill required</span></td>
+                  <td><span class="lang-ja">プロンプトエンジニアリング × Finance知識が武器</span><span class="lang-en">Prompt engineering × Finance knowledge is the edge</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2>
+            <span class="lang-ja">3. キャリアパス別の影響と対応戦略</span>
+            <span class="lang-en">3. Career Path Impact and Response Strategy</span>
+          </h2>
+
+          <h3>
+            <span class="lang-ja">監査法人スタッフ・シニア</span>
+            <span class="lang-en">Audit Firm Staff and Senior</span>
+          </h3>
+          <p>
+            <span class="lang-ja"><strong>[調査]</strong> Big 4各社はAI活用の監査ツール（EY Helix、KPMG Clara、Deloitte Cortex等）の開発を加速している。サンプリング抽出・証憑照合・勘定分析といったルーティン手続きはAI対応が進み、スタッフ・シニアが担う業務は「AIが検出したアノマリーの監査的評価」「クライアントとのコミュニケーション」に移行しつつある。頭数を減らしながら品質を上げるモデルへの移行が業界全体で進行中。</span>
+            <span class="lang-en"><strong>[Research]</strong> The Big 4 are accelerating AI-powered audit tools (EY Helix, KPMG Clara, Deloitte Cortex). Routine procedures — sampling, vouching, account analysis — are increasingly AI-handled, while staff and senior work is migrating toward evaluating AI-flagged anomalies and client communication. The industry-wide shift is toward fewer headcount at higher quality output.</span>
+          </p>
+
+          <h3>
+            <span class="lang-ja">M&Aアドバイザー・PE</span>
+            <span class="lang-en">M&amp;A Advisors and Private Equity</span>
+          </h3>
+          <p>
+            <span class="lang-ja"><strong>[調査]</strong> AIはM&A・PEにおいて最も大きな生産性向上をもたらす職種の一つ。VDR処理の90%時間短縮・全文書100%分析・契約リスク自動抽出が現実化した今、ジュニアアナリストの「労働集約型DD作業」の価値は低下する。一方でシニアアドバイザーは「より多くの案件を、より高い品質で」こなせる環境になり、生産性による報酬格差が拡大する。</span>
+            <span class="lang-en"><strong>[Research]</strong> AI delivers some of the largest productivity gains in M&amp;A and PE. With 90% faster VDR processing, 100% document coverage, and automated contract risk extraction now real, the value of junior analysts doing labor-intensive DD work declines. Senior advisors, by contrast, can handle more deals at higher quality — widening the productivity-based compensation gap.</span>
+          </p>
+
+          <div class="pull-quote">
+            <p>
+              <span class="lang-ja">「AIはジュニアバンカーを削減するのではなく、ジュニアバンカーの仕事の定義を変える。」</span>
+              <span class="lang-en">"AI won't eliminate junior bankers — it will redefine what junior bankers actually do."</span>
+            </p>
+            <footer>— <cite>Goldman Sachs Research, 2023</cite></footer>
+          </div>
+
+          <h3>
+            <span class="lang-ja">CFO・財務企画（FP&amp;A）</span>
+            <span class="lang-en">CFO and FP&amp;A</span>
+          </h3>
+          <p>
+            <span class="lang-ja"><strong>[調査]</strong> Gartner調査によると、CFOの84%が「AIへの投資をFY2026に増やす予定」と回答。FP&Aチームでは予算編成の自動化・ローリングフォーキャストのAI化が加速しており、「シナリオ分析の初稿をAIが作り、人間がビジネスコンテキストを加える」ワークフローが標準化しつつある。CFOに求められる能力はデータ解釈から「AIアウトプットの意思決定化」に移行している。</span>
+            <span class="lang-en"><strong>[Research]</strong> Gartner reports 84% of CFOs plan to increase AI investment in FY2026. FP&amp;A teams are accelerating budget automation and AI-driven rolling forecasts — "AI generates scenario analysis drafts, humans add business context" is becoming standard workflow. The CFO capability shift is from data interpretation to translating AI outputs into decisions.</span>
+          </p>
+
+          <h2>
+            <span class="lang-ja">4. 2026年に投資すべきスキルスタック</span>
+            <span class="lang-en">4. The Skill Stack to Build in 2026</span>
+          </h2>
+
+          <h3>
+            <span class="lang-ja">TIER 1 — 今すぐ始めるべきAIリテラシー基礎</span>
+            <span class="lang-en">TIER 1 — AI Literacy Fundamentals to Start Now</span>
+          </h3>
+          <ul>
+            <li><span class="lang-ja"><strong>プロンプトエンジニアリング</strong>: 財務分析・会計判断・契約レビューに特化したプロンプト設計。「ChatGPTに質問する」から「精度の高い出力を設計する」へのシフト。</span><span class="lang-en"><strong>Prompt engineering</strong>: Designing prompts specialized for financial analysis, accounting judgment, and contract review. Shift from "asking ChatGPT" to "designing high-precision outputs."</span></li>
+            <li><span class="lang-ja"><strong>AIハルシネーション検証</strong>: 財務・会計・法令の文脈でAIが出した数値・解釈・引用がどこで誤るかを見抜くトレーニング。ドメイン知識がなければ実行不可能。</span><span class="lang-en"><strong>Hallucination validation</strong>: Training to identify where AI-generated numbers, interpretations, and citations fail in Finance/accounting/legal contexts. Impossible without domain expertise.</span></li>
+            <li><span class="lang-ja"><strong>AIワークフロー設計</strong>: 自分の業務（DDレビュー・月次報告・基準調査等）にAIを組み込んだ作業フローを設計・最適化する能力。</span><span class="lang-en"><strong>AI workflow design</strong>: Ability to integrate AI into specific workflows (DD review, monthly reporting, standards research) and optimize them iteratively.</span></li>
+          </ul>
+
+          <h3>
+            <span class="lang-ja">TIER 2 — 差別化に繋がるテクニカルスキル</span>
+            <span class="lang-en">TIER 2 — Technical Skills for Differentiation</span>
+          </h3>
+          <ul>
+            <li><span class="lang-ja"><strong>Python基礎（データ操作・API連携）</strong>: pandas/openpyxlによるExcel代替処理、AI APIへの直接アクセス、自動化スクリプト構築。全員が必要なわけではないが、覚えておくと圧倒的に応用範囲が広がる。</span><span class="lang-en"><strong>Python basics (data manipulation + API access)</strong>: Excel replacement via pandas/openpyxl, direct AI API access, automation scripts. Not required for everyone, but dramatically expands what's possible when combined with Finance expertise.</span></li>
+            <li><span class="lang-ja"><strong>データ可視化・BI</strong>: Power BI / Tableauによるリアルタイムダッシュボード構築。「毎月Excelで作り直すレポート」をAI+BIで自動化できる人材の希少性が上がる。</span><span class="lang-en"><strong>Data visualization / BI</strong>: Real-time dashboards in Power BI or Tableau. The ability to automate "monthly rebuilt Excel reports" via AI + BI is increasingly rare and valuable.</span></li>
+          </ul>
+
+          <h3>
+            <span class="lang-ja">TIER 3 — 長期的に価値が上がる不変スキル</span>
+            <span class="lang-en">TIER 3 — Timeless Skills Whose Value Increases Long-Term</span>
+          </h3>
+          <ul>
+            <li><span class="lang-ja"><strong>ドメイン専門性の深化</strong>: AIが普及するほど、ハルシネーションを見抜ける専門家の価値は上がる。IFRS・税法・M&A構造・財務モデルの深い理解は、AIリテラシーの乗数として機能する。</span><span class="lang-en"><strong>Deepening domain expertise</strong>: As AI proliferates, the value of experts who can catch hallucinations increases. Deep knowledge of IFRS, tax law, M&amp;A structures, and financial modeling acts as a multiplier on AI literacy.</span></li>
+            <li><span class="lang-ja"><strong>判断の言語化・コミュニケーション</strong>: AIが分析を担う世界では、「なぜこの判断を下したか」を明確に説明する能力が希少になる。意思決定の根拠をストーリーとして伝える力が最高位のスキルになる。</span><span class="lang-en"><strong>Articulating judgment and communication</strong>: In a world where AI handles analysis, the ability to clearly explain "why I made this judgment" becomes rare. Communicating the rationale for decisions as a coherent narrative is the highest-order skill.</span></li>
+          </ul>
+
+          <h2>
+            <span class="lang-ja">5. 資格戦略の再考 — CFAとAIリテラシーの関係</span>
+            <span class="lang-en">5. Rethinking Credential Strategy — CFA and AI Literacy</span>
+          </h2>
+
+          <p>
+            <span class="lang-ja"><strong>[公式]</strong> CFA Instituteは2024年のレポートで、「AIはCFAホルダーの代替ではなくツールだ」との立場を明確にした。一方でCFA試験自体も2025年からAIリテラシーに関連した出題比率を増加させている。CFA・公認会計士・税理士資格の価値は消えないが、採用側が「資格＋AIリテラシー証明」を求めるケースが増加している。</span>
+            <span class="lang-en"><strong>[Official]</strong> CFA Institute's 2024 report explicitly frames AI as a tool for CFA charterholders, not a replacement. Simultaneously, the CFA exam itself has increased AI-related content from 2025. CPA and tax credentials retain their value, but employers increasingly seek "credential + demonstrated AI literacy" as the new hiring baseline.</span>
+          </p>
+          <p>
+            <span class="lang-ja">実務上の現実として、資格試験の勉強にかける時間とAIリテラシー向上にかける時間のバランスが問われる時代が来た。特にキャリア初期の若手Finance人材は、<strong>「資格1つ取る時間でAI活用スキルを磨いた場合のROIを計算する習慣」</strong>を持つことが重要になっている。</span>
+            <span class="lang-en">The practical reality: the balance of time invested in credential exams versus AI upskilling now deserves explicit calculation. Especially for early-career Finance professionals, <strong>developing the habit of calculating the ROI of AI upskilling versus one more credential</strong> is increasingly important.</span>
+          </p>
+
+          <h2>
+            <span class="lang-ja">6. 新卒・若手が今すぐ取るべきアクション</span>
+            <span class="lang-en">6. Actions for Early-Career Professionals to Take Now</span>
+          </h2>
+          <ol>
+            <li>
+              <span class="lang-ja"><strong>自分の「ルーティンタスク」リストを作る</strong> — 週次・月次でこなしているタスクを書き出し、そのうちAIに移行できるものを特定する。時間を解放した先に「何をやるか」を先に決める。</span>
+              <span class="lang-en"><strong>Map your routine tasks</strong> — List what you do weekly and monthly. Identify what can be migrated to AI. Decide in advance what you will do with the time you reclaim.</span>
+            </li>
+            <li>
+              <span class="lang-ja"><strong>AIを「実際に使って失敗する」経験を積む</strong> — 財務モデルの作成・基準書の解釈・DDの要約などを実際にAIにやらせてみて、どこで間違えるかを体験する。ハルシネーションに慣れることがリテラシーの起点。</span>
+              <span class="lang-en"><strong>Fail with AI on real Finance tasks</strong> — Actually use AI for financial modeling, standards interpretation, and DD summaries. Experience firsthand where it fails. Learning AI's failure modes is the foundation of AI literacy.</span>
+            </li>
+            <li>
+              <span class="lang-ja"><strong>「AIが出した答えを直さなければならかった経験」を記録する</strong> — 自分がどこでAIの誤りを検出できたかを蓄積する。これはドメイン専門性の証明であり、面接での差別化になる。</span>
+              <span class="lang-en"><strong>Document cases where you had to correct AI</strong> — Track every instance where your expertise caught an AI error. This is a portfolio of your domain judgment, and a powerful interview differentiator.</span>
+            </li>
+          </ol>
+
+          <h2 style="margin-top:3em;">
+            <span class="lang-ja">出典</span>
+            <span class="lang-en">Sources</span>
+          </h2>
+          <ul class="source-list">
+            <li><a href="https://www.mckinsey.com/capabilities/mckinsey-digital/our-insights/the-economic-potential-of-generative-ai-the-next-productivity-frontier" target="_blank">The economic potential of generative AI: The next productivity frontier</a><span class="source-tag">[調査] McKinsey Global Institute (2023)</span></li>
+            <li><a href="https://www.weforum.org/publications/the-future-of-jobs-report-2025/" target="_blank">The Future of Jobs Report 2025</a><span class="source-tag">[調査] World Economic Forum</span></li>
+            <li><a href="https://www.goldmansachs.com/intelligence/pages/generative-ai-could-raise-global-gdp-by-7-percent.html" target="_blank">Generative AI could raise global GDP by 7%</a><span class="source-tag">[調査] Goldman Sachs Research (2023)</span></li>
+            <li><a href="https://www.cfainstitute.org/en/advocacy/policy-positions/artificial-intelligence-in-investment-management" target="_blank">Artificial Intelligence in Investment Management</a><span class="source-tag">[公式] CFA Institute</span></li>
+            <li><a href="https://www.gartner.com/en/finance/topics/ai-in-finance" target="_blank">Artificial Intelligence in Finance</a><span class="source-tag">[調査] Gartner</span></li>
+          </ul>
+
+        </article>
+
+        <!-- 4. スティッキーサイドバー -->
+        <aside class="article-sidebar">
+
+          <div class="sidebar-card">
+            <div class="section-label">
+              <span class="lang-ja">Key Facts</span>
+              <span class="lang-en">Key Facts</span>
+            </div>
+            <div class="keyfacts-grid">
+              <div class="fact-card highlight">
+                <div class="fact-value">43%</div>
+                <div class="fact-desc">
+                  <span class="lang-ja">金融・保険業務の自動化ポテンシャル（McKinsey試算）</span>
+                  <span class="lang-en">Finance/insurance task automation potential (McKinsey)</span>
+                </div>
+              </div>
+              <div class="fact-card">
+                <div class="fact-value">82pts</div>
+                <div class="fact-desc">
+                  <span class="lang-ja">記帳・仕訳担当のタスク自動化リスクスコア（100点満点）</span>
+                  <span class="lang-en">Bookkeeper task automation risk score (out of 100)</span>
+                </div>
+              </div>
+              <div class="fact-card">
+                <div class="fact-value">84%</div>
+                <div class="fact-desc">
+                  <span class="lang-ja">FY2026にAI投資増加を予定するCFOの割合（Gartner）</span>
+                  <span class="lang-en">CFOs planning to increase AI investment in FY2026 (Gartner)</span>
+                </div>
+              </div>
+              <div class="fact-card">
+                <div class="fact-value">18pts</div>
+                <div class="fact-desc">
+                  <span class="lang-ja">PEパートナー/IBD MDのタスク自動化リスクスコア（最低水準）</span>
+                  <span class="lang-en">PE Partner/IBD MD automation risk score (lowest)</span>
+                </div>
+              </div>
+              <div class="fact-card">
+                <div class="fact-value">Tier1</div>
+                <div class="fact-desc">
+                  <span class="lang-ja">今すぐ投資: プロンプト設計・ハルシネーション検証・AIワークフロー設計</span>
+                  <span class="lang-en">Invest now: prompt design, hallucination validation, AI workflow design</span>
+                </div>
+              </div>
+              <div class="fact-card highlight">
+                <div class="fact-value">×乗数</div>
+                <div class="fact-desc">
+                  <span class="lang-ja">AIリテラシーとドメイン専門性の掛け算が最強の差別化要因</span>
+                  <span class="lang-en">AI literacy × domain expertise is the strongest differentiator</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sidebar-card">
+            <div class="section-label">
+              <span class="lang-ja">注目ポイント</span>
+              <span class="lang-en">Key Highlights</span>
+            </div>
+            <ol class="highlights-list">
+              <li class="highlight-item">
+                <span class="hl-num">01</span>
+                <span class="hl-text">
+                  <span class="lang-ja">代替されるのは「職種」ではなく「タスク」 — 同一職種内で二極化が起きる</span>
+                  <span class="lang-en">AI displaces tasks, not roles — bifurcation happens within the same job title</span>
+                </span>
+              </li>
+              <li class="highlight-item">
+                <span class="hl-num">02</span>
+                <span class="hl-text">
+                  <span class="lang-ja">資格＋AIリテラシーが新しい採用基準 — 資格単独での差別化は困難になりつつある</span>
+                  <span class="lang-en">Credential + AI literacy is the new hiring baseline — credentials alone no longer differentiate</span>
+                </span>
+              </li>
+              <li class="highlight-item">
+                <span class="hl-num">03</span>
+                <span class="hl-text">
+                  <span class="lang-ja">ドメイン専門性はAIの乗数 — 深い専門知識がないとハルシネーション検証ができない</span>
+                  <span class="lang-en">Domain expertise multiplies AI value — you can't catch AI errors without it</span>
+                </span>
+              </li>
+              <li class="highlight-item">
+                <span class="hl-num">04</span>
+                <span class="hl-text">
+                  <span class="lang-ja">「AIが間違えた経験の記録」がポートフォリオになる — 面接での最高の差別化材料</span>
+                  <span class="lang-en">Documenting AI corrections becomes your portfolio — strongest interview differentiator</span>
+                </span>
+              </li>
+              <li class="highlight-item">
+                <span class="hl-num">05</span>
+                <span class="hl-text">
+                  <span class="lang-ja">M&AとPEがAIの最大の恩恵職種 — VDR処理90%短縮でより高付加価値業務に集中可能</span>
+                  <span class="lang-en">M&amp;A and PE benefit most — 90% faster VDR enables focus on higher-value work</span>
+                </span>
+              </li>
+            </ol>
+          </div>
+
+          <div class="sidebar-card">
+            <div class="section-label">
+              <span class="lang-ja">関連記事</span>
+              <span class="lang-en">Related Articles</span>
+            </div>
+            <div style="margin-top:10px;">
+              <a href="./2026-03-20-ai.html" style="display:block; font-family:'Inter',sans-serif; font-size:0.78rem; color:var(--accent); text-decoration:none; line-height:1.45; padding:8px 0; border-bottom:1px solid var(--border-light);">
+                <span class="lang-ja">AIモデル戦線レポート — 2026年3月</span>
+                <span class="lang-en">AI Model Front Report — March 2026</span>
+              </a>
+              <a href="./2026-03-21-ifrs18.html" style="display:block; font-family:'Inter',sans-serif; font-size:0.78rem; color:var(--accent); text-decoration:none; line-height:1.45; padding:8px 0;">
+                <span class="lang-ja">IFRS 18 完全解説</span>
+                <span class="lang-en">IFRS 18 Explained</span>
+              </a>
+            </div>
+          </div>
+
+        </aside>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <span>© 2026 donato · <a href="../privacy.html" style="color:inherit; text-decoration:none;">Privacy Policy</a></span>
+    <span><a href="./index.html" style="color:var(--accent); text-decoration:none;">
+      <span class="lang-ja">← 記事一覧へ</span>
+      <span class="lang-en">← Back to Articles</span>
+    </a></span>
+  </footer>
+
+  <script>
+    let _isEn = false;
+
+    function toggleLang() {
+      _isEn = !_isEn;
+      document.getElementById('lang-btn').textContent = _isEn ? 'JP' : 'EN';
+      document.querySelectorAll('.lang-ja').forEach(el => {
+        el.style.display = _isEn ? 'none' : '';
+      });
+      document.querySelectorAll('.lang-en').forEach(el => {
+        el.style.display = _isEn ? '' : 'none';
+      });
+    }
+  </script>
+
+</body>
+</html>

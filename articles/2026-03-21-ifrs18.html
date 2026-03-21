@@ -796,7 +796,9 @@
               <text x="122" y="227" text-anchor="middle" font-size="9.5" fill="#565C70">財務収益・費用</text>
               <text x="122" y="241" text-anchor="middle" font-size="9" fill="#888EA0">（定義は企業に委ねられる）</text>
 
-              <!-- PBTとNet Incomeは右側と底辺を揃える（会計上の結果は同じため） -->
+              <!-- PBTとNet Incomeは右側と底辺・上辺ともに揃える（会計上の結果は同じため）。
+                   設計原則: 図中のいずれの辺（底辺・上辺・左辺・右辺）を揃えるかずらすかは
+                   必ず意図をもたせること。揃える=同じ値/同じスコープ、ずらす=異なる構造/異なる意味。 -->
               <rect x="10" y="244" width="225" height="24" fill="#EEECEA" stroke="#D4D2CC" stroke-width="1"/>
               <text x="122" y="260" text-anchor="middle" font-size="10.5" fill="#2A2C3E">Profit Before Tax / 税引前利益</text>
 

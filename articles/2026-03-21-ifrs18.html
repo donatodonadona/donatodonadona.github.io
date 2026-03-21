@@ -769,15 +769,20 @@
               <span class="lang-ja">IAS 1 vs IFRS 18 — 損益計算書構造の比較</span>
               <span class="lang-en">IAS 1 vs IFRS 18 — Income Statement Structure Comparison</span>
             </div>
+            <!-- 構造原則: SVGのtextはlang-ja/lang-enをclass属性で付与しJSトグル対応する。
+                 EN/JP両方を示す複合テキスト（"Revenue / 売上高"等）はそのまま維持。
+                 JP専用またはEN専用のtextは必ずペアで記述すること。 -->
             <svg viewBox="0 0 500 320" xmlns="http://www.w3.org/2000/svg" style="width:100%; font-family:'Inter',Arial,sans-serif;">
               <!-- background -->
               <rect x="0" y="0" width="500" height="320" fill="#F0EFEB"/>
 
               <!-- Column headers -->
               <rect x="10" y="10" width="225" height="24" fill="#D4D2CC"/>
-              <text x="122" y="27" text-anchor="middle" font-size="11" font-weight="600" fill="#565C70" font-family="'JetBrains Mono',monospace">IAS 1 (現行)</text>
+              <text class="lang-ja" x="122" y="27" text-anchor="middle" font-size="11" font-weight="600" fill="#565C70" font-family="'JetBrains Mono',monospace">IAS 1（現行）</text>
+              <text class="lang-en" x="122" y="27" text-anchor="middle" font-size="11" font-weight="600" fill="#565C70" font-family="'JetBrains Mono',monospace">IAS 1 (Current)</text>
               <rect x="265" y="10" width="225" height="24" fill="#1A6EB0"/>
-              <text x="377" y="27" text-anchor="middle" font-size="11" font-weight="600" fill="#FFFFFF" font-family="'JetBrains Mono',monospace">IFRS 18 (新基準)</text>
+              <text class="lang-ja" x="377" y="27" text-anchor="middle" font-size="11" font-weight="600" fill="#FFFFFF" font-family="'JetBrains Mono',monospace">IFRS 18（新基準）</text>
+              <text class="lang-en" x="377" y="27" text-anchor="middle" font-size="11" font-weight="600" fill="#FFFFFF" font-family="'JetBrains Mono',monospace">IFRS 18 (New Standard)</text>
 
               <!-- IAS 1 blocks (left) -->
               <!-- Revenue と Gross Profit: 右側OPERATING内と同じ位置に配置 -->
@@ -790,15 +795,19 @@
               <!-- 「その他収益・費用」は企業ごとに定義が異なるため高さを大きく取り、
                    IAS 1の曖昧さを視覚的に表現。右側のINVESTING+FINANCINGに相当する区間。 -->
               <rect x="10" y="106" width="225" height="72" fill="#E0DDD9" stroke="#D4D2CC" stroke-width="1"/>
-              <text x="122" y="136" text-anchor="middle" font-size="9.5" fill="#565C70">その他収益・費用</text>
-              <text x="122" y="153" text-anchor="middle" font-size="9" fill="#888EA0">（企業ごとに表示が異なる）</text>
+              <text class="lang-ja" x="122" y="136" text-anchor="middle" font-size="9.5" fill="#565C70">その他収益・費用</text>
+              <text class="lang-en" x="122" y="136" text-anchor="middle" font-size="9.5" fill="#565C70">Other Income/Expenses</text>
+              <text class="lang-ja" x="122" y="153" text-anchor="middle" font-size="9" fill="#888EA0">（企業ごとに表示が異なる）</text>
+              <text class="lang-en" x="122" y="153" text-anchor="middle" font-size="9" fill="#888EA0">(varies by company)</text>
 
               <rect x="10" y="180" width="225" height="30" fill="#EEECEA" stroke="#D4D2CC" stroke-width="1"/>
               <text x="122" y="200" text-anchor="middle" font-size="10.5" fill="#2A2C3E">Operating Profit / 営業利益</text>
 
               <rect x="10" y="212" width="225" height="30" fill="#E0DDD9" stroke="#D4D2CC" stroke-width="1"/>
-              <text x="122" y="227" text-anchor="middle" font-size="9.5" fill="#565C70">財務収益・費用</text>
-              <text x="122" y="241" text-anchor="middle" font-size="9" fill="#888EA0">（定義は企業に委ねられる）</text>
+              <text class="lang-ja" x="122" y="227" text-anchor="middle" font-size="9.5" fill="#565C70">財務収益・費用</text>
+              <text class="lang-en" x="122" y="227" text-anchor="middle" font-size="9.5" fill="#565C70">Finance Income/Expense</text>
+              <text class="lang-ja" x="122" y="241" text-anchor="middle" font-size="9" fill="#888EA0">（定義は企業に委ねられる）</text>
+              <text class="lang-en" x="122" y="241" text-anchor="middle" font-size="9" fill="#888EA0">(definition left to entity)</text>
 
               <!-- PBTとNet Incomeは右側と底辺・上辺ともに揃える（会計上の結果は同じため）。
                    設計原則: 図中のいずれの辺（底辺・上辺・左辺・右辺）を揃えるかずらすかは
@@ -810,7 +819,8 @@
               <text x="122" y="286" text-anchor="middle" font-size="10.5" fill="#2A2C3E">Net Income / 純利益</text>
 
               <!-- IAS 1 label: no mandatory structure -->
-              <text x="122" y="308" text-anchor="middle" font-size="9" fill="#888EA0" font-family="'JetBrains Mono',monospace">区分ルール: 任意（機能別 or 性質別）</text>
+              <text class="lang-ja" x="122" y="308" text-anchor="middle" font-size="9" fill="#888EA0" font-family="'JetBrains Mono',monospace">区分ルール: 任意（機能別 or 性質別）</text>
+              <text class="lang-en" x="122" y="308" text-anchor="middle" font-size="9" fill="#888EA0" font-family="'JetBrains Mono',monospace">Rule: Discretionary (function/nature)</text>
 
               <!-- IFRS 18 blocks (right) - 3 categories clearly labeled -->
               <!-- OPERATING section -->
@@ -818,19 +828,24 @@
               <text x="268" y="56" font-size="9" font-weight="600" fill="#1A6EB0" font-family="'JetBrains Mono',monospace">OPERATING</text>
               <text x="377" y="72" text-anchor="middle" font-size="10" fill="#2A2C3E">Revenue / 売上高</text>
               <text x="377" y="90" text-anchor="middle" font-size="10" fill="#2A2C3E">Gross Profit / 売上総利益</text>
-              <text x="377" y="108" text-anchor="middle" font-size="10" fill="#2A2C3E">Operating Profit（必須小計）</text>
+              <text class="lang-ja" x="377" y="108" text-anchor="middle" font-size="10" fill="#2A2C3E">Operating Profit（必須小計）</text>
+              <text class="lang-en" x="377" y="108" text-anchor="middle" font-size="10" fill="#2A2C3E">Operating Profit (mandatory)</text>
 
               <!-- INVESTING section -->
               <rect x="265" y="136" width="225" height="48" fill="#F0EFEB" stroke="#2E88CA" stroke-width="1.5"/>
               <text x="268" y="150" font-size="9" font-weight="600" fill="#2E88CA" font-family="'JetBrains Mono',monospace">INVESTING</text>
-              <text x="377" y="166" text-anchor="middle" font-size="10" fill="#2A2C3E">持分法損益・資本性投資収益</text>
-              <text x="377" y="178" text-anchor="middle" font-size="9.5" fill="#565C70">（非主事業の資産から生じる損益）</text>
+              <text class="lang-ja" x="377" y="166" text-anchor="middle" font-size="10" fill="#2A2C3E">持分法損益・資本性投資収益</text>
+              <text class="lang-en" x="377" y="166" text-anchor="middle" font-size="10" fill="#2A2C3E">Equity-Method P&amp;L / Capital Returns</text>
+              <text class="lang-ja" x="377" y="178" text-anchor="middle" font-size="9.5" fill="#565C70">（非主事業の資産から生じる損益）</text>
+              <text class="lang-en" x="377" y="178" text-anchor="middle" font-size="9.5" fill="#565C70">(from non-core-business assets)</text>
 
               <!-- FINANCING section -->
               <rect x="265" y="190" width="225" height="48" fill="#F0EFEB" stroke="#0F4F80" stroke-width="1.5"/>
               <text x="268" y="204" font-size="9" font-weight="600" fill="#0F4F80" font-family="'JetBrains Mono',monospace">FINANCING</text>
-              <text x="377" y="220" text-anchor="middle" font-size="10" fill="#2A2C3E">借入金・社債・リース利息費用</text>
-              <text x="377" y="232" text-anchor="middle" font-size="9.5" fill="#565C70">（純粋な資金調達コスト）</text>
+              <text class="lang-ja" x="377" y="220" text-anchor="middle" font-size="10" fill="#2A2C3E">借入金・社債・リース利息費用</text>
+              <text class="lang-en" x="377" y="220" text-anchor="middle" font-size="10" fill="#2A2C3E">Loans, Bonds &amp; Lease Interest</text>
+              <text class="lang-ja" x="377" y="232" text-anchor="middle" font-size="9.5" fill="#565C70">（純粋な資金調達コスト）</text>
+              <text class="lang-en" x="377" y="232" text-anchor="middle" font-size="9.5" fill="#565C70">(pure funding costs)</text>
 
               <rect x="265" y="244" width="225" height="24" fill="#EBF3FB" stroke="#1A6EB0" stroke-width="1"/>
               <text x="377" y="260" text-anchor="middle" font-size="10.5" fill="#2A2C3E">Profit Before Tax / 税引前利益</text>
@@ -839,7 +854,8 @@
               <text x="377" y="286" text-anchor="middle" font-size="10.5" fill="#2A2C3E">Net Income / 純利益</text>
 
               <!-- IFRS 18 label -->
-              <text x="377" y="308" text-anchor="middle" font-size="9" fill="#1A6EB0" font-family="'JetBrains Mono',monospace">区分ルール: 3区分必須・定義明確化</text>
+              <text class="lang-ja" x="377" y="308" text-anchor="middle" font-size="9" fill="#1A6EB0" font-family="'JetBrains Mono',monospace">区分ルール: 3区分必須・定義明確化</text>
+              <text class="lang-en" x="377" y="308" text-anchor="middle" font-size="9" fill="#1A6EB0" font-family="'JetBrains Mono',monospace">Rule: 3 categories mandatory</text>
             </svg>
             <div class="chart-source">
               <span class="lang-ja">出所: IFRS財団「IFRS 18 財務諸表における表示及び開示」（2024年4月）</span>

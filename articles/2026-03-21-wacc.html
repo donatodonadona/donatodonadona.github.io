@@ -405,8 +405,11 @@
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.72rem;
       color: var(--text-muted);
-      min-width: 160px;
+      /* MUST use fixed width, not min-width — min-width lets longer labels shift bar start points
+         Breaking bar chart rule: all bars must share the same left origin */
+      width: 210px;
       flex-shrink: 0;
+      white-space: nowrap;
     }
     .erp-bar-track {
       flex: 1;
@@ -966,7 +969,10 @@
         </p>
 
         <div class="pull-quote">
-          <p>"Our tests do not support the most basic prediction of the SLB Model, that average stock returns are positively related to market βs."</p>
+          <p>
+            <span class="lang-ja">「我々のテストは、SLBモデルの最も基本的な予測——平均株式リターンが市場βと正に相関する——を支持しない。」</span>
+            <span class="lang-en">"Our tests do not support the most basic prediction of the SLB Model, that average stock returns are positively related to market βs."</span>
+          </p>
           <footer>— Fama &amp; French, The Journal of Finance, 1992</footer>
         </div>
 

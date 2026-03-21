@@ -776,31 +776,35 @@
               <text x="377" y="27" text-anchor="middle" font-size="11" font-weight="600" fill="#FFFFFF" font-family="'JetBrains Mono',monospace">IFRS 18 (新基準)</text>
 
               <!-- IAS 1 blocks (left) -->
+              <!-- Revenue と Gross Profit: 右側OPERATING内と同じ位置に配置 -->
               <rect x="10" y="42" width="225" height="30" fill="#EEECEA" stroke="#D4D2CC" stroke-width="1"/>
               <text x="122" y="62" text-anchor="middle" font-size="10.5" fill="#2A2C3E">Revenue / 売上高</text>
 
               <rect x="10" y="74" width="225" height="30" fill="#EEECEA" stroke="#D4D2CC" stroke-width="1"/>
               <text x="122" y="94" text-anchor="middle" font-size="10.5" fill="#2A2C3E">Gross Profit / 売上総利益</text>
 
-              <rect x="10" y="106" width="225" height="56" fill="#E0DDD9" stroke="#D4D2CC" stroke-width="1"/>
-              <text x="122" y="128" text-anchor="middle" font-size="9.5" fill="#565C70">その他収益・費用</text>
-              <text x="122" y="145" text-anchor="middle" font-size="9" fill="#888EA0">（企業ごとに表示が異なる）</text>
+              <!-- 「その他収益・費用」は企業ごとに定義が異なるため高さを大きく取り、
+                   IAS 1の曖昧さを視覚的に表現。右側のINVESTING+FINANCINGに相当する区間。 -->
+              <rect x="10" y="106" width="225" height="72" fill="#E0DDD9" stroke="#D4D2CC" stroke-width="1"/>
+              <text x="122" y="136" text-anchor="middle" font-size="9.5" fill="#565C70">その他収益・費用</text>
+              <text x="122" y="153" text-anchor="middle" font-size="9" fill="#888EA0">（企業ごとに表示が異なる）</text>
 
-              <rect x="10" y="164" width="225" height="30" fill="#EEECEA" stroke="#D4D2CC" stroke-width="1"/>
-              <text x="122" y="184" text-anchor="middle" font-size="10.5" fill="#2A2C3E">Operating Profit / 営業利益</text>
+              <rect x="10" y="180" width="225" height="30" fill="#EEECEA" stroke="#D4D2CC" stroke-width="1"/>
+              <text x="122" y="200" text-anchor="middle" font-size="10.5" fill="#2A2C3E">Operating Profit / 営業利益</text>
 
-              <rect x="10" y="196" width="225" height="30" fill="#E0DDD9" stroke="#D4D2CC" stroke-width="1"/>
-              <text x="122" y="211" text-anchor="middle" font-size="9.5" fill="#565C70">財務収益・費用</text>
-              <text x="122" y="225" text-anchor="middle" font-size="9" fill="#888EA0">（定義は企業に委ねられる）</text>
+              <rect x="10" y="212" width="225" height="30" fill="#E0DDD9" stroke="#D4D2CC" stroke-width="1"/>
+              <text x="122" y="227" text-anchor="middle" font-size="9.5" fill="#565C70">財務収益・費用</text>
+              <text x="122" y="241" text-anchor="middle" font-size="9" fill="#888EA0">（定義は企業に委ねられる）</text>
 
-              <rect x="10" y="228" width="225" height="24" fill="#EEECEA" stroke="#D4D2CC" stroke-width="1"/>
-              <text x="122" y="244" text-anchor="middle" font-size="10.5" fill="#2A2C3E">Profit Before Tax / 税引前利益</text>
+              <!-- PBTとNet Incomeは右側と底辺を揃える（会計上の結果は同じため） -->
+              <rect x="10" y="244" width="225" height="24" fill="#EEECEA" stroke="#D4D2CC" stroke-width="1"/>
+              <text x="122" y="260" text-anchor="middle" font-size="10.5" fill="#2A2C3E">Profit Before Tax / 税引前利益</text>
 
-              <rect x="10" y="254" width="225" height="24" fill="#EEECEA" stroke="#D4D2CC" stroke-width="1"/>
-              <text x="122" y="270" text-anchor="middle" font-size="10.5" fill="#2A2C3E">Net Income / 純利益</text>
+              <rect x="10" y="270" width="225" height="24" fill="#EEECEA" stroke="#D4D2CC" stroke-width="1"/>
+              <text x="122" y="286" text-anchor="middle" font-size="10.5" fill="#2A2C3E">Net Income / 純利益</text>
 
               <!-- IAS 1 label: no mandatory structure -->
-              <text x="122" y="300" text-anchor="middle" font-size="9" fill="#888EA0" font-family="'JetBrains Mono',monospace">区分ルール: 任意（機能別 or 性質別）</text>
+              <text x="122" y="308" text-anchor="middle" font-size="9" fill="#888EA0" font-family="'JetBrains Mono',monospace">区分ルール: 任意（機能別 or 性質別）</text>
 
               <!-- IFRS 18 blocks (right) - 3 categories clearly labeled -->
               <!-- OPERATING section -->

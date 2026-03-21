@@ -308,8 +308,8 @@
         <li><a href="./index.html" class="current"><span data-en>Articles</span><span data-ja>記事</span></a></li>
       </ul>
       <div class="lang-toggle">
-        <button class="lang-btn" onclick="setLang('en')">EN</button>
-        <button class="lang-btn active" onclick="setLang('ja')">JP</button>
+        <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+        <button class="lang-btn active" data-lang="ja" onclick="setLang('ja')">JP</button>
       </div>
       <button id="theme-btn" onclick="toggleTheme()" title="Toggle light/dark">☀</button>
     </div>
@@ -460,7 +460,7 @@
       _lang = lang;
       document.body.className = [_lang, _theme === 'light' ? 'light' : ''].filter(Boolean).join(' ');
       document.querySelectorAll('.lang-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.textContent.toLowerCase().startsWith(lang));
+        btn.classList.toggle('active', btn.dataset.lang === lang);
       });
     }
 

@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="IASBが2024年4月に確定したIFRS 18が2027年1月発効。IAS 1を全面代替し損益計算書に3区分を義務付け、EBITDA等のMPM開示ルールを大幅変更。Finance Professionalが今すぐ理解すべき要点。">
+  <title>IFRS 18 完全解説 — 損益計算書の3区分化とMPM開示義務 | donato Finance Professional × AI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+JP:wght@300;400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:           #F8F7F4;
+      --bg-code:      #EEECEA;
+      --bg-quote:     #EEECEA;
+      --bg-highlight: #EBF3FB;
+      --bg-subtle:    #F0EFEB;
+      --bg-card:      #F0EFEB;
+      --bg-header:    #F8F7F4;
+      --text-primary: #111320;
+      --text-body:    #2A2C3E;
+      --text-muted:   #565C70;
+      --text-light:   #888EA0;
+      --accent:       #1A6EB0;
+      --accent-warm:  #D4A010;
+      --border:       #D4D2CC;
+      --border-quote: #B8B6B0;
+      --border-light: #D4D2CC;
+      --tag-bg:       #E4EFF8;
+      --tag-text:     #1A6EB0;
+      --table-stripe: #F0EFEB;
+    }
+
+    body {
+      font-family: 'Noto Serif JP', Georgia, serif;
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--text-primary);
+      background: var(--bg);
+    }
+
+    /* ===== SITE HEADER ===== */
+    .site-header {
+      background: var(--bg-header);
+      border-bottom: 2px solid var(--accent);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .site-header-left { display: flex; align-items: center; gap: 12px; }
+    .wordmark {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: lowercase;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+    .wordmark span { color: var(--accent-warm); }
+    .header-sep { color: var(--border-quote); font-size: 13px; }
+    .header-media {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+    }
+    .site-header-right { display: flex; align-items: center; gap: 12px; }
+    #lang-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      padding: 4px 10px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    #lang-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .header-date {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-light);
+      letter-spacing: 0.08em;
+    }
+
+    /* ===== STICKY INFO BAR ===== */
+    #sticky-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg-subtle);
+      border-bottom: 1px solid var(--border-light);
+      padding: 7px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .sbar-cat {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+    }
+    .sbar-sep { color: var(--border-quote); font-size: 11px; }
+    .sbar-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+    .sbar-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      padding: 2px 8px;
+    }
+
+    /* ===== LAYOUT ===== */
+    .article-container { max-width: 1240px; margin: 0 auto; padding: 0 20px; }
+    .article-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 24px;
+    }
+    .article-body { grid-column: 2 / 10; max-width: 68ch; }
+    .article-sidebar {
+      grid-column: 10 / 13;
+      position: sticky;
+      top: 44px;
+      align-self: start;
+      max-height: calc(100vh - 56px);
+      overflow-y: auto;
+    }
+    .article-sidebar::-webkit-scrollbar { width: 4px; }
+    .article-sidebar::-webkit-scrollbar-track { background: transparent; }
+    .article-sidebar::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 2px; }
+
+    /* ===== TYPOGRAPHY ===== */
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+    }
+    .article-headline {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(2rem, 4vw, 2.6rem);
+      font-weight: 600;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+    .article-standfirst {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 1.1rem;
+      line-height: 1.55;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      font-weight: 400;
+    }
+    .byline {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    h2 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.45rem;
+      font-weight: 600;
+      line-height: 1.25;
+      color: var(--text-primary);
+      margin: 2em 0 0.75em;
+      border-top: 1px solid var(--border);
+      padding-top: 1em;
+    }
+    h3 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin: 1.75em 0 0.5em;
+    }
+    .article-body p { margin-bottom: 1.4em; font-size: 0.97rem; line-height: 1.8; }
+    .article-body ul, .article-body ol { margin: 0 0 1.4em 1.4em; }
+    .article-body li { margin-bottom: 0.4em; font-size: 0.95rem; line-height: 1.7; }
+    strong { color: var(--text-primary); font-weight: 600; }
+
+    /* ===== DATA TABLE ===== */
+    .data-table-wrap { overflow-x: auto; margin: 1.5em 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      background: var(--bg-subtle);
+      padding: 8px 12px;
+      text-align: left;
+      border-bottom: 2px solid var(--border);
+    }
+    td {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border-light);
+      color: var(--text-body);
+      font-family: 'Inter', sans-serif;
+    }
+    tr:nth-child(even) td { background: var(--table-stripe); }
+    td.mono { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; }
+    td.highlight-cell { color: var(--accent); font-weight: 600; }
+
+    /* ===== CHART ===== */
+    .chart-wrap {
+      background: var(--bg-card);
+      padding: 20px;
+      margin: 2em 0;
+      border: 1px solid var(--border-light);
+    }
+    .chart-title {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 14px;
+    }
+    .chart-source {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text-light);
+      margin-top: 8px;
+    }
+
+    /* ===== EXEC SUMMARY ===== */
+    .exec-summary {
+      background: var(--bg-highlight);
+      border: 1px solid var(--border-light);
+      border-left: 4px solid var(--accent);
+      padding: 24px;
+      margin: 0 0 2.5em;
+    }
+    .exec-block { margin-bottom: 20px; }
+    .exec-block:last-child { margin-bottom: 0; }
+    .exec-block + .exec-block { padding-top: 18px; border-top: 1px solid var(--border-light); }
+    .exec-tldr {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.02rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      line-height: 1.55;
+      margin-top: 8px;
+    }
+    .issues-list, .implications-list {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .issue-item { display: flex; gap: 10px; align-items: baseline; }
+    .issue-q {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--accent);
+      flex-shrink: 0;
+      min-width: 20px;
+    }
+    .issue-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: var(--text-body);
+      line-height: 1.55;
+    }
+    .implication-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: var(--text-body);
+      line-height: 1.55;
+      padding-left: 14px;
+      border-left: 2px solid var(--accent);
+    }
+    .read-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
+    .read-col-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.66rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 6px;
+    }
+    .read-label-yes { color: var(--accent); }
+    .read-label-no { color: var(--text-muted); }
+    .read-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-body);
+      line-height: 1.45;
+      padding-left: 10px;
+      border-left: 2px solid var(--accent);
+      margin-bottom: 5px;
+    }
+    .skip-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+      padding-left: 10px;
+      border-left: 2px solid var(--border-light);
+      margin-bottom: 5px;
+    }
+
+    /* ===== PULL QUOTE ===== */
+    .pull-quote {
+      border-left: 4px solid var(--accent);
+      margin: 2em 0;
+      padding: 1em 20px;
+      background: var(--bg-card);
+    }
+    .pull-quote p {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.2rem;
+      font-style: italic;
+      color: var(--text-primary);
+      line-height: 1.5;
+      margin-bottom: 6px !important;
+    }
+    .pull-quote footer {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .keyfacts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+    .fact-card {
+      background: var(--bg-highlight);
+      padding: 10px 8px;
+      border-radius: 2px;
+    }
+    .fact-card.highlight {
+      background: #FDF8EC;
+      border: 1px solid #E8D88A;
+    }
+    .fact-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--accent);
+      line-height: 1.2;
+    }
+    .fact-card.highlight .fact-value { color: #8A6A00; }
+    .fact-desc {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.64rem;
+      color: var(--text-muted);
+      margin-top: 3px;
+      line-height: 1.35;
+    }
+    .fact-card.highlight .fact-desc { color: #7A6020; }
+    .highlights-list { list-style: none; padding: 0; margin-top: 12px; }
+    .highlight-item {
+      padding: 9px 0;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      gap: 10px;
+      align-items: baseline;
+    }
+    .highlight-item:last-child { border-bottom: none; }
+    .hl-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--accent);
+      flex-shrink: 0;
+      min-width: 18px;
+    }
+    .hl-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.76rem;
+      color: var(--text-body);
+      line-height: 1.45;
+    }
+
+    /* ===== SOURCE LIST ===== */
+    .source-list { list-style: none; padding: 0; }
+    .source-list li { margin-bottom: 6px; }
+    .source-list a {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--accent);
+      text-decoration: none;
+      line-height: 1.5;
+    }
+    .source-list a:hover { text-decoration: underline; }
+    .source-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      margin-left: 4px;
+    }
+
+    /* ===== LANG TOGGLE ===== */
+    .lang-en { display: none; }
+
+    /* ===== FOOTER ===== */
+    .site-footer {
+      border-top: 1px solid var(--border-light);
+      margin-top: 4em;
+      padding: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* ===== PRINT ===== */
+    @media print {
+      body { background: white; font-size: 11pt; }
+      .site-header, #sticky-bar { display: none; }
+      .article-sidebar { position: static; max-height: none; overflow: visible; }
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+    @page { size: A4; margin: 20mm 15mm; }
+
+    /* ===== MOBILE ===== */
+    @media (max-width: 900px) {
+      .article-body { grid-column: 1 / -1; }
+      .article-sidebar { position: static; max-height: none; overflow: visible; grid-column: 1 / -1; }
+      .article-grid { display: block; }
+      .read-grid { grid-template-columns: 1fr; }
+      #sticky-bar { flex-wrap: wrap; gap: 6px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1. サイトヘッダー -->
+  <header class="site-header">
+    <div class="site-header-left">
+      <a href="../index.html" class="wordmark">dona<span>to</span></a>
+      <span class="header-sep">—</span>
+      <span class="header-media">Finance Professional × 会計基準</span>
+    </div>
+    <div class="site-header-right">
+      <button id="lang-btn" onclick="toggleLang()">EN</button>
+      <time class="header-date">2026-03-21</time>
+    </div>
+  </header>
+
+  <!-- 2. スティッキー情報バー -->
+  <div id="sticky-bar">
+    <span class="sbar-cat">会計基準 / Accounting Standards</span>
+    <span class="sbar-sep">|</span>
+    <span class="sbar-text">
+      <span class="lang-ja">対象: IFRS 18（2027年1月発効）</span>
+      <span class="lang-en">Topic: IFRS 18 (effective Jan 2027)</span>
+    </span>
+    <span class="sbar-sep">|</span>
+    <span class="sbar-text">
+      <span class="lang-ja">作成日: 2026-03-21</span>
+      <span class="lang-en">Published: 2026-03-21</span>
+    </span>
+    <span class="sbar-sep">|</span>
+    <span class="sbar-badge">
+      <span class="lang-ja">約8分</span>
+      <span class="lang-en">~8 min read</span>
+    </span>
+  </div>
+
+  <main style="padding: 0 0 3em;">
+    <div class="article-container">
+      <div class="article-grid">
+
+        <!-- 3. 記事本文 -->
+        <article class="article-body">
+
+          <!-- 記事ヘッダー -->
+          <div style="padding: 36px 0 24px;">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+              <div class="section-label">
+                <span class="lang-ja">会計基準 / Accounting Standards</span>
+                <span class="lang-en">Accounting Standards</span>
+              </div>
+              <span class="sbar-badge">
+                <span class="lang-ja">約8分</span>
+                <span class="lang-en">~8 min read</span>
+              </span>
+            </div>
+            <h1 class="article-headline">
+              <span class="lang-ja">IFRS 18 完全解説 — 損益計算書の3区分化と経営者業績指標の開示義務</span>
+              <span class="lang-en">IFRS 18 Explained — The Three-Category P&amp;L and Mandatory MPM Disclosures</span>
+            </h1>
+            <p class="article-standfirst">
+              <span class="lang-ja">IASBが2024年4月に確定・公表したIFRS 18が、2027年1月1日に発効する。IAS 1を全面代替するこの新基準は損益計算書に「営業」「投資」「財務」の3区分を義務付け、EBITDAなど経営者が独自に定義してきた指標（MPM）の開示ルールを大幅に変える。準備期間は実質2026年のみ。Finance Professionalが今すぐ理解すべき要点を整理する。</span>
+              <span class="lang-en">IFRS 18, finalized by the IASB in April 2024, takes effect January 1, 2027. Replacing IAS 1 in full, it mandates a three-category income statement — operating, investing, financing — and imposes formal disclosure requirements on Management Performance Measures such as adjusted EBITDA. Practical preparation time is essentially 2026 alone.</span>
+            </p>
+            <div style="display:flex; gap:16px; align-items:center; border-top:1px solid var(--border-light); border-bottom:1px solid var(--border-light); padding:10px 0;">
+              <span class="byline">By <strong>donato Research</strong></span>
+              <span style="color:var(--border);">|</span>
+              <time class="byline" datetime="2026-03-21">
+                <span class="lang-ja">2026年3月21日</span>
+                <span class="lang-en">March 21, 2026</span>
+              </time>
+            </div>
+          </div>
+
+          <!-- 構造化エグゼクティブサマリー -->
+          <section class="exec-summary">
+
+            <!-- ① 概要 -->
+            <div class="exec-block">
+              <div class="section-label"><span class="lang-ja">概要</span><span class="lang-en">Summary</span></div>
+              <p class="exec-tldr">
+                <span class="lang-ja">IFRS 18はIAS 1を代替し、損益計算書の表示ルールを根本から変える。3区分化により企業間の比較可能性が向上する一方、経営者が独自に開示してきた「調整後EBITDA」等のMPMには注記での調整表開示が義務付けられる。2027年1月発効に向け、2026年内に勘定科目の再分類・システム対応・投資家コミュニケーション設計を完了する必要がある。</span>
+                <span class="lang-en">IFRS 18 replaces IAS 1 and fundamentally changes income statement presentation. The three-category structure improves inter-company comparability, while custom "adjusted EBITDA" and similar MPMs now require formal reconciliation disclosures in the notes. With a January 2027 effective date, account reclassification, system changes, and investor communication redesign must be completed within 2026.</span>
+              </p>
+            </div>
+
+            <!-- ② 今週の論点 -->
+            <div class="exec-block">
+              <div class="section-label">
+                <span class="lang-ja">論点</span>
+                <span class="lang-en">Key Issues</span>
+              </div>
+              <ul class="issues-list">
+                <li class="issue-item">
+                  <span class="issue-q">Q1</span>
+                  <span class="issue-text">
+                    <span class="lang-ja"><strong>損益計算書の何が変わるか？</strong> — 現行のIAS 1では損益計算書の区分に画一的ルールがなく、企業ごとの表示が異なった。IFRS 18は「営業」「投資」「財務」の3区分を義務付け、表示の比較可能性を担保する。</span>
+                    <span class="lang-en"><strong>What exactly changes in the income statement?</strong> — Under IAS 1, there is no uniform rule for how line items are categorized, leading to wide variation across companies. IFRS 18 mandates three categories — operating, investing, financing — to ensure comparability.</span>
+                  </span>
+                </li>
+                <li class="issue-item">
+                  <span class="issue-q">Q2</span>
+                  <span class="issue-text">
+                    <span class="lang-ja"><strong>EBITDAはどう扱われるか？</strong> — MPM（Management Performance Measures）と定義され、強制的に注記での開示が必要になる。開示する場合は、IFRSで最も近い数値への数値的調整表を注記に含めなければならない。</span>
+                    <span class="lang-en"><strong>How is EBITDA affected?</strong> — It becomes an MPM (Management Performance Measure) subject to mandatory note disclosure. If disclosed, a quantitative reconciliation to the nearest IFRS subtotal must appear in the notes.</span>
+                  </span>
+                </li>
+                <li class="issue-item">
+                  <span class="issue-q">Q3</span>
+                  <span class="issue-text">
+                    <span class="lang-ja"><strong>「営業」区分に何が入るか？</strong> — 「投資」と「財務」に分類されないすべての収益・費用がデフォルトで営業区分に入る。この残余アプローチが重要で、投資・財務区分の定義を精密に理解することが先決。</span>
+                    <span class="lang-en"><strong>What goes in the "operating" category?</strong> — Everything not classified as investing or financing defaults to operating. This residual approach means the precise definitions of investing and financing categories are the critical starting point.</span>
+                  </span>
+                </li>
+                <li class="issue-item">
+                  <span class="issue-q">Q4</span>
+                  <span class="issue-text">
+                    <span class="lang-ja"><strong>移行の実務コストはどの程度か？</strong> — 勘定科目マスタの再設計、ERP/会計システムの改修、IR資料テンプレートの更新が必要。特に持分法投資や金融収益・費用の区分判断に実務的判断が集中する。</span>
+                    <span class="lang-en"><strong>What is the practical implementation cost?</strong> — Requires chart-of-accounts redesign, ERP/accounting system updates, and IR template revisions. Judgment-intensive areas: equity-method investments, financial income/expense, and disaggregation of operating items.</span>
+                  </span>
+                </li>
+                <li class="issue-item">
+                  <span class="issue-q">Q5</span>
+                  <span class="issue-text">
+                    <span class="lang-ja"><strong>日本企業（任意適用IFRS）への影響は？</strong> — IFRS任意適用の日本企業（トヨタ・ソフトバンクG等）はすべて対象。JGAAP企業は直接適用外だが、グローバル投資家との対話・IR比較に間接影響がある。</span>
+                    <span class="lang-en"><strong>How does this affect Japanese IFRS adopters?</strong> — All voluntary IFRS adopters in Japan (Toyota, SoftBank Group, etc.) are fully in scope. J-GAAP companies are not directly affected but may face indirect impact in global investor comparisons.</span>
+                  </span>
+                </li>
+              </ul>
+            </div>
+
+            <!-- ③ Finance Proへの示唆 -->
+            <div class="exec-block">
+              <div class="section-label">
+                <span class="lang-ja">Finance Proへの示唆</span>
+                <span class="lang-en">Implications for Finance Professionals</span>
+              </div>
+              <ul class="implications-list">
+                <li class="implication-item">
+                  <span class="lang-ja"><strong>今すぐギャップ分析を開始すべき</strong> — 2026年末までに勘定科目の再分類設計を完成させる必要がある。特に「投資」区分（関連会社・JV収益、持分法損益）と「財務」区分（純粋な資金調達コスト）の境界線を明確にすること。</span>
+                  <span class="lang-en"><strong>Start gap analysis now</strong> — Chart-of-accounts reclassification must be finalized by end of 2026. Define the boundaries of "investing" (associates/JV income, equity-method P&amp;L) and "financing" (pure funding costs) categories first.</span>
+                </li>
+                <li class="implication-item">
+                  <span class="lang-ja"><strong>MPMリストを棚卸しすべき</strong> — 自社が現在のIR資料・決算説明会で使っているすべての非IFRS指標を列挙し、IFRS 18下でMPMとして開示継続するか/廃止するかを経営陣と合意する。廃止しない場合は調整表の設計が必要。</span>
+                  <span class="lang-en"><strong>Audit your MPM list</strong> — Enumerate every non-IFRS metric in current IR materials and earnings presentations. Agree with management on which to continue as MPMs (requiring reconciliations) and which to retire.</span>
+                </li>
+                <li class="implication-item">
+                  <span class="lang-ja"><strong>投資家コミュニケーションの設計変更が必要</strong> — 「調整後EBITDA」を単独で強調する従来のIRスタイルは維持できない。IFRS準拠の小計との関係を透明化した開示設計に移行することで、投資家の信頼性が高まる可能性もある。</span>
+                  <span class="lang-en"><strong>Redesign investor communications</strong> — The IR approach of highlighting adjusted EBITDA without context is no longer viable. Transparent reconciliation-based disclosures can actually enhance investor credibility if designed well.</span>
+                </li>
+              </ul>
+            </div>
+
+            <!-- ④ 読み進め判断 -->
+            <div class="exec-block">
+              <div class="section-label">
+                <span class="lang-ja">この記事を読み進めるべきか</span>
+                <span class="lang-en">Should You Read On?</span>
+              </div>
+              <div class="read-grid">
+                <div>
+                  <div class="read-col-label read-label-yes">
+                    <span class="lang-ja">読むべき人</span>
+                    <span class="lang-en">Read If You Are</span>
+                  </div>
+                  <div class="read-item"><span class="lang-ja">IFRS適用企業の経理・財務部門の担当者</span><span class="lang-en">Accounting/finance staff at an IFRS-reporting entity</span></div>
+                  <div class="read-item"><span class="lang-ja">監査法人でIFRS対応クライアントを担当するスタッフ</span><span class="lang-en">Auditor advising IFRS clients on transition</span></div>
+                  <div class="read-item"><span class="lang-ja">IR・投資家対話を担当するCFOオフィス</span><span class="lang-en">CFO office responsible for IR and investor communications</span></div>
+                  <div class="read-item"><span class="lang-ja">IFRS企業を分析対象とするアナリスト・投資家</span><span class="lang-en">Analysts/investors who model IFRS-reporting companies</span></div>
+                </div>
+                <div>
+                  <div class="read-col-label read-label-no">
+                    <span class="lang-ja">スキップしてよい人</span>
+                    <span class="lang-en">Skip If</span>
+                  </div>
+                  <div class="skip-item"><span class="lang-ja">J-GAAP専門でIFRS移行の予定がない企業の実務担当者</span><span class="lang-en">J-GAAP practitioner with no IFRS transition planned</span></div>
+                  <div class="skip-item"><span class="lang-ja">IFRS 18の対応をすでに外部専門家に全面委託済みの方</span><span class="lang-en">You have fully delegated IFRS 18 implementation to external advisors</span></div>
+                </div>
+              </div>
+            </div>
+
+          </section>
+
+          <!-- 本文 -->
+          <h2>
+            <span class="lang-ja">1. IFRS 18とは — IAS 1の全面代替</span>
+            <span class="lang-en">1. What Is IFRS 18 — The Full Replacement of IAS 1</span>
+          </h2>
+
+          <p>
+            <span class="lang-ja"><strong>[公式]</strong> IASBは2024年4月9日、<strong>IFRS 18「財務諸表における表示及び開示」</strong>を公表した。これはIAS 1「財務諸表の表示」を全面廃止し代替する新基準で、発効日は<strong>2027年1月1日以降開始事業年度</strong>（早期適用可）。</span>
+            <span class="lang-en"><strong>[Official]</strong> The IASB published <strong>IFRS 18 Presentation and Disclosure in Financial Statements</strong> on April 9, 2024. It replaces IAS 1 in full, with an effective date of <strong>annual periods beginning on or after January 1, 2027</strong> (early adoption permitted).</span>
+          </p>
+          <p>
+            <span class="lang-ja">IFRS 18の制定背景には、IAS 1下での損益計算書の区分表示が企業ごとに大きく異なり、投資家が横断比較する際に障壁となっていたという問題がある。IASBは2016年から「プライマリー財務諸表」プロジェクトとして検討を進め、2019年の公開草案を経て最終基準を確定した。</span>
+            <span class="lang-en">The standard addresses a longstanding problem: under IAS 1, the structure of the income statement varied so widely between companies that cross-company comparison was difficult for investors. The IASB addressed this through its "Primary Financial Statements" project, launched in 2016, with a 2019 exposure draft preceding the final standard.</span>
+          </p>
+
+          <div class="pull-quote">
+            <p>
+              <span class="lang-ja">「IFRS 18は財務報告の比較可能性に向けた20年来で最も重大な変更の一つだ。」</span>
+              <span class="lang-en">"IFRS 18 represents one of the most significant changes to the comparability of financial reporting in two decades."</span>
+            </p>
+            <footer>— <cite>Deloitte, iasplus.com, 2024</cite></footer>
+          </div>
+
+          <h2>
+            <span class="lang-ja">2. 損益計算書の3区分化 — 核心変更</span>
+            <span class="lang-en">2. The Three-Category Income Statement — The Core Change</span>
+          </h2>
+
+          <h3>
+            <span class="lang-ja">INVESTING（投資）区分</span>
+            <span class="lang-en">INVESTING Category</span>
+          </h3>
+          <p>
+            <span class="lang-ja"><strong>[公式]</strong> 投資区分に計上されるのは、<strong>主たる営業活動に関連しない資産から生じる収益・費用</strong>。典型例:</span>
+            <span class="lang-en"><strong>[Official]</strong> The investing category captures income and expenses from <strong>assets not related to the main business activities</strong>. Key examples:</span>
+          </p>
+          <ul>
+            <li><span class="lang-ja">関連会社・JVへの投資からの損益（持分法損益）</span><span class="lang-en">Returns from associates and joint ventures (equity method)</span></li>
+            <li><span class="lang-ja">売却目的で保有する資産の損益</span><span class="lang-en">Income/expenses from assets held for capital appreciation or sale</span></li>
+            <li><span class="lang-ja">FVOCI・FVTPLで測定する金融資産からの収益（主事業に使用しないもの）</span><span class="lang-en">Returns from financial assets measured at FVOCI/FVTPL not used in main operations</span></li>
+          </ul>
+
+          <h3>
+            <span class="lang-ja">FINANCING（財務）区分</span>
+            <span class="lang-en">FINANCING Category</span>
+          </h3>
+          <p>
+            <span class="lang-ja"><strong>[公式]</strong> 財務区分は<strong>純粋な資金調達コスト</strong>に限定される。具体的には:</span>
+            <span class="lang-en"><strong>[Official]</strong> The financing category is limited to <strong>pure funding costs</strong>. Specifically:</span>
+          </p>
+          <ul>
+            <li><span class="lang-ja">借入金・社債・リース負債に係る利息費用（IAS 23資産化部分を除く）</span><span class="lang-en">Interest expense on borrowings, bonds, and lease liabilities (excluding IAS 23 capitalized amounts)</span></li>
+            <li><span class="lang-ja">デリバティブがキャッシュフローヘッジとして指定されている場合の関連損益</span><span class="lang-en">Gains/losses on derivatives designated as cash flow hedges in financing relationships</span></li>
+            <li><span class="lang-ja">確定給付制度の純利息（一部例外あり）</span><span class="lang-en">Net interest on defined benefit plans (with exceptions)</span></li>
+          </ul>
+
+          <h3>
+            <span class="lang-ja">OPERATING（営業）区分 — 残余アプローチ</span>
+            <span class="lang-en">OPERATING Category — The Residual Approach</span>
+          </h3>
+          <p>
+            <span class="lang-ja">営業区分は投資・財務区分に分類されない<strong>すべての</strong>収益・費用を受け取る「残余カテゴリー」として機能する。この設計により、投資と財務の定義を精密に理解することが実務上の最重要論点となる。</span>
+            <span class="lang-en">The operating category acts as a residual, capturing <strong>all</strong> income and expenses not classified as investing or financing. This design makes a precise understanding of the investing and financing definitions the most critical practical issue.</span>
+          </p>
+
+          <!-- 損益計算書構造比較チャート -->
+          <div class="chart-wrap">
+            <div class="chart-title">
+              <span class="lang-ja">IAS 1 vs IFRS 18 — 損益計算書構造の比較</span>
+              <span class="lang-en">IAS 1 vs IFRS 18 — Income Statement Structure Comparison</span>
+            </div>
+            <svg viewBox="0 0 500 320" xmlns="http://www.w3.org/2000/svg" style="width:100%; font-family:'Inter',Arial,sans-serif;">
+              <!-- background -->
+              <rect x="0" y="0" width="500" height="320" fill="#F0EFEB"/>
+
+              <!-- Column headers -->
+              <rect x="10" y="10" width="225" height="24" fill="#D4D2CC"/>
+              <text x="122" y="27" text-anchor="middle" font-size="11" font-weight="600" fill="#565C70" font-family="'JetBrains Mono',monospace">IAS 1 (現行)</text>
+              <rect x="265" y="10" width="225" height="24" fill="#1A6EB0"/>
+              <text x="377" y="27" text-anchor="middle" font-size="11" font-weight="600" fill="#FFFFFF" font-family="'JetBrains Mono',monospace">IFRS 18 (新基準)</text>
+
+              <!-- IAS 1 blocks (left) -->
+              <rect x="10" y="42" width="225" height="30" fill="#EEECEA" stroke="#D4D2CC" stroke-width="1"/>
+              <text x="122" y="62" text-anchor="middle" font-size="10.5" fill="#2A2C3E">Revenue / 売上高</text>
+
+              <rect x="10" y="74" width="225" height="30" fill="#EEECEA" stroke="#D4D2CC" stroke-width="1"/>
+              <text x="122" y="94" text-anchor="middle" font-size="10.5" fill="#2A2C3E">Gross Profit / 売上総利益</text>
+
+              <rect x="10" y="106" width="225" height="56" fill="#E0DDD9" stroke="#D4D2CC" stroke-width="1"/>
+              <text x="122" y="128" text-anchor="middle" font-size="9.5" fill="#565C70">その他収益・費用</text>
+              <text x="122" y="145" text-anchor="middle" font-size="9" fill="#888EA0">（企業ごとに表示が異なる）</text>
+
+              <rect x="10" y="164" width="225" height="30" fill="#EEECEA" stroke="#D4D2CC" stroke-width="1"/>
+              <text x="122" y="184" text-anchor="middle" font-size="10.5" fill="#2A2C3E">Operating Profit / 営業利益</text>
+
+              <rect x="10" y="196" width="225" height="30" fill="#E0DDD9" stroke="#D4D2CC" stroke-width="1"/>
+              <text x="122" y="211" text-anchor="middle" font-size="9.5" fill="#565C70">財務収益・費用</text>
+              <text x="122" y="225" text-anchor="middle" font-size="9" fill="#888EA0">（定義は企業に委ねられる）</text>
+
+              <rect x="10" y="228" width="225" height="24" fill="#EEECEA" stroke="#D4D2CC" stroke-width="1"/>
+              <text x="122" y="244" text-anchor="middle" font-size="10.5" fill="#2A2C3E">Profit Before Tax / 税引前利益</text>
+
+              <rect x="10" y="254" width="225" height="24" fill="#EEECEA" stroke="#D4D2CC" stroke-width="1"/>
+              <text x="122" y="270" text-anchor="middle" font-size="10.5" fill="#2A2C3E">Net Income / 純利益</text>
+
+              <!-- IAS 1 label: no mandatory structure -->
+              <text x="122" y="300" text-anchor="middle" font-size="9" fill="#888EA0" font-family="'JetBrains Mono',monospace">区分ルール: 任意（機能別 or 性質別）</text>
+
+              <!-- IFRS 18 blocks (right) - 3 categories clearly labeled -->
+              <!-- OPERATING section -->
+              <rect x="265" y="42" width="225" height="88" fill="#EBF3FB" stroke="#1A6EB0" stroke-width="1.5"/>
+              <text x="268" y="56" font-size="9" font-weight="600" fill="#1A6EB0" font-family="'JetBrains Mono',monospace">OPERATING</text>
+              <text x="377" y="72" text-anchor="middle" font-size="10" fill="#2A2C3E">Revenue / 売上高</text>
+              <text x="377" y="90" text-anchor="middle" font-size="10" fill="#2A2C3E">Gross Profit / 売上総利益</text>
+              <text x="377" y="108" text-anchor="middle" font-size="10" fill="#2A2C3E">Operating Profit（必須小計）</text>
+
+              <!-- INVESTING section -->
+              <rect x="265" y="136" width="225" height="48" fill="#F0EFEB" stroke="#2E88CA" stroke-width="1.5"/>
+              <text x="268" y="150" font-size="9" font-weight="600" fill="#2E88CA" font-family="'JetBrains Mono',monospace">INVESTING</text>
+              <text x="377" y="166" text-anchor="middle" font-size="10" fill="#2A2C3E">持分法損益・資本性投資収益</text>
+              <text x="377" y="178" text-anchor="middle" font-size="9.5" fill="#565C70">（非主事業の資産から生じる損益）</text>
+
+              <!-- FINANCING section -->
+              <rect x="265" y="190" width="225" height="48" fill="#F0EFEB" stroke="#0F4F80" stroke-width="1.5"/>
+              <text x="268" y="204" font-size="9" font-weight="600" fill="#0F4F80" font-family="'JetBrains Mono',monospace">FINANCING</text>
+              <text x="377" y="220" text-anchor="middle" font-size="10" fill="#2A2C3E">借入金・社債・リース利息費用</text>
+              <text x="377" y="232" text-anchor="middle" font-size="9.5" fill="#565C70">（純粋な資金調達コスト）</text>
+
+              <rect x="265" y="244" width="225" height="24" fill="#EBF3FB" stroke="#1A6EB0" stroke-width="1"/>
+              <text x="377" y="260" text-anchor="middle" font-size="10.5" fill="#2A2C3E">Profit Before Tax / 税引前利益</text>
+
+              <rect x="265" y="270" width="225" height="24" fill="#EBF3FB" stroke="#1A6EB0" stroke-width="1"/>
+              <text x="377" y="286" text-anchor="middle" font-size="10.5" fill="#2A2C3E">Net Income / 純利益</text>
+
+              <!-- IFRS 18 label -->
+              <text x="377" y="308" text-anchor="middle" font-size="9" fill="#1A6EB0" font-family="'JetBrains Mono',monospace">区分ルール: 3区分必須・定義明確化</text>
+            </svg>
+            <div class="chart-source">
+              <span class="lang-ja">出所: IFRS財団「IFRS 18 財務諸表における表示及び開示」（2024年4月）</span>
+              <span class="lang-en">Source: IFRS Foundation, IFRS 18 Presentation and Disclosure in Financial Statements (April 2024)</span>
+            </div>
+          </div>
+
+          <h2>
+            <span class="lang-ja">3. MPM（経営者業績指標）の開示義務</span>
+            <span class="lang-en">3. MPMs — Mandatory Disclosure of Management Performance Measures</span>
+          </h2>
+
+          <h3>
+            <span class="lang-ja">MPMとは何か</span>
+            <span class="lang-en">What Is an MPM?</span>
+          </h3>
+          <p>
+            <span class="lang-ja"><strong>[公式]</strong> IFRS 18は、企業がIR資料や決算プレスリリースで使用する<strong>調整後EBITDA・調整後営業利益・コアEPS</strong>などの非IFRS業績指標を「MPM（Management Performance Measures）」として定義し、その開示に厳格な要件を課す。</span>
+            <span class="lang-en"><strong>[Official]</strong> IFRS 18 defines non-IFRS metrics communicated in public disclosures — adjusted EBITDA, adjusted operating profit, core EPS — as MPMs and subjects them to strict disclosure requirements.</span>
+          </p>
+          <p>
+            <span class="lang-ja">MPMの開示を選択した場合（任意）、または開示を継続する場合、財務諸表の<strong>注記</strong>に以下の情報を含めなければならない:</span>
+            <span class="lang-en">If an entity chooses to (or continues to) disclose an MPM, it must include the following in the <strong>notes to the financial statements</strong>:</span>
+          </p>
+          <ul>
+            <li><span class="lang-ja">MPMの名称と定義</span><span class="lang-en">Name and definition of the MPM</span></li>
+            <li><span class="lang-ja">MPMを使う理由（「なぜこの指標が有用か」の説明）</span><span class="lang-en">Why the MPM provides useful information</span></li>
+            <li><span class="lang-ja">当期・前期のMPMの金額</span><span class="lang-en">The MPM amount for the current and prior period</span></li>
+            <li><span class="lang-ja"><strong>IFRSで規定された最も近い小計への数値的調整表</strong></span><span class="lang-en"><strong>A numerical reconciliation to the most directly comparable IFRS-defined subtotal</strong></span></li>
+            <li><span class="lang-ja">調整表の各調整項目に係る税効果</span><span class="lang-en">Tax effect of each reconciling item</span></li>
+          </ul>
+
+          <div class="pull-quote">
+            <p>
+              <span class="lang-ja">「調整後EBITDAの時代は終わらないが、透明性を義務付けられる時代が始まる。」</span>
+              <span class="lang-en">"The era of adjusted EBITDA is not ending — the era of mandatory transparency around it is beginning."</span>
+            </p>
+            <footer>— <cite>KPMG, IFRS 18 Insight Series, 2024</cite></footer>
+          </div>
+
+          <h2>
+            <span class="lang-ja">4. 主要変更点と移行スケジュール</span>
+            <span class="lang-en">4. Key Changes and Transition Timeline</span>
+          </h2>
+
+          <div class="data-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th><span class="lang-ja">変更点</span><span class="lang-en">Change</span></th>
+                  <th><span class="lang-ja">IAS 1（現行）</span><span class="lang-en">IAS 1 (Current)</span></th>
+                  <th><span class="lang-ja">IFRS 18（新基準）</span><span class="lang-en">IFRS 18 (New)</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="lang-ja">損益計算書構造</span><span class="lang-en">P&amp;L structure</span></td>
+                  <td><span class="lang-ja">機能別または性質別（選択制）</span><span class="lang-en">Functional or nature-based (entity choice)</span></td>
+                  <td class="highlight-cell"><span class="lang-ja">営業・投資・財務の3区分必須</span><span class="lang-en">Three mandatory categories required</span></td>
+                </tr>
+                <tr>
+                  <td><span class="lang-ja">小計行</span><span class="lang-en">Subtotals</span></td>
+                  <td><span class="lang-ja">売上総利益・営業利益（任意）</span><span class="lang-en">Gross profit, operating profit (optional)</span></td>
+                  <td class="highlight-cell"><span class="lang-ja">売上総利益・営業利益の表示義務化</span><span class="lang-en">Gross profit and operating profit mandatory</span></td>
+                </tr>
+                <tr>
+                  <td><span class="lang-ja">非IFRS指標（EBITDA等）</span><span class="lang-en">Non-IFRS metrics (EBITDA, etc.)</span></td>
+                  <td><span class="lang-ja">開示任意・規制なし</span><span class="lang-en">Optional, unregulated</span></td>
+                  <td class="highlight-cell"><span class="lang-ja">MPMとして注記開示義務（調整表含む）</span><span class="lang-en">Must disclose as MPM with reconciliation</span></td>
+                </tr>
+                <tr>
+                  <td><span class="lang-ja">持分法投資損益</span><span class="lang-en">Equity-method P&amp;L</span></td>
+                  <td><span class="lang-ja">営業利益の前後どちらでも可</span><span class="lang-en">Can appear above or below operating profit</span></td>
+                  <td class="highlight-cell"><span class="lang-ja">原則として投資区分に分類</span><span class="lang-en">Classified in investing category (as a rule)</span></td>
+                </tr>
+                <tr>
+                  <td><span class="lang-ja">財務収益・費用の定義</span><span class="lang-en">Definition of financial income/expense</span></td>
+                  <td><span class="lang-ja">企業が独自に定義</span><span class="lang-en">Defined by each entity</span></td>
+                  <td class="highlight-cell"><span class="lang-ja">純粋な資金調達コストのみに限定</span><span class="lang-en">Limited to pure funding costs only</span></td>
+                </tr>
+                <tr>
+                  <td><span class="lang-ja">比較期間</span><span class="lang-en">Comparative period</span></td>
+                  <td><span class="lang-ja">—</span><span class="lang-en">—</span></td>
+                  <td class="highlight-cell"><span class="lang-ja">遡及適用（前期比較表示の修正要）</span><span class="lang-en">Retrospective application (prior period restatement required)</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>
+            <span class="lang-ja">移行スケジュール（2026年が勝負）</span>
+            <span class="lang-en">Transition Timeline — 2026 Is the Critical Year</span>
+          </h3>
+          <p>
+            <span class="lang-ja">IFRS 18は<strong>遡及適用</strong>が原則であり、2027年度の財務諸表には2026年度の比較情報を新基準ベースで作成しなければならない。これは実質的に2026年1月から新基準での区分整理が必要であることを意味する。</span>
+            <span class="lang-en">IFRS 18 requires <strong>retrospective application</strong>: the 2027 financial statements must present 2026 comparative figures under the new standard. This effectively means reclassification must begin from January 2026 to capture a clean comparative year.</span>
+          </p>
+          <ul>
+            <li><span class="lang-ja"><strong>2026年上半期</strong>: ギャップ分析・勘定科目マスタ再設計・MPMリスト確定</span><span class="lang-en"><strong>H1 2026</strong>: Gap analysis, chart-of-accounts redesign, MPM list finalization</span></li>
+            <li><span class="lang-ja"><strong>2026年下半期</strong>: ERPシステム改修・並行集計・監査人との事前協議</span><span class="lang-en"><strong>H2 2026</strong>: ERP system updates, parallel runs, pre-audit discussions</span></li>
+            <li><span class="lang-ja"><strong>2027年3月（3月決算企業）</strong>: IFRS 18準拠の初の年次報告書を公表</span><span class="lang-en"><strong>March 2027 (March FY companies)</strong>: First annual report under IFRS 18</span></li>
+          </ul>
+
+          <h2>
+            <span class="lang-ja">5. AIを活用したIFRS 18移行準備</span>
+            <span class="lang-en">5. Using AI to Accelerate IFRS 18 Transition</span>
+          </h2>
+
+          <h3>
+            <span class="lang-ja">勘定科目の自動再分類</span>
+            <span class="lang-en">Automated Account Reclassification</span>
+          </h3>
+          <p>
+            <span class="lang-ja">IFRS 18の移行で最も工数がかかるのが<strong>勘定科目の営業/投資/財務への再分類判断</strong>。大量の勘定科目に対してLLMに「この収益・費用はどの区分か？」を判断させ、人間がレビューする<strong>human-in-the-loopフロー</strong>を構築すると効率的。Claude Opus 4.6やGPT-5.4（100万トークンCW）は会計基準テキストを一括投入した高精度分類に適している。</span>
+            <span class="lang-en">The most labor-intensive IFRS 18 task is <strong>reclassifying accounts into operating/investing/financing</strong>. An efficient approach: have an LLM propose classifications for each account, with humans reviewing. A human-in-the-loop flow using Claude Opus 4.6 or GPT-5.4 (1M-token context for loading full standards text) works well for high-accuracy classification.</span>
+          </p>
+
+          <h3>
+            <span class="lang-ja">MPM調整表の初稿生成</span>
+            <span class="lang-en">Drafting MPM Reconciliation Tables</span>
+          </h3>
+          <p>
+            <span class="lang-ja">調整後EBITDAからIFRS営業利益への調整表は定型的な構造を持つ。AIに現行のIR資料・決算説明会プレゼンを読み込ませ、MPMの項目を抽出→調整表のドラフト生成→経理チームが修正するフローで初稿作成時間を大幅短縮できる。</span>
+            <span class="lang-en">Reconciliation tables from adjusted EBITDA to IFRS operating profit follow a structured format. Feed current IR materials and earnings decks to an AI to extract MPM items, generate draft reconciliation tables, and have the accounting team refine — significantly compressing initial drafting time.</span>
+          </p>
+
+          <h3>
+            <span class="lang-ja">基準文書の解釈補助</span>
+            <span class="lang-en">Standards Interpretation Assistance</span>
+          </h3>
+          <p>
+            <span class="lang-ja">IFRS 18（本文＋根拠結論＋設例）は約300ページの分量。GPT-5.4の100万トークンCWを使えば全文を一括投入した上でのQ&A形式の解釈補助が可能。ただし<strong>最終判断は必ず監査人・専門家に確認すること</strong>。AIの解釈は出発点に過ぎない。</span>
+            <span class="lang-en">IFRS 18 (standard text + basis for conclusions + illustrative examples) runs approximately 300 pages. GPT-5.4's 1M-token context allows the entire document to be loaded for Q&amp;A-based interpretation assistance. However, <strong>always validate final judgments with your auditor or specialist</strong> — AI interpretation is a starting point only.</span>
+          </p>
+
+          <h2>
+            <span class="lang-ja">6. Finance Proが今すぐ取るべき3つのアクション</span>
+            <span class="lang-en">6. Three Actions Finance Professionals Should Take Now</span>
+          </h2>
+          <ol>
+            <li>
+              <span class="lang-ja"><strong>ギャップ分析の着手</strong> — 現在の勘定科目体系を3区分のどこに分類するか、まず自社の損益計算書ライン別に仮分類を作成する。特に持分法損益・金融収益費用・リース関連費用の区分判断から始める。</span>
+              <span class="lang-en"><strong>Start gap analysis</strong> — Begin by tentatively mapping each P&amp;L line item to the three categories. Prioritize equity-method P&amp;L, financial income/expense, and lease-related costs as the most judgment-intensive items.</span>
+            </li>
+            <li>
+              <span class="lang-ja"><strong>MPMリストの棚卸し</strong> — 直近3期の決算説明会・IRプレゼン・アニュアルレポートから自社が使用しているすべての非IFRS指標を一覧化する。各指標について「IFRS 18下で開示継続するか」を経営陣・IRチームと合意する。</span>
+              <span class="lang-en"><strong>Inventory your MPMs</strong> — List every non-IFRS metric used across the last three years of earnings presentations, IR materials, and annual reports. Reach agreement with management and IR on which metrics to continue disclosing as MPMs.</span>
+            </li>
+            <li>
+              <span class="lang-ja"><strong>監査人との早期対話</strong> — IFRS 18の適用判断（特に区分分類の境界線）は解釈の余地がある。2026年上半期中に監査人と主要論点について事前合意を取り付けることで、2027年の監査リスクを最小化できる。</span>
+              <span class="lang-en"><strong>Engage your auditor early</strong> — IFRS 18 classification judgments (especially category boundaries) involve interpretation. Reaching pre-agreement with your auditor on key issues in H1 2026 minimizes audit risk when the first IFRS 18 statements are filed.</span>
+            </li>
+          </ol>
+
+          <h2 style="margin-top:3em;">
+            <span class="lang-ja">出典</span>
+            <span class="lang-en">Sources</span>
+          </h2>
+          <ul class="source-list">
+            <li><a href="https://www.ifrs.org/issued-standards/list-of-standards/ifrs-18-presentation-and-disclosure-in-financial-statements/" target="_blank">IFRS 18 Presentation and Disclosure in Financial Statements</a><span class="source-tag">[公式] IFRS財団</span></li>
+            <li><a href="https://www.iasplus.com/en/standards/ifrs/ifrs18" target="_blank">IFRS 18 — Presentation and Disclosure in Financial Statements</a><span class="source-tag">[解説] Deloitte iasplus.com</span></li>
+            <li><a href="https://kpmg.com/xx/en/home/insights/2024/04/ifrs-18.html" target="_blank">IFRS 18: Presentation and Disclosure in Financial Statements — First Impressions</a><span class="source-tag">[解説] KPMG</span></li>
+            <li><a href="https://www.pwc.com/gx/en/services/audit-assurance/ifrs-reporting/ifrs-18.html" target="_blank">IFRS 18 — What you need to know</a><span class="source-tag">[解説] PwC</span></li>
+            <li><a href="https://www.ey.com/en_gl/technical/financial-reporting/ifrs-18" target="_blank">IFRS 18 Presentation and Disclosure in Financial Statements</a><span class="source-tag">[解説] EY</span></li>
+          </ul>
+
+        </article>
+
+        <!-- 4. スティッキーサイドバー -->
+        <aside class="article-sidebar">
+
+          <div class="sidebar-card">
+            <div class="section-label">
+              <span class="lang-ja">Key Facts</span>
+              <span class="lang-en">Key Facts</span>
+            </div>
+            <div class="keyfacts-grid">
+              <div class="fact-card highlight">
+                <div class="fact-value">2027.1.1</div>
+                <div class="fact-desc">
+                  <span class="lang-ja">IFRS 18発効日（早期適用可）</span>
+                  <span class="lang-en">IFRS 18 effective date (early adoption permitted)</span>
+                </div>
+              </div>
+              <div class="fact-card">
+                <div class="fact-value">3区分</div>
+                <div class="fact-desc">
+                  <span class="lang-ja">損益計算書の必須カテゴリー数</span>
+                  <span class="lang-en">Mandatory P&amp;L categories</span>
+                </div>
+              </div>
+              <div class="fact-card">
+                <div class="fact-value">IAS 1</div>
+                <div class="fact-desc">
+                  <span class="lang-ja">IFRS 18によって全面廃止される旧基準</span>
+                  <span class="lang-en">Standard fully replaced by IFRS 18</span>
+                </div>
+              </div>
+              <div class="fact-card">
+                <div class="fact-value">MPM</div>
+                <div class="fact-desc">
+                  <span class="lang-ja">経営者業績指標（EBITDAなど）の新定義と開示義務</span>
+                  <span class="lang-en">Management Performance Measures — new definition and mandatory disclosure</span>
+                </div>
+              </div>
+              <div class="fact-card">
+                <div class="fact-value">遡及</div>
+                <div class="fact-desc">
+                  <span class="lang-ja">原則的適用方法（前期比較表示の修正が必要）</span>
+                  <span class="lang-en">Retrospective application required (prior period restatement)</span>
+                </div>
+              </div>
+              <div class="fact-card highlight">
+                <div class="fact-value">2026年</div>
+                <div class="fact-desc">
+                  <span class="lang-ja">実質的な準備完了期限（遡及適用のため）</span>
+                  <span class="lang-en">Effective preparation deadline (due to retrospective application)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sidebar-card">
+            <div class="section-label">
+              <span class="lang-ja">注目ポイント</span>
+              <span class="lang-en">Key Highlights</span>
+            </div>
+            <ol class="highlights-list">
+              <li class="highlight-item">
+                <span class="hl-num">01</span>
+                <span class="hl-text">
+                  <span class="lang-ja">損益計算書に「営業・投資・財務」の3区分が義務化 — IAS 1下の「企業ごとに異なる表示」から脱却</span>
+                  <span class="lang-en">Three mandatory P&amp;L categories — ending the IAS 1 era of inconsistent presentation</span>
+                </span>
+              </li>
+              <li class="highlight-item">
+                <span class="hl-num">02</span>
+                <span class="hl-text">
+                  <span class="lang-ja">調整後EBITDAはMPMとして注記開示必須 — IFRS小計への調整表を財務諸表注記に含める義務</span>
+                  <span class="lang-en">Adjusted EBITDA must be disclosed as MPM with reconciliation in the notes</span>
+                </span>
+              </li>
+              <li class="highlight-item">
+                <span class="hl-num">03</span>
+                <span class="hl-text">
+                  <span class="lang-ja">遡及適用のため2026年が準備の実質デッドライン — 2026年内にギャップ分析・システム改修を完了</span>
+                  <span class="lang-en">Retrospective application makes 2026 the real deadline — complete gap analysis and system updates this year</span>
+                </span>
+              </li>
+              <li class="highlight-item">
+                <span class="hl-num">04</span>
+                <span class="hl-text">
+                  <span class="lang-ja">持分法投資損益の区分変更が鍵 — 現行「営業利益前後どちらでも可」から「投資区分」への強制移動</span>
+                  <span class="lang-en">Equity-method P&amp;L reclassification is a key judgment — mandatory move from operating to investing</span>
+                </span>
+              </li>
+              <li class="highlight-item">
+                <span class="hl-num">05</span>
+                <span class="hl-text">
+                  <span class="lang-ja">J-GAAP企業は直接対象外だが投資家のIFRS比較への間接影響に注意</span>
+                  <span class="lang-en">J-GAAP entities not directly affected — but watch for indirect impact on investor IFRS comparisons</span>
+                </span>
+              </li>
+            </ol>
+          </div>
+
+          <div class="sidebar-card">
+            <div class="section-label">
+              <span class="lang-ja">関連記事</span>
+              <span class="lang-en">Related Articles</span>
+            </div>
+            <div style="margin-top:10px;">
+              <a href="./2026-03-20-valuation.html" style="display:block; font-family:'Inter',sans-serif; font-size:0.78rem; color:var(--accent); text-decoration:none; line-height:1.45; padding:8px 0; border-bottom:1px solid var(--border-light);">
+                <span class="lang-ja">Valuation Theory Lab #1 — Terminal ValueはなぜDCFの70-80%を占めるのか</span>
+                <span class="lang-en">Valuation Theory Lab #1 — Why Terminal Value Accounts for 70–80% of DCF</span>
+              </a>
+              <a href="./2026-03-20-ai.html" style="display:block; font-family:'Inter',sans-serif; font-size:0.78rem; color:var(--accent); text-decoration:none; line-height:1.45; padding:8px 0;">
+                <span class="lang-ja">AIモデル戦線レポート — 2026年3月</span>
+                <span class="lang-en">AI Model Front Report — March 2026</span>
+              </a>
+            </div>
+          </div>
+
+        </aside>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <span>© 2026 donato · <a href="../privacy.html" style="color:inherit; text-decoration:none;">Privacy Policy</a></span>
+    <span><a href="./index.html" style="color:var(--accent); text-decoration:none;">
+      <span class="lang-ja">← 記事一覧へ</span>
+      <span class="lang-en">← Back to Articles</span>
+    </a></span>
+  </footer>
+
+  <script>
+    let _isEn = false;
+
+    function toggleLang() {
+      _isEn = !_isEn;
+      document.getElementById('lang-btn').textContent = _isEn ? 'JP' : 'EN';
+      document.querySelectorAll('.lang-ja').forEach(el => {
+        el.style.display = _isEn ? 'none' : '';
+      });
+      document.querySelectorAll('.lang-en').forEach(el => {
+        el.style.display = _isEn ? '' : 'none';
+      });
+    }
+  </script>
+
+</body>
+</html>

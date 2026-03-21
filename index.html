@@ -804,9 +804,11 @@
 
 <!-- FOOTER -->
 <footer>
-  <span>© 2025 Donato</span>
+  <span>© <span id="copyright-year"></span> Donato</span>
   <span data-en style="color: var(--text3)">Valuation & AI · Japan</span>
   <span data-ja style="color: var(--text3)">バリュエーション & AI · 日本</span>
+  <a href="/privacy.html" style="color:var(--text3);font-size:12px;text-decoration:none;" data-en>Privacy Policy</a>
+  <a href="/privacy.html" style="color:var(--text3);font-size:12px;text-decoration:none;" data-ja>プライバシーポリシー</a>
 </footer>
 
 <script>
@@ -832,6 +834,9 @@
     document.body.classList.add('light');
     document.getElementById('theme-btn').textContent = '☾';
   }
+
+  // Copyright year
+  document.getElementById('copyright-year').textContent = new Date().getFullYear();
 
   // Smooth nav active state
   const sections = document.querySelectorAll('section[id]');

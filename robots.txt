@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://donatodonadona.github.io/sitemap.xml

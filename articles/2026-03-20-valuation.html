@@ -702,6 +702,13 @@
     body.dark svg [fill="#888EA0"] { fill: #575E70; }
     body.dark svg [fill="#565C70"] { fill: #8B93A8; }
     body.dark svg [fill="#8A6A00"] { fill: #C4900E; }
+    /* Warm callout / highlight cards — hardcoded light backgrounds need explicit dark overrides */
+    body.dark .trap-box { background: #1C1800; }
+    body.dark .fact-card.highlight { background: #1A1600; border-color: #3A2D00; }
+    body.dark .fact-card.highlight .fact-value { color: #C4900E; }
+    body.dark .fact-card.highlight .fact-desc { color: #A07828; }
+    /* Next-article CTA: background uses --text-primary which inverts in dark mode */
+    body.dark .next-article { background: #111320; }
   </style>
 </head>
 <body>

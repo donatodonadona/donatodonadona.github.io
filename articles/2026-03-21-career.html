@@ -521,6 +521,10 @@
     body.dark svg [fill="#888EA0"] { fill: #575E70; }
     body.dark svg [fill="#565C70"] { fill: #8B93A8; }
     body.dark svg [fill="#8A6A00"] { fill: #C4900E; }
+    /* Highlight fact cards — hardcoded light backgrounds need explicit dark overrides */
+    body.dark .fact-card.highlight { background: #1A1600; border-color: #3A2D00; }
+    body.dark .fact-card.highlight .fact-value { color: #C4900E; }
+    body.dark .fact-card.highlight .fact-desc { color: #A07828; }
   </style>
 </head>
 <body>

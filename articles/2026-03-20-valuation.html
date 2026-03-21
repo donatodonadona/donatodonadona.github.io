@@ -79,18 +79,46 @@
       letter-spacing: 0.04em;
     }
     .site-header-right { display: flex; align-items: center; gap: 12px; }
-    #lang-btn {
+    .header-back-link {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .header-back-link:hover { color: var(--accent); }
+    .lang-toggle-bar {
+      display: flex;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .art-lang-btn {
       font-family: 'JetBrains Mono', monospace;
       font-size: 10px;
       letter-spacing: 0.1em;
-      padding: 4px 10px;
-      border: 1px solid var(--border);
+      padding: 3px 10px;
+      border: none;
       background: transparent;
       color: var(--text-muted);
       cursor: pointer;
       transition: all 0.15s;
     }
-    #lang-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .art-lang-btn.active { background: #F5C800; color: #111320; }
+    #theme-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      padding: 3px 9px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.15s;
+    }
+    #theme-btn:hover { border-color: var(--accent); color: var(--accent); }
     .header-date {
       font-family: 'JetBrains Mono', monospace;
       font-size: 10px;
@@ -641,6 +669,28 @@
       .read-grid { grid-template-columns: 1fr; }
       #sticky-bar { flex-wrap: wrap; gap: 6px; }
     }
+
+    body.dark {
+      --bg:           #0D1117;
+      --bg-code:      #161B22;
+      --bg-quote:     #161B22;
+      --bg-highlight: #0E1A2B;
+      --bg-subtle:    #161B22;
+      --bg-card:      #161B22;
+      --bg-header:    #0D1117;
+      --text-primary: #E4E2DC;
+      --text-body:    #C4C2BC;
+      --text-muted:   #8B93A8;
+      --text-light:   #575E70;
+      --accent:       #3A8FD0;
+      --accent-warm:  #F5C800;
+      --border:       #21253A;
+      --border-quote: #2A2D3E;
+      --border-light: #21253A;
+      --tag-bg:       #0E1A2B;
+      --tag-text:     #3A8FD0;
+      --table-stripe: #161B22;
+    }
   </style>
 </head>
 <body>
@@ -652,10 +702,16 @@
   <div class="site-header-left">
     <a class="wordmark" href="../index.html">dona<span>to</span></a>
     <span class="header-sep">—</span>
+    <a class="header-back-link" href="./index.html"><span class="lang-ja">記事一覧</span><span class="lang-en">Articles</span></a>
+    <span class="header-sep">—</span>
     <span class="header-media">Valuation Theory Lab</span>
   </div>
   <div class="site-header-right">
-    <button id="lang-btn" onclick="toggleLang()">EN</button>
+    <div class="lang-toggle-bar">
+      <button class="art-lang-btn active" data-lang="ja" onclick="setLang('ja')">JP</button>
+      <button class="art-lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+    </div>
+    <button id="theme-btn" onclick="toggleTheme()" title="ダーク/ライト切替">☀</button>
     <time class="header-date">2026-03-20</time>
   </div>
 </header>
@@ -1397,15 +1453,28 @@
 
   // Lang toggle
   let currentLang = 'ja';
-  function toggleLang() {
-    currentLang = currentLang === 'ja' ? 'en' : 'ja';
-    document.querySelectorAll('.lang-ja').forEach(el => el.style.display = currentLang === 'ja' ? 'inline' : 'none');
-    document.querySelectorAll('.lang-en').forEach(el => el.style.display = currentLang === 'en' ? 'inline' : 'none');
-    document.getElementById('lang-btn').textContent = currentLang === 'ja' ? 'EN' : 'JA';
-    document.documentElement.lang = currentLang;
+  let currentTheme = 'light';
+  function setLang(lang) {
+    currentLang = lang;
+    document.querySelectorAll('.lang-ja').forEach(el => el.style.display = lang === 'ja' ? 'inline' : 'none');
+    document.querySelectorAll('.lang-en').forEach(el => el.style.display = lang === 'en' ? 'inline' : 'none');
+    document.querySelectorAll('.art-lang-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+    document.documentElement.lang = lang === 'ja' ? 'ja' : 'en';
+  }
+  function toggleTheme() {
+    currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+    document.body.classList.toggle('dark', currentTheme === 'dark');
+    document.getElementById('theme-btn').textContent = currentTheme === 'light' ? '☀' : '☾';
   }
   document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.lang-en').forEach(el => el.style.display = 'none');
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      currentTheme = 'dark';
+      document.body.classList.add('dark');
+      document.getElementById('theme-btn').textContent = '☾';
+    }
   });
 </script>
 

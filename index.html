@@ -187,6 +187,11 @@
       font-weight: 600;
     }
 
+    /* JP headings: override [data-ja] weight=300 so they don't look too thin */
+    h1 [data-ja], .section-title [data-ja] {
+      font-weight: 600;
+    }
+
     .hero-sub {
       font-size: 18px;
       color: var(--text2);
@@ -226,6 +231,7 @@
       padding: 14px 28px;
       background: linear-gradient(135deg, #1A6EB0, #2E88CA);
       color: #0A0B10;
+      font-family: 'Inter', sans-serif;
       font-weight: 600;
       font-size: 15px;
       border-radius: 8px;
@@ -317,6 +323,7 @@
     }
 
     .process-title {
+      font-family: 'Inter', sans-serif;
       font-size: 14px;
       font-weight: 600;
       margin-bottom: 8px;
@@ -324,6 +331,7 @@
     }
 
     .process-desc {
+      font-family: 'Inter', sans-serif;
       font-size: 12px;
       color: var(--text3);
       line-height: 1.5;
@@ -355,12 +363,14 @@
     }
 
     .tool-name {
+      font-family: 'Inter', sans-serif;
       font-size: 16px;
       font-weight: 600;
       margin-bottom: 8px;
     }
 
     .tool-desc {
+      font-family: 'Inter', sans-serif;
       font-size: 14px;
       color: var(--text2);
       line-height: 1.6;
@@ -538,12 +548,12 @@
       <li><a href="#articles" data-en style="color:var(--accent2);">Articles</a><a href="#articles" data-ja style="color:var(--accent2);">記事</a></li>
       <li><a href="#process" data-en>Process</a><a href="#process" data-ja>プロセス</a></li>
       <li><a href="#tools" data-en>Tools</a><a href="#tools" data-ja>ツール</a></li>
-      <li><a href="#about" data-en>About</a><a href="#about" data-ja>について</a></li>
-      <li><a href="#contact" data-en>Contact</a><a href="#contact" data-ja>連絡</a></li>
+      <li><a href="#about" data-en>About</a><a href="#about" data-ja>概要</a></li>
+      <li><a href="#contact" data-en>Contact</a><a href="#contact" data-ja>お問い合わせ</a></li>
     </ul>
     <div class="lang-toggle">
-      <button class="lang-btn active" onclick="setLang('en')">EN</button>
-      <button class="lang-btn" onclick="setLang('ja')">JP</button>
+      <button class="lang-btn active" data-lang="en" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" data-lang="ja" onclick="setLang('ja')">JP</button>
     </div>
     <button id="theme-btn" onclick="toggleTheme()" style="background:none;border:1px solid var(--border);color:var(--text2);padding:6px 10px;border-radius:6px;cursor:pointer;font-size:14px;transition:all 0.2s;" title="Toggle light/dark">☀</button>
   </div>
@@ -742,7 +752,7 @@
 
 <!-- ABOUT -->
 <section id="about">
-  <div class="section-label">04 — <span data-en>About</span><span data-ja>について</span></div>
+  <div class="section-label">04 — <span data-en>About</span><span data-ja>概要</span></div>
   <div class="about-grid">
     <div class="about-text">
       <h2 class="section-title" style="margin-bottom: 24px;">
@@ -783,7 +793,7 @@
 
 <!-- CONTACT -->
 <section id="contact">
-  <div class="section-label">05 — <span data-en>Contact</span><span data-ja>連絡</span></div>
+  <div class="section-label">05 — <span data-en>Contact</span><span data-ja>お問い合わせ</span></div>
   <h2 class="section-title">
     <span data-en>Let's talk.</span>
     <span data-ja>話しましょう。</span>
@@ -819,7 +829,7 @@
     _lang = lang;
     document.body.className = [_lang, _theme === 'light' ? 'light' : ''].filter(Boolean).join(' ');
     document.querySelectorAll('.lang-btn').forEach(btn => {
-      btn.classList.toggle('active', btn.textContent.toLowerCase().startsWith(lang));
+      btn.classList.toggle('active', btn.dataset.lang === lang);
     });
   }
 

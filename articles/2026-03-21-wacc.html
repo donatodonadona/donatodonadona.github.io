@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="WACCの株式コスト(Ke)はCAPMに依存する——しかしそのβ推計は推計期間・頻度次第で大きく変わり、ERPはDamodaran implied vs. DMS historicalで1ポイント以上争われている。Valuation Theory Lab #002。">
+  <title>WACCは本当に計算できるのか — CAPM限界論と代替アプローチ | Valuation Theory Lab #002 | donato</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+JP:wght@300;400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:           #F8F7F4;
+      --bg-code:      #EEECEA;
+      --bg-quote:     #EEECEA;
+      --bg-highlight: #EBF3FB;
+      --bg-subtle:    #F0EFEB;
+      --bg-card:      #F0EFEB;
+      --bg-header:    #F8F7F4;
+      --text-primary: #111320;
+      --text-body:    #2A2C3E;
+      --text-muted:   #565C70;
+      --text-light:   #888EA0;
+      --accent:       #1A6EB0;
+      --accent-warm:  #D4A010;
+      --border:       #D4D2CC;
+      --border-quote: #B8B6B0;
+      --border-light: #D4D2CC;
+      --tag-bg:       #E4EFF8;
+      --tag-text:     #1A6EB0;
+      --table-stripe: #F0EFEB;
+    }
+
+    /* ===== PROGRESS BAR ===== */
+    #progress-bar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      width: 0%;
+      background: var(--accent);
+      z-index: 300;
+      transition: width 0.1s linear;
+    }
+
+    body {
+      font-family: 'Noto Serif JP', Georgia, serif;
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--text-primary);
+      background: var(--bg);
+    }
+
+    /* ===== SITE HEADER ===== */
+    .site-header {
+      background: var(--bg-header);
+      border-bottom: 2px solid var(--accent);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .site-header-left { display: flex; align-items: center; gap: 12px; }
+    .wordmark {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: lowercase;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+    .wordmark span { color: var(--accent-warm); }
+    .header-sep { color: var(--border-quote); font-size: 13px; }
+    .header-media {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+    }
+    .site-header-right { display: flex; align-items: center; gap: 12px; }
+    .header-date {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-light);
+      letter-spacing: 0.08em;
+    }
+
+    /* ===== STICKY INFO BAR ===== */
+    #sticky-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg-subtle);
+      border-bottom: 1px solid var(--border-light);
+      padding: 7px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .sbar-cat {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+    }
+    .sbar-sep { color: var(--border-quote); font-size: 11px; }
+    .sbar-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+    .sbar-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      padding: 2px 8px;
+    }
+
+    /* ===== LAYOUT ===== */
+    .article-container { max-width: 1240px; margin: 0 auto; padding: 0 20px; }
+    .article-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 24px;
+    }
+    .article-body { grid-column: 2 / 10; max-width: 68ch; }
+    .article-sidebar {
+      grid-column: 10 / 13;
+      position: sticky;
+      top: 44px;
+      align-self: start;
+      max-height: calc(100vh - 56px);
+      overflow-y: auto;
+    }
+    .article-sidebar::-webkit-scrollbar { width: 4px; }
+    .article-sidebar::-webkit-scrollbar-track { background: transparent; }
+    .article-sidebar::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 2px; }
+
+    /* ===== TYPOGRAPHY ===== */
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+    }
+    .article-headline {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(2rem, 4vw, 2.6rem);
+      font-weight: 600;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+    .article-standfirst {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      font-weight: 400;
+    }
+    .byline {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    h2 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.45rem;
+      font-weight: 600;
+      line-height: 1.25;
+      color: var(--text-primary);
+      margin: 2em 0 0.75em;
+      border-top: 1px solid var(--border);
+      padding-top: 1em;
+    }
+    h3 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin: 1.75em 0 0.5em;
+    }
+    .article-body p { margin-bottom: 1.4em; font-size: 0.97rem; line-height: 1.8; }
+    .article-body ul, .article-body ol { margin: 0 0 1.4em 1.4em; }
+    .article-body li { margin-bottom: 0.4em; font-size: 0.95rem; line-height: 1.7; }
+    strong { color: var(--text-primary); font-weight: 600; }
+
+    /* ===== EXEC SUMMARY ===== */
+    .exec-summary {
+      background: var(--bg-highlight);
+      border: 1px solid var(--border-light);
+      border-left: 4px solid var(--accent);
+      padding: 24px;
+      margin: 0 0 2.5em;
+    }
+    .exec-block { margin-bottom: 20px; }
+    .exec-block:last-child { margin-bottom: 0; }
+    .exec-block + .exec-block { padding-top: 18px; border-top: 1px solid var(--border-light); }
+    .exec-tldr {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.02rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      line-height: 1.55;
+      margin-top: 8px;
+    }
+    .issues-list, .implications-list {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .issue-item { display: flex; gap: 10px; align-items: baseline; }
+    .issue-q {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--accent);
+      flex-shrink: 0;
+      min-width: 20px;
+    }
+    .issue-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: var(--text-body);
+      line-height: 1.55;
+    }
+    .implication-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: var(--text-body);
+      line-height: 1.55;
+      padding-left: 14px;
+      border-left: 2px solid var(--accent);
+    }
+    .read-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
+    .read-col-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.66rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 6px;
+    }
+    .read-label-yes { color: var(--accent); }
+    .read-label-no { color: var(--text-muted); }
+    .read-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-body);
+      line-height: 1.45;
+      padding-left: 10px;
+      border-left: 2px solid var(--accent);
+      margin-bottom: 5px;
+    }
+    .skip-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+      padding-left: 10px;
+      border-left: 2px solid var(--border-light);
+      margin-bottom: 5px;
+    }
+
+    /* ===== FORMULA / CALC ===== */
+    .formula {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.93em;
+      background: var(--bg-code);
+      border-left: 3px solid var(--accent);
+      padding: 14px 20px;
+      margin: 20px 0;
+      color: var(--text-primary);
+      overflow-x: auto;
+      line-height: 1.7;
+    }
+    .calc-block {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      padding: 20px 24px;
+      margin: 24px 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+      line-height: 1.8;
+    }
+    .calc-block .calc-row {
+      display: flex;
+      justify-content: space-between;
+      max-width: 460px;
+    }
+    .calc-block .calc-total {
+      border-top: 1px solid var(--border);
+      margin-top: 6px;
+      padding-top: 6px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .calc-block .calc-highlight {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    /* ===== INSIGHT / TRAP BOX ===== */
+    .insight-box {
+      background: var(--bg-highlight);
+      border-left: 4px solid var(--accent);
+      padding: 18px 22px;
+      margin: 28px 0;
+    }
+    .insight-box p {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: var(--text-primary);
+    }
+    .insight-box strong { color: var(--accent); }
+    .trap-box {
+      background: #FEF9EC;
+      border-left: 4px solid var(--accent-warm);
+      padding: 18px 22px;
+      margin: 24px 0;
+    }
+    .trap-box p {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      line-height: 1.65;
+      color: var(--text-body);
+    }
+    .trap-box .trap-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent-warm);
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+
+    /* ===== COMPARISON BAR ===== */
+    .erp-bar-wrap { margin: 28px 0; }
+    .erp-bar-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+    .erp-bar-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .erp-bar-name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      min-width: 160px;
+      flex-shrink: 0;
+    }
+    .erp-bar-track {
+      flex: 1;
+      height: 22px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      overflow: hidden;
+    }
+    .erp-bar-fill {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      padding-left: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: white;
+    }
+    .erp-bar-fill.historical { background: var(--accent); }
+    .erp-bar-fill.implied    { background: #5A9FD4; }
+    .erp-bar-fill.dms        { background: #2D6B9E; }
+
+    /* ===== DATA TABLE ===== */
+    .data-table-wrap { overflow-x: auto; margin: 1.5em 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      background: var(--bg-subtle);
+      padding: 8px 12px;
+      text-align: left;
+      border-bottom: 2px solid var(--border);
+    }
+    td {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border-light);
+      color: var(--text-body);
+      font-family: 'Inter', sans-serif;
+    }
+    tr:nth-child(even) td { background: var(--table-stripe); }
+    .td-accent {
+      color: var(--accent);
+      font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+    }
+    .td-warn {
+      color: var(--accent-warm);
+      font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+    }
+
+    /* ===== PULL QUOTE ===== */
+    .pull-quote {
+      border-left: 4px solid var(--accent);
+      margin: 2em 0;
+      padding: 1em 20px;
+      background: var(--bg-card);
+    }
+    .pull-quote p {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.2rem;
+      font-style: italic;
+      color: var(--text-primary);
+      line-height: 1.5;
+      margin-bottom: 6px !important;
+    }
+    .pull-quote footer {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* ===== NUMBERED LIST ===== */
+    .numbered-list {
+      list-style: none;
+      padding: 0;
+      margin: 20px 0;
+    }
+    .numbered-list li {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 16px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.92rem;
+      line-height: 1.65;
+      color: var(--text-body);
+    }
+    .numbered-list li .num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: white;
+      background: var(--accent);
+      min-width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    /* ===== SECTION SEP ===== */
+    .section-sep {
+      text-align: center;
+      color: var(--text-light);
+      font-size: 1.2rem;
+      letter-spacing: 0.5em;
+      margin: 48px 0;
+      user-select: none;
+    }
+
+    /* ===== SOURCE LIST ===== */
+    .source-list { list-style: none; padding: 0; }
+    .source-list li { margin-bottom: 6px; }
+    .source-list a {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--accent);
+      text-decoration: none;
+      line-height: 1.5;
+    }
+    .source-list a:hover { text-decoration: underline; }
+    .source-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      margin-left: 4px;
+    }
+
+    /* ===== NEXT ARTICLE CTA ===== */
+    .next-article {
+      background: var(--text-primary);
+      color: #E4E2DC;
+      padding: 28px 32px;
+      margin-top: 56px;
+    }
+    .next-article .next-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent-warm);
+      margin-bottom: 8px;
+    }
+    .next-article .next-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+    .next-article .next-desc {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.82rem;
+      color: #9299A8;
+      margin-top: 8px;
+    }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .keyfacts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+    .fact-card {
+      background: var(--bg-highlight);
+      padding: 10px 8px;
+    }
+    .fact-card.highlight {
+      background: #FDF8EC;
+      border: 1px solid #E8D88A;
+    }
+    .fact-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--accent);
+      line-height: 1.2;
+    }
+    .fact-card.highlight .fact-value { color: #8A6A00; }
+    .fact-desc {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.64rem;
+      color: var(--text-muted);
+      margin-top: 3px;
+      line-height: 1.35;
+    }
+    .fact-card.highlight .fact-desc { color: #7A6020; }
+    .highlights-list { list-style: none; padding: 0; margin-top: 12px; }
+    .highlight-item {
+      padding: 9px 0;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      gap: 10px;
+      align-items: baseline;
+    }
+    .highlight-item:last-child { border-bottom: none; }
+    .hl-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--accent);
+      flex-shrink: 0;
+      min-width: 18px;
+    }
+    .hl-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.76rem;
+      color: var(--text-body);
+      line-height: 1.45;
+    }
+
+    /* ===== FOOTER ===== */
+    .site-footer {
+      border-top: 1px solid var(--border-light);
+      margin-top: 4em;
+      padding: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* ===== PRINT ===== */
+    @media print {
+      body { background: white; font-size: 11pt; }
+      .site-header, #sticky-bar, #progress-bar { display: none; }
+      .article-sidebar { position: static; max-height: none; overflow: visible; }
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+    @page { size: A4; margin: 20mm 15mm; }
+
+    /* ===== MOBILE ===== */
+    @media (max-width: 900px) {
+      .article-body { grid-column: 1 / -1; }
+      .article-sidebar { position: static; max-height: none; overflow: visible; grid-column: 1 / -1; }
+      .article-grid { display: block; }
+      .read-grid { grid-template-columns: 1fr; }
+      #sticky-bar { flex-wrap: wrap; gap: 6px; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<!-- 1. サイトヘッダー -->
+<header class="site-header">
+  <div class="site-header-left">
+    <a class="wordmark" href="../index.html">dona<span>to</span></a>
+    <span class="header-sep">—</span>
+    <span class="header-media">Valuation Theory Lab</span>
+  </div>
+  <div class="site-header-right">
+    <time class="header-date">2026-03-21</time>
+  </div>
+</header>
+
+<!-- 2. スティッキー情報バー -->
+<div id="sticky-bar">
+  <span class="sbar-cat">VALUATION THEORY LAB</span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-text">Series #002 · 資本コスト理論</span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-text">2026-03-21</span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-badge" id="reading-time-badge">約12分</span>
+</div>
+
+<main style="padding: 0 0 3em;">
+  <div class="article-container">
+    <div class="article-grid">
+
+      <!-- 3. 記事本文 -->
+      <article class="article-body">
+
+        <!-- 記事ヘッダー -->
+        <div style="padding: 36px 0 24px;">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+            <div class="section-label">Valuation Theory Lab &nbsp;#002</div>
+            <span class="sbar-badge" id="reading-time-badge2">約12分</span>
+          </div>
+          <h1 class="article-headline">WACCは本当に計算できるのか<br>— CAPM限界論と代替アプローチ</h1>
+          <p class="article-standfirst">WACCの株式コスト（Ke）はCAPMによって計算される——その仮定は理論的に美しいが実証的には脆弱だ。β推計は推計期間・頻度次第で0.3以上変動し、ERPはDamodaran implied vs. DMS historicalで1ポイント以上争われている。WACCを「計算できる」という感覚は精度ではなく一貫性の産物だ。</p>
+          <div style="display:flex; gap:16px; align-items:center; border-top:1px solid var(--border-light); border-bottom:1px solid var(--border-light); padding:10px 0;">
+            <span class="byline">By <strong>Donato Valuation Notes</strong></span>
+            <span style="color:var(--border);">|</span>
+            <time class="byline" datetime="2026-03-21">2026年3月21日</time>
+            <span style="color:var(--border);">|</span>
+            <span class="byline">資本コスト · CAPM · ERP</span>
+          </div>
+        </div>
+
+        <!-- 構造化エグゼクティブサマリー -->
+        <section class="exec-summary">
+
+          <!-- TL;DR -->
+          <div class="exec-block">
+            <div class="section-label">TL;DR</div>
+            <p class="exec-tldr">WACCの株式コスト(Ke = Rf + β·ERP)はCAPMという「理論的には美しいが実証的には脆弱な」モデルに依存する。βは推計期間・頻度・Hamada変換の選択次第で大きく変わり、ERPはHistorical vs. Implied vs. DMS methodで1ポイント以上の幅がある。WACCに「正確な答え」はない——しかしその不確実性の構造を理解した上で感度分析をデザインすることが、誠実な実務家の姿勢だ。</p>
+          </div>
+
+          <!-- 論点 -->
+          <div class="exec-block">
+            <div class="section-label">本稿の論点</div>
+            <ul class="issues-list">
+              <li class="issue-item">
+                <span class="issue-q">Q1</span>
+                <span class="issue-text"><strong>CAPMのβは信頼できるか？</strong> — 推計期間を24ヶ月から60ヶ月に変えただけで同一企業のβが0.3以上変動することがある。月次・週次・日次でも値は異なる。Hamada変換でunlever/releverすると誤差がさらに増幅する。βは「測定する」というより「選択する」数字だ。</span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">Q2</span>
+                <span class="issue-text"><strong>ERPはどこから取るべきか？</strong> — Historical ERP（長期株式超過リターン）はサーバイバーシップバイアスと期間依存性の問題を持つ。Damodaran implied ERPはリアルタイム性があるが年度間変動が大きい。どちらを選ぶかで最終的なWACCが1〜2%変わりうる。</span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">Q3</span>
+                <span class="issue-text"><strong>Fama-FrenchはCAPMの代替になるか？</strong> — SizeとValueファクターを追加することで実証的なfitは改善する。しかしそれらが「リスク補償」なのか「ミスプライシング」なのかという根本的な解釈は決着していない。ファクターが増えても「資本コストが計算できる」という問題は解消しない。</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- 実務家への含意 -->
+          <div class="exec-block">
+            <div class="section-label">Valuation実務家への含意</div>
+            <ul class="implications-list">
+              <li class="implication-item"><strong>WACCのsensitivity開示は義務だ</strong> — WACC ±1%でTerminal ValueとEVがどれだけ変わるかを必ず計算・開示する。#001で示した「g-ROIC三角形」とのクロス感度テーブルが最も情報量が多い。</li>
+              <li class="implication-item"><strong>ERPの出所・時点を明記せよ</strong> — 「ERP=5.5%」ではなく「Damodaran implied ERP（2026年1月時点4.5%）」のように出所と時点を必ず記載する。それだけで読み手の信頼度が変わる。</li>
+              <li class="implication-item"><strong>βはBlume調整後のunlever/releverを使え</strong> — Raw βではなくBlume調整（2/3 × raw β + 1/3 × 1.0）を基準とし、Hamada変換で資本構成を考慮する。詳細はSeries #003で論じる。</li>
+            </ul>
+          </div>
+
+          <!-- 読み進め判断 -->
+          <div class="exec-block">
+            <div class="section-label">この記事を読み進めるべきか</div>
+            <div class="read-grid">
+              <div>
+                <div class="read-col-label read-label-yes">読むべき人</div>
+                <div class="read-item">DCFでWACCを計算する全ての実務家（M&A・PE・IR・CF）</div>
+                <div class="read-item">「CAPM以外に方法はないか」と感じた人</div>
+                <div class="read-item">ERPやβの出所について問われたことがある人</div>
+              </div>
+              <div>
+                <div class="read-col-label read-label-no">スキップしてよい人</div>
+                <div class="skip-item">WACCの計算式（Ke・Kd・資本構成）の基礎知識がない方（先に基礎テキストを参照されたい）</div>
+                <div class="skip-item">実務上のExcel操作手順のみを求める方</div>
+              </div>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- 本文導入 -->
+        <p>WACCを計算したことのある実務家であれば、一度は奇妙な感覚を覚えたことがあるはずだ。式は明快に見える。しかし株式コスト（Ke）の計算に入った瞬間、どこか砂の上に立つような不安定さを感じる。βはどの期間で取るべきか。ERPは何パーセントか。リスクフリーレートは10年国債か30年国債か。</p>
+
+        <p>この問いには「正解」がない。だが、それを「どうせ見積もりだから」と処理して終わりにするのは知的怠慢だ。WACCを誠実に使うためには、その不確実性の構造を理解し、どの仮定が最もセンシティブかを把握した上で感度分析をデザインしなければならない。</p>
+
+        <!-- ======================================================== -->
+        <h2>0. WACCの構造 — 式の解剖</h2>
+
+        <p>まず基本を確認する。WACCは以下の式で定義される：</p>
+
+        <div class="formula">WACC = Ke × [E/(D+E)] + Kd × (1−t) × [D/(D+E)]</div>
+
+        <p>ここで各項の推計難易度は大きく異なる：</p>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr><th>変数</th><th>定義</th><th>推計の難しさ</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Kd × (1−t)</strong></td>
+                <td>税引後負債コスト</td>
+                <td class="td-accent">低 — 借入金利・社債YTMから直接推計できる</td>
+              </tr>
+              <tr>
+                <td><strong>E/(D+E), D/(D+E)</strong></td>
+                <td>時価ベース資本構成</td>
+                <td class="td-accent">中 — 時価vs.簿価、Target vs. Currentの選択問題</td>
+              </tr>
+              <tr>
+                <td><strong>Ke</strong></td>
+                <td>株式コスト（CAPM依存）</td>
+                <td class="td-warn">高 — β・ERP・Rfの推計問題が全て集中する</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>WACCの不確実性はほぼ全てKeに起因する。そしてKeの計算式は：</p>
+
+        <div class="formula">Ke = Rf + β × ERP</div>
+
+        <p>シンプルな式の中に、三つの独立した推計問題が潜んでいる。Rf（リスクフリーレート）、β（市場感応度）、ERP（市場リスクプレミアム）——それぞれに固有の論争がある。</p>
+
+        <div class="insight-box">
+          <p><strong>Rfは比較的クリーンだ。</strong>一般的には対象案件のキャッシュフロー期間に合わせた国債利回りを使う。10年DCFなら10年国債、長期インフラなら30年国債。インフレ調整の一貫性（名目vs.実質）に注意すれば、Rfは争点が少ない。問題はβとERPだ。</p>
+        </div>
+
+        <!-- ======================================================== -->
+        <h2>1. CAPM — 理論の美しさと実証的脆弱性</h2>
+
+        <p><a href="https://pages.stern.nyu.edu/~adamodar/" target="_blank" rel="noopener">Damodaran</a>がしばしば指摘するように、CAPMは「唯一の理論的に整合したリスク-リターンモデル」ではなく、「使いやすさゆえに広く使われているモデル」だ。それは実務家の怠慢ではなく、代替の難しさを示している。</p>
+
+        <h3>CAPMの仮定</h3>
+
+        <p>CAPMは以下の仮定の上に成立する：</p>
+
+        <ul class="numbered-list">
+          <li>
+            <span class="num">1</span>
+            <div>投資家は平均分散効率的なポートフォリオを保有する（完全分散化）</div>
+          </li>
+          <li>
+            <span class="num">2</span>
+            <div>全ての投資家は同一の情報と期待を持つ（同質的期待）</div>
+          </li>
+          <li>
+            <span class="num">3</span>
+            <div>取引コスト・税金はなく、完全流動的な市場が存在する</div>
+          </li>
+          <li>
+            <span class="num">4</span>
+            <div>投資家はリスクフリーレートで無制限に借入・貸付できる</div>
+          </li>
+        </ul>
+
+        <p>これらの仮定はいずれも現実には成立しない。しかし理論としての一貫性ゆえ、「より良い代替がない」という理由でCAPMは実務の標準になっている。</p>
+
+        <h3>単一ファクターの限界</h3>
+
+        <p>CAPMの核心的主張は「市場ポートフォリオとの共変動（β）だけが価格付けされるリスクだ」というものだ。しかしFama and Frenchが1992年の著名な論文「The Cross-Section of Expected Stock Returns」で実証したように、市場βだけでは株式リターンの截面的な差異を十分に説明できない。サイズ効果（小型株の超過リターン）とバリュー効果（低PBR株の超過リターン）が、市場βを超えた系統的なリターンの説明力を持つことが示された。</p>
+
+        <div class="pull-quote">
+          <p>"Our tests do not support the most basic prediction of the SLB Model, that average stock returns are positively related to market βs."</p>
+          <footer>— Fama &amp; French, The Journal of Finance, 1992</footer>
+        </div>
+
+        <p>これはCAPMの「βだけがリスクだ」という命題への強力な反証だった。
+
+        <!-- ======================================================== -->
+        <h2>2. β推計の問題 — 「測定する」より「選択する」</h2>
+
+        <p>βは過去のリターンデータから回帰によって推計される：</p>
+
+        <div class="formula">R<sub>i</sub> = α + β × R<sub>m</sub> + ε</div>
+
+        <p>しかしこの推計は、いくつかの選択に敏感だ：</p>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr><th>選択項目</th><th>一般的な選択肢</th><th>影響</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>推計期間</strong></td>
+                <td>24ヶ月 / 36ヶ月 / 60ヶ月</td>
+                <td class="td-warn">同一企業で0.3以上の差が生じることがある</td>
+              </tr>
+              <tr>
+                <td><strong>リターン頻度</strong></td>
+                <td>日次 / 週次 / 月次</td>
+                <td class="td-warn">日次βはマーケットマイクロストラクチャーノイズに汚染される</td>
+              </tr>
+              <tr>
+                <td><strong>ベンチマーク</strong></td>
+                <td>TOPIX / 日経225 / 対象市場指数</td>
+                <td class="td-accent">グローバル企業は地域指数か世界指数かで結果が異なる</td>
+              </tr>
+              <tr>
+                <td><strong>Blume調整</strong></td>
+                <td>Raw β / Adjusted β (2/3 raw + 1/3 × 1.0)</td>
+                <td class="td-accent">βは長期的に1.0に回帰する傾向（Mean reversion）があるため調整が標準</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="trap-box">
+          <div class="trap-label">実務でよくある罠</div>
+          <p>Bloomberg等のデータベンダーからβを「一つ」取ってきてそのまま使う。Bloombergのデフォルトβは週次・2年間・Blume調整なしであることが多い。自社の選択基準と整合しているか、必ず確認する必要がある。</p>
+        </div>
+
+        <h3>βの不安定性：具体例</h3>
+
+        <p>例として、ある製造業企業のβを異なる推計期間で計算したとする：</p>
+
+        <div class="calc-block">
+          <div style="font-size:0.78em;color:var(--text-muted);margin-bottom:10px;font-family:'Inter',sans-serif;">同一企業、月次リターン、TOPIX対比（仮想例）</div>
+          <div class="calc-row"><span>24ヶ月推計 (raw β)</span><span>0.85</span></div>
+          <div class="calc-row"><span>36ヶ月推計 (raw β)</span><span>1.05</span></div>
+          <div class="calc-row"><span>60ヶ月推計 (raw β)</span><span>1.18</span></div>
+          <div class="calc-row" style="margin-top:10px;"><span>60ヶ月 Blume調整後</span><span class="calc-highlight">1.12</span></div>
+          <div class="calc-row calc-total" style="border-top:1px dashed var(--border-light);margin-top:10px;padding-top:10px;">
+            <span>WACC差（ERP=5%、Rf=1%として）</span>
+            <span class="calc-highlight">±1.65%</span>
+          </div>
+        </div>
+
+        <p>β = 0.85 vs. 1.18 は、ERP=5%の環境ではKe = 5.25% vs. 6.9%を意味する。これはWACC全体で1%以上の差になりうる。そして#001で見たように、WACCが1%変わるとTerminal Valueは大きく変動する。</p>
+
+        <div class="insight-box">
+          <p><strong>βの「点推計」ではなく「範囲」で考えよ。</strong>推計期間・頻度・調整方法の主要な選択肢を試してβの分布を把握し、それをWACC感度分析に反映する。一つのβに固執するのは、精度があるように見えて本質的な不確実性を隠蔽している。</p>
+        </div>
+
+        <!-- ======================================================== -->
+        <h2>3. ERPをどこから取るか — 三つのアプローチ</h2>
+
+        <p>ERP（Equity Risk Premium）の推計は資本コスト理論の最大の論争地帯だ。大きく三つのアプローチがある：</p>
+
+        <h3>① Historical ERP（歴史的超過リターン）</h3>
+
+        <p>長期間の株式リターンから国債リターンを引いた平均値を使う。Dimson, Marsh, and Staunton（DMS）による分析が最も包括的で、1900年以降の25カ国以上のデータをカバーする。</p>
+
+        <div class="erp-bar-wrap">
+          <div class="erp-bar-label">ERP推計値の比較（概算、米国ベース）</div>
+          <div class="erp-bar-row">
+            <div class="erp-bar-name">DMS Historical (Geometric)</div>
+            <div class="erp-bar-track">
+              <div class="erp-bar-fill dms" style="width:53%;">約4.8%</div>
+            </div>
+          </div>
+          <div class="erp-bar-row">
+            <div class="erp-bar-name">Historical (Arithmetic, US)</div>
+            <div class="erp-bar-track">
+              <div class="erp-bar-fill historical" style="width:67%;">約6.0%</div>
+            </div>
+          </div>
+          <div class="erp-bar-row">
+            <div class="erp-bar-name">Damodaran Implied ERP</div>
+            <div class="erp-bar-track">
+              <div class="erp-bar-fill implied" style="width:50%;">約4.5%</div>
+            </div>
+          </div>
+        </div>
+
+        <p>歴史的ERPの問題点：</p>
+        <ul class="numbered-list">
+          <li>
+            <span class="num">1</span>
+            <div><strong>サーバイバーシップバイアス</strong> — 特に米国市場は歴史的に最も成功した市場の一つだ。米国のHistorical ERPを世界標準として使うと、将来の期待値を過大評価する。DMS(Dimson-Marsh-Staunton)が国際データを重視するのはこの理由だ。</div>
+          </li>
+          <li>
+            <span class="num">2</span>
+            <div><strong>期間依存性</strong> — 1926〜2025年の平均か、1945〜2025年の平均かで、Arithmetic meanで1〜2%の差が生じることがある。</div>
+          </li>
+          <li>
+            <span class="num">3</span>
+            <div><strong>Arithmetic vs. Geometric mean</strong> — 単年度の資本コスト計算にはArithmetic meanが理論的に適切とされるが、Geometric meanは長期的な複利成長の代理として使われる。この選択だけで0.5〜1.5%の差になる。</div>
+          </li>
+        </ul>
+
+        <h3>② Implied ERP（Damodaran Method）</h3>
+
+        <p><a href="https://pages.stern.nyu.edu/~adamodar/New_Home_Page/datafile/implprem.html" target="_blank" rel="noopener">Damodaran implied ERP</a>は、S&amp;P500の現在株価・配当・アナリストコンセンサス利益予測から逆算して、「市場が織り込んでいるERP」を推計する。2026年1月時点では約4.4〜4.6%のレンジにある（年度によって変動）。</p>
+
+        <div class="insight-box">
+          <p><strong>Implied ERPの長所は「前向き」であること。</strong>Historical ERPが過去の平均を使うのに対し、Implied ERPは現在の市場価格に含まれる期待リターンを逆算する。市場が高バリュエーションにある時期は、Implied ERPが歴史的平均を下回ることもある——それは「市場は将来のリターンに対してより少ないリスクプレミアムを要求している」というシグナルとして解釈できる。</p>
+        </div>
+
+        <p>Implied ERPの問題点は「変動性」だ。アナリスト予測と株価の両方が動くため、短期間で0.5%以上変わることもある。これを使って計算したWACCが毎四半期変動するのは、安定的なバリュエーションツールとして使いにくい面がある。</p>
+
+        <h3>③ どちらを選ぶべきか</h3>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr><th>状況</th><th>推奨アプローチ</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>M&A・DCF（長期投資判断）</td>
+                <td class="td-accent">Historical ERP（Arithmetic、DMS準拠）+ Implied ERPで整合性チェック</td>
+              </tr>
+              <tr>
+                <td>上場企業の資本コスト開示（IR）</td>
+                <td class="td-accent">期間・データソースを明記した上でImplied ERPを優先（前向き性のため）</td>
+              </tr>
+              <tr>
+                <td>レバレッジドバイアウト（PE）</td>
+                <td class="td-accent">Historical ERP（Geometric）が保守的で長期に適合する傾向</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>最も重要なのは「どれを使ったか」を明記することだ。「ERP = 5.5%」と記載するだけでは不十分だ。「DMS arithmetic mean、1900〜2024年、米国ベース」のように出所・期間・方法を明示する。</p>
+
+        <!-- ======================================================== -->
+        <h2>4. Fama-French — より多くのファクターは答えか</h2>
+
+        <p>CAPMへの実証的反証を受けて、Fama and Frenchは1993年に3ファクターモデルを提唱した：</p>
+
+        <div class="formula">E(R<sub>i</sub>) = Rf + β<sub>mkt</sub>·ERP + β<sub>SMB</sub>·SMB + β<sub>HML</sub>·HML</div>
+
+        <p>ここで：</p>
+        <ul class="article-body" style="margin-bottom:1.5em; list-style:none; padding:0;">
+          <li style="display:flex; gap:12px; align-items:baseline; margin-bottom:8px; font-family:'Inter',sans-serif; font-size:0.93rem; color:var(--text-body);">
+            <span style="font-family:'JetBrains Mono',monospace; font-size:0.78rem; color:var(--accent); min-width:40px;">SMB</span>
+            <span>Small Minus Big — 小型株と大型株のリターン差（サイズプレミアム）</span>
+          </li>
+          <li style="display:flex; gap:12px; align-items:baseline; margin-bottom:8px; font-family:'Inter',sans-serif; font-size:0.93rem; color:var(--text-body);">
+            <span style="font-family:'JetBrains Mono',monospace; font-size:0.78rem; color:var(--accent); min-width:40px;">HML</span>
+            <span>High Minus Low — 高PBR株と低PBR株のリターン差（バリュープレミアム）</span>
+          </li>
+        </ul>
+
+        <p>後にMomentum（過去リターンの持続性）を加えた4ファクターモデル（Carhart, 1997）、Quality・Profitability・Investment等を加えた5ファクターモデルへと発展した。</p>
+
+        <h3>Fama-Frenchの問題：ファクターの経済的解釈</h3>
+
+        <p>Fama-Frenchモデルは実証的なfitはCAPMより優れる。しかし根本的な問いが残る：<strong>SMBとHMLは何のリスクに対する補償か？</strong></p>
+
+        <ul class="numbered-list">
+          <li>
+            <span class="num">▲</span>
+            <div><strong>リスク補償説（Fama-French自身の見解）</strong>：小型株・バリュー株は経済的に脆弱で、景気後退期に大きく下落する。この「見えにくいリスク」への補償として超過リターンが存在する。</div>
+          </li>
+          <li>
+            <span class="num">?</span>
+            <div><strong>ミスプライシング説（Behavioral Finance寄り）</strong>：バリュー株の超過リターンは投資家の過剰反応・過小反応によるミスプライシングが平均回帰するプロセスだ。これは「価格付けされたリスク」ではなく「誤った価格の修正」だ。</div>
+          </li>
+        </ul>
+
+        <p>この解釈の違いは決定的だ。「リスク補償」ならSMBは正当なリスクファクターとして資本コストに含まれる。「ミスプライシング」ならSMBを資本コストに含めることは理論的に誤りだ。</p>
+
+        <div class="trap-box">
+          <div class="trap-label">実務での使い方の注意</div>
+          <p>Fama-Frenchモデルを投資判断（アクティブ株式運用のリスク分解）に使うのは正当だ。しかしDCFの資本コストとしてFama-Frenchの多ファクターKeを使うことは、ファクターの経済的解釈が決着していないため、学術的には論争が続いている。実務では引き続きCAPMがWACCの標準だ——限界を理解した上で使うという前提で。</p>
+        </div>
+
+        <!-- ======================================================== -->
+        <h2>5. 代替アプローチ — CAPMを補完する視点</h2>
+
+        <p>CAPMの限界を踏まえ、実務では以下の補完的アプローチが使われることがある：</p>
+
+        <h3>① Build-up Method</h3>
+
+        <p>産業リスク・カントリーリスク・企業固有リスクを個別に積み上げてKeを推計する：</p>
+
+        <div class="formula">Ke = Rf + ERP + Size premium + Company-specific risk premium + Country risk premium</div>
+
+        <p>CAPMのような市場データへの依存を減らし、非上場企業・新興国企業のバリュエーションで広く使われる。欠点は各プレミアムの推計が恣意的になりやすいことだ。</p>
+
+        <h3>② Implied Cost of Capital（逆算アプローチ）</h3>
+
+        <p>株価を所与として、アナリスト予測利益からKeを逆算する：</p>
+
+        <div class="formula">P = EPS₁/(Ke − g) &nbsp;→&nbsp; Ke = EPS₁/P + g</div>
+
+        <p>これはDamodaranが「implied ERP」に使う方法論の個別株版だ。「市場が現在の株価に織り込んでいる資本コスト」を推計できる。Reverse DCFの文脈（#001参照）とも接続する。</p>
+
+        <h3>③ APVアプローチとの関係</h3>
+
+        <p>WACCの問題（特にTax shieldの現在価値を負債コストで割り引くか株式コストで割り引くかという議論）を回避するAPV（Adjusted Present Value）アプローチも存在する。これはSeries #006で詳しく扱う予定だ。</p>
+
+        <div class="section-sep">· · ·</div>
+
+        <!-- ======================================================== -->
+        <h2>6. 実務への含意 — 「正確な」WACCではなく「誠実な」WACC</h2>
+
+        <h3>① WACCは点推計ではなく範囲として開示する</h3>
+
+        <p>β・ERP・Rfのそれぞれについて「合理的な選択肢の範囲」を定義し、その組み合わせでWACCの範囲を計算する。例えば：</p>
+
+        <div class="calc-block">
+          <div style="font-size:0.78em;color:var(--text-muted);margin-bottom:10px;font-family:'Inter',sans-serif;">WACC感度テーブル（仮想例：ERP × β）</div>
+          <div class="calc-row"><span>ERP = 4.5%（Implied）、β = 0.9</span><span>WACC ≈ 9.1%</span></div>
+          <div class="calc-row"><span>ERP = 5.5%（Historical）、β = 1.1</span><span>WACC ≈ 10.5%</span></div>
+          <div class="calc-row calc-total"><span>TV変化（g=3%固定、#001の式）</span><span class="calc-highlight">最大 ±25%</span></div>
+        </div>
+
+        <p>この範囲の大きさが、WACCの「不確実性の構造」を正直に表現する。「WACC = 9.8%」という点推計よりも、「8.5〜11%の範囲で合理的、中心推計は9.8%」という表現の方が誠実だ。</p>
+
+        <h3>② ERPとβの出所を必ず明記する</h3>
+
+        <p>バリュエーションレポートには以下を明記することを習慣にしたい：</p>
+
+        <ul>
+          <li>ERP：「Damodaran implied ERP（米国、2026年1月推計）4.5%」または「DMS arithmetic mean（1900-2024）6.0%」</li>
+          <li>β：「Adjusted β（Blume、60ヶ月月次、TOPIX対比）1.12、その後Hamada変換でunleverし再lever」</li>
+          <li>Rf：「10年国債利回り（2026年3月時点）1.5%、名目ベース」</li>
+        </ul>
+
+        <p>このような記載があることで、前提の違いによる見解の差異が建設的な議論に昇華する。出所が不明なWACCは、後から検証も反論もできない「ブラックボックス」になる。</p>
+
+        <h3>③ WACCよりもTV仮定（g・ROIC）の感度が高い</h3>
+
+        <p>#001で示したように、Terminal Valueの感度はg・ROICの仮定が最も大きい。WACCはその次の感度を持つ。実務での優先順位は「g-ROICの整合性チェック」→「WACCの範囲推計」→「クロス感度テーブル」の順だ。WACCの精緻化に時間をかけすぎるよりも、TV仮定の経済的根拠を深めることの方が分析の価値を高める。</p>
+
+        <!-- ======================================================== -->
+        <h2>出典</h2>
+
+        <ul class="source-list">
+          <li><a href="https://pages.stern.nyu.edu/~adamodar/New_Home_Page/datafile/implprem.html" target="_blank" rel="noopener">Damodaran, A. — Implied Equity Risk Premium (Annual Updates), NYU Stern</a><span class="source-tag">[公式/データ]</span></li>
+          <li><a href="http://aswathdamodaran.blogspot.com/" target="_blank" rel="noopener">Damodaran, A. — Musings on Markets（Cost of Capital 関連記事多数）</a><span class="source-tag">[ブログ]</span></li>
+          <li><a href="https://openlibrary.org/isbn/9781118011522" target="_blank" rel="noopener">Damodaran, A. — Investment Valuation: Tools and Techniques for Determining the Value of Any Asset, 3rd ed. (Wiley 2012)</a><span class="source-tag">[書籍]</span></li>
+          <li><a href="https://openlibrary.org/isbn/9781119610885" target="_blank" rel="noopener">Koller, T., Goedhart, M., Wessels, D. — Valuation: Measuring and Managing the Value of Companies, 7th ed. (McKinsey, Wiley 2020)</a><span class="source-tag">[書籍]</span></li>
+          <li><a href="https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html" target="_blank" rel="noopener">Fama, E. &amp; French, K. — The Cross-Section of Expected Stock Returns, Journal of Finance 47(2), 1992（データ：Kenneth French Data Library）</a><span class="source-tag">[論文/データ]</span></li>
+          <li><a href="https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html" target="_blank" rel="noopener">Kenneth French Data Library — Fama-French Factors (Dartmouth)</a><span class="source-tag">[データ]</span></li>
+        </ul>
+
+        <!-- Next CTA -->
+        <div class="next-article">
+          <div class="next-label">次回 · Valuation Theory Lab #003</div>
+          <div class="next-title">Betaを信じる前に考えること<br>— 推計期間・頻度・Hamada変換</div>
+          <div class="next-desc">Levered β → Unlevered β → Relevered βの操作でどこに誤差が蓄積するか。Hamada式の仮定と限界、Miles-Ezzell vs. Modigliani-Miller Tax shieldの選択まで。</div>
+        </div>
+
+      </article>
+
+      <!-- 4. サイドバー -->
+      <aside class="article-sidebar">
+
+        <div class="sidebar-card">
+          <div class="section-label">KEY FACTS</div>
+          <div class="keyfacts-grid">
+            <div class="fact-card highlight">
+              <div class="fact-value">±1%</div>
+              <div class="fact-desc">WACC誤差がTerminal Valueに与える影響（目安：±15%以上）</div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">4.5%</div>
+              <div class="fact-desc">Damodaran implied ERP（US, 2026年初・概算）</div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">4.8%</div>
+              <div class="fact-desc">DMS historical ERP（US, geometric mean, 1900-2024）</div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">60M</div>
+              <div class="fact-desc">β推計の標準的な期間（月次データ）</div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">≈0.3</div>
+              <div class="fact-desc">CAPMのR²（株式リターン截面の説明率の目安）</div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">3 / 5</div>
+              <div class="fact-desc">Fama-Frenchファクター数（3F / 5Fモデル）</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-card">
+          <div class="section-label">SERIES PLAN</div>
+          <ol class="highlights-list">
+            <li class="highlight-item">
+              <span class="hl-num">01</span>
+              <span class="hl-text"><a href="./2026-03-20-valuation.html" style="color:var(--text-body);text-decoration:none;">Terminal ValueはなぜDCFの70-80%を占めるのか</a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num" style="color:var(--accent-warm);font-weight:700;">02</span>
+              <span class="hl-text"><strong>WACCは本当に計算できるのか — CAPM限界論と代替アプローチ</strong> — 本稿</span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">03</span>
+              <span class="hl-text">Betaを信じる前に考えること — 推計期間・頻度・Hamada変換</span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">04</span>
+              <span class="hl-text">シクリカル企業のLTMが罠である理由 — Mid-cycle正規化</span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">05</span>
+              <span class="hl-text">IFRS16後のEV bridgeを再考する — EV/EBITDA vs. EBITDAR</span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">06</span>
+              <span class="hl-text">APVアプローチ再考 — MM命題・Tax shieldの現在価値</span>
+            </li>
+          </ol>
+        </div>
+
+        <div class="sidebar-card">
+          <div class="section-label">KEY REFERENCES</div>
+          <ul class="source-list" style="margin-top:10px;">
+            <li><a href="https://pages.stern.nyu.edu/~adamodar/New_Home_Page/datafile/implprem.html" target="_blank" rel="noopener">Damodaran — Implied ERP Data</a></li>
+            <li><a href="http://aswathdamodaran.blogspot.com/" target="_blank" rel="noopener">Damodaran — Musings on Markets</a></li>
+            <li><a href="https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html" target="_blank" rel="noopener">Kenneth French Data Library</a></li>
+            <li><a href="https://openlibrary.org/isbn/9781119610885" target="_blank" rel="noopener">McKinsey Valuation 7th ed.</a></li>
+          </ul>
+        </div>
+
+      </aside>
+
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <span>Valuation Theory Lab #002 | donato Valuation Notes | 2026-03-21</span>
+  <span>本稿は理論解説目的です。実際の投資判断・M&amp;A意思決定には専門家への確認を要します。</span>
+</footer>
+
+<script>
+  // Progress bar
+  window.addEventListener('scroll', function() {
+    var h = document.documentElement;
+    var pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    document.getElementById('progress-bar').style.width = Math.min(pct, 100) + '%';
+  });
+
+  // Reading time (500字/分)
+  (function() {
+    var text = document.querySelector('.article-body') ? document.querySelector('.article-body').textContent : '';
+    var chars = text.length;
+    var minutes = Math.ceil(chars / 500);
+    var label = '約' + minutes + '分';
+    var el1 = document.getElementById('reading-time-badge');
+    var el2 = document.getElementById('reading-time-badge2');
+    if (el1) el1.textContent = label;
+    if (el2) el2.textContent = label;
+  })();
+</script>
+
+</body>
+</html>

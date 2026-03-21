@@ -1061,18 +1061,17 @@
   </footer>
 
   <script>
-    let _isEn = false;
-
+    let currentLang = 'ja';
     function toggleLang() {
-      _isEn = !_isEn;
-      document.getElementById('lang-btn').textContent = _isEn ? 'JP' : 'EN';
-      document.querySelectorAll('.lang-ja').forEach(el => {
-        el.style.display = _isEn ? 'none' : '';
-      });
-      document.querySelectorAll('.lang-en').forEach(el => {
-        el.style.display = _isEn ? '' : 'none';
-      });
+      currentLang = currentLang === 'ja' ? 'en' : 'ja';
+      document.querySelectorAll('.lang-ja').forEach(el => el.style.display = currentLang === 'ja' ? 'inline' : 'none');
+      document.querySelectorAll('.lang-en').forEach(el => el.style.display = currentLang === 'en' ? 'inline' : 'none');
+      document.getElementById('lang-btn').textContent = currentLang === 'ja' ? 'EN' : 'JA';
+      document.documentElement.lang = currentLang;
     }
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.lang-en').forEach(el => el.style.display = 'none');
+    });
   </script>
 
 </body>

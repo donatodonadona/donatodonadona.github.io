@@ -133,6 +133,13 @@
     #theme-btn:hover { border-color: var(--accent); color: var(--text); }
 
     /* Page header */
+    .sticky-articles-header {
+      position: sticky;
+      top: 44px;
+      z-index: 90;
+      background: var(--bg);
+    }
+
     .page-header {
       border-bottom: 1px solid var(--border);
       padding: 2rem 0 1.5rem;
@@ -347,6 +354,7 @@
     </div>
   </nav>
 
+  <div class="sticky-articles-header">
   <div class="page-header">
     <div class="page-header-inner">
       <h1><span data-en>Articles</span><span data-ja>記事</span></h1>
@@ -368,6 +376,7 @@
     <a href="#" class="cat-btn" onclick="filterArticles('career', event); return false;">Career</a>
     <a href="#" class="cat-btn" onclick="filterArticles('valuation', event); return false;">Valuation</a>
   </div>
+  </div><!-- /.sticky-articles-header -->
 
   <section class="announcements" id="announcements">
     <div class="announce-header"><span data-en>Updates</span><span data-ja>お知らせ</span></div>

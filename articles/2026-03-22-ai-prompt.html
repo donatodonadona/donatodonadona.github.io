@@ -1,0 +1,1328 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AIの出力品質を決めるのはモデルではなくコンテキストの設計だ。Context Engineeringの5原則（RCTFC）・文書選択・few-shot・コンテキスト汚染対策まで、Finance Professionalのための実務ガイド。">
+  <title>Context Engineeringの実務 — Finance Professionalが知るべきAI出力品質の設計術 | donato</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+JP:wght@300;400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../brand.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:           #F8F7F4;
+      --bg-code:      #EEECEA;
+      --bg-quote:     #EEECEA;
+      --bg-highlight: #EBF3FB;
+      --bg-subtle:    #F0EFEB;
+      --bg-card:      #F0EFEB;
+      --bg-header:    #F8F7F4;
+      --text-primary: #111320;
+      --text-body:    #2A2C3E;
+      --text-muted:   #565C70;
+      --text-light:   #888EA0;
+      --accent:       #1A6EB0;
+      --accent-warm:  #D4A010;
+      --border:       #D4D2CC;
+      --border-quote: #B8B6B0;
+      --border-light: #D4D2CC;
+      --tag-bg:       #E4EFF8;
+      --tag-text:     #1A6EB0;
+      --table-stripe: #F0EFEB;
+    }
+
+    /* ===== PROGRESS BAR ===== */
+    #progress-bar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      width: 0%;
+      background: var(--accent);
+      z-index: 300;
+      transition: width 0.1s linear;
+    }
+
+    body {
+      font-family: 'Noto Serif JP', Georgia, serif;
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--text-primary);
+      background: var(--bg);
+    }
+
+    /* ===== SITE HEADER ===== */
+    .site-header {
+      background: var(--bg-header);
+      border-bottom: 2px solid var(--accent);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .site-header-left { display: flex; align-items: center; gap: 12px; }
+    .wordmark {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: lowercase;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+    .wordmark span { color: var(--accent-warm); }
+    .header-sep { color: var(--border-quote); font-size: 13px; }
+    .header-media {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+    }
+    .site-header-right { display: flex; align-items: center; gap: 12px; }
+    .header-back-link {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .header-back-link:hover { color: var(--accent); }
+    .lang-toggle-bar {
+      display: flex;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .art-lang-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      padding: 4px 10px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .art-lang-btn.active {
+      background: var(--accent);
+      color: #fff;
+    }
+    #theme-btn {
+      font-size: 14px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-muted);
+      padding: 4px 6px;
+      transition: color 0.15s;
+    }
+    #theme-btn:hover { color: var(--accent-warm); }
+    .header-date {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--text-light);
+    }
+
+    /* ===== STICKY INFO BAR ===== */
+    #sticky-bar {
+      background: var(--bg-header);
+      border-bottom: 1px solid var(--border);
+      padding: 6px 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .sbar-cat { color: var(--accent); font-weight: 500; letter-spacing: 0.08em; }
+    .sbar-sep { color: var(--border-quote); }
+    .sbar-text { color: var(--text-muted); }
+    .sbar-badge {
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      padding: 1px 7px;
+      font-size: 10px;
+      letter-spacing: 0.06em;
+    }
+
+    /* ===== ARTICLE LAYOUT ===== */
+    .article-container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+    .article-grid {
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 32px;
+      padding-top: 20px;
+    }
+    .article-body { min-width: 0; }
+    .article-sidebar { padding-top: 4px; }
+
+    /* ===== TYPOGRAPHY ===== */
+    .article-headline {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 2.05rem;
+      font-weight: 600;
+      line-height: 1.3;
+      color: var(--text-primary);
+      margin-bottom: 18px;
+    }
+    .article-standfirst {
+      font-size: 1.02rem;
+      color: var(--text-body);
+      line-height: 1.75;
+      margin-bottom: 22px;
+      font-weight: 300;
+    }
+    .byline {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    h2 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.55rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 2.4em 0 0.75em;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--border-light);
+    }
+    h3 {
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 1.8em 0 0.6em;
+      letter-spacing: 0.01em;
+    }
+    p { margin-bottom: 1.2em; color: var(--text-body); }
+
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      color: var(--text-light);
+    }
+
+    /* ===== EXEC SUMMARY ===== */
+    .exec-summary {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      border-left: 4px solid var(--accent);
+      padding: 24px 28px;
+      margin: 0 0 2.4em;
+    }
+    .exec-block { margin-bottom: 20px; }
+    .exec-block:last-child { margin-bottom: 0; }
+    .exec-block .section-label { margin-bottom: 10px; display: block; }
+    .exec-tldr {
+      font-size: 1rem;
+      font-weight: 400;
+      line-height: 1.7;
+      color: var(--text-body);
+      margin: 0;
+    }
+
+    .issues-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+    .issue-item { display: flex; gap: 12px; align-items: baseline; }
+    .issue-q {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+    .issue-text { font-size: 0.9rem; color: var(--text-body); line-height: 1.6; }
+
+    .implications-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+    .implication-item {
+      font-size: 0.87rem;
+      color: var(--text-body);
+      line-height: 1.6;
+      padding-left: 14px;
+      border-left: 2px solid var(--accent-warm);
+    }
+
+    .read-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .read-col-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      margin-bottom: 8px;
+    }
+    .read-label-yes { color: var(--accent); }
+    .read-label-no { color: var(--text-light); }
+    .read-item, .skip-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.8rem;
+      color: var(--text-body);
+      line-height: 1.55;
+      margin-bottom: 6px;
+      padding-left: 10px;
+    }
+    .read-item { border-left: 2px solid var(--accent); }
+    .skip-item { border-left: 2px solid var(--border); }
+
+    /* ===== CALLOUT ===== */
+    .callout {
+      background: #FFFBE6;
+      border: 1px solid #E8D060;
+      border-left: 4px solid var(--accent-warm);
+      padding: 16px 20px;
+      margin: 1.6em 0;
+    }
+    .callout.info {
+      background: var(--bg-highlight);
+      border-color: var(--accent);
+      border-left: 4px solid var(--accent);
+    }
+    .callout.warn {
+      background: #FFF4F4;
+      border-color: #D04040;
+      border-left: 4px solid #D04040;
+    }
+    .callout-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      color: var(--text-light);
+      margin-bottom: 8px;
+    }
+    .callout p { margin-bottom: 0; font-size: 0.9rem; }
+
+    /* ===== PROMPT BOX ===== */
+    .prompt-box {
+      background: #1A1D2E;
+      border: 1px solid #2E3352;
+      padding: 18px 22px;
+      margin: 1.4em 0;
+    }
+    .prompt-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.63rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      color: #5A7AB0;
+      margin-bottom: 10px;
+    }
+    .prompt-box .lang-ja,
+    .prompt-box .lang-en {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      line-height: 1.7;
+      color: #C8D0E0;
+      white-space: pre-wrap;
+    }
+
+    /* ===== PRINCIPLE CARDS ===== */
+    .principle-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin: 1.6em 0;
+      border: 1px solid var(--border-light);
+    }
+    .principle-card {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 0;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .principle-card:last-child { border-bottom: none; }
+    .principle-tag {
+      background: var(--accent);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 16px 10px;
+      text-align: center;
+    }
+    .principle-tag .p-letter {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.8rem;
+      font-weight: 600;
+      line-height: 1;
+    }
+    .principle-tag .p-word {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.08em;
+      margin-top: 4px;
+      opacity: 0.85;
+    }
+    .principle-body {
+      padding: 14px 18px;
+      background: var(--bg-subtle);
+    }
+    .principle-title {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 5px;
+    }
+    .principle-desc {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.82rem;
+      color: var(--text-body);
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    /* ===== COMPARISON TABLE ===== */
+    .table-wrap { overflow-x: auto; margin: 1.5em 0; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.83rem;
+    }
+    thead th {
+      background: var(--bg-card);
+      font-weight: 600;
+      color: var(--text-primary);
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 2px solid var(--border);
+      letter-spacing: 0.01em;
+    }
+    tbody tr:nth-child(even) { background: var(--table-stripe); }
+    tbody td {
+      padding: 9px 14px;
+      color: var(--text-body);
+      border-bottom: 1px solid var(--border-light);
+      vertical-align: top;
+    }
+
+    /* ===== FACT GRID ===== */
+    .fact-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin: 1.6em 0 2em;
+    }
+    .fact-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-top: 3px solid var(--accent);
+      padding: 14px 16px;
+      text-align: center;
+    }
+    .fact-value {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.9rem;
+      font-weight: 600;
+      color: var(--accent);
+      line-height: 1.1;
+    }
+    .fact-desc {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+      line-height: 1.45;
+    }
+
+    /* ===== DISCLAIMER ===== */
+    .disclaimer {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      padding: 16px 20px;
+      margin-top: 3em;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+    }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      padding: 18px 20px;
+      margin-bottom: 16px;
+    }
+    .toc-list { list-style: none; padding: 0; margin-top: 10px; display: flex; flex-direction: column; gap: 5px; }
+    .toc-list a {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .toc-list a:hover { color: var(--accent); }
+    .source-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+    .source-list a {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      line-height: 1.45;
+      transition: color 0.15s;
+    }
+    .source-list a:hover { color: var(--accent); }
+
+    /* ===== DARK MODE ===== */
+    body.dark {
+      --bg:           #0A0B10;
+      --bg-code:      #12141C;
+      --bg-quote:     #12141C;
+      --bg-highlight: #0F1B2D;
+      --bg-subtle:    #12141C;
+      --bg-card:      #12141C;
+      --bg-header:    #0A0B10;
+      --text-primary: #E4E2DC;
+      --text-body:    #B8B6B0;
+      --text-muted:   #7A8099;
+      --text-light:   #50566A;
+      --accent:       #1A6EB0;
+      --accent-warm:  #F5C800;
+      --border:       #21253A;
+      --border-quote: #21253A;
+      --border-light: #21253A;
+      --tag-bg:       #0F1B2D;
+      --tag-text:     #5A9FD4;
+      --table-stripe: #12141C;
+    }
+    body.dark .callout {
+      background: #1C1800;
+      border-color: #6B5800;
+    }
+    body.dark .callout.info {
+      background: #0F1B2D;
+      border-color: #1A6EB0;
+    }
+    body.dark .callout.warn {
+      background: #1C0808;
+      border-color: #8B2020;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .article-grid { grid-template-columns: 1fr; }
+      .article-sidebar { display: none; }
+      .fact-grid { grid-template-columns: repeat(2, 1fr); }
+      .read-grid { grid-template-columns: 1fr; }
+      .principle-card { grid-template-columns: 60px 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div id="progress-bar"></div>
+
+<!-- ===== SITE HEADER ===== -->
+<header class="site-header">
+  <div class="site-header-left">
+    <a class="wordmark" href="../index.html">donato<span>.</span></a>
+    <span class="header-sep">|</span>
+    <span class="header-media">Finance Professional × AI</span>
+  </div>
+  <div class="site-header-right">
+    <a class="header-back-link" href="./index.html">
+      <span class="lang-ja">← 記事一覧</span>
+      <span class="lang-en">← All Articles</span>
+    </a>
+    <div class="lang-toggle-bar">
+      <button class="art-lang-btn" data-lang="ja" onclick="setLang('ja')">JP</button>
+      <button class="art-lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+    </div>
+    <button id="theme-btn" onclick="toggleTheme()">☀</button>
+  </div>
+</header>
+
+<!-- ===== STICKY INFO BAR ===== -->
+<div id="sticky-bar">
+  <span class="sbar-cat">AI Models &amp; Tools</span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-text">
+    <span class="lang-ja">Context Engineering · RCTFC · 文書設計 · Few-shot · 幻覚対策</span>
+    <span class="lang-en">Context Engineering · RCTFC · Document Selection · Few-shot · Hallucination Defense</span>
+  </span>
+  <span class="sbar-sep">|</span>
+  <span id="reading-time-badge" class="sbar-badge">
+    <span class="lang-ja">約10分</span>
+    <span class="lang-en">~10 min</span>
+  </span>
+</div>
+
+<!-- ===== ARTICLE ===== -->
+<div class="article-container">
+  <div class="article-grid">
+
+    <!-- 本文 -->
+    <article class="article-body">
+
+      <div style="margin-bottom: 28px;">
+        <div style="display:flex; gap:8px; align-items:center; margin-bottom:14px; flex-wrap:wrap;">
+          <span class="section-label">AI MODELS &amp; TOOLS</span>
+          <span id="reading-time-badge2" class="sbar-badge">
+            <span class="lang-ja">約10分</span>
+            <span class="lang-en">~10 min</span>
+          </span>
+        </div>
+
+        <h1 class="article-headline">
+          <span class="lang-ja">Context Engineeringの実務 — Finance Professionalが知るべきAI出力品質の設計術</span>
+          <span class="lang-en">Context Engineering in Practice — How Finance Professionals Design AI Output Quality</span>
+        </h1>
+
+        <p class="article-standfirst">
+          <span class="lang-ja">「プロンプトエンジニアリング」という言葉は古い。AIの出力品質を決めるのは、コンテキストウィンドウ全体の設計——何を入れ、何を除き、どの順で渡すか——だ。これをContext Engineering（CE）と呼ぶ。Finance Professionalが日常業務でAIから最大の価値を引き出すためのCE実践フレームワーク（RCTFC）・文書選択・few-shot設計・コンテキスト汚染の管理を体系的に示す。</span>
+          <span class="lang-en">"Prompt engineering" is an outdated framing. What determines AI output quality is the design of the entire context window — what goes in, what stays out, and in what order it is presented. This is Context Engineering (CE). This article systematizes the CE practice framework (RCTFC), document selection, few-shot design, and context pollution management for Finance Professionals extracting maximum value from AI in daily work.</span>
+        </p>
+
+        <div style="display:flex; gap:16px; align-items:center; border-top:1px solid var(--border-light); border-bottom:1px solid var(--border-light); padding:10px 0;">
+          <span class="byline">By <strong>donato Research</strong></span>
+          <span style="color:var(--border);">|</span>
+          <time class="byline" datetime="2026-03-22">
+            <span class="lang-ja">2026年3月22日</span>
+            <span class="lang-en">March 22, 2026</span>
+          </time>
+        </div>
+      </div>
+
+      <!-- エグゼクティブサマリー -->
+      <section class="exec-summary">
+
+        <div class="exec-block">
+          <span class="section-label"><span class="lang-ja">概要</span><span class="lang-en">Summary</span></span>
+          <p class="exec-tldr">
+            <span class="lang-ja">Context Engineering（CE）とは、AIに渡すコンテキストウィンドウ全体を戦略的に設計する技術だ。従来の「プロンプトエンジニアリング」がテキスト指示の書き方に偏っていたのに対し、CEは文書選択・few-shot例・情報の順序・不要情報の除外まで含む。本稿では、Finance実務に直結するCEの核心——RCTFCフレームワーク（Role / Context / Task / Format / Constraints）・few-shot設計・コンテキスト汚染対策・幻覚の管理——を具体的な実務テンプレートとともに示す。</span>
+            <span class="lang-en">Context Engineering (CE) is the strategic design of the entire context window presented to AI. Where traditional "prompt engineering" focused narrowly on instruction text, CE encompasses document selection, few-shot examples, information sequencing, and exclusion of irrelevant data. This article presents CE essentials directly applicable to Finance work: the RCTFC framework (Role / Context / Task / Format / Constraints), few-shot design, context pollution defense, and hallucination management — with concrete practical templates throughout.</span>
+          </p>
+        </div>
+
+        <div class="exec-block">
+          <span class="section-label"><span class="lang-ja">この記事の論点</span><span class="lang-en">Key Issues</span></span>
+          <ul class="issues-list">
+            <li class="issue-item">
+              <span class="issue-q">Q1</span>
+              <span class="issue-text">
+                <span class="lang-ja"><strong>「プロンプトエンジニアリング」と何が違うか？</strong> — CEはコンテキストウィンドウ全体の設計を指す。プロンプトのテキストだけでなく、渡す文書の選択・few-shot例の配置・情報の順序・不要情報の除外——これらすべてが出力品質に影響する。</span>
+                <span class="lang-en"><strong>How is this different from "prompt engineering"?</strong> — CE refers to designing the entire context window, not just the instruction text. Document selection, few-shot example placement, information sequencing, and excluding irrelevant data all affect output quality.</span>
+              </span>
+            </li>
+            <li class="issue-item">
+              <span class="issue-q">Q2</span>
+              <span class="issue-text">
+                <span class="lang-ja"><strong>RCTFCの5原則は何か？</strong> — Role（役割設定）、Context（文脈提供）、Task（タスク明示）、Format（出力形式）、Constraints（制約・注意事項）の5要素が、高品質なコンテキスト設計の骨格だ。この上にfew-shot例とコンテキスト汚染対策を組み合わせる。</span>
+                <span class="lang-en"><strong>What are the 5 RCTFC principles?</strong> — Role, Context, Task, Format, Constraints. These five elements are the skeleton of high-quality context design, to which few-shot examples and context pollution defenses are added.</span>
+              </span>
+            </li>
+            <li class="issue-item">
+              <span class="issue-q">Q3</span>
+              <span class="issue-text">
+                <span class="lang-ja"><strong>幻覚をどう管理するか？</strong> — LLMは架空の数値・判例・規制条文を自信満々に生成することがある。Finance実務での幻覚リスクを分類し、実務的な3層検証フレームワークを示す。</span>
+                <span class="lang-en"><strong>How to manage hallucinations?</strong> — LLMs can confidently generate fictitious numbers, case law, and regulatory provisions. This article classifies hallucination risk in Finance contexts and presents a practical three-tier verification framework.</span>
+              </span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="exec-block">
+          <span class="section-label"><span class="lang-ja">読むべき人・スキップして良い人</span><span class="lang-en">Who Should Read / Who Can Skip</span></span>
+          <div class="read-grid">
+            <div>
+              <div class="read-col-label read-label-yes"><span class="lang-ja">▶ 読む</span><span class="lang-en">▶ Read</span></div>
+              <p class="read-item"><span class="lang-ja">AIを使っているが出力品質に不満がある人</span><span class="lang-en">Using AI but dissatisfied with output quality</span></p>
+              <p class="read-item"><span class="lang-ja">プロンプトをまだ「会話」として使っている人</span><span class="lang-en">Still treating prompts as casual conversation</span></p>
+              <p class="read-item"><span class="lang-ja">AIの出力をどこまで信頼すべきか迷っている人</span><span class="lang-en">Unsure how much to trust AI outputs</span></p>
+            </div>
+            <div>
+              <div class="read-col-label read-label-no"><span class="lang-ja">– スキップ可</span><span class="lang-en">– Can Skip</span></div>
+              <p class="skip-item"><span class="lang-ja">Chain-of-Thought / few-shot prompting を日常的に使いこなしている人</span><span class="lang-en">Already fluent in Chain-of-Thought and few-shot prompting</span></p>
+              <p class="skip-item"><span class="lang-ja">社内AI活用ガイドラインを作成済みの人</span><span class="lang-en">Already created internal AI usage guidelines</span></p>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ファクトグリッド -->
+      <div class="fact-grid">
+        <div class="fact-card">
+          <div class="fact-value">CE</div>
+          <div class="fact-desc"><span class="lang-ja">Context Engineering — プロンプト「だけ」でなくコンテキスト全体を設計する概念</span><span class="lang-en">Context Engineering — designing the entire context, not just the prompt text</span></div>
+        </div>
+        <div class="fact-card">
+          <div class="fact-value">5+</div>
+          <div class="fact-desc"><span class="lang-ja">RCTFC（5原則）＋ few-shot例＋文書選択＋コンテキスト汚染対策</span><span class="lang-en">RCTFC (5 principles) + few-shot examples + document selection + context pollution defense</span></div>
+        </div>
+        <div class="fact-card">
+          <div class="fact-value">×3</div>
+          <div class="fact-desc"><span class="lang-ja">構造化CEによる出力精度改善の目安（vs. 非構造化指示）</span><span class="lang-en">Output quality improvement from structured CE vs. unstructured instructions</span></div>
+        </div>
+        <div class="fact-card">
+          <div class="fact-value">3層</div>
+          <div class="fact-desc"><span class="lang-ja">幻覚検証フレームワーク（一次情報 / 自己矛盾 / 専門家確認）</span><span class="lang-en">Three-tier hallucination verification (primary source / self-contradiction / expert check)</span></div>
+        </div>
+      </div>
+
+      <!-- 本文 -->
+      <p>
+        <span class="lang-ja">前号で整理したとおり、2026年初頭のAIモデル市場では Claude Opus 4.6・GPT-5.4・Gemini 3.1 Proが競合し、フロンティア性能が急速に民主化している。しかし「どのモデルを使うか」以上に重要な問いがある。「コンテキストをどう設計するか」だ。</span>
+        <span class="lang-en">As detailed in the previous issue, early 2026's AI model market saw Claude Opus 4.6, GPT-5.4, and Gemini 3.1 Pro compete as frontier performance rapidly democratized. But a more important question than "which model to use" has emerged: "how to design the context."</span>
+      </p>
+
+      <p>
+        <span class="lang-ja">Finance Professionalが日常業務でAIを使う場面——業界分析の依頼、DDチェックリストの作成、財務モデルのレビュー、契約書の論点抽出——において、出力品質のばらつきの原因はほぼ例外なくコンテキストの設計にある。同じClaude Opus 4.6でも、「この会社の財務状況を分析して」という指示と、文書・役割・タスク・形式・制約を揃えた構造化コンテキストでは、出力の質が劇的に異なる。</span>
+        <span class="lang-en">When Finance Professionals use AI in daily work — requesting industry analysis, building DD checklists, reviewing financial models, extracting contract issues — output quality variation almost always traces back to context design. The same Claude Opus 4.6 will produce dramatically different results given "analyze this company's financials" versus a structured context built on documents, role, task, format, and constraints.</span>
+      </p>
+
+      <!-- ======================================================== -->
+      <h2><span class="lang-ja">1. Context Engineeringとは何か</span><span class="lang-en">1. What Is Context Engineering?</span></h2>
+
+      <p>
+        <span class="lang-ja">「プロンプトエンジニアリング（PE）」という言葉は2023〜2024年に広まったが、今は「Context Engineering（CE）」に置き換わりつつある。この違いは重要だ。</span>
+        <span class="lang-en">"Prompt engineering (PE)" spread as a term in 2023–2024, but it is now being replaced by "Context Engineering (CE)." The distinction matters.</span>
+      </p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th><span class="lang-ja">Prompt Engineering（旧）</span><span class="lang-en">Prompt Engineering (old)</span></th>
+              <th><span class="lang-ja">Context Engineering（現在）</span><span class="lang-en">Context Engineering (current)</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="lang-ja">焦点</span><span class="lang-en">Focus</span></td>
+              <td><span class="lang-ja">指示テキスト（プロンプト）の書き方</span><span class="lang-en">Writing the instruction text (prompt)</span></td>
+              <td><span class="lang-ja">コンテキストウィンドウ全体の設計</span><span class="lang-en">Designing the entire context window</span></td>
+            </tr>
+            <tr>
+              <td><span class="lang-ja">対象</span><span class="lang-en">Scope</span></td>
+              <td><span class="lang-ja">「何を聞くか」の文章表現</span><span class="lang-en">How to phrase what you're asking</span></td>
+              <td><span class="lang-ja">文書選択・few-shot例・情報順序・除外情報・システムプロンプト・会話履歴の管理まで</span><span class="lang-en">Document selection, few-shot examples, information order, exclusions, system prompt, conversation history management</span></td>
+            </tr>
+            <tr>
+              <td><span class="lang-ja">限界</span><span class="lang-en">Limitation</span></td>
+              <td><span class="lang-ja">「指示が良ければ出力が良い」という単純化</span><span class="lang-en">Oversimplification: "better instructions = better output"</span></td>
+              <td><span class="lang-ja">指示の前後に何があるか、何がないかを含めて設計する</span><span class="lang-en">Designs what is before and after the instruction, and what is absent</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>
+        <span class="lang-ja">LLMは「次に来る確率の高いトークンを生成する機械」だ。モデルはコンテキストウィンドウ全体——システムプロンプト・渡した文書・会話履歴・ユーザー指示——を「最もありそうな続き」の文脈として使う。つまり、コンテキスト全体が貧弱なら、指示が良くても貧弱な出力しか来ない。</span>
+        <span class="lang-en">An LLM generates the most probable next token. The model uses the entire context window — system prompt, provided documents, conversation history, and user instruction — as context for "the most likely continuation." A weak overall context produces weak output even with a well-crafted instruction.</span>
+      </p>
+
+      <h3><span class="lang-ja">典型的な失敗パターン</span><span class="lang-en">Typical failure patterns</span></h3>
+
+      <p>
+        <span class="lang-ja">Finance実務で多いのは次の3パターンだ。</span>
+        <span class="lang-en">Three failure patterns are most common in Finance practice.</span>
+      </p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th><span class="lang-ja">パターン</span><span class="lang-en">Pattern</span></th>
+              <th><span class="lang-ja">問題のある指示例</span><span class="lang-en">Problematic instruction example</span></th>
+              <th><span class="lang-ja">何が起こるか</span><span class="lang-en">What happens</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="lang-ja">① 役割なし</span><span class="lang-en">① No role</span></td>
+              <td><span class="lang-ja">「この財務諸表を分析して」</span><span class="lang-en">"Analyze this financial statement."</span></td>
+              <td><span class="lang-ja">一般読者向けの初歩的な解説が出てくる。専門家の視点が欠落する</span><span class="lang-en">Produces basic explanation for general readers. Expert perspective is absent.</span></td>
+            </tr>
+            <tr>
+              <td><span class="lang-ja">② 文脈なし</span><span class="lang-en">② No context</span></td>
+              <td><span class="lang-ja">「M&Aのリスクを列挙して」</span><span class="lang-en">"List M&A risks."</span></td>
+              <td><span class="lang-ja">教科書的な汎用リストが出てくる。案件固有のリスクに触れない</span><span class="lang-en">Produces a generic textbook list. Misses deal-specific risks.</span></td>
+            </tr>
+            <tr>
+              <td><span class="lang-ja">③ 形式なし</span><span class="lang-en">③ No format</span></td>
+              <td><span class="lang-ja">「バリュエーションについてまとめて」</span><span class="lang-en">"Summarize valuation."</span></td>
+              <td><span class="lang-ja">長文の散文が出てくる。そのままクライアントに使えない</span><span class="lang-en">Produces lengthy prose. Unusable directly for clients.</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout info">
+        <div class="callout-label">PRACTITIONER NOTE</div>
+        <p>
+          <span class="lang-ja">「AIは使えない」と言う人の大半は、プロンプトに問題がある。モデルを変えても改善しない。設計を変えると劇的に改善する。これはモデルの性能の問題ではなく、インターフェースの使い方の問題だ。</span>
+          <span class="lang-en">Most people who say "AI is useless" have a prompt problem. Switching models won't fix it. Redesigning the prompt will produce dramatic improvement. This is not a model performance issue — it's an interface usage issue.</span>
+        </p>
+      </div>
+
+      <!-- ======================================================== -->
+      <h2><span class="lang-ja">2. RCTFCフレームワーク — CEの核心となる5原則</span><span class="lang-en">2. The RCTFC Framework — Five Core CE Principles</span></h2>
+
+      <p>
+        <span class="lang-ja">Context Engineeringの実践において、まず習得すべき骨格がRCTFCの5原則だ。これらをすべて揃えると、AIは「なぜこの作業をするか」「誰として回答すべきか」「何を・どのように出力すべきか」を正確に把握し、的外れな応答を避けられる。この5原則はCEの「指示層」を担う。これに加えてfew-shot例・文書選択・コンテキスト汚染対策（後述）が「情報層」を構成する。</span>
+        <span class="lang-en">In Context Engineering practice, the first structure to master is the five RCTFC principles. When all are present, AI accurately understands why the task exists, from which perspective to respond, what to output, and in what form. These five principles form CE's "instruction layer." Few-shot examples, document selection, and context pollution management (discussed below) form the "information layer."</span>
+      </p>
+
+      <div class="principle-grid">
+        <div class="principle-card">
+          <div class="principle-tag">
+            <span class="p-letter">R</span>
+            <span class="p-word">ROLE</span>
+          </div>
+          <div class="principle-body">
+            <div class="principle-title"><span class="lang-ja">役割設定 — AIに「誰として考えるか」を与える</span><span class="lang-en">Role setting — tell AI "who" it's thinking as</span></div>
+            <p class="principle-desc">
+              <span class="lang-ja">「あなたは10年のM&Aバンカー経験を持つシニアアドバイザーです」と与えると、AIは専門家の語彙・視点・判断基準を使って応答する。役割がないと「平均的なウィキペディア」の視点になる。</span>
+              <span class="lang-en">"You are a senior M&A advisor with 10 years of banking experience" prompts AI to respond using expert vocabulary, perspectives, and judgment criteria. Without a role, AI defaults to an "average Wikipedia" viewpoint.</span>
+            </p>
+          </div>
+        </div>
+        <div class="principle-card">
+          <div class="principle-tag">
+            <span class="p-letter">C</span>
+            <span class="p-word">CONTEXT</span>
+          </div>
+          <div class="principle-body">
+            <div class="principle-title"><span class="lang-ja">文脈提供 — 案件・業種・目的を先に渡す</span><span class="lang-en">Context — front-load the deal, industry, and purpose</span></div>
+            <p class="principle-desc">
+              <span class="lang-ja">「対象企業は売上30億円の精密部品メーカー、買い手は大手製造業、DDは2週間後に最終報告」という情報がないと、AIは汎用的な回答しか出せない。文脈は多いほど回答精度が上がる。</span>
+              <span class="lang-en">Without "target is a ¥3B precision parts maker, buyer is a major manufacturer, DD final report in 2 weeks," AI can only produce generic answers. More context equals higher accuracy.</span>
+            </p>
+          </div>
+        </div>
+        <div class="principle-card">
+          <div class="principle-tag">
+            <span class="p-letter">T</span>
+            <span class="p-word">TASK</span>
+          </div>
+          <div class="principle-body">
+            <div class="principle-title"><span class="lang-ja">タスク明示 — 動詞を明確にする</span><span class="lang-en">Task — make the verb explicit</span></div>
+            <p class="principle-desc">
+              <span class="lang-ja">「分析して」は曖昧だ。「①リスク項目を列挙し②各リスクを高/中/低で評価し③上位3つについて対応策を提案せよ」と動詞と構造を明示すると、出力が構造化される。</span>
+              <span class="lang-en">"Analyze" is vague. "① List risk items, ② rate each High/Medium/Low, ③ propose mitigation for the top three" makes the verb and structure explicit, producing structured output.</span>
+            </p>
+          </div>
+        </div>
+        <div class="principle-card">
+          <div class="principle-tag">
+            <span class="p-letter">F</span>
+            <span class="p-word">FORMAT</span>
+          </div>
+          <div class="principle-body">
+            <div class="principle-title"><span class="lang-ja">出力形式 — 使える形で出てくるよう設計する</span><span class="lang-en">Format — design for immediate usability</span></div>
+            <p class="principle-desc">
+              <span class="lang-ja">「表形式、列：リスク項目／影響度／対応策、行数：10行以内」と指定すれば、加工不要でそのまま報告書に貼れる出力が来る。「箇条書き」「200字以内」「エグゼクティブサマリー形式」なども有効だ。</span>
+              <span class="lang-en">"Table format, columns: risk item / impact / mitigation, max 10 rows" produces output that pastes directly into a report. "Bullet points," "under 200 words," "executive summary format" are equally effective.</span>
+            </p>
+          </div>
+        </div>
+        <div class="principle-card">
+          <div class="principle-tag">
+            <span class="p-letter">C</span>
+            <span class="p-word">CONSTRAINTS</span>
+          </div>
+          <div class="principle-body">
+            <div class="principle-title"><span class="lang-ja">制約・注意事項 — 「してはならないこと」を明示する</span><span class="lang-en">Constraints — explicitly state what NOT to do</span></div>
+            <p class="principle-desc">
+              <span class="lang-ja">「教科書的な一般論を含めないこと」「知識の範囲外の数値は推測せずに『不明』と記載すること」「法的断定は避けること」などの制約を入れると、幻覚・過剰一般化・不適切な断定を大幅に減らせる。</span>
+              <span class="lang-en">"Exclude generic textbook generalities," "if a figure is outside your knowledge, state 'unknown' rather than guessing," "avoid legal assertions" — these constraints dramatically reduce hallucinations, over-generalizations, and inappropriate certainty.</span>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================================================== -->
+      <h2><span class="lang-ja">3. 実務別プロンプトテンプレート</span><span class="lang-en">3. Practical Templates by Task Type</span></h2>
+
+      <p>
+        <span class="lang-ja">RCTFCを踏まえた実務別テンプレートを示す。各テンプレートは「そのままコピーして使える」設計を意識しているが、必ず自分の案件・目的に合わせてContextとConstraintsを書き換えること。</span>
+        <span class="lang-en">Below are practical templates built on RCTFC. Each is designed to be "copy-and-use," but always rewrite Context and Constraints to fit your specific deal and objective.</span>
+      </p>
+
+      <h3><span class="lang-ja">テンプレート①：業界・競合分析</span><span class="lang-en">Template ①: Industry &amp; Competitive Analysis</span></h3>
+
+      <div class="prompt-box">
+        <div class="prompt-label">PROMPT TEMPLATE — 業界・競合分析</div>
+        <span class="lang-ja">【Role】あなたは業界調査を専門とするM&Aアドバイザーです。
+
+【Context】私は[対象業界]における買収ターゲット候補を探しています。買い手は[業種]の事業会社で、戦略的買収を目的としています。既存情報：[わかっている情報があれば記載]。
+
+【Task】以下を整理してください：
+① 業界の主要プレイヤー（上場・非上場含む）と推定売上規模
+② バリューチェーン構造とM&Aで狙い目のセグメント
+③ 直近のM&A・事業再編の動向（過去3年）
+④ 業界特有のリスク（規制・技術変化・顧客集中）
+
+【Format】各項目を見出し付きで整理。①は表形式（列：企業名/事業内容/売上規模/上場区分）。
+
+【Constraints】推測で数値を作らないこと。不確かな情報は「推定」と明記すること。最新情報の欠落がある場合は指摘すること。</span>
+        <span class="lang-en">【Role】You are an M&A advisor specializing in industry research.
+
+【Context】I am identifying acquisition target candidates in [target industry]. The buyer is a [industry] operating company seeking a strategic acquisition. Known information: [fill in what you know].
+
+【Task】Please organize the following:
+① Major players (public and private) with estimated revenue scale
+② Value chain structure and M&A-attractive segments
+③ Recent M&A and restructuring trends (last 3 years)
+④ Industry-specific risks (regulation, technology change, customer concentration)
+
+【Format】Organize under headings. ① in table format (columns: company / business / revenue / listed or private).
+
+【Constraints】Do not fabricate figures. Mark uncertain information as "estimated." Note where current information may be lacking.</span>
+      </div>
+
+      <h3><span class="lang-ja">テンプレート②：財務諸表の異常値・論点検出</span><span class="lang-en">Template ②: Financial Statement Anomaly Detection</span></h3>
+
+      <div class="prompt-box">
+        <div class="prompt-label">PROMPT TEMPLATE — 財務DD 異常値検出</div>
+        <span class="lang-ja">【Role】あなたは財務DDを専門とするFASのシニアアナリストです。M&Aにおける財務諸表の歪みやリスク検出に精通しています。
+
+【Context】以下は[対象企業名]の過去[X]年分の財務データです。取引形態は株式譲渡、業種は[業種]です。
+[財務データをここに貼り付け]
+
+【Task】以下を実施してください：
+① 売上高・営業利益・EBITDA・純利益の年次推移を整理し、異常な変化を指摘
+② 売上高成長率とEBITDAマージンのトレンドを評価
+③ 以下の観点でリスクフラグを立てる：在庫回転・売掛金回転・未払費用の急増・減価償却方針の変更
+④ DDで深掘りすべき上位5論点をリストアップ
+
+【Format】各項目を見出しで分け、③はリスク項目／指摘内容／深刻度（高/中/低）の表形式で。
+
+【Constraints】財務数値は与えられたデータのみを使用すること。データから読み取れない論点は「追加データ要」と記載すること。会計基準の違い（J-GAAP vs IFRS）は都度指摘すること。</span>
+        <span class="lang-en">【Role】You are a senior FAS analyst specializing in financial due diligence, expert in detecting distortions and risks in M&A financial statements.
+
+【Context】Below is [X] years of financial data for [company name]. Transaction type is share transfer; industry is [industry].
+[paste financial data here]
+
+【Task】Please:
+① Summarize revenue, operating profit, EBITDA, and net income trends year-by-year; flag abnormal changes
+② Evaluate revenue growth rate and EBITDA margin trends
+③ Flag risks across: inventory turnover, receivables turnover, sudden spikes in accrued expenses, changes in depreciation policy
+④ List the top 5 issues to probe in due diligence
+
+【Format】Use headings for each item. ③ in table format (columns: risk item / finding / severity: High/Medium/Low).
+
+【Constraints】Use only the provided data. Where data is insufficient, note "additional data required." Flag accounting standard differences (J-GAAP vs IFRS) where relevant.</span>
+      </div>
+
+      <h3><span class="lang-ja">テンプレート③：バリュエーションサマリー草稿</span><span class="lang-en">Template ③: Valuation Summary Draft</span></h3>
+
+      <div class="prompt-box">
+        <div class="prompt-label">PROMPT TEMPLATE — バリュエーションサマリー</div>
+        <span class="lang-ja">【Role】あなたはM&Aバリュエーションを専門とするシニアアドバイザーです。クライアントへの説明資料作成に精通しています。
+
+【Context】私は以下の前提でバリュエーションを実施しています：
+・対象企業：[業種]・売上[X]億円・EBITDA[Y]億円・成長率[Z]%
+・バリュエーション手法：DCF・EV/EBITDA倍率法・類似取引比較
+・DCF前提：WACC[X]%・永続成長率[Y]%・計画期間[X]年
+・EV/EBITDA倍率：類似企業[X]〜[Y]倍・類似取引[X]〜[Y]倍
+
+【Task】以下を作成してください：
+① バリュエーション結果サマリー（各手法のEV・エクイティバリュー）
+② DCFとマルチプルの乖離がある場合の考察
+③ 感度分析の論点（WACC・成長率・EBITDAマルチプル）
+④ クライアントへの説明メモ（エグゼクティブ向け、200字程度）
+
+【Format】①は表形式。④は平易な日本語で。専門用語には注釈を。
+
+【Constraints】与えられた前提以外の数値を自己生成しないこと。前提に不合理がある場合は指摘すること。DCFとマルチプルの機械的平均を「公正価値」と断定しないこと。</span>
+        <span class="lang-en">【Role】You are a senior M&A valuation advisor experienced in creating client presentation materials.
+
+【Context】I am conducting a valuation on the following basis:
+· Target: [industry], revenue ¥[X]B, EBITDA ¥[Y]B, growth rate [Z]%
+· Methods: DCF, EV/EBITDA multiples, precedent transactions
+· DCF assumptions: WACC [X]%, terminal growth rate [Y]%, projection period [X] years
+· EV/EBITDA: comparable companies [X]–[Y]x, precedent transactions [X]–[Y]x
+
+【Task】Please prepare:
+① Valuation results summary (EV and equity value per method)
+② Discussion of DCF vs. multiples divergence, if any
+③ Sensitivity analysis issues (WACC, growth rate, EBITDA multiple)
+④ Client explanation memo (executive audience, ~200 words)
+
+【Format】① in table format. ④ in plain language. Define technical terms where used.
+
+【Constraints】Do not self-generate figures beyond the provided assumptions. Flag any assumptions that appear unreasonable. Do not assert the mechanical average of DCF and multiples as "fair value."</span>
+      </div>
+
+      <!-- ======================================================== -->
+      <h2><span class="lang-ja">4. CEの情報層 — few-shot設計とコンテキスト汚染対策</span><span class="lang-en">4. CE Information Layer — Few-Shot Design &amp; Context Pollution Defense</span></h2>
+
+      <h3><span class="lang-ja">few-shot例の設計</span><span class="lang-en">Few-shot example design</span></h3>
+
+      <p>
+        <span class="lang-ja">「こういう出力が欲しい」という例をコンテキストに含めることをfew-shotプロンプティングと呼ぶ。指示だけよりも、理想の入出力ペアを1〜3例示すほうが、形式・深度・語調の再現精度が大幅に上がる。Finance実務では、過去に自分が作成した良質な分析メモ・報告書の一節を例示することで、AIにトーンと品質水準を「教える」ことができる。</span>
+        <span class="lang-en">Including examples of desired output in the context is called few-shot prompting. Showing 1–3 ideal input/output pairs dramatically improves reproduction accuracy of format, depth, and tone beyond instructions alone. In Finance practice, you can "teach" AI your tone and quality standard by including excerpts from your own high-quality past analysis memos or reports.</span>
+      </p>
+
+      <div class="prompt-box">
+        <div class="prompt-label">FEW-SHOT 例示の追加パターン</div>
+        <span class="lang-ja">【RCTFCプロンプトの末尾に追加する】
+
+以下は私が求める出力の形式・質・語調の参考例です：
+
+---
+【入力例】対象：食品製造業、売上200億円、EBITDA15億円（7.5%マージン）、3年連続微増収
+【期待出力例】
+■ 収益性評価：EBITDA15億円（7.5%）は食品製造業の業界平均（8〜10%）をやや下回る。ただし3年連続増収であり、スケール効果による改善余地あり。
+■ 注目論点：原材料価格の転嫁状況と、価格改定の頻度・成功率が鍵。
+■ DDでの確認事項：製品別マージン分析、原価構造の固変費分解、過去3年の価格改定履歴。
+---
+
+このフォーマット・詳細度・論理構造で出力してください。</span>
+        <span class="lang-en">【Append to RCTFC prompt】
+
+The following is a reference example for the format, quality, and tone I require:
+
+---
+【Input example】Target: food manufacturer, revenue ¥20B, EBITDA ¥1.5B (7.5% margin), three consecutive years of modest revenue growth
+【Expected output example】
+■ Profitability assessment: EBITDA of ¥1.5B (7.5%) is slightly below the food manufacturing industry average (8–10%). However, three consecutive years of revenue growth suggest potential for scale-driven improvement.
+■ Key issue: The ability to pass through raw material cost increases, and the frequency and success rate of price revisions, are critical.
+■ DD items to verify: Product-level margin analysis, fixed/variable cost decomposition, and three-year history of price adjustments.
+---
+
+Please output in this format, at this level of detail, with this logical structure.</span>
+      </div>
+
+      <h3><span class="lang-ja">コンテキスト汚染（Context Pollution）への対策</span><span class="lang-en">Context pollution defense</span></h3>
+
+      <p>
+        <span class="lang-ja">コンテキスト汚染とは、コンテキストウィンドウに不要・矛盾・古い情報が混入し、出力品質を劣化させる現象だ。Finance実務でよく起こるパターン：</span>
+        <span class="lang-en">Context pollution occurs when irrelevant, contradictory, or stale information contaminates the context window, degrading output quality. Common Finance patterns:</span>
+      </p>
+
+      <ul style="list-style:none; padding:0; display:flex; flex-direction:column; gap:8px; margin:1.2em 0;">
+        <li class="implication-item"><span class="lang-ja"><strong>過去の会話の混入</strong>：前の案件の議論が新しい案件の分析に影響する。会話ごとに新しいセッションを開始する習慣を持つ。</span><span class="lang-en"><strong>Prior conversation bleed</strong>: Discussion from a previous deal influences analysis of a new one. Develop the habit of starting a fresh session for each engagement.</span></li>
+        <li class="implication-item"><span class="lang-ja"><strong>矛盾する文書の同時投入</strong>：旧版と新版の財務諸表を両方渡すと、AIがどちらを使うか不安定になる。最新版のみを渡す。</span><span class="lang-en"><strong>Contradictory document injection</strong>: Providing both old and new financial statements makes AI's choice unstable. Provide only the current version.</span></li>
+        <li class="implication-item"><span class="lang-ja"><strong>過剰な文書量</strong>：関係の薄い文書を大量に渡すと、AIが重要情報を「薄める」。渡す文書は目的に直結するものに絞る。</span><span class="lang-en"><strong>Document overload</strong>: Providing too many loosely related documents dilutes the key information. Restrict documents to those directly relevant to the objective.</span></li>
+      </ul>
+
+      <div class="callout info">
+        <div class="callout-label">CE DESIGN PRINCIPLE</div>
+        <p>
+          <span class="lang-ja">「コンテキストウィンドウは高価な不動産だ」と考えよ。128Kトークンのウィンドウに関係の薄い情報を詰め込むのは、高級オフィスの一等地をガラクタ置き場にするのと同じだ。何を入れるかと同じくらい、何を入れないかを意識することがCEの本質だ。</span>
+          <span class="lang-en">Think of the context window as premium real estate. Filling 128K tokens with loosely relevant information is like using a prime office location as a storage room. What you exclude matters as much as what you include — this is the essence of Context Engineering.</span>
+        </p>
+      </div>
+
+      <!-- ======================================================== -->
+      <h2><span class="lang-ja">5. Chain-of-Thought — 「考えさせる」コンテキスト設計</span><span class="lang-en">5. Chain-of-Thought — Context Design That Makes AI "Think"</span></h2>
+
+      <p>
+        <span class="lang-ja">複雑な分析タスクでは、AIに「まず整理してから結論を出す」よう促すChain-of-Thought（CoT）が有効だ。</span>
+        <span class="lang-en">For complex analytical tasks, Chain-of-Thought (CoT) — prompting AI to organize its thinking before reaching conclusions — is highly effective.</span>
+      </p>
+
+      <h3><span class="lang-ja">基本のCoT指示</span><span class="lang-en">Basic CoT instruction</span></h3>
+
+      <div class="prompt-box">
+        <div class="prompt-label">CHAIN-OF-THOUGHT 指示の追加例</div>
+        <span class="lang-ja">【上記のRCTFCプロンプトの末尾に追加する】
+
+「回答する前に、まず以下を内部で整理してください（出力には含めなくて構いません）：
+1. タスクを完遂するために必要な情報は何か
+2. 与えられた情報で不十分な点はどこか
+3. 結論に至るロジックの各ステップ
+その上で最終回答を出力してください。」</span>
+        <span class="lang-en">【Append to the RCTFC prompt above】
+
+"Before responding, internally organize the following (you don't need to output this):
+1. What information is needed to complete the task
+2. Where the provided information is insufficient
+3. Each logical step leading to the conclusion
+Then output your final answer."</span>
+      </div>
+
+      <h3><span class="lang-ja">多段階プロンプト（Refinement Loop）</span><span class="lang-en">Multi-turn prompting (Refinement Loop)</span></h3>
+
+      <p>
+        <span class="lang-ja">一発のプロンプトで完璧な出力を求めるのではなく、会話を複数回に分けて段階的に洗練させる手法も有効だ。特に「①骨格を作る → ②レビューして問題点を指摘する → ③改訂する」の3ステップは、報告書の草稿作成に効果的だ。</span>
+        <span class="lang-en">Rather than demanding perfect output from a single prompt, a multi-turn approach that progressively refines is also effective. The "① build a skeleton → ② review and flag problems → ③ revise" three-step cycle is particularly effective for drafting reports.</span>
+      </p>
+
+      <div class="callout">
+        <div class="callout-label">PRACTITIONER TIP</div>
+        <p>
+          <span class="lang-ja">「この回答のどこが弱いか、3点指摘してから改善版を出力してください」という形でAI自身に自己批評させると、最初の一発より大幅に改善された出力が得られることが多い。自己批評は思考の補正メカニズムとして機能する。</span>
+          <span class="lang-en">"Identify three weaknesses in this response, then output an improved version." Asking AI to self-critique before revising often produces dramatically better output than the first attempt. Self-critique functions as a cognitive correction mechanism.</span>
+        </p>
+      </div>
+
+      <!-- ======================================================== -->
+      <h2><span class="lang-ja">6. 幻覚（Hallucination）と信頼性管理</span><span class="lang-en">6. Hallucination and Reliability Management</span></h2>
+
+      <p>
+        <span class="lang-ja">LLMの最大のリスクは「自信満々に誤る」ことだ。幻覚（Hallucination）とは、モデルが事実に基づかない情報を確信を持って生成する現象を指す。Finance実務では特に次のカテゴリで幻覚リスクが高い。</span>
+        <span class="lang-en">The greatest LLM risk is "confidently wrong" output. Hallucination refers to the model generating factually inaccurate information with apparent confidence. In Finance practice, hallucination risk is highest in these categories.</span>
+      </p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th><span class="lang-ja">幻覚カテゴリ</span><span class="lang-en">Hallucination category</span></th>
+              <th><span class="lang-ja">具体例</span><span class="lang-en">Examples</span></th>
+              <th><span class="lang-ja">リスク</span><span class="lang-en">Risk</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="lang-ja">財務数値の創作</span><span class="lang-en">Fabricated financial figures</span></td>
+              <td><span class="lang-ja">非公開企業の売上高・利益率の「推定値」を事実のように出力</span><span class="lang-en">Stating estimated revenue/margins of private companies as fact</span></td>
+              <td><span class="lang-ja">高 — 意思決定の誤りにつながる</span><span class="lang-en">High — leads to decision errors</span></td>
+            </tr>
+            <tr>
+              <td><span class="lang-ja">架空の判例・条文</span><span class="lang-en">Fictitious case law / statutory text</span></td>
+              <td><span class="lang-ja">存在しない最高裁判決・金商法条文番号の誤り</span><span class="lang-en">Non-existent Supreme Court rulings; wrong FIEA article numbers</span></td>
+              <td><span class="lang-ja">高 — 法的根拠として使用された場合に致命的</span><span class="lang-en">High — catastrophic if used as legal authority</span></td>
+            </tr>
+            <tr>
+              <td><span class="lang-ja">時点誤り</span><span class="lang-en">Stale information</span></td>
+              <td><span class="lang-ja">トレーニングデータのカットオフ後の規制変更・税制改正を反映していない</span><span class="lang-en">Missing regulatory changes / tax reforms after training data cutoff</span></td>
+              <td><span class="lang-ja">中〜高 — 最新法令確認が必要</span><span class="lang-en">Medium–High — requires verification against current law</span></td>
+            </tr>
+            <tr>
+              <td><span class="lang-ja">過剰一般化</span><span class="lang-en">Overgeneralization</span></td>
+              <td><span class="lang-ja">業種平均のEBITDAマルチプルを特定企業にそのまま適用</span><span class="lang-en">Applying industry-average EBITDA multiples directly to a specific company</span></td>
+              <td><span class="lang-ja">中 — 文脈なしに参照すると誤判断</span><span class="lang-en">Medium — causes misjudgment if used without context</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3><span class="lang-ja">3層の検証フレームワーク</span><span class="lang-en">Three-tier verification framework</span></h3>
+
+      <p>
+        <span class="lang-ja">Finance実務でAIの出力を活用するには、以下の3層で検証する習慣が不可欠だ。</span>
+        <span class="lang-en">Leveraging AI output in Finance practice requires a three-tier verification habit.</span>
+      </p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th><span class="lang-ja">検証層</span><span class="lang-en">Verification tier</span></th>
+              <th><span class="lang-ja">対象</span><span class="lang-en">What to verify</span></th>
+              <th><span class="lang-ja">方法</span><span class="lang-en">How</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="lang-ja">第1層：一次情報確認</span><span class="lang-en">Tier 1: Primary source check</span></td>
+              <td><span class="lang-ja">法令条文・判例・規制当局の公式見解</span><span class="lang-en">Statute text, case law, official regulatory guidance</span></td>
+              <td><span class="lang-ja">e-Gov・金融庁・裁判所ウェブサイトで直接確認</span><span class="lang-en">Verify directly on e-Gov, FSA, court websites</span></td>
+            </tr>
+            <tr>
+              <td><span class="lang-ja">第2層：自己矛盾チェック</span><span class="lang-en">Tier 2: Internal consistency check</span></td>
+              <td><span class="lang-ja">AI出力内の数値・論理の整合性</span><span class="lang-en">Consistency of figures and logic within the AI output</span></td>
+              <td><span class="lang-ja">別プロンプトで「この出力の矛盾点を指摘せよ」と聞く</span><span class="lang-en">Ask in a separate prompt: "identify contradictions in this output"</span></td>
+            </tr>
+            <tr>
+              <td><span class="lang-ja">第3層：専門家クロスチェック</span><span class="lang-en">Tier 3: Expert cross-check</span></td>
+              <td><span class="lang-ja">法的判断・税務処理・業界固有の慣行</span><span class="lang-en">Legal judgments, tax treatment, industry-specific practices</span></td>
+              <td><span class="lang-ja">弁護士・税理士・業界経験者によるレビュー</span><span class="lang-en">Review by attorney, CPA, or industry expert</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout warn">
+        <div class="callout-label">RISK WARNING</div>
+        <p>
+          <span class="lang-ja">法的判断・税務処理・規制解釈をAI単独で行ってはならない。AIは「論点の整理と情報収集の高速化」には使えるが、「法的結論の確定」は必ず専門家が行う。これはAIの性能の問題ではなく、責任の所在の問題だ。</span>
+          <span class="lang-en">Never rely on AI alone for legal judgments, tax treatment, or regulatory interpretation. AI accelerates issue spotting and information gathering — but final legal conclusions must always be made by qualified professionals. This is not a question of AI capability; it is a question of accountability.</span>
+        </p>
+      </div>
+
+      <!-- ======================================================== -->
+      <h2><span class="lang-ja">7. モデル選択との組み合わせ</span><span class="lang-en">7. Pairing with Model Selection</span></h2>
+
+      <p>
+        <span class="lang-ja">前号「AIモデル戦線レポート — 2026年3月」では各モデルの性能・コストを整理した。プロンプト設計を踏まえると、タスクの性質に応じたモデル選択が重要になる。</span>
+        <span class="lang-en">The previous issue, "AI Model Battlefront Report — March 2026," mapped model performance and costs. With prompt design in mind, model selection should match the nature of the task.</span>
+      </p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th><span class="lang-ja">タスク</span><span class="lang-en">Task</span></th>
+              <th><span class="lang-ja">推奨モデル</span><span class="lang-en">Recommended model</span></th>
+              <th><span class="lang-ja">理由</span><span class="lang-en">Reason</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="lang-ja">法的論点整理・複雑な財務DD分析</span><span class="lang-en">Legal issue mapping, complex financial DD</span></td>
+              <td><span class="lang-ja">Claude Opus 4.6</span><span class="lang-en">Claude Opus 4.6</span></td>
+              <td><span class="lang-ja">精度最優先。幻覚率が最低水準。長文文書の文脈保持に優れる</span><span class="lang-en">Accuracy first. Lowest hallucination rate. Superior long-document context retention.</span></td>
+            </tr>
+            <tr>
+              <td><span class="lang-ja">業界分析・草稿作成・DDチェックリスト</span><span class="lang-en">Industry analysis, drafting, DD checklists</span></td>
+              <td><span class="lang-ja">Gemini 3.1 Pro</span><span class="lang-en">Gemini 3.1 Pro</span></td>
+              <td><span class="lang-ja">コスト効率優先。フロンティア性能を$2/Mで提供。反復タスクに向く</span><span class="lang-en">Cost efficiency. Frontier performance at $2/M. Suited for iterative tasks.</span></td>
+            </tr>
+            <tr>
+              <td><span class="lang-ja">プロンプトのテスト・高速フィードバック</span><span class="lang-en">Prompt testing, rapid feedback</span></td>
+              <td><span class="lang-ja">Claude Haiku 4.5</span><span class="lang-en">Claude Haiku 4.5</span></td>
+              <td><span class="lang-ja">速度最優先。プロンプトのイテレーションに使い、最終出力はOpusで確定</span><span class="lang-en">Speed first. Use for prompt iteration; finalize output with Opus.</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ======================================================== -->
+      <h2 style="margin-top:3em;"><span class="lang-ja">おわりに：Context EngineeringはFAの「新しいコアスキル」だ</span><span class="lang-en">Conclusion: Context Engineering Is the FA's New Core Skill</span></h2>
+
+      <p>
+        <span class="lang-ja">RCTFCフレームワーク・few-shot設計・コンテキスト汚染対策——これらを組み合わせたContext Engineeringは複雑に見えるが、慣れれば10〜15分でプロ品質のコンテキストが設計できるようになる。最初はテンプレートをコピーし、Context と Task を書き換えるだけでいい。それだけで「使えないAI」が「実務で頼れるAI」に変わる。</span>
+        <span class="lang-en">Combining the RCTFC framework, few-shot design, and context pollution defense — Context Engineering looks complex, but with practice you can design professional-quality context in 10–15 minutes. Start by copying a template and rewriting just the Context and Task fields. That alone transforms "AI that isn't useful" into "AI that's a reliable partner in practice."</span>
+      </p>
+
+      <p>
+        <span class="lang-ja">AIを「検索エンジンの発展版」として使っている間は、出力品質に限界がある。コンテキストウィンドウ全体を「専門家の思考環境」として設計し始めると、DDの論点整理・バリュエーションの感度分析・報告書草稿——これらの質と速度が明確に変わる。Context Engineeringは、Excelモデリングやバリュエーション理論と同等の、Finance Professionalの新しいコアスキルになりつつある。</span>
+        <span class="lang-en">Using AI as "an advanced search engine" places a ceiling on output quality. When you begin designing the entire context window as "a specialist's thinking environment," DD issue mapping, valuation sensitivity analysis, and report drafts change measurably in quality and speed. Context Engineering is becoming a core Finance Professional skill on par with Excel modeling and valuation theory.</span>
+      </p>
+
+      <!-- 免責事項 -->
+      <div class="disclaimer">
+        <strong><span class="lang-ja">免責事項</span><span class="lang-en">Disclaimer</span></strong><br>
+        <span class="lang-ja">本稿で紹介するプロンプトテンプレートは参考目的の一般的な情報提供であり、特定の案件・業務における具体的なアドバイスではありません。実際の使用に際しては、機密情報・個人情報・守秘義務の対象となる情報をAIに入力しないよう十分注意してください。AIの出力は必ず専門家（弁護士・税理士・公認会計士等）がレビューし、最終判断は人間が行ってください。</span>
+        <span class="lang-en">The prompt templates presented here are for general informational purposes only and do not constitute specific advice for any particular engagement or task. When using these templates, exercise strict care not to input confidential information, personal data, or materials subject to duty of confidentiality into AI systems. All AI outputs must be reviewed by qualified professionals (attorneys, CPAs, tax advisors, etc.), and all final judgments must be made by human experts.</span>
+      </div>
+
+    </article>
+
+    <!-- 4. サイドバー -->
+    <aside class="article-sidebar">
+
+      <div class="sidebar-card">
+        <span class="section-label">TABLE OF CONTENTS</span>
+        <ul class="toc-list">
+          <li><a href="#"><span class="lang-ja">1. Context Engineeringとは何か</span><span class="lang-en">1. What Is Context Engineering?</span></a></li>
+          <li><a href="#"><span class="lang-ja">2. RCTFCフレームワーク — 5原則</span><span class="lang-en">2. RCTFC Framework — Five Principles</span></a></li>
+          <li><a href="#"><span class="lang-ja">3. 実務別コンテキストテンプレート</span><span class="lang-en">3. CE Templates by Task Type</span></a></li>
+          <li><a href="#"><span class="lang-ja">4. Few-shot設計とコンテキスト汚染対策</span><span class="lang-en">4. Few-Shot Design &amp; Context Pollution Defense</span></a></li>
+          <li><a href="#"><span class="lang-ja">5. Chain-of-Thought</span><span class="lang-en">5. Chain-of-Thought</span></a></li>
+          <li><a href="#"><span class="lang-ja">6. 幻覚と信頼性管理</span><span class="lang-en">6. Hallucination Management</span></a></li>
+          <li><a href="#"><span class="lang-ja">7. モデル選択との組み合わせ</span><span class="lang-en">7. Pairing with Model Selection</span></a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-card">
+        <span class="section-label"><span class="lang-ja">キーポイント</span><span class="lang-en">KEY POINTS</span></span>
+        <div style="margin-top:10px; display:flex; flex-direction:column; gap:10px;">
+          <div class="fact-card" style="padding:12px 14px;">
+            <div class="fact-value" style="font-size:1.1rem;">RCTFC</div>
+            <div class="fact-desc"><span class="lang-ja">CEの指示層：Role / Context / Task / Format / Constraints</span><span class="lang-en">CE instruction layer: Role / Context / Task / Format / Constraints</span></div>
+          </div>
+          <div class="fact-card" style="padding:12px 14px;">
+            <div class="fact-value" style="font-size:1.1rem;">Few-shot</div>
+            <div class="fact-desc"><span class="lang-ja">CEの情報層：理想の入出力例を1〜3件コンテキストに含める</span><span class="lang-en">CE information layer: include 1–3 ideal input/output examples in context</span></div>
+          </div>
+          <div class="fact-card" style="padding:12px 14px;">
+            <div class="fact-value" style="font-size:1.1rem;">3層</div>
+            <div class="fact-desc"><span class="lang-ja">幻覚検証：一次情報 → 自己矛盾チェック → 専門家確認</span><span class="lang-en">Hallucination check: primary source → self-contradiction → expert review</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-card">
+        <span class="section-label">AI MODELS &amp; TOOLS</span>
+        <ul class="source-list" style="margin-top:10px;">
+          <li><a href="./2026-03-20-ai.html"><span class="lang-ja">#01 AIモデル戦線レポート — 2026年3月</span><span class="lang-en">#01 AI Model Battlefront Report — March 2026</span></a></li>
+          <li><a href="./2026-03-22-ai-prompt.html"><span class="lang-ja">▶ #02 Context Engineeringの実務（本稿）</span><span class="lang-en">▶ #02 Context Engineering in Practice (this article)</span></a></li>
+          <li><a href="#"><span class="lang-ja">#03 LLMの幻覚と実務リスク管理（近日公開）</span><span class="lang-en">#03 LLM Hallucination & Risk Management — coming soon</span></a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-card">
+        <span class="section-label">RELATED ARTICLES</span>
+        <ul class="source-list" style="margin-top:10px;">
+          <li><a href="./2026-03-22-claude-code-001.html"><span class="lang-ja">Claude Code #001 — ブラウザから卒業する日</span><span class="lang-en">Claude Code #001 — The Day You Graduate From the Browser</span></a></li>
+          <li><a href="./2026-03-22-ma-process.html"><span class="lang-ja">M&Aプロセス × AI実務</span><span class="lang-en">M&A Process × AI Practice</span></a></li>
+          <li><a href="./2026-03-22-securities-law.html"><span class="lang-ja">企業法・金商法 × AI実務</span><span class="lang-en">Corporate Law &amp; FIEA × AI</span></a></li>
+        </ul>
+      </div>
+
+    </aside>
+
+  </div>
+</div>
+
+<script>
+  window.addEventListener('scroll', function() {
+    var h = document.documentElement;
+    var pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    document.getElementById('progress-bar').style.width = Math.min(pct, 100) + '%';
+  });
+
+  // Reading time (500字/分)
+  (function() {
+    var text = document.querySelector('.article-body') ? document.querySelector('.article-body').textContent : '';
+    var chars = text.length;
+    var minutes = Math.ceil(chars / 500);
+    var labelJa = '約' + minutes + '分';
+    var labelEn = '~' + minutes + ' min';
+    var el1 = document.getElementById('reading-time-badge');
+    var el2 = document.getElementById('reading-time-badge2');
+    if (el1) {
+      var ja1 = el1.querySelector('.lang-ja');
+      var en1 = el1.querySelector('.lang-en');
+      if (ja1) ja1.textContent = labelJa;
+      if (en1) en1.textContent = labelEn;
+    }
+    if (el2) {
+      var ja2 = el2.querySelector('.lang-ja');
+      var en2 = el2.querySelector('.lang-en');
+      if (ja2) ja2.textContent = labelJa;
+      if (en2) en2.textContent = labelEn;
+    }
+  })();
+
+  // Lang toggle
+  let currentLang = localStorage.getItem('hp-lang') || 'ja';
+  let currentTheme = localStorage.getItem('hp-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+
+  function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('hp-lang', lang);
+    document.querySelectorAll('.lang-ja').forEach(el => el.style.display = lang === 'ja' ? 'inline' : 'none');
+    document.querySelectorAll('.lang-en').forEach(el => el.style.display = lang === 'en' ? 'inline' : 'none');
+    document.querySelectorAll('.art-lang-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+    document.documentElement.lang = lang === 'ja' ? 'ja' : 'en';
+  }
+
+  function toggleTheme() {
+    currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+    localStorage.setItem('hp-theme', currentTheme);
+    document.body.classList.toggle('dark', currentTheme === 'dark');
+    document.getElementById('theme-btn').textContent = currentTheme === 'light' ? '☀' : '☾';
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    setLang(currentLang);
+    if (currentTheme === 'dark') {
+      document.body.classList.add('dark');
+      document.getElementById('theme-btn').textContent = '☾';
+    }
+  });
+</script>
+</body>
+</html>

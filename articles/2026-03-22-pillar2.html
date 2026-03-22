@@ -97,6 +97,18 @@
       transition: all 0.15s;
     }
     .art-lang-btn.active { background: #F5C800; color: #111320; }
+    #theme-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      padding: 3px 9px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.15s;
+    }
+    #theme-btn:hover { border-color: var(--accent); color: var(--accent); }
     .header-date {
       font-family: 'JetBrains Mono', monospace;
       font-size: 10px;
@@ -462,6 +474,28 @@
       .read-grid { grid-template-columns: 1fr; }
       #sticky-bar { flex-wrap: wrap; gap: 6px; }
     }
+
+    body.dark {
+      --bg:           #0D1117;
+      --bg-code:      #161B22;
+      --bg-quote:     #161B22;
+      --bg-highlight: #0E1A2B;
+      --bg-subtle:    #161B22;
+      --bg-card:      #161B22;
+      --bg-header:    #0D1117;
+      --text-primary: #E4E2DC;
+      --text-body:    #C4C2BC;
+      --text-muted:   #8B93A8;
+      --text-light:   #575E70;
+      --accent:       #3A8FD0;
+      --accent-warm:  #F5C800;
+      --border:       #21253A;
+      --border-quote: #2A2D3E;
+      --border-light: #21253A;
+      --tag-bg:       #0E1A2B;
+      --tag-text:     #3A8FD0;
+      --table-stripe: #161B22;
+    }
   </style>
 </head>
 <body>
@@ -480,6 +514,7 @@
         <button class="art-lang-btn active" data-lang="ja" onclick="setLang('ja')">JP</button>
         <button class="art-lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
       </div>
+      <button id="theme-btn" onclick="toggleTheme()" title="ダーク/ライト切替">☀</button>
       <time class="header-date">2026-03-22</time>
     </div>
   </header>

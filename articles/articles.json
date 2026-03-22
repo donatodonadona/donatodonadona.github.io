@@ -1,5 +1,16 @@
 [
   {
+    "date": "2026-03-22",
+    "category": "tax",
+    "genre_en": "Tax",
+    "genre_ja": "Tax",
+    "href": "./articles/2026-03-22-pillar2.html",
+    "title_en": "Pillar 2 Global Minimum Tax — Japan Implementation Checklist 2026",
+    "title_ja": "Pillar 2グローバルミニマム税 — 日本企業の実務対応チェックリスト2026",
+    "summary_en": "Japan's 15% global minimum tax on MNCs with €750M+ revenue is in force from fiscal 2024. IIR/UTPR/QDMTT priority hierarchy, GloBE ETR computation challenges, the IAS 12 (2023 amendment) temporary exception, and how to use the Transitional CbCR Safe Harbour to cut compliance costs.",
+    "summary_ja": "連結売上750百万ユーロ超の多国籍企業に15%のグローバルミニマム課税が2024年度から発効。QDMTTとIIRの優先順位、GloBE ETR計算の難所、IAS 12 2023年改訂による一時的例外、過渡的CbCRセーフハーバーの3テストを実務チェックリスト形式で完全解説。"
+  },
+  {
     "date": "2026-03-21",
     "category": "valuation",
     "genre_en": "Valuation Theory Lab",

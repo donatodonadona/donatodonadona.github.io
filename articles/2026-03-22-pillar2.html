@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="BEPS Pillar 2グローバルミニマム税（15%）が2024年から日本でも発効。QDMTTとIIRの優先順位、GloBE ETR計算の難所、IAS 12への影響、Safe Harbour活用まで実務対応チェックリストを完全解説する。">
+  <title>Pillar 2グローバルミニマム税 — 日本企業の実務対応チェックリスト2026 | donato Finance Professional × AI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+JP:wght@300;400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:           #F8F7F4;
+      --bg-code:      #EEECEA;
+      --bg-quote:     #EEECEA;
+      --bg-highlight: #EBF3FB;
+      --bg-subtle:    #F0EFEB;
+      --bg-card:      #F0EFEB;
+      --bg-header:    #F8F7F4;
+      --text-primary: #111320;
+      --text-body:    #2A2C3E;
+      --text-muted:   #565C70;
+      --text-light:   #888EA0;
+      --accent:       #1A6EB0;
+      --accent-warm:  #D4A010;
+      --border:       #D4D2CC;
+      --border-quote: #B8B6B0;
+      --border-light: #D4D2CC;
+      --tag-bg:       #E4EFF8;
+      --tag-text:     #1A6EB0;
+      --table-stripe: #F0EFEB;
+    }
+
+    body {
+      font-family: 'Noto Serif JP', Georgia, serif;
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--text-primary);
+      background: var(--bg);
+    }
+
+    /* ===== SITE HEADER ===== */
+    .site-header {
+      background: var(--bg-header);
+      border-bottom: 2px solid var(--accent);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .site-header-left { display: flex; align-items: center; gap: 12px; }
+    .wordmark {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: lowercase;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+    .wordmark span { color: var(--accent-warm); }
+    .header-sep { color: var(--border-quote); font-size: 13px; }
+    .header-media {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+    }
+    .site-header-right { display: flex; align-items: center; gap: 12px; }
+    #lang-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      padding: 4px 10px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    #lang-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .header-date {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-light);
+      letter-spacing: 0.08em;
+    }
+
+    /* ===== STICKY INFO BAR ===== */
+    #sticky-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg-subtle);
+      border-bottom: 1px solid var(--border-light);
+      padding: 7px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .sbar-cat {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+    }
+    .sbar-sep { color: var(--border-quote); font-size: 11px; }
+    .sbar-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+    .sbar-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      padding: 2px 8px;
+    }
+
+    /* ===== LAYOUT ===== */
+    .article-container { max-width: 1240px; margin: 0 auto; padding: 0 20px; }
+    .article-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 24px;
+    }
+    .article-body { grid-column: 2 / 10; max-width: 68ch; }
+    .article-sidebar {
+      grid-column: 10 / 13;
+      position: sticky;
+      top: 44px;
+      align-self: start;
+      max-height: calc(100vh - 56px);
+      overflow-y: auto;
+    }
+    .article-sidebar::-webkit-scrollbar { width: 4px; }
+    .article-sidebar::-webkit-scrollbar-track { background: transparent; }
+    .article-sidebar::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 2px; }
+
+    /* ===== TYPOGRAPHY ===== */
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+    }
+    .article-headline {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(2rem, 4vw, 2.6rem);
+      font-weight: 600;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+    .article-standfirst {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 1.1rem;
+      line-height: 1.55;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      font-weight: 400;
+    }
+    .byline {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    h2 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.45rem;
+      font-weight: 600;
+      line-height: 1.25;
+      color: var(--text-primary);
+      margin: 2em 0 0.75em;
+      border-top: 1px solid var(--border);
+      padding-top: 1em;
+    }
+    h3 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin: 1.75em 0 0.5em;
+    }
+    .article-body p { margin-bottom: 1.4em; font-size: 0.97rem; line-height: 1.8; }
+    .article-body ul, .article-body ol { margin: 0 0 1.4em 1.4em; }
+    .article-body li { margin-bottom: 0.4em; font-size: 0.95rem; line-height: 1.7; }
+    strong { color: var(--text-primary); font-weight: 600; }
+
+    /* ===== DATA TABLE ===== */
+    .data-table-wrap { overflow-x: auto; margin: 1.5em 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      background: var(--bg-subtle);
+      padding: 8px 12px;
+      text-align: left;
+      border-bottom: 2px solid var(--border);
+    }
+    td {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border-light);
+      color: var(--text-body);
+      font-family: 'Inter', sans-serif;
+    }
+    tr:nth-child(even) td { background: var(--table-stripe); }
+    td.mono { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; }
+    td.accent { color: var(--accent); font-weight: 600; }
+    td.warm { color: var(--accent-warm); font-weight: 600; }
+
+    /* ===== CHART ===== */
+    .chart-wrap {
+      background: var(--bg-card);
+      padding: 20px;
+      margin: 2em 0;
+      border: 1px solid var(--border-light);
+    }
+    .chart-title {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 14px;
+    }
+    .chart-source {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text-light);
+      margin-top: 8px;
+    }
+
+    /* ===== EXEC SUMMARY ===== */
+    .exec-summary {
+      background: var(--bg-highlight);
+      border: 1px solid var(--border-light);
+      border-left: 4px solid var(--accent);
+      padding: 24px;
+      margin: 0 0 2.5em;
+    }
+    .exec-block { margin-bottom: 20px; }
+    .exec-block:last-child { margin-bottom: 0; }
+    .exec-block + .exec-block { padding-top: 18px; border-top: 1px solid var(--border-light); }
+    .exec-tldr {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.02rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      line-height: 1.55;
+      margin-top: 8px;
+    }
+    .issues-list, .implications-list {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .issue-item { display: flex; gap: 10px; align-items: baseline; }
+    .issue-q {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--accent);
+      flex-shrink: 0;
+      min-width: 20px;
+    }
+    .issue-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: var(--text-body);
+      line-height: 1.55;
+    }
+    .implication-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: var(--text-body);
+      line-height: 1.55;
+      padding-left: 14px;
+      border-left: 2px solid var(--accent);
+    }
+    .read-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
+    .read-col-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.66rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 6px;
+    }
+    .read-label-yes { color: var(--accent); }
+    .read-label-no { color: var(--text-muted); }
+    .read-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-body);
+      line-height: 1.45;
+      padding-left: 10px;
+      border-left: 2px solid var(--accent);
+      margin-bottom: 5px;
+    }
+    .skip-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+      padding-left: 10px;
+      border-left: 2px solid var(--border-light);
+      margin-bottom: 5px;
+    }
+
+    /* ===== PULL QUOTE ===== */
+    .pull-quote {
+      border-left: 4px solid var(--accent);
+      margin: 2em 0;
+      padding: 1em 20px;
+      background: var(--bg-card);
+    }
+    .pull-quote p {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.2rem;
+      font-style: italic;
+      color: var(--text-primary);
+      line-height: 1.5;
+      margin-bottom: 6px !important;
+    }
+    .pull-quote footer {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .keyfacts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+    .fact-card {
+      background: var(--bg-highlight);
+      padding: 10px 8px;
+      border-radius: 2px;
+    }
+    .fact-card.highlight {
+      background: #FDF8EC;
+      border: 1px solid #E8D88A;
+    }
+    .fact-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--accent);
+      line-height: 1.2;
+    }
+    .fact-card.highlight .fact-value { color: #8A6A00; }
+    .fact-desc {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.64rem;
+      color: var(--text-muted);
+      margin-top: 3px;
+      line-height: 1.35;
+    }
+    .fact-card.highlight .fact-desc { color: #7A6020; }
+    .highlights-list { list-style: none; padding: 0; margin-top: 12px; }
+    .highlight-item {
+      padding: 9px 0;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      gap: 10px;
+      align-items: baseline;
+    }
+    .highlight-item:last-child { border-bottom: none; }
+    .hl-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--accent);
+      flex-shrink: 0;
+      min-width: 18px;
+    }
+    .hl-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.76rem;
+      color: var(--text-body);
+      line-height: 1.45;
+    }
+
+    /* ===== SOURCE LIST ===== */
+    .source-list { list-style: none; padding: 0; }
+    .source-list li { margin-bottom: 6px; }
+    .source-list a {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--accent);
+      text-decoration: none;
+      line-height: 1.5;
+    }
+    .source-list a:hover { text-decoration: underline; }
+    .source-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      margin-left: 4px;
+    }
+
+    /* ===== LANG TOGGLE ===== */
+    .lang-en { display: none; }
+
+    /* ===== FOOTER ===== */
+    .site-footer {
+      border-top: 1px solid var(--border-light);
+      margin-top: 4em;
+      padding: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* ===== PRINT ===== */
+    @media print {
+      body { background: white; font-size: 11pt; }
+      .site-header, #sticky-bar { display: none; }
+      .article-sidebar { position: static; max-height: none; overflow: visible; }
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+    @page { size: A4; margin: 20mm 15mm; }
+
+    /* ===== MOBILE ===== */
+    @media (max-width: 900px) {
+      .article-body { grid-column: 1 / -1; }
+      .article-sidebar { position: static; max-height: none; overflow: visible; grid-column: 1 / -1; }
+      .article-grid { display: block; }
+      .read-grid { grid-template-columns: 1fr; }
+      #sticky-bar { flex-wrap: wrap; gap: 6px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1. サイトヘッダー -->
+  <header class="site-header">
+    <div class="site-header-left">
+      <a href="../index.html" class="wordmark">dona<span>to</span></a>
+      <span class="header-sep">—</span>
+      <span class="header-media">Finance Professional × Tax</span>
+    </div>
+    <div class="site-header-right">
+      <button id="lang-btn" onclick="toggleLang()">EN</button>
+      <time class="header-date">2026-03-22</time>
+    </div>
+  </header>
+
+  <!-- 2. スティッキー情報バー -->
+  <div id="sticky-bar">
+    <span class="sbar-cat">Tax</span>
+    <span class="sbar-sep">|</span>
+    <span class="sbar-text">
+      <span class="lang-ja">対象: 多国籍企業CFO・税務担当・監査人</span>
+      <span class="lang-en">Topic: MNC CFOs, Tax Teams, Auditors</span>
+    </span>
+    <span class="sbar-sep">|</span>
+    <span class="sbar-text">
+      <span class="lang-ja">作成日: 2026-03-22</span>
+      <span class="lang-en">Published: 2026-03-22</span>
+    </span>
+    <span class="sbar-sep">|</span>
+    <span class="sbar-badge">
+      <span class="lang-ja">約10分</span>
+      <span class="lang-en">~10 min read</span>
+    </span>
+  </div>
+
+  <main style="padding: 0 0 3em;">
+    <div class="article-container">
+      <div class="article-grid">
+
+        <!-- 3. 記事本文 -->
+        <article class="article-body">
+
+          <!-- 記事ヘッダー -->
+          <div style="padding: 36px 0 24px;">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+              <div class="section-label">
+                <span class="lang-ja">Tax</span>
+                <span class="lang-en">Tax</span>
+              </div>
+              <span class="sbar-badge">
+                <span class="lang-ja">約10分</span>
+                <span class="lang-en">~10 min read</span>
+              </span>
+            </div>
+            <h1 class="article-headline">
+              <span class="lang-ja">Pillar 2グローバルミニマム税 — 日本企業の実務対応チェックリスト2026</span>
+              <span class="lang-en">Pillar 2 Global Minimum Tax — Japan Implementation Checklist 2026</span>
+            </h1>
+            <p class="article-standfirst">
+              <span class="lang-ja">連結売上高750百万ユーロ超の多国籍企業に実効税率15%のグローバルミニマム課税が日本でも2024年度から発効した。IIR・UTPR・QDMTTの役割分担、GloBE ETR計算の実務的難所、IAS 12 2023年改訂による繰延税金処理の特例、そしてSafe Harbour活用まで——実務担当者が今知るべき論点を一気に整理する。</span>
+              <span class="lang-en">Japan's 15% global minimum tax on multinationals with revenue above €750M has been in force since fiscal 2024. This article covers the IIR/UTPR/QDMTT priority hierarchy, the practical challenges in GloBE ETR computation, the IAS 12 (2023 amendment) deferred tax exception, and how to leverage Safe Harbours to reduce compliance burden.</span>
+            </p>
+            <div style="display:flex; gap:16px; align-items:center; border-top:1px solid var(--border-light); border-bottom:1px solid var(--border-light); padding:10px 0;">
+              <span class="byline">By <strong>donato Research</strong></span>
+              <span style="color:var(--border);">|</span>
+              <time class="byline" datetime="2026-03-22">
+                <span class="lang-ja">2026年3月22日</span>
+                <span class="lang-en">March 22, 2026</span>
+              </time>
+            </div>
+          </div>
+
+          <!-- 構造化エグゼクティブサマリー -->
+          <section class="exec-summary">
+
+            <!-- ① 概要 -->
+            <div class="exec-block">
+              <div class="section-label"><span class="lang-ja">概要</span><span class="lang-en">Summary</span></div>
+              <p class="exec-tldr">
+                <span class="lang-ja">Pillar 2は「租税回避地への利益移転でも最低15%は取る」という国際課税の構造的転換だ。日本は令和5年改正でQDMTT（適格国内最低補足税）とIIR（所得合算ルール）を2024年4月以降開始事業年度から適用。実務上の焦点は①GloBE ETR計算の複雑性、②IAS 12適用の特別例外、③Safe Harbourによる準拠コスト削減の3点に集約される。</span>
+                <span class="lang-en">Pillar 2 is a structural shift in international taxation: a minimum 15% rate regardless of profit-shifting strategies. Japan enacted QDMTT and IIR via its fiscal 2023 tax reform, applying from business years beginning April 2024. The practical focus is on three areas: (1) complexity of GloBE ETR computation, (2) the IAS 12 temporary exception for deferred taxes, and (3) reducing compliance costs through Safe Harbour elections.</span>
+              </p>
+            </div>
+
+            <!-- ② 論点 -->
+            <div class="exec-block">
+              <div class="section-label">
+                <span class="lang-ja">論点</span>
+                <span class="lang-en">Key Issues</span>
+              </div>
+              <ul class="issues-list">
+                <li class="issue-item">
+                  <span class="issue-q">Q1</span>
+                  <span class="issue-text">
+                    <span class="lang-ja"><strong>IIR・UTPR・QDMTTはどの順番で適用されるか？</strong> — まずQDMTT（子会社所在地国の国内最低税）が優先。次にIIR（親会社が子会社の低課税分を拾う）、最後にUTPR（IIRで回収できない分を他の構成会社に配賦）。日本はQDMTTとIIRを同時導入済み。UTPRは法整備上は存在するが主たる機能はQDMTT・IIRが担う。</span>
+                    <span class="lang-en"><strong>In what order do IIR, UTPR, and QDMTT apply?</strong> — QDMTT (the low-tax jurisdiction's own domestic minimum top-up) takes priority. Then IIR (parent company collects the top-up on low-taxed subsidiaries). UTPR (residual collection allocated to group members) applies last. Japan has enacted both QDMTT and IIR; UTPR exists in statute but QDMTT/IIR carry the main burden.</span>
+                  </span>
+                </li>
+                <li class="issue-item">
+                  <span class="issue-q">Q2</span>
+                  <span class="issue-text">
+                    <span class="lang-ja"><strong>GloBE ETRはどう計算するか？</strong> — 財務会計上の税金費用をベースに「対象税金（Covered Taxes）」を特定し、GloBE所得（IFRSや各国GAAPへの調整後）で除して実効税率を算出。各国・各構成会社ごとに計算するため、グループ数百社を抱える多国籍企業には膨大な集計作業が発生する。</span>
+                    <span class="lang-en"><strong>How is GloBE ETR computed?</strong> — Start with accounting tax expense, identify Covered Taxes, and divide by GloBE income (adjusted from IFRS or local GAAP). Computation is performed per jurisdiction per constituent entity — creating significant aggregation work for large multinationals with hundreds of subsidiaries.</span>
+                  </span>
+                </li>
+                <li class="issue-item">
+                  <span class="issue-q">Q3</span>
+                  <span class="issue-text">
+                    <span class="lang-ja"><strong>IAS 12の繰延税金処理はどうなるか？</strong> — IASBは2023年5月にIAS 12を緊急改訂し、Pillar 2に係る繰延税金資産・負債の認識・開示について一時的例外を設けた。日本のASBJも同様の対応を公表。例外適用により、GloBE税効果の繰延税金計上が不要になるが、開示要件（当期のPillar 2税費用の概算額等）は残る。</span>
+                    <span class="lang-en"><strong>How does IAS 12 deferred tax treatment change?</strong> — In May 2023, IASB issued a targeted amendment to IAS 12, providing a temporary mandatory exception from recognizing and disclosing deferred tax assets/liabilities related to Pillar 2. Japan's ASBJ issued a similar measure. Under the exception, entities need not accrue GloBE deferred taxes — but disclosure of current-period Pillar 2 tax expense estimates is still required.</span>
+                  </span>
+                </li>
+                <li class="issue-item">
+                  <span class="issue-q">Q4</span>
+                  <span class="issue-text">
+                    <span class="lang-ja"><strong>Safe Harbourとは何で、どう活用するか？</strong> — OECDが公表した過渡的CbCRセーフハーバーは、一定条件を満たす国・地域について簡易計算でPillar 2義務を免除する。①実質活動基準（STTR）、②低収益性テスト（ルーティン利益＋簡易ETR）、③名目税率テスト（20%以上）のいずれかを充足すればフルGloBE計算が不要になる。多くの日本グループにとって大幅なコスト削減につながる。</span>
+                    <span class="lang-en"><strong>What are Safe Harbours and how can they reduce compliance costs?</strong> — The OECD's Transitional CbCR Safe Harbour exempts certain jurisdictions from full GloBE computation if simplified conditions are met: (1) de minimis revenue and profit test, (2) simplified ETR test (≥ 15% / 10% / 25% by phase), or (3) routine profits test (SBIE deduction). Meeting any one of the three tests exempts a jurisdiction from full GloBE calculation for that year — potentially eliminating the need to compute GloBE ETR for large portions of a group.</span>
+                  </span>
+                </li>
+                <li class="issue-item">
+                  <span class="issue-q">Q5</span>
+                  <span class="issue-text">
+                    <span class="lang-ja"><strong>データ収集・ERPの課題はどこにあるか？</strong> — GloBE計算に必要なデータ（対象税金・GloBE所得・SBIEベース等）は、会計システムが通常出力しない非標準項目を含む。特に永続差異・繰延税金の再分類、外国子会社の現地GAAPからIFRSへの調整、CbCRデータとのマッピングが難所。ERP側の対応か、専用集計ツールの導入かを判断する必要がある。</span>
+                    <span class="lang-en"><strong>Where do data collection and ERP challenges arise?</strong> — GloBE computation requires non-standard data not typically produced by accounting systems: covered taxes, GloBE income, substance-based income exclusion (SBIE) base, etc. Particular pain points include reclassifying permanent differences and deferred taxes, reconciling local GAAP to IFRS for foreign subsidiaries, and mapping to CbCR data. Groups must decide between adapting ERP systems or deploying dedicated GloBE aggregation tools.</span>
+                  </span>
+                </li>
+              </ul>
+            </div>
+
+            <!-- ③ Finance Proへの示唆 -->
+            <div class="exec-block">
+              <div class="section-label">
+                <span class="lang-ja">Finance Proへの示唆</span>
+                <span class="lang-en">Implications for Finance Professionals</span>
+              </div>
+              <ul class="implications-list">
+                <li class="implication-item">
+                  <span class="lang-ja">まず過渡的セーフハーバーの充足可否を国・地域ごとに確認する。フルGloBE計算が不要な国を先に絞り込むことで、対応コストを大幅に圧縮できる。</span>
+                  <span class="lang-en">First, assess Safe Harbour eligibility jurisdiction by jurisdiction. Identifying where full GloBE computation can be avoided dramatically reduces compliance costs.</span>
+                </li>
+                <li class="implication-item">
+                  <span class="lang-ja">IAS 12の一時的例外を選択しても開示義務は残る。当期のPillar 2税費用の概算額・重要な影響の説明を財務諸表注記に含めること。</span>
+                  <span class="lang-en">Electing the IAS 12 temporary exception does not eliminate disclosure requirements. Estimated current-period Pillar 2 tax expense and explanation of material impacts must appear in financial statement notes.</span>
+                </li>
+                <li class="implication-item">
+                  <span class="lang-ja">GloBE ETR計算はグループ財務・税務・IT部門の横断的な取り組みを必要とする。税務部門単独で完結できる問題ではない。CFOレベルでプロジェクト管理体制を整備することが急務。</span>
+                  <span class="lang-en">GloBE ETR computation requires cross-functional collaboration across group finance, tax, and IT. This cannot be resolved by the tax team alone. CFO-level project governance is urgently needed.</span>
+                </li>
+              </ul>
+            </div>
+
+            <!-- ④ 読み進め判断 -->
+            <div class="exec-block">
+              <div class="section-label">
+                <span class="lang-ja">読み進め判断</span>
+                <span class="lang-en">Who Should Read On</span>
+              </div>
+              <div class="read-grid">
+                <div>
+                  <div class="read-col-label read-label-yes">
+                    <span class="lang-ja">▶ この記事が役立つ方</span>
+                    <span class="lang-en">▶ Read on if you are</span>
+                  </div>
+                  <div class="read-item">
+                    <span class="lang-ja">多国籍企業の税務・経理・CFO担当</span>
+                    <span class="lang-en">Tax / finance / CFO at an MNC</span>
+                  </div>
+                  <div class="read-item">
+                    <span class="lang-ja">監査人（IAS 12例外の監査対応）</span>
+                    <span class="lang-en">Auditor handling IAS 12 exception</span>
+                  </div>
+                  <div class="read-item">
+                    <span class="lang-ja">ERP・税務システム導入検討者</span>
+                    <span class="lang-en">Evaluating ERP / tax system options</span>
+                  </div>
+                </div>
+                <div>
+                  <div class="read-col-label read-label-no">
+                    <span class="lang-ja">▷ スキップ可能な方</span>
+                    <span class="lang-en">▷ You can skip if</span>
+                  </div>
+                  <div class="skip-item">
+                    <span class="lang-ja">売上高750百万ユーロ未満の企業担当</span>
+                    <span class="lang-en">Below €750M revenue threshold</span>
+                  </div>
+                  <div class="skip-item">
+                    <span class="lang-ja">純粋に国内のみで事業を行う会社</span>
+                    <span class="lang-en">Purely domestic-only operations</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </section>
+
+          <!-- ===== 本文セクション ===== -->
+
+          <h2>
+            <span class="lang-ja">1. Pillar 2の全体像 — IIR・UTPR・QDMTTの役割分担</span>
+            <span class="lang-en">1. Pillar 2 Architecture — How IIR, UTPR, and QDMTT Fit Together</span>
+          </h2>
+
+          <p>
+            <span class="lang-ja"><strong>[公式]</strong> OECDのBEPS Pillar 2は、連結売上高750百万ユーロ超の多国籍企業グループを対象に、各国・地域ごとに実効税率15%（GloBE税率）を下回る場合に「補足税（Top-up Tax）」を課す仕組みだ。補足税の徴収には3つのメカニズムが用意されており、それぞれ優先順位が定められている。</span>
+            <span class="lang-en"><strong>[Official]</strong> The OECD's BEPS Pillar 2 imposes a top-up tax on multinational groups with consolidated revenue above €750M whenever the effective tax rate in a jurisdiction falls below 15% (the GloBE rate). Three collection mechanisms exist, each with defined priority.</span>
+          </p>
+
+          <div class="data-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th><span class="lang-ja">メカニズム</span><span class="lang-en">Mechanism</span></th>
+                  <th><span class="lang-ja">略称</span><span class="lang-en">Abbrev.</span></th>
+                  <th><span class="lang-ja">課税主体</span><span class="lang-en">Taxing Party</span></th>
+                  <th><span class="lang-ja">優先順位</span><span class="lang-en">Priority</span></th>
+                  <th><span class="lang-ja">日本の対応</span><span class="lang-en">Japan Status</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="lang-ja">適格国内最低補足税</span><span class="lang-en">Qualified Domestic Minimum Top-up Tax</span></td>
+                  <td class="mono">QDMTT</td>
+                  <td><span class="lang-ja">子会社所在地国</span><span class="lang-en">Subsidiary's jurisdiction</span></td>
+                  <td class="accent"><span class="lang-ja">第1位</span><span class="lang-en">1st</span></td>
+                  <td class="accent"><span class="lang-ja">2024年4月〜 適用</span><span class="lang-en">Applied from Apr 2024</span></td>
+                </tr>
+                <tr>
+                  <td><span class="lang-ja">所得合算ルール</span><span class="lang-en">Income Inclusion Rule</span></td>
+                  <td class="mono">IIR</td>
+                  <td><span class="lang-ja">親会社所在地国</span><span class="lang-en">Parent's jurisdiction</span></td>
+                  <td class="accent"><span class="lang-ja">第2位</span><span class="lang-en">2nd</span></td>
+                  <td class="accent"><span class="lang-ja">2024年4月〜 適用</span><span class="lang-en">Applied from Apr 2024</span></td>
+                </tr>
+                <tr>
+                  <td><span class="lang-ja">軽課税利益ルール</span><span class="lang-en">Undertaxed Profits Rule</span></td>
+                  <td class="mono">UTPR</td>
+                  <td><span class="lang-ja">グループ他構成会社所在地国</span><span class="lang-en">Other group members' jurisdictions</span></td>
+                  <td class="warm"><span class="lang-ja">第3位（補完）</span><span class="lang-en">3rd (backstop)</span></td>
+                  <td><span class="lang-ja">法整備済み（主機能はQDMTT/IIR）</span><span class="lang-en">Enacted (backstop role)</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>
+            <span class="lang-ja">日本のように高税率の国にある親会社・子会社については、QDMTTで自国の補足税を先取りすることで、IIR・UTTPRによる他国からの課税を排除できる。実務上はQDMTTが「守り」として機能し、自国での課税を確保することが第一の対応策となる。</span>
+            <span class="lang-en">For parent and subsidiary companies in high-tax jurisdictions like Japan, enacting QDMTT allows the domestic jurisdiction to collect the top-up first, preempting IIR or UTPR charges from other countries. In practice, QDMTT serves as a defensive tool to ensure domestic collection comes first.</span>
+          </p>
+
+          <h2>
+            <span class="lang-ja">2. GloBE ETR計算の実務的難所</span>
+            <span class="lang-en">2. Practical Challenges in Computing GloBE ETR</span>
+          </h2>
+
+          <h3>
+            <span class="lang-ja">計算フローの概要</span>
+            <span class="lang-en">Overview of the Computation Flow</span>
+          </h3>
+          <p>
+            <span class="lang-ja"><strong>[公式]</strong> GloBE ETR = 対象税金（Covered Taxes） ÷ GloBE純所得（Net GloBE Income）。単純な式だが、分子・分母それぞれに多数の調整が必要だ。対象税金は財務会計上の当期税金費用をベースに、Pillar 2が対象としない税目（繰延税金の一部、罰科金的税金等）を除外・調整する。GloBE所得は財務会計上の税引前利益を出発点に、配当除外・株式評価損益除外等のGloBE調整を加える。</span>
+            <span class="lang-en"><strong>[Official]</strong> GloBE ETR = Covered Taxes ÷ Net GloBE Income. The formula is straightforward but both numerator and denominator require extensive adjustments. Covered Taxes start from accounting current tax expense and exclude/adjust items not eligible under Pillar 2 (certain deferred taxes, penalties, etc.). GloBE income starts from pre-tax accounting profit with GloBE adjustments including dividend exclusions and equity gain/loss exclusions.</span>
+          </p>
+
+          <div class="chart-wrap">
+            <div class="chart-title">
+              <span class="lang-ja">GloBE ETR計算における主要調整項目</span>
+              <span class="lang-en">Key Adjustments in GloBE ETR Computation</span>
+            </div>
+            <svg viewBox="0 0 560 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:560px;display:block;overflow:visible;">
+              <!-- 分子側 -->
+              <text x="10" y="22" font-size="10" fill="#1A6EB0" font-family="'JetBrains Mono',monospace" font-weight="500">COVERED TAXES（分子）</text>
+              <rect x="10" y="30" width="240" height="22" fill="#E4EFF8"/>
+              <text x="18" y="45" font-size="9.5" fill="#2A2C3E" font-family="'Inter',sans-serif">財務会計上の当期税金費用</text>
+              <text x="256" y="45" font-size="11" fill="#565C70" font-family="'Inter',sans-serif">＋</text>
+              <rect x="10" y="58" width="240" height="22" fill="#F0EFEB"/>
+              <text x="18" y="73" font-size="9.5" fill="#2A2C3E" font-family="'Inter',sans-serif">繰延税金（GloBE対象分）の調整</text>
+              <text x="256" y="73" font-size="11" fill="#565C70" font-family="'Inter',sans-serif">－</text>
+              <rect x="10" y="86" width="240" height="22" fill="#F0EFEB"/>
+              <text x="18" y="101" font-size="9.5" fill="#2A2C3E" font-family="'Inter',sans-serif">対象外税金（罰科金的税金等）</text>
+
+              <!-- 区切り線 -->
+              <line x1="10" y1="125" x2="250" y2="125" stroke="#D4D2CC" stroke-width="1"/>
+              <text x="18" y="140" font-size="9.5" fill="#1A6EB0" font-family="'JetBrains Mono',monospace" font-weight="500">= Covered Taxes</text>
+
+              <!-- 分母側 -->
+              <text x="290" y="22" font-size="10" fill="#D4A010" font-family="'JetBrains Mono',monospace" font-weight="500">GLOBE INCOME（分母）</text>
+              <rect x="290" y="30" width="240" height="22" fill="#FDF8EC" style="border:1px solid #E8D88A;"/>
+              <text x="298" y="45" font-size="9.5" fill="#2A2C3E" font-family="'Inter',sans-serif">財務会計上の税引前利益</text>
+              <text x="536" y="45" font-size="11" fill="#565C70" font-family="'Inter',sans-serif">－</text>
+              <rect x="290" y="58" width="240" height="22" fill="#F0EFEB"/>
+              <text x="298" y="73" font-size="9.5" fill="#2A2C3E" font-family="'Inter',sans-serif">配当・株式評価損益除外</text>
+              <text x="536" y="73" font-size="11" fill="#565C70" font-family="'Inter',sans-serif">－</text>
+              <rect x="290" y="86" width="240" height="22" fill="#F0EFEB"/>
+              <text x="298" y="101" font-size="9.5" fill="#2A2C3E" font-family="'Inter',sans-serif">SBIE控除（人件費・有形固定資産）</text>
+
+              <!-- 区切り線 -->
+              <line x1="290" y1="125" x2="530" y2="125" stroke="#D4D2CC" stroke-width="1"/>
+              <text x="298" y="140" font-size="9.5" fill="#D4A010" font-family="'JetBrains Mono',monospace" font-weight="500">= Net GloBE Income</text>
+
+              <!-- ETR -->
+              <text x="10" y="175" font-size="11" fill="#565C70" font-family="'Inter',sans-serif">
+                <tspan font-family="'JetBrains Mono',monospace" font-size="10">GloBE ETR</tspan>
+                <tspan> = Covered Taxes ÷ Net GloBE Income → 15%未満なら補足税が発生</tspan>
+              </text>
+            </svg>
+            <div class="chart-source">
+              <span class="lang-ja">出所: OECD「GloBE Model Rules」(2021)・国税庁「グローバルミニマム課税」を基にdonato作成</span>
+              <span class="lang-en">Source: OECD GloBE Model Rules (2021), NTA Global Minimum Tax guidance — donato</span>
+            </div>
+          </div>
+
+          <h3>
+            <span class="lang-ja">実務上の5つの難所</span>
+            <span class="lang-en">Five Practical Pain Points</span>
+          </h3>
+
+          <div class="data-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th><span class="lang-ja">難所</span><span class="lang-en">Challenge</span></th>
+                  <th><span class="lang-ja">内容</span><span class="lang-en">Details</span></th>
+                  <th><span class="lang-ja">対応</span><span class="lang-en">Approach</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="lang-ja">繰延税金の分類</span><span class="lang-en">Deferred tax classification</span></td>
+                  <td><span class="lang-ja">GloBE対象の繰延税金と対象外を区分する必要。DTA/DTLの再分類作業が膨大</span><span class="lang-en">Must distinguish covered vs. excluded deferred taxes — reclassifying DTA/DTL is labor-intensive</span></td>
+                  <td class="accent"><span class="lang-ja">IAS 12例外適用で一時緩和可</span><span class="lang-en">IAS 12 exception provides relief</span></td>
+                </tr>
+                <tr>
+                  <td><span class="lang-ja">現地GAAP→IFRS調整</span><span class="lang-en">Local GAAP to IFRS adjustment</span></td>
+                  <td><span class="lang-ja">外国子会社が現地GAAPで作成している場合、GloBE所得の基礎をIFRS/US GAAPに調整する必要</span><span class="lang-en">Foreign subsidiaries on local GAAP must adjust GloBE income base to IFRS/US GAAP</span></td>
+                  <td class="warm"><span class="lang-ja">セーフハーバーで代替可能な場合あり</span><span class="lang-en">Safe Harbour may eliminate need</span></td>
+                </tr>
+                <tr>
+                  <td><span class="lang-ja">SBIE（物質的活動除外）の計算</span><span class="lang-en">SBIE computation</span></td>
+                  <td><span class="lang-ja">人件費の5%・有形固定資産帳簿価額の5%（逓減あり）を所得から除外。資産・人員データの国別集計が必要</span><span class="lang-en">5% of payroll + 5% of tangible assets (declining rates) excluded from income. Requires country-level asset and headcount data</span></td>
+                  <td><span class="lang-ja">HRとFinanceの連携が必須</span><span class="lang-en">HR-Finance collaboration required</span></td>
+                </tr>
+                <tr>
+                  <td><span class="lang-ja">CbCRデータとのマッピング</span><span class="lang-en">CbCR data mapping</span></td>
+                  <td><span class="lang-ja">セーフハーバー適用判定のためCbCRデータを活用するが、GloBE計算と会計単位・定義が異なる</span><span class="lang-en">CbCR data used for Safe Harbour testing but unit of account and definitions differ from GloBE</span></td>
+                  <td><span class="lang-ja">差異の把握と文書化が重要</span><span class="lang-en">Mapping differences must be documented</span></td>
+                </tr>
+                <tr>
+                  <td><span class="lang-ja">タイムライン（申告期限）</span><span class="lang-en">Timeline and filing deadlines</span></td>
+                  <td><span class="lang-ja">日本では事業年度終了後1年以内の申告が原則。GloBE情報申告（GIR）は15か月（移行期間は18か月）</span><span class="lang-en">Japan: tax return within 12 months of year-end. GloBE Information Return (GIR): 15 months (18 months transitional)</span></td>
+                  <td class="warm"><span class="lang-ja">初年度は18か月の猶予を活用</span><span class="lang-en">Use 18-month transitional window</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2>
+            <span class="lang-ja">3. IAS 12の2023年改訂 — 繰延税金処理の一時的例外</span>
+            <span class="lang-en">3. IAS 12 (2023 Amendment) — Temporary Exception for Deferred Taxes</span>
+          </h2>
+
+          <p>
+            <span class="lang-ja"><strong>[公式]</strong> IASBは2023年5月に「国際税務改革——Pillar 2モデルルール（IAS 12の改訂）」を公表し、Pillar 2に係る繰延税金資産・負債の認識について強制的な一時的例外を設けた（即時適用、遡及適用不要）。この例外の趣旨は、Pillar 2の複雑なGloBE計算と現行の繰延税金会計の相互作用が財務諸表利用者にとって混乱を招くため、制度の定着まで一時的に例外を認めるというものだ。</span>
+            <span class="lang-en"><strong>[Official]</strong> In May 2023, IASB published "International Tax Reform — Pillar Two Model Rules (Amendments to IAS 12)," introducing a mandatory temporary exception from recognizing deferred tax assets and liabilities arising from Pillar 2 legislation (effective immediately, no retrospective application required). The rationale: the interaction between Pillar 2's complex GloBE computations and standard deferred tax accounting would create more confusion than clarity for financial statement users.</span>
+          </p>
+
+          <div class="pull-quote">
+            <p>
+              <span class="lang-ja">「IAS 12の一時的例外を選択しても、開示義務は残る。Pillar 2の概算税費用を注記しない財務諸表は不十分だ。」</span>
+              <span class="lang-en">"Electing the IAS 12 temporary exception does not eliminate disclosure. Financial statements without an estimated Pillar 2 tax charge are incomplete."</span>
+            </p>
+            <footer>— <cite>IASB, "International Tax Reform — Pillar Two Model Rules" (May 2023)</cite></footer>
+          </div>
+
+          <h3>
+            <span class="lang-ja">開示要件（例外適用後も必要）</span>
+            <span class="lang-en">Disclosure Requirements (Still Required After Exception)</span>
+          </h3>
+          <ul>
+            <li>
+              <span class="lang-ja"><strong>当期の概算影響</strong>: Pillar 2法令が制定・実質的に制定された国に係る当期の税金費用（収益）の概算額</span>
+              <span class="lang-en"><strong>Current period estimates</strong>: Estimated current-period tax expense (income) for jurisdictions where Pillar 2 legislation is enacted or substantively enacted</span>
+            </li>
+            <li>
+              <span class="lang-ja"><strong>定性的情報</strong>: 一時的例外を適用している旨、Pillar 2法令への重要な暴露（エクスポージャー）があると判断した根拠</span>
+              <span class="lang-en"><strong>Qualitative information</strong>: Disclosure that the temporary exception is applied, and the basis for concluding that material Pillar 2 exposure exists</span>
+            </li>
+            <li>
+              <span class="lang-ja"><strong>移行期間終了後</strong>: 一時的例外が終了した後は、通常のIAS 12に従いGloBE繰延税金を認識・測定する必要が生じる可能性がある（IASBは今後の対応を検討中）</span>
+              <span class="lang-en"><strong>After the transition</strong>: Once the exception expires, standard IAS 12 deferred tax recognition/measurement for GloBE may be required (IASB is studying longer-term treatment)</span>
+            </li>
+          </ul>
+
+          <h2>
+            <span class="lang-ja">4. Safe Harbour活用 — 過渡的CbCRセーフハーバーの3テスト</span>
+            <span class="lang-en">4. Using Safe Harbours — The Three Tests of the Transitional CbCR Safe Harbour</span>
+          </h2>
+
+          <p>
+            <span class="lang-ja"><strong>[公式]</strong> OECDが2022年12月に公表した「過渡的CbCRセーフハーバー」は、CbCR（国別報告書）のデータを使って各国・地域のPillar 2補足税がゼロ（または無視できる水準）であると推定できる場合に、フルGloBE計算を免除するものだ。以下の3つのテストのいずれか1つを充足すれば当該国・地域のGloBE計算が不要になる。</span>
+            <span class="lang-en"><strong>[Official]</strong> The Transitional CbCR Safe Harbour (published December 2022) allows groups to substitute CbCR data for full GloBE computation when it is reasonable to conclude that top-up tax would be zero or immaterial. Any one of three tests suffices to exempt a jurisdiction from full GloBE computation.</span>
+          </p>
+
+          <div class="data-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th><span class="lang-ja">テスト</span><span class="lang-en">Test</span></th>
+                  <th><span class="lang-ja">条件</span><span class="lang-en">Condition</span></th>
+                  <th><span class="lang-ja">適用局面</span><span class="lang-en">Best Use Case</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="accent"><span class="lang-ja">① 少額テスト</span><span class="lang-en">① De Minimis Test</span></td>
+                  <td><span class="lang-ja">CbCR上の収益 ＜ 1,000万ユーロ かつ 税引前利益 ＜ 100万ユーロ</span><span class="lang-en">CbCR revenue &lt; €10M AND pre-tax profit &lt; €1M</span></td>
+                  <td><span class="lang-ja">小規模な子会社・休眠会社</span><span class="lang-en">Small / dormant subsidiaries</span></td>
+                </tr>
+                <tr>
+                  <td class="accent"><span class="lang-ja">② 簡易ETRテスト</span><span class="lang-en">② Simplified ETR Test</span></td>
+                  <td><span class="lang-ja">CbCR税金／税引前利益 ≥ 15%（2024-2025）、16%（2026）、17%（2027以降）</span><span class="lang-en">CbCR taxes / pre-tax income ≥ 15% (2024-25), 16% (2026), 17% (2027+)</span></td>
+                  <td><span class="lang-ja">課税率が高い国にある子会社</span><span class="lang-en">Subsidiaries in high-tax jurisdictions</span></td>
+                </tr>
+                <tr>
+                  <td class="accent"><span class="lang-ja">③ ルーティン利益テスト</span><span class="lang-en">③ Routine Profits Test</span></td>
+                  <td><span class="lang-ja">CbCR税引前利益 ≤ SBIE控除相当額（人件費5%＋有形固定資産5%）</span><span class="lang-en">CbCR pre-tax income ≤ SBIE deduction amount (5% payroll + 5% tangible assets)</span></td>
+                  <td><span class="lang-ja">労働集約型・設備集約型事業</span><span class="lang-en">Labor- or asset-intensive subsidiaries</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>
+            <span class="lang-ja"><strong>[留意点]</strong> 過渡的CbCRセーフハーバーの適用期間は現時点では移行期間に限定されており、将来的には恒久的セーフハーバーへの移行が想定されているが、OECDの最終的な対応は未定だ。また、CbCRデータとGloBEデータの間に重要な差異がある場合（例：重大な会計上の組換えがある場合）はセーフハーバーが適用できないケースもある。</span>
+            <span class="lang-en"><strong>[Caveat]</strong> The Transitional CbCR Safe Harbour is currently limited to the transition period; migration to a permanent safe harbour is anticipated but OECD's final approach is undecided. Where material differences exist between CbCR and GloBE data (e.g., significant accounting re-characterizations), the safe harbour may not apply.</span>
+          </p>
+
+          <h2>
+            <span class="lang-ja">5. 日本企業の実務対応チェックリスト2026</span>
+            <span class="lang-en">5. Japan Implementation Checklist 2026</span>
+          </h2>
+
+          <h3>
+            <span class="lang-ja">フェーズ1 — スコーピングと影響評価</span>
+            <span class="lang-en">Phase 1 — Scoping and Impact Assessment</span>
+          </h3>
+          <ol>
+            <li>
+              <span class="lang-ja"><strong>対象グループの確認</strong> — 前々事業年度の連結売上高が750百万ユーロ以上か確認。M&A等で売上高が変動した場合の判定ルールにも注意。</span>
+              <span class="lang-en"><strong>Confirm group scope</strong> — Verify consolidated revenue exceeds €750M for the two preceding fiscal years. Note special rules for M&amp;A-related revenue changes.</span>
+            </li>
+            <li>
+              <span class="lang-ja"><strong>国・地域ごとのETRマッピング</strong> — 既存のCbCRデータを使って各国の簡易ETRを試算し、15%を大幅に上回る国ではセーフハーバー適用の優先度を確認。</span>
+              <span class="lang-en"><strong>Map ETR by jurisdiction</strong> — Use existing CbCR data to estimate simplified ETR per country. For jurisdictions well above 15%, assess Safe Harbour priority.</span>
+            </li>
+            <li>
+              <span class="lang-ja"><strong>リスク高国の特定</strong> — アイルランド（12.5%）・ハンガリー（9%）・カリブ諸国等の低税率国に子会社を持つ場合、フルGloBE計算が必要になる可能性が高い。</span>
+              <span class="lang-en"><strong>Identify high-risk jurisdictions</strong> — Subsidiaries in Ireland (12.5%), Hungary (9%), or Caribbean jurisdictions are most likely to require full GloBE computation.</span>
+            </li>
+          </ol>
+
+          <h3>
+            <span class="lang-ja">フェーズ2 — データ収集と計算インフラ整備</span>
+            <span class="lang-en">Phase 2 — Data Collection and Computation Infrastructure</span>
+          </h3>
+          <ol>
+            <li>
+              <span class="lang-ja"><strong>GloBEデータ要件の洗い出し</strong> — Covered Taxes・GloBE所得・SBIE計算に必要なデータをリストアップし、現行の会計システム出力で賄えるかを確認。</span>
+              <span class="lang-en"><strong>Identify GloBE data requirements</strong> — List data needed for Covered Taxes, GloBE income, and SBIE; confirm whether current accounting system outputs can satisfy them.</span>
+            </li>
+            <li>
+              <span class="lang-ja"><strong>ERP対応 vs. 専用ツール</strong> — SAP・Oracleの最新GloBEモジュール、Thomson Reuters ONESOURCE、Corptaxの専用Pillar 2モジュール等を比較検討。グループ規模・複雑性に応じて選択。</span>
+              <span class="lang-en"><strong>ERP adaptation vs. specialized tools</strong> — Evaluate SAP/Oracle GloBE modules, Thomson Reuters ONESOURCE, Corptax Pillar 2 modules. Select based on group size and complexity.</span>
+            </li>
+            <li>
+              <span class="lang-ja"><strong>人員・外部アドバイザー体制</strong> — グループ内の税務・経理・ITの横断チームを組成。Big4等の外部アドバイザーをいつどの範囲で使うかを予算とともに決定。</span>
+              <span class="lang-en"><strong>Staffing and external advisors</strong> — Form cross-functional team spanning tax, finance, and IT. Decide scope and budget for Big Four or other external advisors.</span>
+            </li>
+          </ol>
+
+          <h3>
+            <span class="lang-ja">フェーズ3 — 申告・開示対応</span>
+            <span class="lang-en">Phase 3 — Filing and Disclosure</span>
+          </h3>
+          <ol>
+            <li>
+              <span class="lang-ja"><strong>GloBE情報申告（GIR）の準備</strong> — 事業年度終了後15か月以内（初年度は18か月）に各国税務当局に提出するGIRの準備。日本では国税庁のフォーマットに従う。</span>
+              <span class="lang-en"><strong>GloBE Information Return (GIR) preparation</strong> — File GIR with tax authorities within 15 months of year-end (18 months in the first year). Follow NTA format for Japan filing.</span>
+            </li>
+            <li>
+              <span class="lang-ja"><strong>財務諸表注記の整備</strong> — IAS 12一時的例外の選択を明記し、Pillar 2の当期税費用の概算額・重要なエクスポージャーを注記。監査人との事前調整を早期に実施。</span>
+              <span class="lang-en"><strong>Financial statement disclosure</strong> — Disclose election of IAS 12 temporary exception, estimated current-period Pillar 2 tax expense, and material exposures. Align with auditors early.</span>
+            </li>
+            <li>
+              <span class="lang-ja"><strong>来期に向けた継続的モニタリング体制</strong> — 各国の税制改正・Pillar 2発効状況・OECDからの追加ガイダンスを継続的に追跡。セーフハーバーの適用可否も毎年度更新。</span>
+              <span class="lang-en"><strong>Ongoing monitoring for future periods</strong> — Track jurisdictional tax reform, Pillar 2 enactment status, and OECD guidance updates. Reassess Safe Harbour eligibility annually.</span>
+            </li>
+          </ol>
+
+          <h2 style="margin-top:3em;">
+            <span class="lang-ja">出典</span>
+            <span class="lang-en">Sources</span>
+          </h2>
+          <ul class="source-list">
+            <li><a href="https://www.oecd.org/tax/beps/pillar-two-model-rules/" target="_blank">Tax Challenges Arising from the Digitalisation of the Economy — Global Anti-Base Erosion Model Rules (Pillar Two)</a><span class="source-tag">[公式] OECD (2021)</span></li>
+            <li><a href="https://www.nta.go.jp/taxes/shiraberu/zeimokubetsu/hojin/global-minimum-tax/index.htm" target="_blank">グローバルミニマム課税について</a><span class="source-tag">[公式] 国税庁</span></li>
+            <li><a href="https://www.mof.go.jp/tax_policy/summary/international/beps/index.html" target="_blank">BEPSプロジェクト（税源浸食と利益移転）</a><span class="source-tag">[公式] 財務省</span></li>
+            <li><a href="https://www.ifrs.org/news-and-events/news/2023/05/iasb-amends-ias-12-to-provide-temporary-relief-from-accounting-for-deferred-taxes/" target="_blank">IASB amends IAS 12 to provide temporary relief from accounting for deferred taxes</a><span class="source-tag">[公式] IASB (2023年5月)</span></li>
+            <li><a href="https://www.oecd.org/tax/beps/agreed-administrative-guidance-for-the-pillar-two-gle-rules.htm" target="_blank">Agreed Administrative Guidance for the Pillar Two GloBE Rules</a><span class="source-tag">[公式] OECD</span></li>
+          </ul>
+
+        </article>
+
+        <!-- 4. スティッキーサイドバー -->
+        <aside class="article-sidebar">
+
+          <div class="sidebar-card">
+            <div class="section-label">
+              <span class="lang-ja">Key Facts</span>
+              <span class="lang-en">Key Facts</span>
+            </div>
+            <div class="keyfacts-grid">
+              <div class="fact-card highlight">
+                <div class="fact-value">15%</div>
+                <div class="fact-desc">
+                  <span class="lang-ja">GloBEグローバル最低実効税率</span>
+                  <span class="lang-en">GloBE global minimum ETR</span>
+                </div>
+              </div>
+              <div class="fact-card">
+                <div class="fact-value">€750M</div>
+                <div class="fact-desc">
+                  <span class="lang-ja">対象グループの連結売上高閾値</span>
+                  <span class="lang-en">Revenue threshold for in-scope groups</span>
+                </div>
+              </div>
+              <div class="fact-card">
+                <div class="fact-value">2024年</div>
+                <div class="fact-desc">
+                  <span class="lang-ja">日本QDMTT・IIR発効（令和5年改正）</span>
+                  <span class="lang-en">Japan QDMTT + IIR effective (FY2024)</span>
+                </div>
+              </div>
+              <div class="fact-card">
+                <div class="fact-value">140+</div>
+                <div class="fact-desc">
+                  <span class="lang-ja">Pillar 2合意国・地域数</span>
+                  <span class="lang-en">Jurisdictions agreed to Pillar 2</span>
+                </div>
+              </div>
+              <div class="fact-card">
+                <div class="fact-value">18M</div>
+                <div class="fact-desc">
+                  <span class="lang-ja">初年度GIR申告猶予期間（18か月）</span>
+                  <span class="lang-en">Transitional GIR filing window (18 months)</span>
+                </div>
+              </div>
+              <div class="fact-card highlight">
+                <div class="fact-value">3テスト</div>
+                <div class="fact-desc">
+                  <span class="lang-ja">過渡的CbCRセーフハーバー: 少額・簡易ETR・ルーティン利益</span>
+                  <span class="lang-en">Transitional Safe Harbour: de minimis, simplified ETR, routine profits</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sidebar-card">
+            <div class="section-label">
+              <span class="lang-ja">注目ポイント</span>
+              <span class="lang-en">Key Highlights</span>
+            </div>
+            <ol class="highlights-list">
+              <li class="highlight-item">
+                <span class="hl-num">01</span>
+                <span class="hl-text">
+                  <span class="lang-ja">QDMTTが第1優先 — 自国での先取り課税でIIR/UTTPRによる外国からの課税を排除できる</span>
+                  <span class="lang-en">QDMTT has first priority — domestic collection preempts foreign IIR/UTPR charges</span>
+                </span>
+              </li>
+              <li class="highlight-item">
+                <span class="hl-num">02</span>
+                <span class="hl-text">
+                  <span class="lang-ja">IAS 12一時的例外は開示免除ではない — Pillar 2の当期概算税費用の注記は必須</span>
+                  <span class="lang-en">IAS 12 exception ≠ disclosure exemption — estimated current Pillar 2 tax must still be disclosed</span>
+                </span>
+              </li>
+              <li class="highlight-item">
+                <span class="hl-num">03</span>
+                <span class="hl-text">
+                  <span class="lang-ja">セーフハーバーを先に当てはめよ — 3テストのいずれかで通過すればフルGloBE計算が不要</span>
+                  <span class="lang-en">Test Safe Harbours first — any one of three tests eliminates the need for full GloBE computation</span>
+                </span>
+              </li>
+              <li class="highlight-item">
+                <span class="hl-num">04</span>
+                <span class="hl-text">
+                  <span class="lang-ja">GloBE計算は税務部門単独で完結しない — 経理・IT・HRの横断プロジェクト体制が必要</span>
+                  <span class="lang-en">GloBE computation cannot be siloed in tax — cross-functional project governance is essential</span>
+                </span>
+              </li>
+              <li class="highlight-item">
+                <span class="hl-num">05</span>
+                <span class="hl-text">
+                  <span class="lang-ja">低税率国のリスクを優先対処 — アイルランド・ハンガリー等の子会社から着手するのが効率的</span>
+                  <span class="lang-en">Prioritize low-tax jurisdictions — starting with Ireland, Hungary, etc. is most efficient</span>
+                </span>
+              </li>
+            </ol>
+          </div>
+
+          <div class="sidebar-card">
+            <div class="section-label">
+              <span class="lang-ja">関連記事</span>
+              <span class="lang-en">Related Articles</span>
+            </div>
+            <div style="margin-top:10px;">
+              <a href="./2026-03-21-ifrs18.html" style="display:block; font-family:'Inter',sans-serif; font-size:0.78rem; color:var(--accent); text-decoration:none; line-height:1.45; padding:8px 0; border-bottom:1px solid var(--border-light);">
+                <span class="lang-ja">IFRS 18 完全解説 — 損益計算書3区分化とMPM開示</span>
+                <span class="lang-en">IFRS 18 Explained — Three-Category P&amp;L and MPM Disclosures</span>
+              </a>
+              <a href="./2026-03-21-career.html" style="display:block; font-family:'Inter',sans-serif; font-size:0.78rem; color:var(--accent); text-decoration:none; line-height:1.45; padding:8px 0;">
+                <span class="lang-ja">AIエラのFinanceキャリア戦略</span>
+                <span class="lang-en">Finance Career Strategy in the AI Era</span>
+              </a>
+            </div>
+          </div>
+
+        </aside>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <span>© 2026 donato · <a href="../privacy.html" style="color:inherit; text-decoration:none;">Privacy Policy</a></span>
+    <span><a href="./index.html" style="color:var(--accent); text-decoration:none;">
+      <span class="lang-ja">← 記事一覧へ</span>
+      <span class="lang-en">← Back to Articles</span>
+    </a></span>
+  </footer>
+
+  <script>
+    let currentLang = 'ja';
+    function toggleLang() {
+      currentLang = currentLang === 'ja' ? 'en' : 'ja';
+      document.querySelectorAll('.lang-ja').forEach(el => el.style.display = currentLang === 'ja' ? 'inline' : 'none');
+      document.querySelectorAll('.lang-en').forEach(el => el.style.display = currentLang === 'en' ? 'inline' : 'none');
+      document.getElementById('lang-btn').textContent = currentLang === 'ja' ? 'EN' : 'JA';
+      document.documentElement.lang = currentLang;
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.lang-en').forEach(el => el.style.display = 'none');
+    });
+  </script>
+
+</body>
+</html>

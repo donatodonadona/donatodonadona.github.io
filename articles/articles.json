@@ -1,79 +1,167 @@
 [
   {
     "date": "2026-03-22",
-    "category": "tax",
-    "genre_en": "Tax",
-    "genre_ja": "Tax",
+    "category": "ai",
+    "genre_en": "Finance & AI",
+    "genre_ja": "Finance & AI",
+    "href": "./articles/2026-03-22-ai-prompt.html",
+    "title_en": "Context Engineering in Practice — How Finance Professionals Design AI Output Quality",
+    "title_ja": "Context Engineeringの実務 — Finance Professionalが知るべきAI出力品質の設計術",
+    "summary_en": "\"Prompt engineering\" is an outdated framing. What determines AI output quality is the design of the entire context window — what goes in, what stays out, and in what order it is presented. This is Context Engineering (CE). This article systematizes the CE practice framework (RCTFC), document selection, few-shot design, and context pollution management for Finance Professionals extracting maximum value from AI in daily work.",
+    "summary_ja": "「プロンプトエンジニアリング」という言葉は古い。AIの出力品質を決めるのは、コンテキストウィンドウ全体の設計——何を入れ、何を除き、どの順で渡すか——だ。これをContext Engineering（CE）と呼ぶ。Finance Professionalが日常業務でAIから最大の価値を引き出すためのCE実践フレームワーク（RCTFC）・文書選択・few-shot設計・コンテキスト汚染の管理を体系的に示す。"
+  },
+  {
+    "date": "2026-03-22",
+    "category": "ai",
+    "genre_en": "Finance & AI",
+    "genre_ja": "Finance & AI",
+    "href": "./articles/2026-03-22-claude-code-001.html",
+    "title_en": "The Day You Graduate From the Browser — Claude Code Introduction",
+    "title_ja": "ブラウザから卒業する日 — Claude Code 入門",
+    "summary_en": "Claude Code is Anthropic's CLI-native AI agent that reads files, writes code, and controls the terminal. For Finance Professionals, it marks a fundamental break from copy-paste browser workflows — enabling direct interaction with local financial data, contracts, and reports.",
+    "summary_ja": "AnthropicのCLI型AIエージェント「Claude Code」は、ファイルを読み、コードを書き、ターミナルを操作する。Finance Professionalにとって、これはブラウザでのコピペ作業から根本的に脱却し、ローカルの財務データ・契約書・レポートと直接対話するための第一歩だ。"
+  },
+  {
+    "date": "2026-03-22",
+    "category": "ai",
+    "genre_en": "Finance & AI",
+    "genre_ja": "Finance & AI",
+    "href": "./articles/2026-03-22-cyclical.html",
+    "title_en": "Why Cyclical Companies' LTM Is a Trap— Mid-cycle Normalization and Normalized Earnings",
+    "title_ja": "シクリカル企業のLTMが罠である理由— Mid-cycle正規化とNormalized Earnings",
+    "summary_en": "LTM (Last Twelve Months) can distort EV/EBITDA from 5x to 17x for a cyclical company, depending on where in the cycle you take the snapshot. The same company at the same EV can show EBITDA 2–5x higher at the peak than at the trough. Understanding the three methods for estimating mid-cycle EBITDA — simple average, regression trend, and bottom-up normalization — is the starting point for valuing cyclical businesses rigorously.",
+    "summary_ja": "LTM（直近12ヶ月）は、シクリカル企業においてサイクルのどこを切り取るかによってEV/EBITDAを5xから17xに歪める。同一の企業、同一のEVでも、ピーク期と底値期のEBITDAは2〜5倍異なる。Mid-cycle EBITDAを推計する3つの手法（単純平均・回帰中心値・Bottom-up正規化）と業種別アプローチを理解することが、シクリカル企業バリュエーションの出発点だ。"
+  },
+  {
+    "date": "2026-03-22",
+    "category": "ai",
+    "genre_en": "Finance & AI",
+    "genre_ja": "Finance & AI",
+    "href": "./articles/2026-03-22-damodaran-ai-scenarios.html",
+    "title_en": "AI Scenarios — From Doomsday Destruction to Do-Nothing Bots",
+    "title_ja": "AIシナリオ — ドゥームズデイから無害なボットまで",
+    "summary_en": "Three years after ChatGPT's debut, a battle of AI scenarios is intensifying. Citrini's doomsday call, Citadel's rebuttal, Goldman and JPMorgan's optimism—all share one critical flaw: no probabilities. Damodaran uses his 3P Test (Possible / Plausible / Probable) to build a careful case for what he sees as the most likely path of AI disruption.",
+    "summary_ja": "ChatGPT登場から3年、AIが経済・市場に与える影響をめぐるシナリオ合戦が激化している。Citriniのドゥームズデイ予測、Citadelの反論、Goldman・JPMorganの楽観論——すべてに共通する欠陥は「確率がない」ことだ。Damodaranは3Pテスト（Possible / Plausible / Probable）を使い、最も蓋然性の高いシナリオを丁寧に構築する。"
+  },
+  {
+    "date": "2026-03-22",
+    "category": "ai",
+    "genre_en": "Finance & AI",
+    "genre_ja": "Finance & AI",
+    "href": "./articles/2026-03-22-dloc-dlom.html",
+    "title_en": "DLOC and DLOM: Theory and Practice— How to Measure the Price of Control and Liquidity",
+    "title_ja": "DLOC・DLOMの理論と実務— 支配権と流動性の価格をどう計測するか",
+    "summary_en": "In valuing private companies, minority interests, and restricted stock, the Discount for Lack of Control (DLOC) and the Discount for Lack of Marketability (DLOM) can dramatically affect the concluded value. Yet both discounts are often applied mechanically — \"20–30% by convention\" — with little scrutiny of their theoretical foundations. This article deconstructs the theory of DLOC and DLOM, with particular focus on the three option-based DLOM models (Longstaff, Chaffe, and Finnerty) and what each actually measures.",
+    "summary_ja": "非公開会社・少数持分・制限付き株式のバリュエーションでは、支配権欠如ディスカウント（DLOC）と市場性欠如ディスカウント（DLOM）が価値を大きく左右する。しかし両ディスカウントは「経験則で20〜30%」と機械的に適用されがちで、理論的根拠が問われることは少ない。本稿では、DLOCとDLOMの理論構造を分解し、特にオプション評価法によるDLOM（Longstaff・Chaffe・Finnertyの3モデル）の仮定・計測対象・限界を比較する。"
+  },
+  {
+    "date": "2026-03-22",
+    "category": "ai",
+    "genre_en": "Finance & AI",
+    "genre_ja": "Finance & AI",
+    "href": "./articles/2026-03-22-ma-process.html",
+    "title_en": "M&A Process × AI — Making AI Your Edge from DD to Closing",
+    "title_ja": "M&Aプロセス × AI実務 — DDからクロージングまでAIを武器にする",
+    "summary_en": "M&A spans a full process — deal sourcing, financial and legal due diligence, valuation, SPA negotiation, and PMI. At each phase, what can AI do, and what must the FA still decide? This article draws the line clearly and presents AI workflows that create real practitioner value.",
+    "summary_ja": "M&Aのフルプロセス——案件ソーシングから財務・法務DD、バリュエーション、SPA交渉、PMIまで——AIはどのフェーズでどう機能するのか。「AIに任せられること」と「FAが判断しなければならないこと」を峻別し、Finance Professionalとして実務価値のあるAI活用ワークフローを示す。"
+  },
+  {
+    "date": "2026-03-22",
+    "category": "ai",
+    "genre_en": "Finance & AI",
+    "genre_ja": "Finance & AI",
+    "href": "./articles/2026-03-22-multiples-comparability.html",
+    "title_en": "Comparability in Multiples Valuation — Adjusting for Accounting Standards to Achieve True Apple-to-Apple Analysis",
+    "title_ja": "マルチプルの比較可能性 — 会計基準の差異を調整して本当のApple to Appleを作る",
+    "summary_en": "EV/EBITDA and P/E look like universal metrics, but they are ultimately products of accounting choices. When goodwill amortization, lease accounting, development cost capitalisation, and inventory costing differ across IFRS, US GAAP, and J-GAAP, unadjusted comparisons create phantom cheapness or richness. This article dissects how accounting standard differences affect each multiple, and provides a systematic adjustment framework for practice.",
+    "summary_ja": "EV/EBITDAやP/Eは「同じ」指標に見えて、実は会計処理の産物に過ぎない。IFRS・US GAAP・J-GAAPでのれん償却・リース会計・開発費資産計上・LIFOが異なる扱いを受けるとき、無調整の比較は「見かけ上の割安/割高」を生み出す。本稿では会計基準の差異がどのマルチプルにどう影響するかを解剖し、実務で使える調整の手順を体系化する。"
+  },
+  {
+    "date": "2026-03-22",
+    "category": "ai",
+    "genre_en": "Finance & AI",
+    "genre_ja": "Finance & AI",
     "href": "./articles/2026-03-22-pillar2.html",
     "title_en": "Pillar 2 Global Minimum Tax — Japan Implementation Checklist 2026",
     "title_ja": "Pillar 2グローバルミニマム税 — 日本企業の実務対応チェックリスト2026",
-    "summary_en": "Japan's 15% global minimum tax on MNCs with €750M+ revenue is in force from fiscal 2024. IIR/UTPR/QDMTT priority hierarchy, GloBE ETR computation challenges, the IAS 12 (2023 amendment) temporary exception, and how to use the Transitional CbCR Safe Harbour to cut compliance costs.",
-    "summary_ja": "連結売上750百万ユーロ超の多国籍企業に15%のグローバルミニマム課税が2024年度から発効。QDMTTとIIRの優先順位、GloBE ETR計算の難所、IAS 12 2023年改訂による一時的例外、過渡的CbCRセーフハーバーの3テストを実務チェックリスト形式で完全解説。"
+    "summary_en": "Japan's 15% global minimum tax on multinationals with revenue above €750M has been in force since fiscal 2024. This article covers the IIR/UTPR/QDMTT priority hierarchy, the practical challenges in GloBE ETR computation, the IAS 12 (2023 amendment) deferred tax exception, and how to leverage Safe Harbours to reduce compliance burden.",
+    "summary_ja": "連結売上高750百万ユーロ超の多国籍企業に実効税率15%のグローバルミニマム課税が日本でも2024年度から発効した。IIR・UTPR・QDMTTの役割分担、GloBE ETR計算の実務的難所、IAS 12 2023年改訂による繰延税金処理の特例、そしてSafe Harbour活用まで——実務担当者が今知るべき論点を一気に整理する。"
+  },
+  {
+    "date": "2026-03-22",
+    "category": "ai",
+    "genre_en": "Finance & AI",
+    "genre_ja": "Finance & AI",
+    "href": "./articles/2026-03-22-securities-law.html",
+    "title_en": "Corporate Law & FIEA × AI Practice— Decoding Disclosure Rules and Insider Trading with AI",
+    "title_ja": "企業法・金商法とAI実務— 開示規制・インサイダー取引をAIで読み解く",
+    "summary_en": "For Finance Professionals, the Financial Instruments and Exchange Act (FIEA) is unavoidable. Securities disclosure requirements, timely disclosure rules, and the insider trading regulations that make M&A and IPO work so demanding — this article explores both the regulatory depth and practical AI workflows that help practitioners navigate them.",
+    "summary_ja": "Finance Professionalにとって金融商品取引法（金商法）は避けて通れない。有価証券報告書の開示規制、適時開示、そしてM&AやIPOで最も神経を使うインサイダー取引規制——これらの法的フレームワークをAIを使って実務に活かす方法を、規制の深掘りとAI活用の両面から解説する。"
   },
   {
     "date": "2026-03-21",
-    "category": "valuation",
-    "genre_en": "Valuation Theory Lab",
-    "genre_ja": "Valuation Theory Lab",
+    "category": "ai",
+    "genre_en": "Finance & AI",
+    "genre_ja": "Finance & AI",
     "href": "./articles/2026-03-21-beta-hamada.html",
-    "title_en": "Before You Trust That Beta — Hamada Transform Assumptions and Compounding Error",
-    "title_ja": "Betaを信じる前に考えること — Hamada変換の仮定と誤差の蓄積",
-    "summary_en": "Unlevering and relevering beta is daily routine, but the Hamada equation rests on perpetual-debt and certain-tax-shield assumptions that rarely hold. At D/E=2.0, a small βU error compounds into ±1.8% of Ke. Miles-Ezzell's alternative and where errors accumulate across three stages.",
-    "summary_ja": "βのUnlever/Releverは実務の日常だが、Hamada式は永続負債・確実Tax Shieldという現実には成立しにくい仮定に依存する。D/E=2.0では小さなβU推計誤差がKeの±1.8%まで増幅される3段階の複合誤差を解説する。"
+    "title_en": "Before You Trust That Beta— Hamada Transform Assumptions and Compounding Error",
+    "title_ja": "Betaを信じる前に考えること— Hamada変換の仮定と誤差の蓄積",
+    "summary_en": "Unlevering and relevering beta is a daily routine in valuation practice. But the Hamada equation holds only under two assumptions — perpetual debt and a certain tax shield — that rarely hold in practice. Understanding the Miles-Ezzell alternative and the three stages where error compounds is the first step toward verifying beta rather than simply choosing it.",
+    "summary_ja": "βのUnlever/Releverはバリュエーション実務の日常だ。しかしHamada式が成立するのは「永続的な負債残高」と「確実なTax Shield」という、現実には成立しにくい仮定の下だ。Miles-Ezzelのより厳密な代替式を知り、3段階で誤差が蓄積するプロセスを理解することが、βを「選択する」ではなく「検証する」実務家への第一歩だ。"
   },
   {
     "date": "2026-03-21",
-    "category": "career",
-    "genre_en": "Career",
-    "genre_ja": "キャリア",
+    "category": "ai",
+    "genre_en": "Finance & AI",
+    "genre_ja": "Finance & AI",
     "href": "./articles/2026-03-21-career.html",
     "title_en": "Finance Career Strategy in the AI Era — Where Roles Survive and Where They Don't",
     "title_ja": "AIエラのFinanceキャリア戦略 — 生き残る人材と消える仕事の分岐点",
-    "summary_en": "AI displaces tasks, not whole roles. Within the same title, the gap between AI-literate and non-literate professionals is widening fast. Here is the skill stack Finance Professionals should build in 2026.",
-    "summary_ja": "AIが代替するのは「タスク」であり「職種」ではない。同一職種内でAI活用者と非活用者の格差が拡大する二極化時代に、Finance Professionalが今投資すべきスキルスタックを整理する。"
+    "summary_en": "Generative AI is fundamentally restructuring finance, accounting, and audit workflows. Routine analysis, journal entries, and report generation are being absorbed by AI — what remains is the human who critically validates AI outputs and makes judgments. Here is a clear-eyed look at which skills Finance Professionals should invest in now, and which are becoming obsolete.",
+    "summary_ja": "生成AIは財務・会計・監査の業務構造を根本から変えつつある。ルーティン分析・仕訳・報告書作成はAIに吸収され、残るのは「AIが出した答えを批判的に検証し、判断する人間」だ。2026年時点でFinance Professionalが今すぐ投資すべきスキルと、逆に時代遅れになりつつある能力を整理する。"
   },
   {
     "date": "2026-03-21",
-    "category": "accounting",
-    "genre_en": "Accounting Standards",
-    "genre_ja": "会計基準",
+    "category": "ai",
+    "genre_en": "Finance & AI",
+    "genre_ja": "Finance & AI",
     "href": "./articles/2026-03-21-ifrs18.html",
     "title_en": "IFRS 18 Explained — The Three-Category P&L and Mandatory MPM Disclosures",
     "title_ja": "IFRS 18 完全解説 — 損益計算書の3区分化と経営者業績指標の開示義務",
-    "summary_en": "IAS 1 is replaced. IFRS 18 mandates operating/investing/financing categories and subjects adjusted EBITDA to formal reconciliation requirements. Practical preparation time is 2026 alone.",
-    "summary_ja": "IAS 1を全面代替するIFRS 18が2027年1月発効。損益計算書に3区分を義務付け、調整後EBITDAなどのMPMに注記調整表を義務化。遡及適用のため準備期間は実質2026年のみ。"
+    "summary_en": "IFRS 18, finalised by the IASB in April 2024, takes effect January 1, 2027. Replacing IAS 1 in full, it mandates a three-category income statement — operating, investing, financing — and imposes formal disclosure requirements on Management Performance Measures such as adjusted EBITDA. Practical preparation time is essentially 2026 alone.",
+    "summary_ja": "IASBが2024年4月に確定・公表したIFRS 18が、2027年1月1日に発効する。IAS 1を全面代替するこの新基準は損益計算書に「営業」「投資」「財務」の3区分を義務付け、EBITDAなど経営者が独自に定義してきた指標（MPM）の開示ルールを大幅に変える。準備期間は実質2026年のみ。Finance Professionalが今すぐ理解すべき要点を整理する。"
   },
   {
     "date": "2026-03-21",
-    "category": "valuation",
-    "genre_en": "Valuation Theory Lab",
-    "genre_ja": "Valuation Theory Lab",
+    "category": "ai",
+    "genre_en": "Finance & AI",
+    "genre_ja": "Finance & AI",
     "href": "./articles/2026-03-21-wacc.html",
-    "title_en": "Can WACC Really Be Calculated? — CAPM Limitations and Alternatives",
-    "title_ja": "WACCは本当に計算できるのか — CAPM限界論と代替アプローチ",
-    "summary_en": "Ke depends on CAPM — theoretically elegant but empirically fragile. Beta varies by estimation window; ERP is disputed by over 1%. Understanding WACC's uncertainty structure is the honest practitioner's starting point.",
-    "summary_ja": "株式コスト（Ke）はCAPMに依存する。βは推計期間次第で0.3以上変動し、ERPはHistorical vs. Implied で1ポイント以上争われる。不確実性の構造を理解することが誠実な実務家の出発点だ。"
-  },
-  {
-    "date": "2026-03-20",
-    "category": "valuation",
-    "genre_en": "Valuation Theory Lab",
-    "genre_ja": "Valuation Theory Lab",
-    "href": "./articles/2026-03-20-valuation.html",
-    "title_en": "Why Terminal Value Accounts for 70–80% of DCF",
-    "title_ja": "Terminal ValueはなぜDCFの70-80%を占めるのか",
-    "summary_en": "The conditions for Gordon Growth Model validity, the ROIC–g–reinvestment triangle, and the circularity with exit multiples. Accepting it as given is surrendering scrutiny of the most critical assumption.",
-    "summary_ja": "Gordon Growth Modelの成立条件、ROIC-g-再投資率の三角形、Exit multipleとの循環性。「そういうものだ」で済ませるのは最も重要な仮定の検証を放棄することだ。"
+    "title_en": "Can WACC Really Be Calculated?— CAPM Limitations and Alternative Approaches",
+    "title_ja": "WACCは本当に計算できるのか— CAPM限界論と代替アプローチ",
+    "summary_en": "Ke in WACC depends on CAPM — theoretically elegant but empirically fragile. Beta varies by estimation window and frequency by 0.3 or more; ERP is contested by over 1 percentage point between historical and implied approaches. The sense that WACC can be \"calculated\" is a product of consistency, not precision.",
+    "summary_ja": "WACCの株式コスト（Ke）はCAPMによって計算される——その仮定は理論的に美しいが実証的には脆弱だ。β推計は推計期間・頻度次第で0.3以上変動し、ERPはDamodaran implied vs. DMS historicalで1ポイント以上争われている。WACCを「計算できる」という感覚は精度ではなく一貫性の産物だ。"
   },
   {
     "date": "2026-03-20",
     "category": "ai",
-    "genre_en": "AI Models & Tools",
-    "genre_ja": "AI Models & Tools",
+    "genre_en": "Finance & AI",
+    "genre_ja": "Finance & AI",
     "href": "./articles/2026-03-20-ai.html",
-    "title_en": "AI Model Front Report — March 2026",
+    "title_en": "AI Model Battlefront Report — March 2026",
     "title_ja": "AIモデル戦線レポート — 2026年3月",
-    "summary_en": "Claude Opus 4.6 cuts prices 67%, GPT-5.4 launches with 1M-token context, Gemini 3.1 Pro tops benchmarks. A summary of shifts that directly affect Finance Professional workflows in Feb–March.",
-    "summary_ja": "Claude Opus 4.6が▲67%値下げ、GPT-5.4が100万トークンCW対応、Gemini 3.1 Proがベンチマーク制覇。Finance Professionalのワークフローに直結する変化が相次いだ2〜3月の総括。"
+    "summary_en": "Claude Opus 4.6 slashes prices 67%, GPT-5.4 reaches 1M-token context, Gemini 3.1 Pro tops 13 of 16 benchmarks. Frontier AI performance is rapidly commoditizing — here's what changed in Feb–Mar 2026 and why it matters to Finance Professionals.",
+    "summary_ja": "Claude Opus 4.6が▲67%値下げ、GPT-5.4が100万トークンCW対応、Gemini 3.1 Proがベンチマーク制覇。フロンティア性能が急速にコモディティ化し、Finance Professionalのワークフローに直結する変化が相次いだ2〜3月の総括。"
+  },
+  {
+    "date": "2026-03-20",
+    "category": "ai",
+    "genre_en": "Finance & AI",
+    "genre_ja": "Finance & AI",
+    "href": "./articles/2026-03-20-valuation.html",
+    "title_en": "Why Terminal Value Accounts for 70–80% of DCF",
+    "title_ja": "Terminal ValueはなぜDCFの70-80%を占めるのか",
+    "summary_en": "From the arithmetic of the Sustainable Growth Model (g = ROIC × reinvestment rate) to the conditions for Gordon Growth validity, the circularity with exit multiples, and the Reverse DCF lens — this article examines why TV dominates DCF and how to stress-test the assumptions that drive it.",
+    "summary_ja": "Sustainable Growth Model（g = ROIC × 再投資率）の基礎から、Gordon Growth Modelの成立条件、Exit multipleとの循環性、そしてReverse DCFという視点まで。TVが大きいことの算術的必然と、その仮定の検証方法を論じる。"
   }
 ]

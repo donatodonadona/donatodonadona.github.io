@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Damodaranが提示するAIシナリオ分析フレームワーク。Citriniのドゥームズデイ予測からCitadelの反論まで、確率なきシナリオが無意味な理由と、3Pテスト（Possible/Plausible/Probable）によるディスラプション評価の方法論を解説する。Damodaran Watch #001。">
+  <title>AIシナリオ — ドゥームズデイから無害なボットまで | Damodaran Watch #001 | donato</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+JP:wght@300;400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../brand.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:           #F8F7F4;
+      --bg-code:      #EEECEA;
+      --bg-quote:     #EEECEA;
+      --bg-highlight: #EBF3FB;
+      --bg-subtle:    #F0EFEB;
+      --bg-card:      #F0EFEB;
+      --bg-header:    #F8F7F4;
+      --text-primary: #111320;
+      --text-body:    #2A2C3E;
+      --text-muted:   #565C70;
+      --text-light:   #888EA0;
+      --accent:       #1A6EB0;
+      --accent-warm:  #D4A010;
+      --accent-damo:  #2D9CDB;
+      --border:       #D4D2CC;
+      --border-quote: #B8B6B0;
+      --border-light: #D4D2CC;
+      --tag-bg:       #E4EFF8;
+      --tag-text:     #1A6EB0;
+      --table-stripe: #F0EFEB;
+    }
+
+    /* ===== PROGRESS BAR ===== */
+    #progress-bar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      width: 0%;
+      background: var(--accent-damo);
+      z-index: 300;
+      transition: width 0.1s linear;
+    }
+
+    body {
+      font-family: 'Noto Serif JP', Georgia, serif;
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--text-primary);
+      background: var(--bg);
+    }
+
+    /* ===== SITE HEADER ===== */
+    .site-header {
+      background: var(--bg-header);
+      border-bottom: 2px solid var(--accent-damo);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .site-header-left { display: flex; align-items: center; gap: 12px; }
+    .wordmark {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: lowercase;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+    .wordmark span { color: var(--accent-warm); }
+    .header-sep { color: var(--border-quote); font-size: 13px; }
+    .header-media {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+    }
+    .site-header-right { display: flex; align-items: center; gap: 12px; }
+    .header-back-link {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .header-back-link:hover { color: var(--accent-damo); }
+    .lang-toggle-bar {
+      display: flex;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .art-lang-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      padding: 3px 10px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .art-lang-btn.active { background: #F5C800; color: #111320; }
+    #theme-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      padding: 3px 9px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.15s;
+    }
+    #theme-btn:hover { border-color: var(--accent-damo); color: var(--accent-damo); }
+    .header-date {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-light);
+      letter-spacing: 0.08em;
+    }
+
+    /* ===== STICKY INFO BAR ===== */
+    #sticky-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg-subtle);
+      border-bottom: 1px solid var(--border-light);
+      padding: 7px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .sbar-cat {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--accent-damo);
+      letter-spacing: 0.1em;
+    }
+    .sbar-sep { color: var(--border-quote); font-size: 11px; }
+    .sbar-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+    .sbar-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      padding: 2px 8px;
+    }
+
+    /* ===== LAYOUT ===== */
+    .article-container { max-width: 1240px; margin: 0 auto; padding: 0 20px; }
+    .article-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 24px;
+    }
+    .article-body { grid-column: 2 / 10; max-width: 68ch; }
+    .article-sidebar {
+      grid-column: 10 / 13;
+      position: sticky;
+      top: 44px;
+      align-self: start;
+      max-height: calc(100vh - 56px);
+      overflow-y: auto;
+    }
+    .article-sidebar::-webkit-scrollbar { width: 4px; }
+    .article-sidebar::-webkit-scrollbar-track { background: transparent; }
+    .article-sidebar::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 2px; }
+
+    /* ===== TYPOGRAPHY ===== */
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      color: var(--accent-damo);
+    }
+    .article-headline {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(2rem, 4vw, 2.6rem);
+      font-weight: 600;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+    .article-standfirst {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      font-weight: 400;
+    }
+    .byline {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    h2 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.45rem;
+      font-weight: 600;
+      line-height: 1.25;
+      color: var(--text-primary);
+      margin: 2em 0 0.75em;
+      border-top: 1px solid var(--border);
+      padding-top: 1em;
+    }
+    h3 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin: 1.75em 0 0.5em;
+    }
+    .article-body p { margin-bottom: 1.4em; font-size: 0.97rem; line-height: 1.8; }
+    .article-body ul, .article-body ol { margin: 0 0 1.4em 1.4em; }
+    .article-body li { margin-bottom: 0.4em; font-size: 0.95rem; line-height: 1.7; }
+    strong { color: var(--text-primary); font-weight: 600; }
+
+    /* ===== EXEC SUMMARY ===== */
+    .exec-summary {
+      background: var(--bg-highlight);
+      border: 1px solid var(--border-light);
+      border-left: 4px solid var(--accent-damo);
+      padding: 24px;
+      margin: 0 0 2.5em;
+    }
+    .exec-block { margin-bottom: 20px; }
+    .exec-block:last-child { margin-bottom: 0; }
+    .exec-block + .exec-block { padding-top: 18px; border-top: 1px solid var(--border-light); }
+    .exec-tldr {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.02rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      line-height: 1.55;
+      margin-top: 8px;
+    }
+    .issues-list {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .issue-item { display: flex; gap: 10px; align-items: baseline; }
+    .issue-q {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 500;
+      color: var(--accent-damo);
+      background: var(--tag-bg);
+      padding: 1px 6px;
+      white-space: nowrap;
+    }
+    .issue-text { font-size: 0.9rem; line-height: 1.6; color: var(--text-body); }
+
+    /* ===== CALLOUT / INSIGHT ===== */
+    .insight-box {
+      background: var(--bg-quote);
+      border-left: 3px solid var(--accent-damo);
+      padding: 16px 20px;
+      margin: 1.6em 0;
+      font-size: 0.93rem;
+      line-height: 1.75;
+      color: var(--text-body);
+    }
+    .warning-box {
+      background: #FFF8E6;
+      border: 1px solid #E8C84A;
+      border-left: 4px solid var(--accent-warm);
+      padding: 16px 20px;
+      margin: 1.6em 0;
+      font-size: 0.93rem;
+      line-height: 1.75;
+    }
+
+    /* ===== TABLE ===== */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      margin: 1.6em 0;
+    }
+    .data-table th {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      border-bottom: 2px solid var(--border);
+      padding: 8px 10px;
+      text-align: left;
+    }
+    .data-table td {
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--border-light);
+      vertical-align: top;
+    }
+    .data-table tr:nth-child(even) td { background: var(--table-stripe); }
+    .data-table .accent-cell { color: var(--accent-damo); font-weight: 600; }
+    .data-table .warn-cell { color: #C07820; }
+    .data-table .ok-cell { color: #28844A; }
+
+    /* ===== 3P MATRIX ===== */
+    .scenario-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 1.4em 0;
+    }
+    .scenario-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-top: 3px solid var(--border);
+      padding: 14px;
+    }
+    .scenario-card.possible { border-top-color: #888; }
+    .scenario-card.plausible { border-top-color: var(--accent-warm); }
+    .scenario-card.probable { border-top-color: var(--accent-damo); }
+    .scenario-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      margin-bottom: 6px;
+    }
+    .scenario-card.possible .scenario-label { color: #888; }
+    .scenario-card.plausible .scenario-label { color: var(--accent-warm); }
+    .scenario-card.probable .scenario-label { color: var(--accent-damo); }
+    .scenario-desc { font-size: 0.82rem; color: var(--text-body); line-height: 1.5; }
+
+    /* ===== DISRUPTION MATRIX ===== */
+    .matrix-2x2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      margin: 1.4em 0;
+      border: 1px solid var(--border);
+    }
+    .matrix-cell {
+      padding: 16px;
+      border-right: 1px solid var(--border-light);
+      border-bottom: 1px solid var(--border-light);
+    }
+    .matrix-cell:nth-child(even) { border-right: none; }
+    .matrix-cell:nth-last-child(-n+2) { border-bottom: none; }
+    .matrix-cell-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--text-light);
+      letter-spacing: 0.08em;
+      margin-bottom: 6px;
+    }
+    .matrix-cell-title {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    .matrix-cell-desc { font-size: 0.8rem; color: var(--text-body); line-height: 1.5; }
+    .matrix-cell.highlight { background: var(--bg-highlight); }
+    .matrix-axis-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text-light);
+      letter-spacing: 0.08em;
+      text-align: center;
+      padding: 4px;
+    }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      padding: 16px;
+      margin-bottom: 16px;
+      font-size: 0.85rem;
+    }
+    .sidebar-card .section-label { margin-bottom: 12px; display: block; }
+    .key-stats { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+    .fact-card { border-left: 3px solid var(--accent-damo); padding-left: 10px; }
+    .fact-card.highlight { background: #FFF9E6; border-left-color: var(--accent-warm); padding: 8px 10px; }
+    .fact-value { font-family: 'JetBrains Mono', monospace; font-size: 1.2rem; font-weight: 600; color: var(--accent-damo); }
+    .fact-card.highlight .fact-value { color: var(--accent-warm); }
+    .fact-desc { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; line-height: 1.4; }
+    .fact-card.highlight .fact-desc { color: #A07828; }
+    .highlights-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+    .highlight-item { display: flex; gap: 8px; align-items: baseline; }
+    .hl-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text-light);
+      min-width: 20px;
+    }
+    .hl-text { font-size: 0.82rem; color: var(--text-body); line-height: 1.45; }
+    .source-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+    .source-list li { font-size: 0.8rem; }
+    .source-list a { color: var(--accent-damo); text-decoration: none; }
+    .source-list a:hover { text-decoration: underline; }
+
+    /* ===== NEXT ARTICLE ===== */
+    .next-article {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      border-top: 3px solid var(--accent-damo);
+      padding: 20px 24px;
+      margin-top: 3em;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+    }
+    .next-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text-light);
+      letter-spacing: 0.1em;
+      margin-bottom: 6px;
+    }
+    .next-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .next-arrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.4rem;
+      color: var(--accent-damo);
+    }
+
+    /* ===== BADGE ===== */
+    .badge-damodaran {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.06em;
+      padding: 2px 8px;
+      background: #E3F2FD;
+      color: #2D9CDB;
+      border-radius: 2px;
+    }
+
+    /* ===== LANG TOGGLE ===== */
+    .lang-en { display: none; }
+
+    /* ===== FOOTER ===== */
+    .site-footer {
+      border-top: 1px solid var(--border-light);
+      margin-top: 4em;
+      padding: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* ===== PRINT ===== */
+    @media print {
+      body { background: white; font-size: 11pt; }
+      .site-header, #sticky-bar, #progress-bar { display: none; }
+      .article-sidebar { position: static; max-height: none; overflow: visible; }
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+    @page { size: A4; margin: 20mm 15mm; }
+
+    /* ===== MOBILE ===== */
+    @media (max-width: 900px) {
+      .article-body { grid-column: 1 / -1; }
+      .article-sidebar { position: static; max-height: none; overflow: visible; grid-column: 1 / -1; }
+      .article-grid { display: block; }
+      .scenario-grid { grid-template-columns: 1fr; }
+      .matrix-2x2 { grid-template-columns: 1fr; }
+      #sticky-bar { flex-wrap: wrap; gap: 6px; }
+    }
+
+    body.dark {
+      --bg:           #0D1117;
+      --bg-code:      #161B22;
+      --bg-quote:     #161B22;
+      --bg-highlight: #0E1A2B;
+      --bg-subtle:    #161B22;
+      --bg-card:      #161B22;
+      --bg-header:    #0D1117;
+      --text-primary: #E4E2DC;
+      --text-body:    #C4C2BC;
+      --text-muted:   #8B93A8;
+      --text-light:   #575E70;
+      --accent:       #3A8FD0;
+      --accent-damo:  #3A9FE0;
+      --accent-warm:  #F5C800;
+      --border:       #21253A;
+      --border-quote: #2A2D3E;
+      --border-light: #21253A;
+      --tag-bg:       #0E1A2B;
+      --tag-text:     #3A8FD0;
+      --table-stripe: #161B22;
+    }
+    body.dark .warning-box { background: #1A1400; border-color: #3A2D00; }
+    body.dark .fact-card.highlight { background: #1A1600; border-color: #3A2D00; }
+    body.dark .fact-card.highlight .fact-value { color: #C4900E; }
+    body.dark .fact-card.highlight .fact-desc { color: #A07828; }
+    body.dark .next-article { background: #111320; }
+    body.dark .badge-damodaran { background: #0E1A2B; color: #3A9FE0; }
+    body.dark .scenario-card { border-color: #21253A; }
+    body.dark .matrix-cell.highlight { background: #0E1A2B; }
+  </style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<!-- 1. サイトヘッダー -->
+<header class="site-header">
+  <div class="site-header-left">
+    <a class="wordmark" href="../index.html">dona<span>to</span></a>
+    <span class="header-sep">—</span>
+    <a class="header-back-link" href="./index.html"><span class="lang-ja">記事一覧</span><span class="lang-en">Articles</span></a>
+    <span class="header-sep">—</span>
+    <span class="header-media">Damodaran Watch</span>
+  </div>
+  <div class="site-header-right">
+    <div class="lang-toggle-bar">
+      <button class="art-lang-btn active" data-lang="ja" onclick="setLang('ja')">JP</button>
+      <button class="art-lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+    </div>
+    <button id="theme-btn" onclick="toggleTheme()" title="ダーク/ライト切替">☀</button>
+    <time class="header-date">2026-03-22</time>
+  </div>
+</header>
+
+<!-- 2. スティッキー情報バー -->
+<div id="sticky-bar">
+  <span class="sbar-cat">DAMODARAN WATCH</span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-text"><span class="lang-ja">#001 · AIシナリオ · 確率なき予測は無価値</span><span class="lang-en">#001 · AI Scenarios · A Scenario Without Probabilities Is Worthless</span></span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-text">2026-03-04</span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-badge" id="reading-time-badge"><span class="lang-ja">約12分</span><span class="lang-en">~12 min</span></span>
+</div>
+
+<main style="padding: 0 0 3em;">
+  <div class="article-container">
+    <div class="article-grid">
+
+      <!-- 3. 記事本文 -->
+      <article class="article-body">
+
+        <!-- 記事ヘッダー -->
+        <div style="padding: 36px 0 24px;">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+            <span class="badge-damodaran">Damodaran Watch &nbsp;#001</span>
+            <span class="sbar-badge" id="reading-time-badge2"><span class="lang-ja">約12分</span><span class="lang-en">~12 min</span></span>
+          </div>
+          <h1 class="article-headline">
+            <span class="lang-ja">AIシナリオ — ドゥームズデイから無害なボットまで</span>
+            <span class="lang-en">AI Scenarios — From Doomsday Destruction to Do-Nothing Bots</span>
+          </h1>
+          <p class="article-standfirst">
+            <span class="lang-ja">ChatGPT登場から3年、AIが経済・市場に与える影響をめぐるシナリオ合戦が激化している。Citriniのドゥームズデイ予測、Citadelの反論、Goldman・JPMorganの楽観論——すべてに共通する欠陥は「確率がない」ことだ。Damodaranは3Pテスト（Possible / Plausible / Probable）を使い、最も蓋然性の高いシナリオを丁寧に構築する。</span>
+            <span class="lang-en">Three years after ChatGPT's debut, a battle of AI scenarios is intensifying. Citrini's doomsday call, Citadel's rebuttal, Goldman and JPMorgan's optimism—all share one critical flaw: no probabilities. Damodaran uses his 3P Test (Possible / Plausible / Probable) to build a careful case for what he sees as the most likely path of AI disruption.</span>
+          </p>
+          <div style="display:flex; gap:16px; align-items:center; border-top:1px solid var(--border-light); border-bottom:1px solid var(--border-light); padding:10px 0; flex-wrap:wrap;">
+            <span class="byline"><span class="lang-ja">原文：</span><span class="lang-en">Source: </span><a href="https://aswathdamodaran.blogspot.com/2026/03/ai-scenarios-from-economic-doomsday-to.html" target="_blank" rel="noopener" style="color:var(--accent-damo);">Aswath Damodaran — Musings on Markets</a></span>
+            <span style="color:var(--border);">|</span>
+            <time class="byline" datetime="2026-03-04"><span class="lang-ja">原文公開：2026年3月4日</span><span class="lang-en">Published: March 4, 2026</span></time>
+            <span style="color:var(--border);">|</span>
+            <span class="byline"><span class="lang-ja">AI · シナリオ分析 · ディスラプション</span><span class="lang-en">AI · Scenario Analysis · Disruption</span></span>
+          </div>
+        </div>
+
+        <!-- エグゼクティブサマリー -->
+        <section class="exec-summary">
+          <div class="exec-block">
+            <div class="section-label">TL;DR</div>
+            <p class="exec-tldr">
+              <span class="lang-ja">「確率なきシナリオは無意味だ」——Damodaranはシナリオ乱立の中心的問題をこう切り捨てる。Citriniの失業率10%超・株価40%暴落予測もCitadelの楽観論も、「起こりうる」と「確からしい」の区別なしには意思決定の道具にならない。Damodaranが提示するのは、この区別を明確にする3Pテストと、それを使って組み立てた自身の「蓋然性シナリオ」だ。</span>
+              <span class="lang-en">"A scenario without probabilities is useless"—Damodaran cuts to the heart of the scenario chaos. Whether Citrini's 10%+ unemployment / -40% market prediction or Citadel's optimism, without distinguishing "possible" from "probable," neither is a decision-making tool. Damodaran offers the 3P Test to make this distinction explicit, then builds his own probable scenario around it.</span>
+            </p>
+          </div>
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">キーポイント</span><span class="lang-en">KEY POINTS</span></div>
+            <ul class="issues-list">
+              <li class="issue-item">
+                <span class="issue-q">論点1</span>
+                <span class="issue-text"><span class="lang-ja">シナリオ分析は確率を付与して初めて機能する。「最悪シナリオ」はショック効果にしか使えない</span><span class="lang-en">Scenario analysis only works with probabilities. A "worst case" is useful only for shock value</span></span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">論点2</span>
+                <span class="issue-text"><span class="lang-ja">AIディスラプションの形態（代替 vs ツール）と速度（速 vs 遅）の組み合わせで、便益とコストの大きさが決まる</span><span class="lang-en">The magnitude of AI's benefits and costs depends on the combination of disruption form (displacement vs. tools) and speed (fast vs. slow)</span></span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">論点3</span>
+                <span class="issue-text"><span class="lang-ja">Damodaranの蓋然性シナリオ：ソフトウェア・一部金融でジョブ代替、他業種でツール提供、普及は想定より遅い</span><span class="lang-en">Damodaran's probable scenario: job displacement in software and some financial firms, tools in other industries, adoption slower than advocates claim</span></span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">論点4</span>
+                <span class="issue-text"><span class="lang-ja">AI利益の分配は不均等。AIディスラプションは過去の大型ディスラプション同様、勝者総取りの構造を強化する</span><span class="lang-en">AI's benefits will be distributed unequally. Like prior major disruptions, AI will likely intensify winner-take-all dynamics</span></span>
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- ======================================================== -->
+        <h2><span class="lang-ja">1. Citriniレポートと各社の反論</span><span class="lang-en">1. The Citrini Report and Its Rebuttals</span></h2>
+
+        <p>
+          <span class="lang-ja">2026年2月22日、マクロ・株式調査を手掛けるCitrini Researchがひとつのレポートを公開した。それは「シナリオであり予測ではない」と断りつつも、AIディスラプションが経済に深刻なダメージをもたらす筋書きを詳細に描いたものだった。2028年6月30日までに失業率が10%超え、株式市場は約40%下落——この数字は市場に波紋を広げた。</span>
+          <span class="lang-en">On February 22, 2026, Citrini Research published a report on AI. Prefaced as "a scenario, not a prediction," it nonetheless laid out a detailed pathway to economic devastation: unemployment exceeding 10% and the stock market down roughly 40% by June 30, 2028. The report sent ripples through markets.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">Citriniシナリオの特徴は、AIが「約束を果たさない」という失望ではなく、「約束を果たしすぎる」という破壊的成功を前提にしていた点だ。AIがソフトウェアにとどまらず、金融機関・銀行・コンサルティングのホワイトカラー職を広く代替し、しかもそれが急速に起きるという想定。高所得者の失業が消費を急収縮させ、デフォルトリスクが上昇し、プライベートクレジットが崩壊し、市場と経済がその痛みを価格に折り込む——という連鎖だ。</span>
+          <span class="lang-en">The distinctive feature of the Citrini scenario is that the pain comes not from AI failing to deliver, but from AI succeeding too well. The scenario assumes AI displaces white-collar workers broadly—across software, financial firms, banks, and consulting—and does so quickly. High earners losing jobs slash consumption, default risks rise, private credit collapses, and markets price in the damage through a chain of negative feedback loops.</span>
+        </p>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>Damodaranの評価：</strong>Citriniシナリオの論理的連鎖には重大な欠陥があるとしつつも、一点は評価する。「ディスラプション礼賛」の時代に、ディスラプターが被ディスラプターに与えるコストを正面から問うた点だ。オンライン小売の成長は消費者の恩恵だが、実店舗と従業員には壊滅的だった。AIの同じ問いを問うことは正当だ。</span>
+            <span class="lang-en"><strong>Damodaran's assessment:</strong> He finds major flaws in the logical chain of the Citrini scenario, but credits one thing: in an era of "disruption worship," Citrini asked head-on what disruption costs the disrupted. Online retail's growth was a consumer windfall but devastated brick-and-mortar and its workers. Asking the same question about AI is legitimate.</span>
+          </p>
+        </div>
+
+        <p>
+          <span class="lang-ja">反論も続々と登場した。Goldman Sachs・Moody's・JP Morganはより穏健なシナリオを提示し、AIによる雇用喪失と所得効果は限定的・一時的だとした。Citadelはより直接的に反論し、3つの柱を立てた。①AIが最も影響するとされるソフトウェア業界の実際の雇用削減はCitriniが想定するような急激な加速を示していない、②PCやインターネットなど過去のディスラプションでも急速な雇用喪失や経済崩壊は起きなかった、③AIの成功（大規模な生産性向上）が大規模なマイナスショックになるというのはマクロ経済的に矛盾している。</span>
+          <span class="lang-en">Rebuttals followed quickly. Goldman Sachs, Moody's, and JPMorgan offered more benign scenarios, projecting that AI-driven job losses and income effects would be limited and temporary. Citadel issued a direct rebuttal built on three pillars: ① actual job cuts in software—the sector most targeted by AI—show no breakout consistent with Citrini's rapid disruption thesis; ② historical disruptions (PCs, the internet) have never produced the speed of job loss or economic collapse predicted in doomsday scenarios; ③ it is macroeconomically inconsistent to assume a large positive productivity shock from AI's success plays out as a large negative shock to the economy.</span>
+        </p>
+
+        <!-- ======================================================== -->
+        <h2><span class="lang-ja">2. シナリオ分析の根本的問題 — 確率なき予測は無意味</span><span class="lang-en">2. The Fundamental Flaw — A Scenario Without Probabilities Is Worthless</span></h2>
+
+        <p>
+          <span class="lang-ja">Damodaranはすべてのシナリオに共通する弱点を指摘する。どれも確率を示していない。そのシナリオが「可能性のある」話なのか、「ありそうな」話なのか、「最も確からしい」話なのか——その区別がなければ、意思決定の道具として機能しない。</span>
+          <span class="lang-en">Damodaran identifies the weakness shared by every scenario: none assigns probabilities. Without knowing whether a scenario is "possible," "plausible," or "probable," it cannot function as a decision-making tool.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">財務分析は長らくポイント推定（点見積もり）に依存してきた。成長率・再投資率・割引率をそれぞれ一点で推定し、DCF価値を算出する方法だ。問題は、不確実性が高い局面では100%外れることだ（ただし外れ方次第では利益が出る）。意思決定木・シミュレーション・シナリオ分析などの確率的アプローチが長年存在するにもかかわらず、多くのアナリストはそれを使いたがらない。その理由をDamodaranは3つ挙げる。①ツールへの不慣れ、②統計分布への抵抗感、③「見積もりの不確実性を開示すると弱さとみなされる」という懸念。</span>
+          <span class="lang-en">Financial analysis has long relied on point estimates: a single growth rate, reinvestment rate, and discount rate, producing a single DCF value. The problem is that under high uncertainty, point estimates are wrong 100% of the time (though the direction of the error can still be profitable). Despite probabilistic approaches—decision trees, simulations, scenario analysis—having existed for decades, most analysts avoid them. Damodaran identifies three reasons: ① unfamiliarity with the tools; ② discomfort with statistical distributions; ③ fear that openly acknowledging estimation error signals weakness or lack of conviction.</span>
+        </p>
+
+        <div class="warning-box">
+          <p>
+            <span class="lang-ja"><strong>「最悪シナリオ」の罠：</strong>ベスト・ベース・ワーストの3シナリオは最もよく使われる形式だが、最も役に立たない。どんな優良投資も最悪シナリオでは成立せず、どんな不良投資もベストシナリオでは成立する。3シナリオ分析に確率がなければ、それは「ショック効果」にしか使えない。</span>
+            <span class="lang-en"><strong>The "worst case" trap:</strong> The best-base-worst three-scenario format is the most commonly used and least useful. No investment, however good, will pass muster under a worst case; no investment, however bad, will fail under a best case. Without probabilities, three-scenario analysis is useful only for shock value.</span>
+          </p>
+        </div>
+
+        <!-- ======================================================== -->
+        <h2><span class="lang-ja">3. 3Pテスト — Possible / Plausible / Probable</span><span class="lang-en">3. The 3P Test — Possible / Plausible / Probable</span></h2>
+
+        <p>
+          <span class="lang-ja">Damodaranが企業バリュエーションで用いる「3Pテスト」をシナリオ分析に適用する。完全な確率分布を要求しない、より現実的なアプローチだ。</span>
+          <span class="lang-en">Damodaran applies to AI the same 3P test he uses in company valuation. It is more feasible than requiring a full probability distribution, yet far more rigorous than scenario analysis without any probability assessment.</span>
+        </p>
+
+        <div class="scenario-grid">
+          <div class="scenario-card possible">
+            <div class="scenario-label">POSSIBLE</div>
+            <div class="scenario-desc"><span class="lang-ja">論理的に起こりうる。確率はゼロではないが、既知の制約・歴史・慣性を考慮すると、実現性は低い</span><span class="lang-en">Can happen logically. Probability is not zero, but given known constraints, history, and inertia, it is unlikely to materialize</span></div>
+          </div>
+          <div class="scenario-card plausible">
+            <div class="scenario-label">PLAUSIBLE</div>
+            <div class="scenario-desc"><span class="lang-ja">論理だけでなく、背景・証拠・メカニズムによる裏付けがある。「ありえなくはない」より一段上</span><span class="lang-en">Backed not just by logic but by evidence, mechanisms, and context. A step above "not impossible"</span></div>
+          </div>
+          <div class="scenario-card probable">
+            <div class="scenario-label">PROBABLE</div>
+            <div class="scenario-desc"><span class="lang-ja">蓋然性が最も高い。確率は推定可能で、期待値計算の基礎になる。意思決定の中心に置くべきシナリオ</span><span class="lang-en">Most likely. Probability can be estimated and serves as the basis for expected value calculation. The scenario that should anchor decision-making</span></div>
+          </div>
+        </div>
+
+        <p>
+          <span class="lang-ja">このテストをAIシナリオに適用すると：Citriniの急速・全面的なジョブ代替シナリオは<strong>Possible（可能）だがPlausible（蓋然的）ではない</strong>。ディスラプションの歴史・AI技術の限界・組織の慣性を考えれば、実現性は低い。逆に「AIはツールを提供するだけで破壊的潜在力はない」というシナリオもPossibleだが、現実のAI能力を見れば同様にPlausibleではない。</span>
+          <span class="lang-en">Applied to AI: Citrini's rapid, broad-based job displacement scenario is <strong>Possible but not Plausible</strong>. Given the history of disruption, AI technology's limits, and organizational inertia, it is unlikely. Conversely, "AI only provides marginal productivity tools with no disruptive potential" is also Possible but equally Implausible given what AI can already demonstrably do.</span>
+        </p>
+
+        <!-- ======================================================== -->
+        <h2><span class="lang-ja">4. AIディスラプションの2軸 — 形態と速度</span><span class="lang-en">4. Two Dimensions of AI Disruption — Form and Speed</span></h2>
+
+        <h3><span class="lang-ja">形態：代替 vs ツール</span><span class="lang-en">FORM: DISPLACEMENT VS. TOOLS</span></h3>
+
+        <p>
+          <span class="lang-ja">AIが「労働者を代替する」か「労働者を補助するツールを提供する」かで、便益とコストの構造が根本的に異なる。代替は短期コストが大きいが長期便益も大きい。ツールは便益もコストも小さい。</span>
+          <span class="lang-en">Whether AI "displaces workers" or "provides tools that augment workers" fundamentally changes the structure of benefits and costs. Displacement creates large short-term costs but potentially large long-term benefits. Tools produce smaller benefits and smaller costs.</span>
+        </p>
+
+        <h3><span class="lang-ja">速度：速い vs 遅い</span><span class="lang-en">SPEED: FAST VS. SLOW</span></h3>
+
+        <p>
+          <span class="lang-ja">普及速度も独立した軸だ。速い普及は便益も大きいが、社会・労働市場の適応時間が短くなりコストも大きい。遅い普及は便益が逓減する一方で、新規労働市場参入者が再訓練・適応する時間を得る。</span>
+          <span class="lang-en">Speed of adoption is an independent axis. Fast disruption maximizes benefits but compresses society's and labor markets' adaptation time, magnifying costs. Slow disruption diminishes benefits but gives new labor market entrants time to retrain and adapt.</span>
+        </p>
+
+        <div class="matrix-2x2">
+          <div class="matrix-cell highlight">
+            <div class="matrix-cell-label"><span class="lang-ja">代替 × 速い</span><span class="lang-en">DISPLACEMENT × FAST</span></div>
+            <div class="matrix-cell-title"><span class="lang-ja">最大の衝撃</span><span class="lang-en">Maximum Shock</span></div>
+            <div class="matrix-cell-desc"><span class="lang-ja">便益・コストともに最大。高所得ホワイトカラーの急激な失業が消費を急収縮。Citriniシナリオの核心</span><span class="lang-en">Largest benefits and costs. Rapid displacement of high-income white-collar workers collapses consumption. The Citrini scenario's core</span></div>
+          </div>
+          <div class="matrix-cell">
+            <div class="matrix-cell-label"><span class="lang-ja">代替 × 遅い</span><span class="lang-en">DISPLACEMENT × SLOW</span></div>
+            <div class="matrix-cell-title"><span class="lang-ja">管理可能な移行</span><span class="lang-en">Managed Transition</span></div>
+            <div class="matrix-cell-desc"><span class="lang-ja">便益とコストは小さくなる。労働市場の適応時間が生まれ、純便益はプラスに傾きやすい</span><span class="lang-en">Smaller benefits and costs. Adaptation time opens up; net benefit more likely positive</span></div>
+          </div>
+          <div class="matrix-cell">
+            <div class="matrix-cell-label"><span class="lang-ja">ツール × 速い</span><span class="lang-en">TOOLS × FAST</span></div>
+            <div class="matrix-cell-title"><span class="lang-ja">生産性ブースト</span><span class="lang-en">Productivity Boost</span></div>
+            <div class="matrix-cell-desc"><span class="lang-ja">便益は生産性向上に限定。コストは小さい。競合他社も同じツールを使えるため、利益への転換は限定的</span><span class="lang-en">Benefits limited to productivity gains; costs small. But competitors access the same tools, limiting profit conversion</span></div>
+          </div>
+          <div class="matrix-cell">
+            <div class="matrix-cell-label"><span class="lang-ja">ツール × 遅い</span><span class="lang-en">TOOLS × SLOW</span></div>
+            <div class="matrix-cell-title"><span class="lang-ja">小さな波紋</span><span class="lang-en">Small Ripple</span></div>
+            <div class="matrix-cell-desc"><span class="lang-ja">便益もコストも最小。AIディスラプションが「期待外れ」で終わるシナリオ</span><span class="lang-en">Smallest benefits and costs. The scenario where AI disruption "fizzles out"</span></div>
+          </div>
+        </div>
+
+        <!-- ======================================================== -->
+        <h2><span class="lang-ja">5. Damodaranの蓋然性シナリオと産業別脆弱性</span><span class="lang-en">5. Damodaran's Probable Scenario and Industry Vulnerability</span></h2>
+
+        <p>
+          <span class="lang-ja">Damodaranが「蓋然性が高い（Probable）」と位置づけるシナリオは以下だ。AIは一部の産業（特にソフトウェア・一部金融仲介機関）で雇用を代替し、他の産業ではツールを提供する。ただし普及速度は、AIの提唱者たちが主張するよりもはるかに遅い。</span>
+          <span class="lang-en">Damodaran's probable scenario: AI will displace workers in a subset of industries—particularly software and some financial intermediaries—while providing tools in others. Crucially, the timeline will be significantly slower than AI advocates claim.</span>
+        </p>
+
+        <h3><span class="lang-ja">普及が遅くなる3つの理由</span><span class="lang-en">THREE REASONS ADOPTION WILL BE SLOWER</span></h3>
+
+        <p>
+          <span class="lang-ja">①AIツールは「時に魔法のように機能するが、欠陥もある」——良いデータと悪いデータを分別できなかったり、人間の模倣が不完全だったりする。②すべての大型ディスラプションは歴史上、遅延と挫折を経てきた。ドットコム・バブルですら2001年の崩壊で停滞した。③人間は古い技術への愛着を断ち切れない。スマートフォン時代にもフリップフォンは長く生き残り、PC普及後もタイプライターは職場から簡単には消えなかった。</span>
+          <span class="lang-en">① AI tools "sometimes work magically well but do have kinks"—unable to separate good data from bad, imperfect at mimicking human reasoning. ② Every major disruption in history has unfolded with delays and drawbacks; even the dot-com disruption nearly lost its moorings in the 2001 bust. ③ Humans remain attached to old technology; flip phones persisted well into the smartphone era, and typewriters didn't vanish from workplaces overnight after PCs arrived.</span>
+        </p>
+
+        <h3><span class="lang-ja">産業別脆弱性の4つの決定要因</span><span class="lang-en">FOUR FACTORS DETERMINING INDUSTRY VULNERABILITY</span></h3>
+
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th><span class="lang-ja">要因</span><span class="lang-en">Factor</span></th>
+              <th><span class="lang-ja">脆弱性が高い</span><span class="lang-en">More Vulnerable</span></th>
+              <th><span class="lang-ja">脆弱性が低い</span><span class="lang-en">Less Vulnerable</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="lang-ja">従業員の年齢構成</span><span class="lang-en">Workforce age</span></td>
+              <td class="accent-cell"><span class="lang-ja">若い（新技術受容しやすい）</span><span class="lang-en">Young (receptive to new tech)</span></td>
+              <td class="ok-cell"><span class="lang-ja">高齢（変化への抵抗が大きい）</span><span class="lang-en">Older (greater resistance to change)</span></td>
+            </tr>
+            <tr>
+              <td><span class="lang-ja">製品・サービスの性質</span><span class="lang-en">Product/service type</span></td>
+              <td class="accent-cell"><span class="lang-ja">論理的・規則的（コード、分析）</span><span class="lang-en">Logical and rule-based (code, analysis)</span></td>
+              <td class="ok-cell"><span class="lang-ja">関係性・直感依存（対人、交渉）</span><span class="lang-en">Relationship- and intuition-based (advisory, negotiation)</span></td>
+            </tr>
+            <tr>
+              <td><span class="lang-ja">業務の性質</span><span class="lang-en">Nature of work</span></td>
+              <td class="accent-cell"><span class="lang-ja">ロジック駆動・ルール駆動</span><span class="lang-en">Logic- and rules-driven</span></td>
+              <td class="ok-cell"><span class="lang-ja">原則・判断駆動</span><span class="lang-en">Principles- and judgment-driven</span></td>
+            </tr>
+            <tr>
+              <td><span class="lang-ja">規制・制度的保護</span><span class="lang-en">Regulatory/system protection</span></td>
+              <td class="accent-cell"><span class="lang-ja">保護なし（ソフトウェアなど）</span><span class="lang-en">No protection (e.g. software)</span></td>
+              <td class="ok-cell"><span class="lang-ja">規制要件あり（銀行、法務）</span><span class="lang-en">Protected by regulatory requirements (banking, law)</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>
+          <span class="lang-ja">ソフトウェアが最初のターゲットになった理由はこの表から明快だ。若い産業、若い企業と従業員、製品・サービスは論理的でルールベース、規制的・制度的保護がない。</span>
+          <span class="lang-en">Software's position as the first major target is self-evident from this table: a young industry with young companies and employees, producing logical and rule-based products and services, with no regulatory or system protection.</span>
+        </p>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>銀行・法務・コンサルティングが「見かけほど脆弱でない」理由：</strong>銀行と法務の業務の相当部分は、営業上の必要性ではなく、法的・規制上の要件を満たすために存在する。Damodaranが「愚かしく無意味」と批判するM&Aのフェアネス・オピニオンですら、訴訟対策として機能し続ける——デラウェア州の裁判所はAIボットに証言台で答弁させる用意がない。コンサルティングでは「クライアントは助言の対価ではなく、物事が悪化したとき誰かを責める先の確保に報酬を払っている」ため、ハーバードMBA持ちの人間の代替をAIが担うことは難しい。</span>
+            <span class="lang-en"><strong>Why banking, law, and consulting are "less vulnerable than they appear":</strong> A substantial portion of work in banking and law exists not to fill operating needs but to satisfy legal or regulatory requirements. Even the M&A fairness opinion—which Damodaran criticizes as "inane and useless"—persists because it provides cover against lawsuits. Delaware courts are not ready for an AI bot to take the stand. In consulting, clients pay "not for the advice but so they have someone else to blame when things go wrong"—an AI bot cannot provide the same blame-outsourcing function as an army of McKinsey MBAs.</span>
+          </p>
+        </div>
+
+        <!-- ======================================================== -->
+        <h2><span class="lang-ja">6. 誰が得をするのか — Cui Bono</span><span class="lang-en">6. Cui Bono — Who Benefits from AI Disruption?</span></h2>
+
+        <p>
+          <span class="lang-ja">AIディスラプションが純便益をもたらすとしても、その分配は均等ではない。AIディスラプションの便益は一部の企業・個人に集中し、残りはコストを負担する可能性が高い。</span>
+          <span class="lang-en">Even if AI disruption creates net benefits in aggregate, the distribution will be unequal. Benefits are likely to concentrate among a subset of companies and individuals, while the rest bear the costs.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">AI企業にとって理想的なシナリオは「広範かつ急速なディスラプション」だが、残りの経済にとっては「限定的かつ緩慢なディスラプション」が望ましい。AIツールが生産性を向上させても、競合他社が同じツールを利用できるなら、低コストは利益に転換されない。</span>
+          <span class="lang-en">AI companies benefit most from broad, fast disruption; the rest of the economy benefits from narrow, slow disruption. Even if AI tools boost productivity, the cost savings will not translate into higher profits if competitors can access the same tools.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">インターネット・中国・スマートフォンという過去3つの大型ディスラプションはすべて、多くの業界で「勝者総取り」の構造を強化した。AIディスラプションも同様の経路をたどる可能性が高い。個人レベルでは、AIビジネスの創業者が「兆万長者・百億長者」の仲間入りをし、富と所得の不平等がさらに悪化する公算が大きい。</span>
+          <span class="lang-en">The three major prior disruptions—the internet, China, and the smartphone—all tilted the playing field toward larger companies and intensified winner-take-all dynamics across industries. AI disruption is likely to follow a similar path. At the individual level, it is not just plausible but probable that the founders of AI businesses will join the ranks of deca- and centi-billionaires, worsening wealth and income inequality further.</span>
+        </p>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>「仕事は収入源だけではない」：</strong>Damodaranが最後に触れる経済的には計量困難なコスト。ソフトウェアエンジニアがコーディングスキルを、銀行員がExcelの職人技を、コンサルタントが「新しく発明的な」パッケージング能力を、AIに易々と代替されるとき、収入の喪失だけでなく「自己価値と自尊心」の喪失が生じる。インターネットと中国に雇用を奪われたブルーカラー労働者が味わったものと同じだ——そして当時それが無視されたことを思えば、ホワイトカラーの雇用喪失に社会が抱くかもしれない「ざまをみろ」感情も否定できない。</span>
+            <span class="lang-en"><strong>"A job is not just an income generator":</strong> The final cost Damodaran raises—difficult to quantify economically. When software engineers find their coding skills, bankers their Excel mastery, and consultants their "inventive" solution packaging effortlessly replicated by AI, the damage extends beyond lost income to lost self-esteem and sense of worth. This mirrors what blue-collar workers experienced when the internet and China took their jobs—and the fact that it was largely ignored then means there may be more than a hint of schadenfreude in how society responds to white-collar displacement.</span>
+          </p>
+        </div>
+
+        <!-- ======================================================== -->
+        <h2><span class="lang-ja">7. 個人としての対応戦略 — Pascal's Wager</span><span class="lang-en">7. Personal Strategy — Pascal's Wager Applied to AI</span></h2>
+
+        <p>
+          <span class="lang-ja">Damodaran自身、「Damodaran Bot」の開発を目撃してきた。NYU同僚のVasant Dharが開発したこのボットは、彼が生涯にわたって公開してきた授業・書籍・文章・モデル・動画を学習し、今では彼が行うことの多くを難なく再現できるという。</span>
+          <span class="lang-en">Damodaran has personally watched the development of the "Damodaran Bot"—created by his NYU colleague Vasant Dhar—trained on all the material he has made publicly available over his lifetime. Today it can replicate much of what he does almost effortlessly, he notes.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">それでも彼が「自分の堀」として挙げる4つの強みがある。①<strong>ジェネラリストであること</strong>——特定分野の知識の深さはAIに勝てないが、多分野を横断する思考は再現が難しい。②<strong>左脳と右脳の両方を使うこと</strong>——数字と物語の橋渡しは、純粋な論理計算よりAIが模倣しにくい。③<strong>「推論筋肉」を使い続けること</strong>——検索に頼らず自力で答えを導く習慣が推論力を維持する。④<strong>空白の時間を持つこと</strong>——目的なく考え、予期しない問いを立てる。</span>
+          <span class="lang-en">Nevertheless, he identifies four personal moats: ① <strong>Being a generalist</strong>—AI can master a discipline's content, but multi-disciplinary thinking that bridges domains is harder to replicate. ② <strong>Using both left and right brain</strong>—bridging numbers and narrative is harder to imitate than pure logical computation. ③ <strong>Exercising the reasoning muscle</strong>—habitually reasoning without relying on search engines maintains the capacity to think through novel problems. ④ <strong>Having idle time</strong>—unstructured thinking that generates unexpected questions.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">最後にPascalの賭けを援用する。パスカルは「神を信じることの期待価値は、信じないことのコストを上回る」として、確信がなくても神を信じることを選んだ。AIについても同様だ——AIの脅威が現実化しないとしても、「AIに仕事を奪われるかもしれない」と想定して行動する（スキルを磨く、思考を深める、モートを作る）ことは、その行動自体があなたをより優れた教師・銀行家・コンサルタント・エンジニアにする。AIの影響がどう転んでも、その努力は報われる。</span>
+          <span class="lang-en">Finally, he invokes Pascal's Wager. Pascal believed in God—even doubting—because the expected value of belief exceeded the expected cost of non-belief. Applied to AI: even if AI disruption fizzles, acting as if an AI competitor is looking over your shoulder and trying to replicate what you do will make you better at whatever you do—as a teacher, banker, consultant, or engineer. That improvement will persist regardless of how AI ultimately plays out.</span>
+        </p>
+
+        <!-- NEXT ARTICLE -->
+        <div class="next-article">
+          <div>
+            <div class="next-label"><span class="lang-ja">Damodaran Watch</span><span class="lang-en">DAMODARAN WATCH</span></div>
+            <div class="next-title"><span class="lang-ja">次回：インボックスから選択</span><span class="lang-en">Next: From the inbox</span></div>
+          </div>
+          <div class="next-arrow">→</div>
+        </div>
+
+      </article>
+
+      <!-- 4. サイドバー -->
+      <aside class="article-sidebar">
+
+        <div class="sidebar-card">
+          <span class="section-label">KEY NUMBERS</span>
+          <div class="key-stats">
+            <div class="fact-card highlight">
+              <div class="fact-value">10%+</div>
+              <div class="fact-desc"><span class="lang-ja">Citriniシナリオの失業率予測（2028年6月30日）</span><span class="lang-en">Citrini's projected unemployment rate by June 30, 2028</span></div>
+            </div>
+            <div class="fact-card highlight">
+              <div class="fact-value">-40%</div>
+              <div class="fact-desc"><span class="lang-ja">Citriniシナリオの株式市場下落予測（同時点）</span><span class="lang-en">Citrini's projected stock market decline (same date)</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">~4%</div>
+              <div class="fact-desc"><span class="lang-ja">AIが節約する時間の最大値（St. Louis Fed調査、情報産業）。食品・宿泊業では1%未満</span><span class="lang-en">Maximum time saved by AI (St. Louis Fed survey, information sector). Under 1% in accommodation &amp; food</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">40%</div>
+              <div class="fact-desc"><span class="lang-ja">Block（Jack Dorsey創業のフィンテック）がAIを理由に削減すると発表した従業員比率</span><span class="lang-en">Share of workforce Block (Jack Dorsey's fintech) announced it would cut, citing AI</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-card">
+          <div class="section-label">DAMODARAN WATCH</div>
+          <ol class="highlights-list">
+            <li class="highlight-item">
+              <span class="hl-num" style="color:var(--accent-damo);font-weight:700;">01</span>
+              <span class="hl-text"><strong><span class="lang-ja">AIシナリオ — ドゥームズデイから無害なボットまで</span><span class="lang-en">AI Scenarios — From Doomsday to Do-Nothing Bots</span></strong> — <span class="lang-ja">本稿</span><span class="lang-en">this article</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">02</span>
+              <span class="hl-text"><span class="lang-ja">ERP独白 — リスクの価格を問う（2026-03-15）</span><span class="lang-en">ERP Monologue — Pricing the Price of Risk (2026-03-15)</span></span>
+            </li>
+          </ol>
+        </div>
+
+        <div class="sidebar-card">
+          <div class="section-label">KEY REFERENCES</div>
+          <ul class="source-list" style="margin-top:10px;">
+            <li><a href="https://aswathdamodaran.blogspot.com/2026/03/ai-scenarios-from-economic-doomsday-to.html" target="_blank" rel="noopener">Damodaran — AI Scenarios (原文)</a></li>
+            <li><span style="color:var(--text-muted);">Citrini Research — AI Doomsday Scenario (2026-02-22)</span></li>
+            <li><span style="color:var(--text-muted);">Citadel — Direct Rebuttal to Citrini</span></li>
+            <li><span style="color:var(--text-muted);">Federal Reserve Bank of St. Louis — AI Adoption Tracker</span></li>
+            <li><span style="color:var(--text-muted);">Schumpeter — Capitalism, Socialism and Democracy (creative destruction)</span></li>
+            <li><span style="color:var(--text-muted);">Damodaran — Paper on Probabilistic Approaches in Valuation</span></li>
+          </ul>
+        </div>
+
+      </aside>
+
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <span>Damodaran Watch #001 | donato | 2026-03-22</span>
+  <span><span class="lang-ja">本稿はDamodaranのブログ投稿の要約・解説です。原文の著作権はAswath Damodaran氏に帰属します。</span><span class="lang-en">This article is a summary and explanation of Damodaran's blog post. Original copyright belongs to Aswath Damodaran.</span></span>
+</footer>
+
+<script>
+  // Progress bar
+  window.addEventListener('scroll', function() {
+    var h = document.documentElement;
+    var pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    document.getElementById('progress-bar').style.width = Math.min(pct, 100) + '%';
+  });
+
+  // Reading time (500字/分)
+  (function() {
+    var text = document.querySelector('.article-body') ? document.querySelector('.article-body').textContent : '';
+    var chars = text.length;
+    var minutes = Math.ceil(chars / 500);
+    var label = '約' + minutes + '分';
+    var el1 = document.getElementById('reading-time-badge');
+    var el2 = document.getElementById('reading-time-badge2');
+    if (el1) el1.querySelector('.lang-ja').textContent = label;
+    if (el2) el2.querySelector('.lang-ja').textContent = label;
+  })();
+
+  // Lang toggle
+  let currentLang = localStorage.getItem('hp-lang') || 'ja';
+  let currentTheme = localStorage.getItem('hp-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('hp-lang', lang);
+    document.querySelectorAll('.lang-ja').forEach(el => el.style.display = lang === 'ja' ? 'inline' : 'none');
+    document.querySelectorAll('.lang-en').forEach(el => el.style.display = lang === 'en' ? 'inline' : 'none');
+    document.querySelectorAll('.art-lang-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+    document.documentElement.lang = lang === 'ja' ? 'ja' : 'en';
+  }
+  function toggleTheme() {
+    currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+    localStorage.setItem('hp-theme', currentTheme);
+    document.body.classList.toggle('dark', currentTheme === 'dark');
+    document.getElementById('theme-btn').textContent = currentTheme === 'light' ? '☀' : '☾';
+  }
+  document.addEventListener('DOMContentLoaded', () => {
+    setLang(currentLang);
+    if (currentTheme === 'dark') {
+      document.body.classList.add('dark');
+      document.getElementById('theme-btn').textContent = '☾';
+    }
+  });
+</script>
+
+</body>
+</html>

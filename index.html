@@ -85,10 +85,16 @@
       text-decoration: none;
       font-size: 14px;
       font-weight: 500;
-      transition: color 0.2s;
+      transition: color 0.2s, font-weight 0.2s;
     }
 
     .nav-links a:hover { color: var(--text); }
+
+    /* Articles is always highlighted as primary nav item */
+    .nav-links a.nav-articles { color: var(--accent2); }
+
+    /* Active section: white (dark mode) / bold (light mode) */
+    .nav-links a.nav-active { color: var(--text); font-weight: 700; }
 
     .lang-toggle {
       display: flex;
@@ -562,7 +568,7 @@
   <a href="#" class="nav-logo">dona<span>to</span></a>
   <div class="nav-right">
     <ul class="nav-links">
-      <li><a href="#articles" data-en style="color:var(--accent2);">Articles</a><a href="#articles" data-ja style="color:var(--accent2);">記事</a></li>
+      <li><a href="#articles" data-en class="nav-articles">Articles</a><a href="#articles" data-ja class="nav-articles">記事</a></li>
       <li><a href="#process" data-en>Process</a><a href="#process" data-ja>プロセス</a></li>
       <li><a href="#tools" data-en>Tools</a><a href="#tools" data-ja>ツール</a></li>
       <li><a href="#about" data-en>About</a><a href="#about" data-ja>概要</a></li>
@@ -878,15 +884,17 @@
       });
   })();
 
-  // Smooth nav active state
+  // Smooth nav active state — update both EN and JP links
   const sections = document.querySelectorAll('section[id]');
   window.addEventListener('scroll', () => {
     const y = window.scrollY + 100;
     sections.forEach(sec => {
       const top = sec.offsetTop;
       const bottom = top + sec.offsetHeight;
-      const link = document.querySelector(`.nav-links a[href="#${sec.id}"]`);
-      if (link) link.style.color = (y >= top && y < bottom) ? 'var(--text)' : '';
+      const isActive = y >= top && y < bottom;
+      document.querySelectorAll(`.nav-links a[href="#${sec.id}"]`).forEach(link => {
+        link.classList.toggle('nav-active', isActive);
+      });
     });
   });
 </script>

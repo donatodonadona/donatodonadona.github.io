@@ -582,6 +582,27 @@
 
     document.getElementById('copyright-year').textContent = new Date().getFullYear();
 
+    // Dynamic reading time: fetch each article and calculate from .article-body
+    // Same formula as articles themselves (chars / 500) — guarantees index and article always match
+    document.querySelectorAll('.article-card[href]').forEach(function(card) {
+      var href = card.getAttribute('href');
+      var badge = card.querySelector('.read-time-badge');
+      if (!badge) return;
+      fetch(href)
+        .then(function(r) { return r.text(); })
+        .then(function(html) {
+          var doc = new DOMParser().parseFromString(html, 'text/html');
+          var body = doc.querySelector('.article-body');
+          if (!body) return;
+          var mins = Math.ceil(body.textContent.length / 500);
+          var enEl = badge.querySelector('[data-en]');
+          var jaEl = badge.querySelector('[data-ja]');
+          if (enEl) enEl.textContent = mins + ' min read';
+          if (jaEl) jaEl.textContent = '約' + mins + '分';
+        })
+        .catch(function() { /* silently fail: hardcoded fallback stays */ });
+    });
+
     function filterArticles(category, event) {
       document.querySelectorAll('.cat-btn').forEach(btn => btn.classList.remove('active'));
       event.target.closest('.cat-btn').classList.add('active');

@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="金商法の開示規制・インサイダー取引規制をFinance Professional視点で深掘り。AIを使った有価証券報告書分析、重要事実の判定支援、コンプライアンスチェックの実務活用法を解説。">
+  <title>企業法・金商法 × AI実務 — 開示規制・インサイダー取引をAIで読み解く | donato</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+JP:wght@300;400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../brand.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:           #F8F7F4;
+      --bg-code:      #EEECEA;
+      --bg-quote:     #EEECEA;
+      --bg-highlight: #EBF3FB;
+      --bg-subtle:    #F0EFEB;
+      --bg-card:      #F0EFEB;
+      --bg-header:    #F8F7F4;
+      --text-primary: #111320;
+      --text-body:    #2A2C3E;
+      --text-muted:   #565C70;
+      --text-light:   #888EA0;
+      --accent:       #1A6EB0;
+      --accent-warm:  #D4A010;
+      --border:       #D4D2CC;
+      --border-quote: #B8B6B0;
+      --border-light: #D4D2CC;
+      --tag-bg:       #E4EFF8;
+      --tag-text:     #1A6EB0;
+      --table-stripe: #F0EFEB;
+    }
+
+    /* ===== PROGRESS BAR ===== */
+    #progress-bar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      width: 0%;
+      background: var(--accent);
+      z-index: 300;
+      transition: width 0.1s linear;
+    }
+
+    body {
+      font-family: 'Noto Serif JP', Georgia, serif;
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--text-primary);
+      background: var(--bg);
+    }
+
+    /* ===== SITE HEADER ===== */
+    .site-header {
+      background: var(--bg-header);
+      border-bottom: 2px solid var(--accent);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .site-header-left { display: flex; align-items: center; gap: 12px; }
+    .wordmark {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: lowercase;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+    .wordmark span { color: var(--accent-warm); }
+    .header-sep { color: var(--border-quote); font-size: 13px; }
+    .header-media {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+    }
+    .site-header-right { display: flex; align-items: center; gap: 12px; }
+    .header-back-link {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .header-back-link:hover { color: var(--accent); }
+    .lang-toggle-bar {
+      display: flex;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .art-lang-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      padding: 3px 10px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .art-lang-btn.active { background: #F5C800; color: #111320; }
+    #theme-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      padding: 3px 9px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.15s;
+    }
+    #theme-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .header-date {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-light);
+      letter-spacing: 0.08em;
+    }
+
+    /* ===== STICKY INFO BAR ===== */
+    #sticky-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg-subtle);
+      border-bottom: 1px solid var(--border-light);
+      padding: 7px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .sbar-cat {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+    }
+    .sbar-sep { color: var(--border-quote); font-size: 11px; }
+    .sbar-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+    .sbar-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      padding: 2px 8px;
+    }
+
+    /* ===== LAYOUT ===== */
+    .article-container { max-width: 1240px; margin: 0 auto; padding: 0 20px; }
+    .article-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 24px;
+    }
+    .article-body { grid-column: 2 / 10; max-width: 68ch; }
+    .article-sidebar {
+      grid-column: 10 / 13;
+      position: sticky;
+      top: 44px;
+      align-self: start;
+      max-height: calc(100vh - 56px);
+      overflow-y: auto;
+    }
+    .article-sidebar::-webkit-scrollbar { width: 4px; }
+    .article-sidebar::-webkit-scrollbar-track { background: transparent; }
+    .article-sidebar::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 2px; }
+
+    /* ===== TYPOGRAPHY ===== */
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+    }
+    .article-headline {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(2rem, 4vw, 2.6rem);
+      font-weight: 600;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+    .article-standfirst {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      font-weight: 400;
+    }
+    .byline {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    h2 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.45rem;
+      font-weight: 600;
+      line-height: 1.25;
+      color: var(--text-primary);
+      margin: 2em 0 0.75em;
+      border-top: 1px solid var(--border);
+      padding-top: 1em;
+    }
+    h3 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin: 1.75em 0 0.5em;
+    }
+    .article-body p { margin-bottom: 1.4em; font-size: 0.97rem; line-height: 1.8; }
+    .article-body ul, .article-body ol { margin: 0 0 1.4em 1.4em; }
+    .article-body li { margin-bottom: 0.4em; font-size: 0.95rem; line-height: 1.7; }
+    strong { color: var(--text-primary); font-weight: 600; }
+
+    /* ===== EXEC SUMMARY ===== */
+    .exec-summary {
+      background: var(--bg-highlight);
+      border: 1px solid var(--border-light);
+      border-left: 4px solid var(--accent);
+      padding: 24px;
+      margin: 0 0 2.5em;
+    }
+    .exec-block { margin-bottom: 20px; }
+    .exec-block:last-child { margin-bottom: 0; }
+    .exec-block + .exec-block { padding-top: 18px; border-top: 1px solid var(--border-light); }
+    .exec-tldr {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.02rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      line-height: 1.55;
+      margin-top: 8px;
+    }
+    .issues-list, .implications-list {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .issue-item { display: flex; gap: 10px; align-items: baseline; }
+    .issue-q {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--accent);
+      flex-shrink: 0;
+      min-width: 20px;
+    }
+    .issue-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: var(--text-body);
+      line-height: 1.55;
+    }
+    .implication-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: var(--text-body);
+      line-height: 1.55;
+      padding-left: 14px;
+      border-left: 2px solid var(--accent);
+    }
+    .read-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
+    .read-col-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.66rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 6px;
+    }
+    .read-label-yes { color: var(--accent); }
+    .read-label-no { color: var(--text-muted); }
+    .read-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-body);
+      line-height: 1.45;
+      padding-left: 10px;
+      border-left: 2px solid var(--accent);
+      margin-bottom: 5px;
+    }
+    .skip-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+      padding-left: 10px;
+      border-left: 2px solid var(--border-light);
+      margin-bottom: 5px;
+    }
+
+    /* ===== DATA TABLE ===== */
+    .data-table-wrap { overflow-x: auto; margin: 0 0 1.8em; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+    th {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      text-align: left;
+      padding: 8px 12px;
+      border-bottom: 2px solid var(--accent);
+      white-space: nowrap;
+    }
+    td {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 0.855rem;
+      color: var(--text-body);
+      padding: 9px 12px;
+      border-bottom: 1px solid var(--border-light);
+      line-height: 1.5;
+    }
+    tr:nth-child(even) td { background: var(--table-stripe); }
+    .td-accent { color: var(--accent); font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; font-weight: 500; }
+    .td-warn { color: #C05800; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; }
+
+    /* ===== CALLOUT BOXES ===== */
+    .callout {
+      border: 1px solid var(--border-light);
+      border-left: 4px solid var(--accent-warm);
+      background: #FFFBEA;
+      padding: 16px 20px;
+      margin: 1.5em 0;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      color: var(--text-body);
+      line-height: 1.6;
+    }
+    .callout-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.66rem;
+      letter-spacing: 0.1em;
+      color: var(--accent-warm);
+      margin-bottom: 6px;
+    }
+    .callout.danger {
+      border-left-color: #C05800;
+      background: #FFF3EA;
+    }
+    .callout.danger .callout-label { color: #C05800; }
+
+    /* ===== AI PROMPT BOX ===== */
+    .prompt-box {
+      background: #0A0B10;
+      color: #E4E2DC;
+      border-radius: 4px;
+      padding: 18px 20px;
+      margin: 1.5em 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.65;
+    }
+    .prompt-label {
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      color: #F5C800;
+      margin-bottom: 10px;
+    }
+    .prompt-text { color: #C4C2BC; }
+    .prompt-text em { color: #1A6EB0; font-style: normal; }
+
+    /* ===== FACT GRID ===== */
+    .fact-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 1.5em 0;
+    }
+    .fact-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      padding: 14px 16px;
+    }
+    .fact-value {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .fact-desc {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+    .sidebar-card .section-label { margin-bottom: 12px; display: block; }
+    .toc-list { list-style: none; padding: 0; }
+    .toc-list li { margin-bottom: 8px; }
+    .toc-list a {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      line-height: 1.4;
+      transition: color 0.15s;
+    }
+    .toc-list a:hover { color: var(--accent); }
+    .highlights-list { list-style: none; padding: 0; }
+    .highlight-item { display: flex; gap: 10px; margin-bottom: 10px; align-items: baseline; }
+    .hl-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+    .hl-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.8rem;
+      color: var(--text-body);
+      line-height: 1.45;
+    }
+    .source-list { list-style: none; padding: 0; }
+    .source-list li { margin-bottom: 8px; }
+    .source-list a {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--accent);
+      text-decoration: none;
+      line-height: 1.4;
+    }
+    .source-list a:hover { text-decoration: underline; }
+
+    /* ===== DISCLAIMER ===== */
+    .disclaimer {
+      margin-top: 3em;
+      padding: 16px 20px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    .disclaimer strong { color: var(--text-muted); }
+
+    /* ===== SITE FOOTER ===== */
+    .site-footer {
+      margin-top: 4em;
+      padding: 16px 20px;
+      background: var(--bg-header);
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--text-light);
+    }
+
+    /* ===== DARK MODE ===== */
+    body.dark {
+      --bg:           #0A0B10;
+      --bg-code:      #12141C;
+      --bg-quote:     #12141C;
+      --bg-highlight: #0E1A2B;
+      --bg-subtle:    #111320;
+      --bg-card:      #12141C;
+      --bg-header:    #0A0B10;
+      --text-primary: #E4E2DC;
+      --text-body:    #C4C2BC;
+      --text-muted:   #7A8099;
+      --text-light:   #4A5070;
+      --accent:       #1A6EB0;
+      --accent-warm:  #C4900E;
+      --border:       #21253A;
+      --border-quote: #2A2F48;
+      --border-light: #21253A;
+      --tag-bg:       #0D1929;
+      --tag-text:     #4A90D0;
+      --table-stripe: #10121A;
+    }
+    body.dark .callout { background: #1A1400; }
+    body.dark .callout.danger { background: #1A0E00; }
+    body.dark .prompt-box { background: #060708; }
+
+    @media (max-width: 900px) {
+      .article-body { grid-column: 1 / -1; }
+      .article-sidebar { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<!-- 1. サイトヘッダー -->
+<header class="site-header">
+  <div class="site-header-left">
+    <a class="wordmark" href="../index.html">dona<span>to</span></a>
+    <span class="header-sep">—</span>
+    <a class="header-back-link" href="./index.html"><span class="lang-ja">記事一覧</span><span class="lang-en">Articles</span></a>
+    <span class="header-sep">—</span>
+    <span class="header-media"><span class="lang-ja">企業法・金商法</span><span class="lang-en">Corp. Law &amp; FIEA</span></span>
+  </div>
+  <div class="site-header-right">
+    <div class="lang-toggle-bar">
+      <button class="art-lang-btn active" data-lang="ja" onclick="setLang('ja')">JP</button>
+      <button class="art-lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+    </div>
+    <button id="theme-btn" onclick="toggleTheme()" title="ダーク/ライト切替">☀</button>
+    <time class="header-date">2026-03-22</time>
+  </div>
+</header>
+
+<!-- 2. スティッキー情報バー -->
+<div id="sticky-bar">
+  <span class="sbar-cat"><span class="lang-ja">企業法・金商法</span><span class="lang-en">CORP. LAW &amp; FIEA</span></span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-text"><span class="lang-ja">開示規制 · インサイダー取引 · AI実務活用</span><span class="lang-en">Disclosure · Insider Trading · AI Workflow</span></span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-text">2026-03-22</span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-badge" id="reading-time-badge"><span class="lang-ja">約15分</span><span class="lang-en">~15 min</span></span>
+</div>
+
+<main style="padding: 0 0 3em;">
+  <div class="article-container">
+    <div class="article-grid">
+
+      <!-- 3. 記事本文 -->
+      <article class="article-body">
+
+        <!-- 記事ヘッダー -->
+        <div style="padding: 36px 0 24px;">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+            <div class="section-label"><span class="lang-ja">企業法・金商法 × AI実務</span><span class="lang-en">Corp. Law &amp; FIEA × AI Practice</span></div>
+            <span class="sbar-badge" id="reading-time-badge2"><span class="lang-ja">約15分</span><span class="lang-en">~15 min</span></span>
+          </div>
+          <h1 class="article-headline">
+            <span class="lang-ja">企業法・金商法とAI実務<br>— 開示規制・インサイダー取引をAIで読み解く</span>
+            <span class="lang-en">Corporate Law &amp; FIEA × AI Practice<br>— Decoding Disclosure Rules and Insider Trading with AI</span>
+          </h1>
+          <p class="article-standfirst">
+            <span class="lang-ja">Finance Professionalにとって金融商品取引法（金商法）は避けて通れない。有価証券報告書の開示規制、適時開示、そしてM&amp;AやIPOで最も神経を使うインサイダー取引規制——これらの法的フレームワークをAIを使って実務に活かす方法を、規制の深掘りとAI活用の両面から解説する。</span>
+            <span class="lang-en">For Finance Professionals, the Financial Instruments and Exchange Act (FIEA) is unavoidable. Securities disclosure requirements, timely disclosure rules, and the insider trading regulations that make M&amp;A and IPO work so demanding — this article explores both the regulatory depth and practical AI workflows that help practitioners navigate them.</span>
+          </p>
+          <div style="display:flex; gap:16px; align-items:center; border-top:1px solid var(--border-light); border-bottom:1px solid var(--border-light); padding:10px 0;">
+            <span class="byline">By <strong>donato</strong></span>
+            <span style="color:var(--border);">|</span>
+            <time class="byline" datetime="2026-03-22"><span class="lang-ja">2026年3月22日</span><span class="lang-en">March 22, 2026</span></time>
+            <span style="color:var(--border);">|</span>
+            <span class="byline"><span class="lang-ja">金商法 · 開示 · インサイダー取引 · AI</span><span class="lang-en">FIEA · Disclosure · Insider Trading · AI</span></span>
+          </div>
+        </div>
+
+        <!-- エグゼクティブサマリー -->
+        <section class="exec-summary">
+
+          <!-- TL;DR -->
+          <div class="exec-block">
+            <div class="section-label">TL;DR</div>
+            <p class="exec-tldr">
+              <span class="lang-ja">金融商品取引法の開示規制は「誰が・何を・いつ・どう開示するか」という4軸で整理できる。インサイダー取引規制は「重要事実」の定義と「知った時点」の認定が実務の核心だ。どちらの領域でも、AIは「法令文の翻訳者」「開示書類の分析者」「チェックリストの生成者」として機能する——ただし法的判断の最終責任はAIには委ねられない。</span>
+              <span class="lang-en">FIEA disclosure regulations can be mapped across four axes: who, what, when, and how. Insider trading regulation hinges on defining "material facts" and pinpointing when a person "became aware." AI can serve as a translator of statutory language, an analyzer of securities filings, and a checklist generator in both areas — but the final legal judgment cannot be delegated to AI.</span>
+            </p>
+          </div>
+
+          <!-- 論点 -->
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">本稿の論点</span><span class="lang-en">Key Questions</span></div>
+            <ul class="issues-list">
+              <li class="issue-item">
+                <span class="issue-q">Q1</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>金商法の開示規制は実務でどう機能するか？</strong> — 有価証券報告書・四半期報告書・臨時報告書・適時開示の4層構造を整理し、各書類が問われる場面を解説する。</span>
+                  <span class="lang-en"><strong>How do FIEA disclosure rules work in practice?</strong> — We map the four-layer structure of annual reports, quarterly reports, extraordinary reports, and timely disclosure, explaining where each matters.</span>
+                </span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">Q2</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>インサイダー取引規制の「重要事実」とは何か？</strong> — 決定事実・発生事実・決算情報・バスケット条項の4類型と、M&amp;A実務で最も問題になる「知った時点」論点を解説する。</span>
+                  <span class="lang-en"><strong>What counts as a "material fact" under insider trading law?</strong> — We cover the four categories (decisions, occurrences, earnings, basket clause) and the "when did they know" question that most matters in M&amp;A practice.</span>
+                </span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">Q3</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>AIはどこまで役立つか？</strong> — 有報・適時開示の定量的分析、M&amp;Aにおけるインサイダーリスクチェック、コンプライアンス研修材料の生成——AIを使った具体的なワークフローと限界を示す。</span>
+                  <span class="lang-en"><strong>Where can AI genuinely help?</strong> — Quantitative analysis of annual reports, insider trading risk checks in M&amp;A, and compliance training content generation — concrete workflows and their limits.</span>
+                </span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- 実務家への含意 -->
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">Finance Professionalへの含意</span><span class="lang-en">Implications for Finance Professionals</span></div>
+            <ul class="implications-list">
+              <li class="implication-item">
+                <span class="lang-ja"><strong>有報分析にAIを使う際は「原文参照」を徹底する</strong> — AIは構造化・要約・比較は得意だが、法的にセンシティブな記述（訴訟リスク、継続疑義注記、関連当事者取引）は原文を直接確認すること。</span>
+                <span class="lang-en"><strong>When using AI to analyze annual reports, always check the source text</strong> — AI excels at structuring, summarizing, and comparing, but legally sensitive disclosures (litigation risks, going-concern notes, related-party transactions) must be verified against the original.</span>
+              </li>
+              <li class="implication-item">
+                <span class="lang-ja"><strong>インサイダー管理はAIの「フラグ機能」と人間の「最終判断」の分業で</strong> — AIはインサイダー情報取得の可能性をフラグし、情報バリアの要否を示唆できる。しかし「重要性」の最終判断は法務・コンプライアンスが行う必要がある。</span>
+                <span class="lang-en"><strong>Insider management: AI flags, humans decide</strong> — AI can flag potential insider information exposure and suggest whether an information barrier is needed. But the final "materiality" judgment must be made by legal or compliance personnel.</span>
+              </li>
+              <li class="implication-item">
+                <span class="lang-ja"><strong>AIプロンプトの精度が法的リスクに影響する</strong> — 「金商法上問題がないか確認して」という曖昧な指示では法的に意味ある回答は得られない。条文番号・具体的状況・判断軸を明示したプロンプト設計が実務価値を左右する。</span>
+                <span class="lang-en"><strong>Prompt quality directly affects legal risk management</strong> — Vague instructions like "check if this is OK under FIEA" won't yield legally meaningful answers. Specifying article numbers, concrete situations, and decision criteria determines whether AI output has practical value.</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- 読み進め判断 -->
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">この記事を読み進めるべきか</span><span class="lang-en">Who Should Read This?</span></div>
+            <div class="read-grid">
+              <div>
+                <div class="read-col-label read-label-yes"><span class="lang-ja">読むべき人</span><span class="lang-en">READ IF</span></div>
+                <div class="read-item"><span class="lang-ja">M&amp;A・IPO・IR業務で金商法に触れるFAや事業会社のFinance担当者</span><span class="lang-en">FA or corporate finance practitioners dealing with FIEA in M&amp;A, IPO, or IR work</span></div>
+                <div class="read-item"><span class="lang-ja">有価証券報告書・適時開示を分析業務に使うアナリスト・バンカー</span><span class="lang-en">Analysts and bankers who use annual reports or timely disclosures for their work</span></div>
+                <div class="read-item"><span class="lang-ja">AIを使ったコンプライアンスワークフロー構築を検討しているコンプライアンス担当者</span><span class="lang-en">Compliance professionals exploring AI-assisted compliance workflows</span></div>
+              </div>
+              <div>
+                <div class="read-col-label read-label-no"><span class="lang-ja">スキップしてよい人</span><span class="lang-en">SKIP IF</span></div>
+                <div class="skip-item"><span class="lang-ja">金商法の実務経験がなく、まず法令全体の体系を理解したい人（別途基礎書で学習を）</span><span class="lang-en">Those with no FIEA background who need foundational legal knowledge first — consult a textbook instead</span></div>
+                <div class="skip-item"><span class="lang-ja">純粋な法律家として条文解釈の精緻な議論を求める人（本稿は実務視点に絞っています）</span><span class="lang-en">Lawyers seeking rigorous statutory interpretation — this article focuses on practitioner perspective</span></div>
+              </div>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- 本文 -->
+        <p>
+          <span class="lang-ja">Finance Professionalが金商法に向き合う場面は大別して2つある。ひとつは情報の送り手として——上場企業のIR担当やCFOとして、適正に開示義務を果たす立場。もうひとつは情報の受け手として——M&amp;A、PE投資、株式調査において公開情報を分析し、かつ非公開情報の取り扱いでインサイダー規制を遵守する立場だ。</span>
+          <span class="lang-en">Finance Professionals encounter FIEA from two directions. The first is as an information sender — an IR manager or CFO of a listed company who must meet disclosure obligations. The second is as an information receiver — someone in M&amp;A, PE, or equity research who must analyze public information while strictly managing non-public information under insider trading rules.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">AIの登場により、この両方の業務に変化が生じている。有報・適時開示のテキスト分析、DDにおける開示リスクの抽出、M&amp;Aチームへのインサイダー情報管理チェックリスト作成——かつて弁護士やパラリーガルが担っていた作業の一部がAIに移りつつある。しかしAIには「法的判断」はできない。「法的事実の整理」と「法的判断」の境界を実務家として認識することが、AI活用の前提になる。</span>
+          <span class="lang-en">AI is changing both sides of this equation. Text analysis of annual reports and timely disclosures, extraction of disclosure risks in due diligence, generating insider information management checklists for M&amp;A teams — tasks once handled by lawyers and paralegals are partly shifting to AI. But AI cannot make "legal judgments." The prerequisite for effective AI use is understanding the boundary between "organizing legal facts" (which AI can do) and "making legal judgments" (which it cannot).</span>
+        </p>
+
+        <!-- ======================================================== -->
+        <h2><span class="lang-ja">1. 金商法の開示規制 — 4層構造の全体像</span><span class="lang-en">1. FIEA Disclosure Framework — The Four-Layer Structure</span></h2>
+
+        <p>
+          <span class="lang-ja">金融商品取引法上の情報開示は大きく「継続開示」と「随時開示」に分かれ、さらに各社が上場する取引所の規則による「適時開示」が加わる。Finance Professionalが実務で使う主要な開示書類は以下の4つだ。</span>
+          <span class="lang-en">FIEA disclosures fall into two categories: periodic (continuous) disclosure and event-driven (occasional) disclosure, supplemented by timely disclosure rules set by each stock exchange. Finance Professionals work with four primary document types.</span>
+        </p>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">書類</span><span class="lang-en">Document</span></th>
+                <th><span class="lang-ja">根拠条文</span><span class="lang-en">Legal Basis</span></th>
+                <th><span class="lang-ja">提出タイミング</span><span class="lang-en">Filing Timing</span></th>
+                <th><span class="lang-ja">Finance実務での主な用途</span><span class="lang-en">Primary Finance Use</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong><span class="lang-ja">有価証券報告書（有報）</span><span class="lang-en">Annual Securities Report</span></strong></td>
+                <td class="td-accent">§24</td>
+                <td><span class="lang-ja">事業年度終了後3ヶ月以内</span><span class="lang-en">Within 3 months of fiscal year end</span></td>
+                <td><span class="lang-ja">DD・株式調査・競合分析</span><span class="lang-en">DD, equity research, competitive analysis</span></td>
+              </tr>
+              <tr>
+                <td><strong><span class="lang-ja">四半期報告書</span><span class="lang-en">Quarterly Report</span></strong></td>
+                <td class="td-accent">§24-4-7</td>
+                <td><span class="lang-ja">四半期終了後45日以内（2024年廃止・半期報告書へ移行）</span><span class="lang-en">Within 45 days of quarter end (abolished 2024, replaced by semi-annual)</span></td>
+                <td><span class="lang-ja">業績モニタリング</span><span class="lang-en">Earnings monitoring</span></td>
+              </tr>
+              <tr>
+                <td><strong><span class="lang-ja">臨時報告書</span><span class="lang-en">Extraordinary Securities Report</span></strong></td>
+                <td class="td-accent">§24-5</td>
+                <td><span class="lang-ja">事由発生後遅滞なく（原則5営業日以内）</span><span class="lang-en">Without delay after triggering event (typically 5 business days)</span></td>
+                <td><span class="lang-ja">M&amp;A・資本異動・訴訟等の検出</span><span class="lang-en">Detecting M&amp;A, capital changes, litigation</span></td>
+              </tr>
+              <tr>
+                <td><strong><span class="lang-ja">適時開示（TDnet）</span><span class="lang-en">Timely Disclosure (TDnet)</span></strong></td>
+                <td><span class="lang-ja">取引所規則</span><span class="lang-en">Exchange Rules</span></td>
+                <td><span class="lang-ja">決定・発生後直ちに（当日中が原則）</span><span class="lang-en">Immediately after decision/occurrence (same day in principle)</span></td>
+                <td><span class="lang-ja">リアルタイムな企業動向把握</span><span class="lang-en">Real-time corporate monitoring</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout">
+          <div class="callout-label"><span class="lang-ja">2024年改正ポイント</span><span class="lang-en">2024 Amendment</span></div>
+          <span class="lang-ja">2024年4月施行の金商法改正で四半期報告書が廃止され、<strong>半期報告書</strong>（半期終了後3ヶ月以内）に一本化された。同時に有報の「記述情報の充実」義務が強化され、サステナビリティ情報・人的資本・ガバナンスの開示が実質的に必須となった。DDや株式調査においてこれらの新開示項目が分析対象に加わっている。</span>
+          <span class="lang-en">The April 2024 FIEA amendment abolished quarterly reports and consolidated them into a <strong>semi-annual report</strong> (within 3 months of the half-year end). Simultaneously, the obligation to enhance "narrative disclosures" was strengthened, making sustainability, human capital, and governance disclosures effectively mandatory. These new items are now part of the standard DD and equity research scope.</span>
+        </div>
+
+        <h3><span class="lang-ja">有報の「記述情報」をAIで分析する</span><span class="lang-en">USING AI TO ANALYZE NARRATIVE DISCLOSURES IN ANNUAL REPORTS</span></h3>
+
+        <p>
+          <span class="lang-ja">有報のうちAIが最も力を発揮するのは「記述情報」セクションだ。財務諸表の数値はEDINET APIや各種データベースで構造化されているが、「事業等のリスク」「経営者による財政状態・経営成績等の分析（MD&amp;A）」「コーポレートガバナンス」の3セクションは自然言語で書かれており、人間が読み込むには時間がかかる。</span>
+          <span class="lang-en">Within annual reports, AI adds the most value in the narrative disclosure sections. Financial statement numbers are already structured in EDINET APIs and databases. But the "business risks," "management discussion and analysis (MD&amp;A)," and "corporate governance" sections are written in natural language — time-consuming for humans to absorb.</span>
+        </p>
+
+        <div class="prompt-box">
+          <div class="prompt-label">AI PROMPT EXAMPLE — <span class="lang-ja">有報リスクセクション分析</span><span class="lang-en">Annual Report Risk Section Analysis</span></div>
+          <div class="prompt-text">
+            <span class="lang-ja">
+            以下は[社名]の2025年3月期有価証券報告書「事業等のリスク」セクションです。<br><br>
+            <em>【分析タスク】</em><br>
+            1. リスクを以下のカテゴリに分類してください：市場リスク / オペレーションリスク / 規制・法的リスク / 財務リスク / ESGリスク<br>
+            2. 昨年度有報と比較し、新規追加・表現強化・削除されたリスク記述を特定してください<br>
+            3. 「重要性が高い」と判断されるリスク上位3件の根拠（発生可能性×影響度）を整理してください<br><br>
+            原文：[テキストを貼り付け]
+            </span>
+            <span class="lang-en">
+            The following is the "Business Risks" section from [Company]'s FY March 2025 annual securities report.<br><br>
+            <em>[Analysis Tasks]</em><br>
+            1. Classify risks by category: Market / Operational / Regulatory-Legal / Financial / ESG<br>
+            2. Compare to last year's filing and identify newly added, strengthened, or removed risk disclosures<br>
+            3. Summarize the top 3 highest-priority risks with your reasoning (likelihood × impact)<br><br>
+            Source text: [paste text here]
+            </span>
+          </div>
+        </div>
+
+        <p>
+          <span class="lang-ja">このアプローチの価値は「比較分析」にある。単年度の読み込みより、複数年・複数社の記述情報を横断的に比較することで、開示姿勢の変化・リスク認識の業界差・開示の充実度を数分で把握できる。ただしAIの出力は「整理された情報」であり、法的重要性（例：継続疑義注記の有無）の最終判断は人間が行う必要がある。</span>
+          <span class="lang-en">The value of this approach lies in comparative analysis. Rather than reading one report at a time, cross-referencing multiple years and companies reveals changes in disclosure stance, industry differences in risk perception, and disclosure quality — all within minutes. However, AI output is "organized information," not legal judgment. Final assessment of legal materiality (e.g., whether a going-concern note is present) remains a human responsibility.</span>
+        </p>
+
+        <!-- ======================================================== -->
+        <h2><span class="lang-ja">2. 適時開示の実務 — M&amp;A・IR担当者が押さえるべき論点</span><span class="lang-en">2. Timely Disclosure in Practice — Key Issues for M&amp;A and IR Professionals</span></h2>
+
+        <p>
+          <span class="lang-ja">適時開示は、上場企業に課せられる「重要情報をリアルタイムで公表する義務」であり、金商法ではなく取引所規則（東証の場合「有価証券上場規程」）を根拠とする。しかしその不履行は上場廃止に至りうる重大な規律であり、内容虚偽・遅延は金商法の不実表示・相場操縦と連動するリスクがある。</span>
+          <span class="lang-en">Timely disclosure is listed companies' obligation to release material information in real time, grounded not in FIEA but in exchange listing rules (Tokyo Stock Exchange's Securities Listing Regulations). However, violations can lead to delisting, and false or delayed disclosures may intersect with FIEA's misrepresentation and market manipulation provisions.</span>
+        </p>
+
+        <h3><span class="lang-ja">適時開示が必要なトリガーイベント</span><span class="lang-en">TRIGGER EVENTS REQUIRING TIMELY DISCLOSURE</span></h3>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">カテゴリ</span><span class="lang-en">Category</span></th>
+                <th><span class="lang-ja">典型的トリガー</span><span class="lang-en">Typical Triggers</span></th>
+                <th><span class="lang-ja">M&amp;A実務での注意点</span><span class="lang-en">M&amp;A Practice Notes</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong><span class="lang-ja">決算情報</span><span class="lang-en">Earnings</span></strong></td>
+                <td><span class="lang-ja">業績修正（±10%目安）、配当修正</span><span class="lang-en">Earnings revision (±10% threshold), dividend change</span></td>
+                <td><span class="lang-ja">M&amp;A交渉中の業績修正は適時開示とインサイダー管理が同時発動</span><span class="lang-en">Earnings revision during M&amp;A negotiation triggers both timely disclosure and insider management simultaneously</span></td>
+              </tr>
+              <tr>
+                <td><strong><span class="lang-ja">組織・資本</span><span class="lang-en">Corporate / Capital</span></strong></td>
+                <td><span class="lang-ja">合併・会社分割・株式交換・TOB・MBO</span><span class="lang-en">Mergers, demergers, share exchanges, TOB, MBO</span></td>
+                <td><span class="lang-ja">取締役会決議の直後に開示が必要——FAは開示タイミングを事前にクライアントと合意しておく</span><span class="lang-en">Disclosure required immediately after board resolution — FAs must pre-agree disclosure timing with clients</span></td>
+              </tr>
+              <tr>
+                <td><strong><span class="lang-ja">偶発事象</span><span class="lang-en">Contingencies</span></strong></td>
+                <td><span class="lang-ja">訴訟・行政処分・自然災害・サイバー攻撃</span><span class="lang-en">Litigation, regulatory action, natural disasters, cyberattacks</span></td>
+                <td><span class="lang-ja">「重要性判断」が難しく、法務とIRの協議が必要</span><span class="lang-en">"Materiality judgment" is difficult; requires legal-IR coordination</span></td>
+              </tr>
+              <tr>
+                <td><strong><span class="lang-ja">株主関係</span><span class="lang-en">Shareholder</span></strong></td>
+                <td><span class="lang-ja">大量保有報告（5%ルール）、支配株主の変更</span><span class="lang-en">Large shareholding report (5% rule), controlling shareholder change</span></td>
+                <td><span class="lang-ja">株式取得スキームの設計時に開示タイミングをスケジューリング</span><span class="lang-en">Schedule disclosure timing when designing share acquisition structures</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout danger">
+          <div class="callout-label"><span class="lang-ja">実務上の落とし穴</span><span class="lang-en">COMMON PITFALL</span></div>
+          <span class="lang-ja"><strong>「合意前なら開示不要」は危険な誤解だ。</strong> M&amp;A交渉において、「取締役会で正式決議していないから開示不要」という判断は誤りになりうる。適時開示の義務は「決定の事実」だけでなく「決定に準ずる状態」（実質的合意）に至った段階でも生じる可能性があり、開示が遅れた場合に証券監視委員会や取引所から問題視されるリスクがある。FAやIR担当は法務と早期に連携すること。</span>
+          <span class="lang-en"><strong>"No disclosure needed until we sign" is a dangerous misconception.</strong> In M&amp;A, the conclusion that "no board resolution means no disclosure obligation" can be wrong. Timely disclosure obligations may arise not only upon a formal "decision" but also when a "near-decision state" (de facto agreement) is reached. Delayed disclosure risks regulatory scrutiny from SESC or the exchange. FAs and IR teams should engage legal counsel early.</span>
+        </div>
+
+        <!-- ======================================================== -->
+        <h2><span class="lang-ja">3. インサイダー取引規制の深掘り</span><span class="lang-en">3. Insider Trading Regulations — Deep Dive</span></h2>
+
+        <p>
+          <span class="lang-ja">インサイダー取引規制（金商法第166条・第167条）は、上場会社の関係者が「重要事実」を知りながら、その公表前に当該会社の株式等を売買することを禁止する。Finance Professionalの実務では、特にM&amp;A・IPO・PE投資において、この規制の的確な理解と遵守が求められる。</span>
+          <span class="lang-en">Insider trading regulations (FIEA Articles 166 and 167) prohibit officers, employees, and related parties of listed companies from trading that company's securities while in possession of "material facts" before their public disclosure. For Finance Professionals, especially in M&amp;A, IPO, and PE, understanding and complying with these rules is non-negotiable.</span>
+        </p>
+
+        <div class="fact-grid">
+          <div class="fact-card">
+            <div class="fact-value">§166</div>
+            <div class="fact-desc"><span class="lang-ja">会社関係者インサイダー規制（役員・従業員・一定の契約関係者）</span><span class="lang-en">Corporate insider regulation (officers, employees, certain contractors)</span></div>
+          </div>
+          <div class="fact-card">
+            <div class="fact-value">§167</div>
+            <div class="fact-desc"><span class="lang-ja">公開買付者等関係者インサイダー規制（TOB・大量取得に関する規制）</span><span class="lang-en">TOB-related insider regulation (regulates those connected to tender offerors)</span></div>
+          </div>
+          <div class="fact-card">
+            <div class="fact-value">§167-2</div>
+            <div class="fact-desc"><span class="lang-ja">自己株式取得インサイダー規制（2014年追加）</span><span class="lang-en">Share buyback insider regulation (added in 2014)</span></div>
+          </div>
+        </div>
+
+        <h3><span class="lang-ja">「重要事実」の4類型</span><span class="lang-en">THE FOUR CATEGORIES OF "MATERIAL FACTS"</span></h3>
+
+        <p>
+          <span class="lang-ja">金商法第166条第2項は重要事実を4つのカテゴリで列挙する。実務家として最も問題になるのは「決定事実」と「バスケット条項」だ。</span>
+          <span class="lang-en">FIEA Article 166(2) enumerates material facts in four categories. In practice, "decision facts" and the "basket clause" cause the most difficulty.</span>
+        </p>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">類型</span><span class="lang-en">Category</span></th>
+                <th><span class="lang-ja">内容</span><span class="lang-en">Content</span></th>
+                <th><span class="lang-ja">典型例</span><span class="lang-en">Examples</span></th>
+                <th><span class="lang-ja">実務上の難しさ</span><span class="lang-en">Practical Difficulty</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong><span class="lang-ja">決定事実</span><span class="lang-en">Decision Facts</span></strong></td>
+                <td><span class="lang-ja">会社が決定した事項</span><span class="lang-en">Matters the company has decided</span></td>
+                <td><span class="lang-ja">合併・株式分割・募集株式発行・自社株取得</span><span class="lang-en">Mergers, stock splits, equity offerings, buybacks</span></td>
+                <td><span class="lang-ja">「決定」の時点が曖昧——取締役会決議前の段階も含まれうる</span><span class="lang-en">"When decided" is ambiguous — may include pre-board discussions</span></td>
+              </tr>
+              <tr>
+                <td><strong><span class="lang-ja">発生事実</span><span class="lang-en">Occurrence Facts</span></strong></td>
+                <td><span class="lang-ja">会社に発生した事象</span><span class="lang-en">Events that have occurred to the company</span></td>
+                <td><span class="lang-ja">災害損失・訴訟提起・主要取引先の倒産</span><span class="lang-en">Disaster losses, litigation filed, major customer bankruptcy</span></td>
+                <td><span class="lang-ja">「重要性」の閾値（純資産・利益の何%か）の判断が難しい</span><span class="lang-en">Determining the "materiality" threshold (% of net assets/profit) is difficult</span></td>
+              </tr>
+              <tr>
+                <td><strong><span class="lang-ja">決算情報</span><span class="lang-en">Earnings Facts</span></strong></td>
+                <td><span class="lang-ja">業績の著しい変動</span><span class="lang-en">Significant changes in financial performance</span></td>
+                <td><span class="lang-ja">売上・利益・配当の修正（±10%目安）</span><span class="lang-en">Revenue/profit/dividend revisions (±10% threshold)</span></td>
+                <td><span class="lang-ja">決算期末近くの取引禁止期間管理（ブラックアウト期間）</span><span class="lang-en">Managing blackout periods near fiscal year end</span></td>
+              </tr>
+              <tr>
+                <td><strong><span class="lang-ja">バスケット条項</span><span class="lang-en">Basket Clause</span></strong></td>
+                <td><span class="lang-ja">上記以外で投資判断に影響を与える情報</span><span class="lang-en">Any other information that would affect investment decisions</span></td>
+                <td><span class="lang-ja">大型契約の締結・解除、経営トップの不祥事、新技術の開発</span><span class="lang-en">Major contract signing/termination, executive misconduct, new technology</span></td>
+                <td><span class="lang-ja">定義が広すぎて予見可能性が低い。法務判断必須</span><span class="lang-en">Definition is broad, making foreseeability low. Legal judgment required</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3><span class="lang-ja">「知った時点」論点 — M&amp;Aにおける最重要論点</span><span class="lang-en">"WHEN DID THEY KNOW" — THE CRITICAL M&amp;A QUESTION</span></h3>
+
+        <p>
+          <span class="lang-ja">インサイダー取引の成立要件として「重要事実を知った」という主観的要素が必要だ。しかしM&amp;Aの現場ではこれが極めて難しい。FAやDD担当者は、秘密保持契約（NDA）締結後にターゲット企業から非公開情報を受領する。その瞬間から彼らは「インサイダー」となり、情報公表まで当該株式を売買できない。</span>
+          <span class="lang-en">Insider trading requires that the person "became aware" of a material fact — a subjective element that becomes extremely complex in M&amp;A. FAs and DD practitioners receive non-public information from target companies after signing NDAs. From that moment, they become "insiders" who cannot trade the target's securities until public disclosure.</span>
+        </p>
+
+        <div class="callout">
+          <div class="callout-label"><span class="lang-ja">情報受領のタイムライン管理</span><span class="lang-en">INFORMATION RECEIPT TIMELINE MANAGEMENT</span></div>
+          <span class="lang-ja">
+          M&amp;A実務では「情報バリア（Chinese Wall）」の設置と「ウォール・クロス（情報開示）」のタイミング管理が不可欠だ。特に証券会社の場合、アドバイザリー部門とセールス・リサーチ部門の間に物理的・システム的な情報遮断が必要になる。情報ウォールを越えた後のウォール・クロス済み者リストの管理、売買制限の付与、コンプライアンスへの報告が標準的なプロセスとなる。
+          </span>
+          <span class="lang-en">
+          M&amp;A practice requires information barriers ("Chinese Walls") and careful management of when those walls are crossed. For securities firms in particular, physical and system-level information barriers between advisory and sales/research are necessary. After crossing the wall, standard processes include maintaining a list of "wall-crossed" persons, imposing trading restrictions, and reporting to compliance.
+          </span>
+        </div>
+
+        <!-- ======================================================== -->
+        <h2><span class="lang-ja">4. AI × 金商法実務 — 具体的なワークフロー</span><span class="lang-en">4. AI × FIEA Practice — Concrete Workflows</span></h2>
+
+        <p>
+          <span class="lang-ja">ここからは具体的なAI活用ワークフローを示す。重要なのは「AIが何をすべきか」だけでなく「AIが何をすべきでないか」を合わせて示すことだ。</span>
+          <span class="lang-en">Here are concrete AI workflows, presented alongside a clear sense of what AI should and should not be asked to do.</span>
+        </p>
+
+        <h3><span class="lang-ja">ワークフロー①：有報・適時開示の自動監視と要約</span><span class="lang-en">WORKFLOW 1: AUTOMATED MONITORING AND SUMMARY OF FILINGS</span></h3>
+
+        <p>
+          <span class="lang-ja">投資銀行やPEファンドのアナリストにとって、監視対象企業の有報・適時開示を網羅的に把握することは現実的に困難だ。AIを使えば、EDINET APIで取得したXBRLデータや適時開示のテキストを以下のように処理できる。</span>
+          <span class="lang-en">For investment banking and PE analysts, comprehensively monitoring annual reports and timely disclosures across all portfolio or coverage companies is practically impossible at scale. AI makes the following processing possible using XBRL data from the EDINET API and timely disclosure text.</span>
+        </p>
+
+        <div class="prompt-box">
+          <div class="prompt-label">AI WORKFLOW — <span class="lang-ja">適時開示の即時分類</span><span class="lang-en">Instant Timely Disclosure Classification</span></div>
+          <div class="prompt-text">
+            <span class="lang-ja">
+            以下の適時開示テキストを読み、次の観点で分析してください：<br><br>
+            <em>【分析項目】</em><br>
+            1. 開示種別：[決算情報 / 組織再編 / 偶発事象 / 株主関係 / その他] のうちどれか<br>
+            2. 投資判断への影響度：[高 / 中 / 低] — 理由を50字以内で<br>
+            3. フォローアップが必要な未解決事項：あれば箇条書きで<br>
+            4. 関連して確認すべき過去の開示：あれば指摘する<br><br>
+            開示テキスト：[テキストを貼り付け]
+            </span>
+            <span class="lang-en">
+            Analyze the following timely disclosure text on these dimensions:<br><br>
+            <em>[Analysis Items]</em><br>
+            1. Disclosure type: [Earnings / Corporate reorganization / Contingency / Shareholder / Other]<br>
+            2. Investment decision impact: [High / Medium / Low] — state reason in under 50 words<br>
+            3. Unresolved items requiring follow-up: bullet list if any<br>
+            4. Related prior disclosures to verify: flag if relevant<br><br>
+            Disclosure text: [paste here]
+            </span>
+          </div>
+        </div>
+
+        <h3><span class="lang-ja">ワークフロー②：M&amp;Aにおけるインサイダーリスクチェックリスト生成</span><span class="lang-en">WORKFLOW 2: INSIDER RISK CHECKLIST GENERATION FOR M&amp;A</span></h3>
+
+        <p>
+          <span class="lang-ja">M&amp;AのFA業務では、案件ごとにインサイダー情報管理プロセスを整備する必要がある。AIはこの「プロセス設計」のドラフト作成に使える——ただし最終的なチェックリストはコンプライアンス・法務の承認が必要だ。</span>
+          <span class="lang-en">FA work on M&amp;A transactions requires building an insider information management process for each deal. AI can draft this "process design" — though the final checklist requires compliance and legal approval.</span>
+        </p>
+
+        <div class="prompt-box">
+          <div class="prompt-label">AI PROMPT EXAMPLE — <span class="lang-ja">インサイダー管理チェックリスト</span><span class="lang-en">Insider Management Checklist</span></div>
+          <div class="prompt-text">
+            <span class="lang-ja">
+            以下の案件概要をもとに、金商法第166条・167条のインサイダー取引規制に照らしたリスク管理チェックリストのドラフトを作成してください。<br><br>
+            案件概要：[買収スキーム / 対象会社の上場状況 / NDA締結予定日 / スケジュール概要 / 関与するアドバイザー]<br><br>
+            <em>【出力形式】</em><br>
+            ・フェーズ別（NDA前 / NDA後 / 取締役会決議後 / 公表後）の管理事項<br>
+            ・ウォールクロス対象者の特定基準<br>
+            ・売買制限の付与・解除タイミング<br>
+            ・コンプライアンスへの報告義務事項<br><br>
+            ※ このチェックリストはドラフトです。法務・コンプライアンス部門のレビューが必要です。
+            </span>
+            <span class="lang-en">
+            Based on the transaction overview below, draft an insider trading risk management checklist under FIEA Articles 166 and 167.<br><br>
+            Transaction overview: [acquisition structure / listing status of target / NDA signing date / timeline / advisors involved]<br><br>
+            <em>[Output Format]</em><br>
+            · Phase-by-phase management items (pre-NDA / post-NDA / post-board resolution / post-announcement)<br>
+            · Criteria for identifying wall-cross candidates<br>
+            · Trading restriction imposition and release timing<br>
+            · Compliance reporting obligations<br><br>
+            Note: This checklist is a draft. Legal and compliance review is required.
+            </span>
+          </div>
+        </div>
+
+        <h3><span class="lang-ja">ワークフロー③：コンプライアンス研修教材の自動生成</span><span class="lang-en">WORKFLOW 3: AUTO-GENERATION OF COMPLIANCE TRAINING MATERIALS</span></h3>
+
+        <p>
+          <span class="lang-ja">証券会社や投資銀行において、インサイダー取引規制に関する社内研修は定期的に実施が求められる。AIを使えば、実際の判例・金融庁公表事例をベースにした事例問題を自動生成し、研修教材を効率的に作成できる。</span>
+          <span class="lang-en">Securities firms and investment banks are required to conduct regular internal training on insider trading regulations. AI can generate case study questions based on actual court cases and FSA-published enforcement actions, dramatically reducing materials preparation time.</span>
+        </p>
+
+        <div class="callout">
+          <div class="callout-label"><span class="lang-ja">金融庁・証券監視委員会の公表事例を活用する</span><span class="lang-en">USING FSA AND SESC PUBLISHED ENFORCEMENT CASES</span></div>
+          <span class="lang-ja">
+          金融庁・証券取引等監視委員会（SESC）は、インサイダー取引の摘発事例・課徴金決定を定期的に公表している。これらの公開情報をAIに読み込ませ、「どのような状況が規制違反になったか」を事例化することで、法的解釈を企業名・固有名詞から切り離した研修教材が作れる。固有の事案を扱うため、AIが生成した事例は必ず法務担当者が確認すること。
+          </span>
+          <span class="lang-en">
+          The FSA and the Securities and Exchange Surveillance Commission (SESC) regularly publish insider trading enforcement cases and surcharge orders. Feeding these public records into AI allows you to extract "what circumstances led to violations" and convert them into training scenarios stripped of company names and identifiers. Since these involve specific cases, AI-generated scenarios should always be reviewed by legal personnel.
+          </span>
+        </div>
+
+        <!-- ======================================================== -->
+        <h2><span class="lang-ja">5. AIの限界と「使ってはいけない場面」</span><span class="lang-en">5. AI Limitations and When Not to Use It</span></h2>
+
+        <p>
+          <span class="lang-ja">AI活用の文脈では「できること」ばかりが強調されがちだが、法規制の領域では「使ってはいけない場面」の明示がより重要だ。</span>
+          <span class="lang-en">AI discourse tends to emphasize capabilities. In the regulatory domain, being explicit about when not to use AI matters more.</span>
+        </p>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">場面</span><span class="lang-en">Situation</span></th>
+                <th><span class="lang-ja">AIを使う ✓ / 使わない ✗</span><span class="lang-en">AI ✓ or ✗</span></th>
+                <th><span class="lang-ja">理由</span><span class="lang-en">Reason</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="lang-ja">有報の比較・要約・分類</span><span class="lang-en">Annual report comparison, summary, classification</span></td>
+                <td class="td-accent">✓ 使う</td>
+                <td><span class="lang-ja">客観的な情報整理タスク。AIの強みが発揮される</span><span class="lang-en">Objective information organization — AI's core strength</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">インサイダー管理プロセスのドラフト</span><span class="lang-en">Insider management process drafting</span></td>
+                <td class="td-accent">✓ ドラフトのみ</td>
+                <td><span class="lang-ja">最終的な法務・コンプライアンス承認が必要</span><span class="lang-en">Requires final legal/compliance approval</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">「この情報はインサイダー情報か？」の最終判断</span><span class="lang-en">Final judgment: "Is this information insider information?"</span></td>
+                <td class="td-warn">✗ 使わない</td>
+                <td><span class="lang-ja">法的判断であり、AIの回答は法的効力を持たない。弁護士に確認すること</span><span class="lang-en">This is a legal determination. AI answers have no legal force. Consult a lawyer.</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">開示義務の有無の最終判断</span><span class="lang-en">Final judgment on disclosure obligation</span></td>
+                <td class="td-warn">✗ 使わない</td>
+                <td><span class="lang-ja">同上。法務・コンプライアンスが判断する事項</span><span class="lang-en">Same as above. A legal/compliance determination.</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">コンプライアンス研修教材のドラフト</span><span class="lang-en">Compliance training materials drafting</span></td>
+                <td class="td-accent">✓ ドラフトのみ</td>
+                <td><span class="lang-ja">事例の法的正確性は法務確認が必要。生成速度の恩恵は大きい</span><span class="lang-en">Legal accuracy of case studies needs review, but generation speed benefits are large</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">訴訟・課徴金リスクの見積もり</span><span class="lang-en">Estimating litigation or surcharge risk</span></td>
+                <td class="td-warn">✗ 使わない</td>
+                <td><span class="lang-ja">個別事案の法的評価は弁護士業務。AIが数字を出しても根拠がない</span><span class="lang-en">Case-specific legal evaluation is legal practice. AI numbers have no grounding.</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>
+          <span class="lang-ja">最終的に、金商法の文脈でAIが最も価値を持つのは「情報処理の速度」と「漏れなく整理する能力」だ。法令の解釈や事案への適用はあくまで人間（弁護士・コンプライアンス担当者）の仕事であり、AIはその判断材料を整える役割に徹するべきだ。</span>
+          <span class="lang-en">Ultimately, AI's greatest value in the FIEA context is speed of information processing and comprehensive organization. Interpreting the law and applying it to specific facts remains human work — for lawyers and compliance officers. AI should focus on preparing the raw material for those judgments.</span>
+        </p>
+
+        <!-- ======================================================== -->
+        <h2><span class="lang-ja">おわりに — 「法令の読み手」から「法令の活用者」へ</span><span class="lang-en">Conclusion — From "Reading the Law" to "Using the Law"</span></h2>
+
+        <p>
+          <span class="lang-ja">金商法は複雑だが、Finance Professionalが全条文を暗記する必要はない。重要なのは「どのような状況で何が問題になるか」というフレームワークを持ち、問題が生じたら適切な専門家（弁護士・コンプライアンス）に繋げられることだ。AIはそのフレームワーク構築を加速し、日々の情報処理を効率化する道具として機能する。</span>
+          <span class="lang-en">FIEA is complex, but Finance Professionals don't need to memorize every article. What matters is having a framework for recognizing when a situation raises regulatory issues, and knowing how to escalate to the right experts (lawyers, compliance). AI accelerates that framework-building and serves as a tool for making daily information processing more efficient.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">開示規制については「何を・いつ・どう開示するか」の4軸フレームワーク、インサイダー取引規制については「重要事実の4類型」と「知った時点」の判定——この2つのフレームワークを身につけた上でAIを活用することで、単なる情報収集を超えた実務的洞察が得られる。</span>
+          <span class="lang-en">For disclosure regulation: the four-axis framework of who, what, when, and how. For insider trading: the four categories of material facts and the "when did they know" determination. Internalizing these two frameworks before deploying AI moves you from information collection to genuine practitioner insight.</span>
+        </p>
+
+        <!-- 免責事項 -->
+        <div class="disclaimer">
+          <strong><span class="lang-ja">免責事項</span><span class="lang-en">Disclaimer</span></strong><br>
+          <span class="lang-ja">本稿は金融商品取引法および関連規制に関する一般的な情報提供を目的としており、法的助言ではありません。具体的な法的判断（開示義務の有無・インサイダー情報該当性等）については、必ず弁護士または適切な専門家にご相談ください。法令は頻繁に改正されるため、最新の条文および当局のガイダンスを必ず確認してください。</span>
+          <span class="lang-en">This article is for general informational purposes regarding the Financial Instruments and Exchange Act and related regulations, and does not constitute legal advice. For specific legal determinations (disclosure obligations, insider information status, etc.), always consult a qualified attorney or appropriate specialist. Laws are frequently amended; always verify the latest statutory text and regulatory guidance.</span>
+        </div>
+
+      </article>
+
+      <!-- 4. サイドバー -->
+      <aside class="article-sidebar">
+
+        <div class="sidebar-card">
+          <span class="section-label">TABLE OF CONTENTS</span>
+          <ul class="toc-list">
+            <li><a href="#"><span class="lang-ja">1. 金商法の開示規制 — 4層構造</span><span class="lang-en">1. FIEA Disclosure — Four Layers</span></a></li>
+            <li><a href="#"><span class="lang-ja">2. 適時開示の実務</span><span class="lang-en">2. Timely Disclosure in Practice</span></a></li>
+            <li><a href="#"><span class="lang-ja">3. インサイダー取引規制の深掘り</span><span class="lang-en">3. Insider Trading — Deep Dive</span></a></li>
+            <li><a href="#"><span class="lang-ja">4. AI × 金商法実務ワークフロー</span><span class="lang-en">4. AI × FIEA Workflows</span></a></li>
+            <li><a href="#"><span class="lang-ja">5. AIの限界と使い分け</span><span class="lang-en">5. AI Limits and Usage Boundaries</span></a></li>
+          </ul>
+        </div>
+
+        <div class="sidebar-card">
+          <span class="section-label"><span class="lang-ja">キーポイント</span><span class="lang-en">KEY POINTS</span></span>
+          <div style="margin-top:10px; display:flex; flex-direction:column; gap:10px;">
+            <div class="fact-card" style="padding:12px 14px;">
+              <div class="fact-value" style="font-size:1.1rem;">4層</div>
+              <div class="fact-desc"><span class="lang-ja">有報・半期報告書・臨時報告書・適時開示の構造</span><span class="lang-en">Annual / semi-annual / extraordinary / timely disclosure structure</span></div>
+            </div>
+            <div class="fact-card" style="padding:12px 14px;">
+              <div class="fact-value" style="font-size:1.1rem;">4類型</div>
+              <div class="fact-desc"><span class="lang-ja">重要事実（決定・発生・決算・バスケット）</span><span class="lang-en">Material facts (decisions, occurrences, earnings, basket)</span></div>
+            </div>
+            <div class="fact-card" style="padding:12px 14px;">
+              <div class="fact-value" style="font-size:1.1rem;">§166</div>
+              <div class="fact-desc"><span class="lang-ja">会社関係者インサイダー規制の根拠条文</span><span class="lang-en">Core FIEA article for corporate insider regulation</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-card">
+          <span class="section-label">RELATED ARTICLES</span>
+          <ul class="source-list" style="margin-top:10px;">
+            <li><a href="./2026-03-22-pillar2.html"><span class="lang-ja">Pillar 2 グローバルミニマム税 — 日本企業の実務対応チェックリスト</span><span class="lang-en">Pillar 2 Global Minimum Tax — Japan Implementation Checklist</span></a></li>
+            <li><a href="./2026-03-21-ifrs18.html"><span class="lang-ja">IFRS 18 完全解説 — 損益計算書の3区分化</span><span class="lang-en">IFRS 18 — The Three-Category P&amp;L</span></a></li>
+            <li><a href="./2026-03-21-career.html"><span class="lang-ja">AIエラのFinanceキャリア戦略</span><span class="lang-en">Finance Career Strategy in the AI Era</span></a></li>
+          </ul>
+        </div>
+
+        <div class="sidebar-card">
+          <span class="section-label">REFERENCES</span>
+          <ul class="source-list" style="margin-top:10px;">
+            <li><a href="https://elaws.e-gov.go.jp/document?lawid=323AC0000000025" target="_blank" rel="noopener"><span class="lang-ja">金融商品取引法（e-Gov）</span><span class="lang-en">FIEA Full Text (e-Gov)</span></a></li>
+            <li><a href="https://www.fsa.go.jp/" target="_blank" rel="noopener"><span class="lang-ja">金融庁</span><span class="lang-en">Financial Services Agency</span></a></li>
+            <li><a href="https://disclosure2.edinet-fsa.go.jp/" target="_blank" rel="noopener">EDINET</a></li>
+            <li><a href="https://www.jpx.co.jp/listing/ir-clips/index.html" target="_blank" rel="noopener"><span class="lang-ja">東証 適時開示</span><span class="lang-en">TSE Timely Disclosure</span></a></li>
+          </ul>
+        </div>
+
+      </aside>
+
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <span><span class="lang-ja">企業法・金商法 × AI実務 | donato | 2026-03-22</span><span class="lang-en">Corp. Law &amp; FIEA × AI Practice | donato | 2026-03-22</span></span>
+  <span><span class="lang-ja">本稿は情報提供目的です。法的判断には必ず専門家にご相談ください。</span><span class="lang-en">For informational purposes only. Consult qualified professionals for legal determinations.</span></span>
+</footer>
+
+<script>
+  // Progress bar
+  window.addEventListener('scroll', function() {
+    var h = document.documentElement;
+    var pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    document.getElementById('progress-bar').style.width = Math.min(pct, 100) + '%';
+  });
+
+  // Reading time (500字/分)
+  (function() {
+    var text = document.querySelector('.article-body') ? document.querySelector('.article-body').textContent : '';
+    var chars = text.length;
+    var minutes = Math.ceil(chars / 500);
+    var labelJa = '約' + minutes + '分';
+    var labelEn = '~' + minutes + ' min';
+    var el1 = document.getElementById('reading-time-badge');
+    var el2 = document.getElementById('reading-time-badge2');
+    if (el1) {
+      var ja1 = el1.querySelector('.lang-ja');
+      var en1 = el1.querySelector('.lang-en');
+      if (ja1) ja1.textContent = labelJa;
+      if (en1) en1.textContent = labelEn;
+    }
+    if (el2) {
+      var ja2 = el2.querySelector('.lang-ja');
+      var en2 = el2.querySelector('.lang-en');
+      if (ja2) ja2.textContent = labelJa;
+      if (en2) en2.textContent = labelEn;
+    }
+  })();
+
+  // Lang toggle
+  let currentLang = localStorage.getItem('hp-lang') || 'ja';
+  let currentTheme = localStorage.getItem('hp-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+
+  function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('hp-lang', lang);
+    document.querySelectorAll('.lang-ja').forEach(el => el.style.display = lang === 'ja' ? 'inline' : 'none');
+    document.querySelectorAll('.lang-en').forEach(el => el.style.display = lang === 'en' ? 'inline' : 'none');
+    document.querySelectorAll('.art-lang-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+    document.documentElement.lang = lang === 'ja' ? 'ja' : 'en';
+  }
+
+  function toggleTheme() {
+    currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+    localStorage.setItem('hp-theme', currentTheme);
+    document.body.classList.toggle('dark', currentTheme === 'dark');
+    document.getElementById('theme-btn').textContent = currentTheme === 'light' ? '☀' : '☾';
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    setLang(currentLang);
+    if (currentTheme === 'dark') {
+      document.body.classList.add('dark');
+      document.getElementById('theme-btn').textContent = '☾';
+    }
+  });
+</script>
+
+</body>
+</html>

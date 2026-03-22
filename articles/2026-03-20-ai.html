@@ -32,6 +32,16 @@
       --table-stripe: #F0EFEB;
     }
 
+    #progress-bar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      width: 0%;
+      background: var(--accent);
+      z-index: 300;
+      transition: width 0.1s linear;
+    }
+
     body {
       font-family: 'Noto Serif JP', Georgia, serif;
       font-size: 17px;
@@ -533,6 +543,8 @@
   </style>
 </head>
 <body>
+
+<div id="progress-bar"></div>
 
   <!-- 1. サイトヘッダー -->
   <header class="site-header">
@@ -1104,6 +1116,13 @@
   </footer>
 
   <script>
+    // Progress bar
+    window.addEventListener('scroll', function() {
+      var h = document.documentElement;
+      var pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+      document.getElementById('progress-bar').style.width = Math.min(pct, 100) + '%';
+    });
+
     // Persist EN/JP and Dark/Light across all pages via localStorage
     let currentLang = localStorage.getItem('hp-lang') || 'ja';
     let currentTheme = localStorage.getItem('hp-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');

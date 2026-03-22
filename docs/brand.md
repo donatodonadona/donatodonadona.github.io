@@ -113,6 +113,17 @@ body {
 
 ---
 
+## 禁止事項（ブランド違反）
+
+| 禁止 | 理由 | 代替 |
+|------|------|------|
+| `text-transform: uppercase` | 全大文字表記はブランド指針違反。JSテンプレート内のインラインstyleでも禁止 | テキスト自体を正しいケースで記述する |
+| `text-transform: lowercase` | ワードマーク（donato）専用。他への流用禁止 | — |
+
+> **特に注意:** 記事カードのジャンルバッジ・ラベル類は `text-transform:uppercase` を使わず、`articles.json` の `genre_en` / `genre_ja` に正しいケースで値を書く。
+
+---
+
 ## 適用範囲
 
 - `apps/personal-site/` — 個人HP（基準実装）

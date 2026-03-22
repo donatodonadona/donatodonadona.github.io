@@ -4,6 +4,25 @@
 
 ---
 
+## Hero テキストのフォーマット禁止事項
+
+**JP hero（h1）では以下を禁止する。過去の既存コードにこのパターンがあっても踏襲しないこと。**
+
+- `<br>` による改行禁止 — JPテキストは折り返しをブラウザに任せる
+- 読点（`。`）禁止 — キャッチコピーに句点は不要
+
+**違反例（禁止）:**
+```html
+<span data-ja>本質を読む<br><span class="gradient">専門分析</span><span class="hero-italic-ja">。</span></span>
+```
+
+**正しい書き方:**
+```html
+<span data-ja>本質を読む<span class="gradient">専門分析</span></span>
+```
+
+---
+
 ## 記事カードの読了時間はハードコード禁止
 
 `articles/index.html` の読了時間バッジ（`.read-time-badge`）は **JS が動的に上書きする**。

@@ -205,17 +205,23 @@
       gap: 0.35rem;
     }
     .announce-item {
-      display: flex;
-      gap: 1rem;
+      display: grid;
+      grid-template-columns: 90px 120px 1fr;
+      gap: 0.5rem 0.75rem;
       align-items: baseline;
       font-family: 'Inter', sans-serif;
       font-size: 0.8rem;
+    }
+    .announce-item .genre-badge {
+      min-width: 0;
+      width: 100%;
+      text-align: center;
+      box-sizing: border-box;
     }
     .announce-date {
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.65rem;
       color: var(--text2);
-      flex-shrink: 0;
     }
     .announce-text { color: var(--text); line-height: 1.45; }
     .announce-text a { color: var(--accent); text-decoration: none; }

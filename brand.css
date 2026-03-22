@@ -1,0 +1,52 @@
+/*
+ * Donato Brand Utility Classes
+ * ブランドパレット（ブルー系・ゴールド・グレースケール）のみ使用。
+ * ベーススタイルは各ページのinline <style>で管理。このファイルはユーティリティのみ。
+ *
+ * Blue family:  #1A6EB0 / #2E88CA / #0F4F80 / #0A3560
+ * Gold family:  #F5C800 / #F7D440 / #C9A400
+ * Grayscale:    #E4E2DC / #7A8099 / #3D4260 / #21253A / #12141C / #0A0B10
+ */
+
+/* ─── Background utilities ─────────────────────────────────── */
+.bg-accent        { background: var(--accent);  }   /* #1A6EB0 Deep Nordic */
+.bg-accent-light  { background: #2E88CA; }           /* Light Nordic */
+.bg-accent-dark   { background: #0F4F80; }           /* Dark Nordic */
+.bg-accent-deeper { background: #0A3560; }           /* Deeper Nordic */
+.bg-gold          { background: var(--gold); }       /* #F5C800 Chrome Yellow */
+.bg-gold-dark     { background: #C9A400; }           /* Dark Yellow */
+.bg-gray-muted    { background: #7A8099; }           /* Muted */
+.bg-gray-dim      { background: #3D4260; }           /* Dim */
+.bg-gray-border   { background: #21253A; }           /* Border */
+.bg-surface       { background: var(--surface); }
+
+/* ─── Text color utilities ──────────────────────────────────── */
+.text-accent      { color: var(--accent); }
+.text-gold        { color: var(--gold); }
+.text-muted       { color: var(--text2); }
+.text-dim         { color: #3D4260; }
+.text-base        { color: var(--text); }
+
+/* ─── Genre badges ──────────────────────────────────────────── */
+.genre-badge {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.58rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 2px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.genre-badge.card-badge { display: block; width: fit-content; margin-bottom: 0.6rem; }
+
+.badge-valuation   { background: var(--gold);   color: #0A0B10; }
+.badge-ai          { background: var(--accent);  color: #fff; }
+.badge-claude-code { background: #2E88CA;        color: #0A0B10; }
+.badge-accounting  { background: #0F4F80;        color: #E4E2DC; }
+.badge-tax         { background: #0A3560;        color: #E4E2DC; border: 1px solid #1A6EB0; }
+.badge-career      { background: #7A8099;        color: #0A0B10; }
+.badge-law         { background: #3D4260;        color: #E4E2DC; }
+.badge-ma          { background: #21253A;        color: #7A8099; border: 1px solid var(--border, #21253A); }

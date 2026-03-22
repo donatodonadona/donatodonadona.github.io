@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="DLOC（支配権欠如ディスカウント）とDLOM（市場性欠如ディスカウント）の理論構造を解剖する。Longstaff・Chaffe・Finnerty の3オプションモデルを比較し、各モデルが何を仮定して何を計測しているかを明らかにする。Valuation Theory Lab #005。">
+  <title>DLOC・DLOMの理論と実務 — 支配権と流動性の価格 | Valuation Theory Lab #005 | donato</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+JP:wght@300;400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../brand.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:           #F8F7F4;
+      --bg-code:      #EEECEA;
+      --bg-quote:     #EEECEA;
+      --bg-highlight: #EBF3FB;
+      --bg-subtle:    #F0EFEB;
+      --bg-card:      #F0EFEB;
+      --bg-header:    #F8F7F4;
+      --text-primary: #111320;
+      --text-body:    #2A2C3E;
+      --text-muted:   #565C70;
+      --text-light:   #888EA0;
+      --accent:       #1A6EB0;
+      --accent-warm:  #D4A010;
+      --border:       #D4D2CC;
+      --border-quote: #B8B6B0;
+      --border-light: #D4D2CC;
+      --tag-bg:       #E4EFF8;
+      --tag-text:     #1A6EB0;
+      --table-stripe: #F0EFEB;
+    }
+
+    /* ===== PROGRESS BAR ===== */
+    #progress-bar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      width: 0%;
+      background: var(--accent);
+      z-index: 300;
+      transition: width 0.1s linear;
+    }
+
+    body {
+      font-family: 'Noto Serif JP', Georgia, serif;
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--text-primary);
+      background: var(--bg);
+    }
+
+    /* ===== SITE HEADER ===== */
+    .site-header {
+      background: var(--bg-header);
+      border-bottom: 2px solid var(--accent);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .site-header-left { display: flex; align-items: center; gap: 12px; }
+    .wordmark {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: lowercase;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+    .wordmark span { color: var(--accent-warm); }
+    .header-sep { color: var(--border-quote); font-size: 13px; }
+    .header-media {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+    }
+    .site-header-right { display: flex; align-items: center; gap: 12px; }
+    .header-back-link {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .header-back-link:hover { color: var(--accent); }
+    .lang-toggle-bar {
+      display: flex;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .art-lang-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      padding: 3px 10px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .art-lang-btn.active { background: #F5C800; color: #111320; }
+    #theme-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      padding: 3px 9px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.15s;
+    }
+    #theme-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .header-date {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-light);
+      letter-spacing: 0.08em;
+    }
+
+    /* ===== STICKY INFO BAR ===== */
+    #sticky-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg-subtle);
+      border-bottom: 1px solid var(--border-light);
+      padding: 7px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .sbar-cat {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+    }
+    .sbar-sep { color: var(--border-quote); font-size: 11px; }
+    .sbar-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+    .sbar-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      padding: 2px 8px;
+    }
+
+    /* ===== LAYOUT ===== */
+    .article-container { max-width: 1240px; margin: 0 auto; padding: 0 20px; }
+    .article-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 24px;
+    }
+    .article-body { grid-column: 2 / 10; max-width: 68ch; }
+    .article-sidebar {
+      grid-column: 10 / 13;
+      position: sticky;
+      top: 44px;
+      align-self: start;
+      max-height: calc(100vh - 56px);
+      overflow-y: auto;
+    }
+    .article-sidebar::-webkit-scrollbar { width: 4px; }
+    .article-sidebar::-webkit-scrollbar-track { background: transparent; }
+    .article-sidebar::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 2px; }
+
+    /* ===== TYPOGRAPHY ===== */
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+    }
+    .article-headline {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(2rem, 4vw, 2.6rem);
+      font-weight: 600;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+    .article-standfirst {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      font-weight: 400;
+    }
+    .byline {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    h2 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.45rem;
+      font-weight: 600;
+      line-height: 1.25;
+      color: var(--text-primary);
+      margin: 2em 0 0.75em;
+      border-top: 1px solid var(--border);
+      padding-top: 1em;
+    }
+    h3 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin: 1.75em 0 0.5em;
+    }
+    .article-body p { margin-bottom: 1.4em; font-size: 0.97rem; line-height: 1.8; }
+    .article-body ul, .article-body ol { margin: 0 0 1.4em 1.4em; }
+    .article-body li { margin-bottom: 0.4em; font-size: 0.95rem; line-height: 1.7; }
+    strong { color: var(--text-primary); font-weight: 600; }
+
+    /* ===== EXEC SUMMARY ===== */
+    .exec-summary {
+      background: var(--bg-highlight);
+      border: 1px solid var(--border-light);
+      border-left: 4px solid var(--accent);
+      padding: 24px;
+      margin: 0 0 2.5em;
+    }
+    .exec-block { margin-bottom: 20px; }
+    .exec-block:last-child { margin-bottom: 0; }
+    .exec-block + .exec-block { padding-top: 18px; border-top: 1px solid var(--border-light); }
+    .exec-tldr {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.02rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      line-height: 1.55;
+      margin-top: 8px;
+    }
+    .issues-list, .implications-list {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .issue-item { display: flex; gap: 10px; align-items: baseline; }
+    .issue-q {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 500;
+      color: var(--accent);
+      background: var(--tag-bg);
+      padding: 1px 6px;
+      white-space: nowrap;
+    }
+    .issue-text { font-size: 0.9rem; line-height: 1.6; color: var(--text-body); }
+    .implication-item { font-size: 0.9rem; line-height: 1.6; color: var(--text-body); padding-left: 1em; border-left: 2px solid var(--border); }
+
+    /* ===== CALLOUT / INSIGHT ===== */
+    .insight-box {
+      background: var(--bg-quote);
+      border-left: 3px solid var(--accent);
+      padding: 16px 20px;
+      margin: 1.6em 0;
+      font-size: 0.93rem;
+      line-height: 1.75;
+      color: var(--text-body);
+    }
+    .warning-box {
+      background: #FFF8E6;
+      border: 1px solid #E8C84A;
+      border-left: 4px solid var(--accent-warm);
+      padding: 16px 20px;
+      margin: 1.6em 0;
+      font-size: 0.93rem;
+      line-height: 1.75;
+    }
+
+    /* ===== FORMULA / CALC ===== */
+    .formula {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.88rem;
+      background: var(--bg-code);
+      border: 1px solid var(--border-light);
+      padding: 14px 18px;
+      margin: 1.2em 0;
+      line-height: 1.6;
+      color: var(--text-primary);
+      overflow-x: auto;
+    }
+    .formula-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text-light);
+      letter-spacing: 0.08em;
+      margin-bottom: 4px;
+    }
+    .calc-block {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      padding: 18px;
+      margin: 1.4em 0;
+    }
+    .calc-row {
+      display: flex;
+      justify-content: space-between;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      padding: 6px 0;
+      border-bottom: 1px solid var(--border-light);
+      color: var(--text-body);
+    }
+    .calc-row:last-child { border-bottom: none; }
+    .calc-highlight { color: var(--accent); font-weight: 600; }
+    .calc-warn { color: #C07820; }
+
+    /* ===== TABLE ===== */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      margin: 1.6em 0;
+    }
+    .data-table th {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      border-bottom: 2px solid var(--border);
+      padding: 8px 10px;
+      text-align: left;
+    }
+    .data-table td {
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--border-light);
+      vertical-align: top;
+    }
+    .data-table tr:nth-child(even) td { background: var(--table-stripe); }
+    .data-table .accent-cell { color: var(--accent); font-weight: 600; }
+    .data-table .warn-cell { color: #C07820; }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      padding: 16px;
+      margin-bottom: 16px;
+      font-size: 0.85rem;
+    }
+    .sidebar-card .section-label { margin-bottom: 12px; display: block; }
+    .key-stats { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+    .fact-card { border-left: 3px solid var(--accent); padding-left: 10px; }
+    .fact-card.highlight { background: #FFF9E6; border-left-color: var(--accent-warm); padding: 8px 10px; }
+    .fact-value { font-family: 'JetBrains Mono', monospace; font-size: 1.2rem; font-weight: 600; color: var(--accent); }
+    .fact-card.highlight .fact-value { color: var(--accent-warm); }
+    .fact-desc { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; line-height: 1.4; }
+    .fact-card.highlight .fact-desc { color: #A07828; }
+    .highlights-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+    .highlight-item { display: flex; gap: 8px; align-items: baseline; }
+    .hl-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text-light);
+      min-width: 20px;
+    }
+    .hl-text { font-size: 0.82rem; color: var(--text-body); line-height: 1.45; }
+    .source-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+    .source-list li { font-size: 0.8rem; }
+    .source-list a { color: var(--accent); text-decoration: none; }
+    .source-list a:hover { text-decoration: underline; }
+
+    /* ===== NEXT ARTICLE ===== */
+    .next-article {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      border-top: 3px solid var(--accent);
+      padding: 20px 24px;
+      margin-top: 3em;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+    }
+    .next-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text-light);
+      letter-spacing: 0.1em;
+      margin-bottom: 6px;
+    }
+    .next-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .next-arrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.4rem;
+      color: var(--accent);
+    }
+
+    /* ===== DISCOUNT STACK ===== */
+    .discount-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin: 1.4em 0;
+      border: 1px solid var(--border-light);
+    }
+    .ds-row {
+      display: flex;
+      align-items: stretch;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .ds-row:last-child { border-bottom: none; }
+    .ds-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      padding: 10px 14px;
+      background: var(--bg-subtle);
+      color: var(--text-muted);
+      min-width: 180px;
+      border-right: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+    }
+    .ds-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      padding: 10px 14px;
+      color: var(--text-body);
+      flex: 1;
+      display: flex;
+      align-items: center;
+    }
+    .ds-value.accent { color: var(--accent); font-weight: 600; }
+    .ds-value.warn { color: #C07820; }
+
+    /* ===== MODEL COMPARE ===== */
+    .model-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 1.4em 0;
+    }
+    .model-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-top: 3px solid var(--accent);
+      padding: 14px;
+    }
+    .model-name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 6px;
+      letter-spacing: 0.06em;
+    }
+    .model-desc { font-size: 0.82rem; color: var(--text-body); line-height: 1.5; }
+
+    /* ===== LANG TOGGLE ===== */
+    .lang-en { display: none; }
+
+    /* ===== FOOTER ===== */
+    .site-footer {
+      border-top: 1px solid var(--border-light);
+      margin-top: 4em;
+      padding: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* ===== PRINT ===== */
+    @media print {
+      body { background: white; font-size: 11pt; }
+      .site-header, #sticky-bar, #progress-bar { display: none; }
+      .article-sidebar { position: static; max-height: none; overflow: visible; }
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+    @page { size: A4; margin: 20mm 15mm; }
+
+    /* ===== MOBILE ===== */
+    @media (max-width: 900px) {
+      .article-body { grid-column: 1 / -1; }
+      .article-sidebar { position: static; max-height: none; overflow: visible; grid-column: 1 / -1; }
+      .article-grid { display: block; }
+      .model-grid { grid-template-columns: 1fr; }
+      #sticky-bar { flex-wrap: wrap; gap: 6px; }
+    }
+
+    body.dark {
+      --bg:           #0D1117;
+      --bg-code:      #161B22;
+      --bg-quote:     #161B22;
+      --bg-highlight: #0E1A2B;
+      --bg-subtle:    #161B22;
+      --bg-card:      #161B22;
+      --bg-header:    #0D1117;
+      --text-primary: #E4E2DC;
+      --text-body:    #C4C2BC;
+      --text-muted:   #8B93A8;
+      --text-light:   #575E70;
+      --accent:       #3A8FD0;
+      --accent-warm:  #F5C800;
+      --border:       #21253A;
+      --border-quote: #2A2D3E;
+      --border-light: #21253A;
+      --tag-bg:       #0E1A2B;
+      --tag-text:     #3A8FD0;
+      --table-stripe: #161B22;
+    }
+    body.dark .warning-box { background: #1A1400; border-color: #3A2D00; }
+    body.dark .fact-card.highlight { background: #1A1600; border-color: #3A2D00; }
+    body.dark .fact-card.highlight .fact-value { color: #C4900E; }
+    body.dark .fact-card.highlight .fact-desc { color: #A07828; }
+    body.dark .next-article { background: #111320; }
+    body.dark .model-card { border-color: #21253A; }
+  </style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<!-- 1. サイトヘッダー -->
+<header class="site-header">
+  <div class="site-header-left">
+    <a class="wordmark" href="../index.html">dona<span>to</span></a>
+    <span class="header-sep">—</span>
+    <a class="header-back-link" href="./index.html"><span class="lang-ja">記事一覧</span><span class="lang-en">Articles</span></a>
+    <span class="header-sep">—</span>
+    <span class="header-media">Valuation Theory Lab</span>
+  </div>
+  <div class="site-header-right">
+    <div class="lang-toggle-bar">
+      <button class="art-lang-btn active" data-lang="ja" onclick="setLang('ja')">JP</button>
+      <button class="art-lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+    </div>
+    <button id="theme-btn" onclick="toggleTheme()" title="ダーク/ライト切替">☀</button>
+    <time class="header-date">2026-03-22</time>
+  </div>
+</header>
+
+<!-- 2. スティッキー情報バー -->
+<div id="sticky-bar">
+  <span class="sbar-cat">VALUATION THEORY LAB</span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-text"><span class="lang-ja">Series #005 · DLOC / DLOM · 支配権と流動性の価格</span><span class="lang-en">Series #005 · DLOC / DLOM · Pricing Control and Liquidity</span></span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-text">2026-03-22</span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-badge" id="reading-time-badge"><span class="lang-ja">約14分</span><span class="lang-en">~14 min</span></span>
+</div>
+
+<main style="padding: 0 0 3em;">
+  <div class="article-container">
+    <div class="article-grid">
+
+      <!-- 3. 記事本文 -->
+      <article class="article-body">
+
+        <!-- 記事ヘッダー -->
+        <div style="padding: 36px 0 24px;">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+            <div class="section-label">Valuation Theory Lab &nbsp;#005</div>
+            <span class="sbar-badge" id="reading-time-badge2"><span class="lang-ja">約14分</span><span class="lang-en">~14 min</span></span>
+          </div>
+          <h1 class="article-headline">
+            <span class="lang-ja">DLOC・DLOMの理論と実務<br>— 支配権と流動性の価格をどう計測するか</span>
+            <span class="lang-en">DLOC and DLOM: Theory and Practice<br>— How to Measure the Price of Control and Liquidity</span>
+          </h1>
+          <p class="article-standfirst">
+            <span class="lang-ja">非公開会社・少数持分・制限付き株式のバリュエーションでは、支配権欠如ディスカウント（DLOC）と市場性欠如ディスカウント（DLOM）が価値を大きく左右する。しかし両ディスカウントは「経験則で20〜30%」と機械的に適用されがちで、理論的根拠が問われることは少ない。本稿では、DLOCとDLOMの理論構造を分解し、特にオプション評価法によるDLOM（Longstaff・Chaffe・Finnertyの3モデル）の仮定・計測対象・限界を比較する。</span>
+            <span class="lang-en">In valuing private companies, minority interests, and restricted stock, the Discount for Lack of Control (DLOC) and the Discount for Lack of Marketability (DLOM) can dramatically affect the concluded value. Yet both discounts are often applied mechanically — "20–30% by convention" — with little scrutiny of their theoretical foundations. This article deconstructs the theory of DLOC and DLOM, with particular focus on the three option-based DLOM models (Longstaff, Chaffe, and Finnerty) and what each actually measures.</span>
+          </p>
+          <div style="display:flex; gap:16px; align-items:center; border-top:1px solid var(--border-light); border-bottom:1px solid var(--border-light); padding:10px 0;">
+            <span class="byline">By <strong>Donato Valuation Notes</strong></span>
+            <span style="color:var(--border);">|</span>
+            <time class="byline" datetime="2026-03-22"><span class="lang-ja">2026年3月22日</span><span class="lang-en">March 22, 2026</span></time>
+            <span style="color:var(--border);">|</span>
+            <span class="byline"><span class="lang-ja">DLOC · DLOM · 非公開会社バリュエーション</span><span class="lang-en">DLOC · DLOM · Private Company Valuation</span></span>
+          </div>
+        </div>
+
+        <!-- 構造化エグゼクティブサマリー -->
+        <section class="exec-summary">
+
+          <!-- TL;DR -->
+          <div class="exec-block">
+            <div class="section-label">TL;DR</div>
+            <p class="exec-tldr">
+              <span class="lang-ja">DLOCは「支配権がないことで失われるキャッシュフロー制御能力」のコスト、DLOMは「売却できないことで失われるオプション価値」のコストだ。前者はM&Aデータで実証、後者はオプション理論で導出できる。ただし、3つのオプションモデル（Longstaff・Chaffe・Finnerty）はそれぞれ異なる機会コストを計測しており、「どれが正しいか」ではなく「何を仮定しているか」を理解して適用する必要がある。</span>
+              <span class="lang-en">DLOC is the cost of losing cash flow control due to a lack of voting power. DLOM is the cost of losing optionality due to illiquidity. The former is empirically grounded in M&A data; the latter can be derived from option theory. However, the three option models (Longstaff, Chaffe, and Finnerty) each measure a different opportunity cost. The practitioner's task is not to determine which model is "correct," but to understand what each assumes and choose accordingly.</span>
+            </p>
+          </div>
+
+          <!-- 論点 -->
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">本稿の論点</span><span class="lang-en">Key Questions</span></div>
+            <ul class="issues-list">
+              <li class="issue-item">
+                <span class="issue-q">Q1</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>DLOCとは何の価値を計測しているか？</strong> — 支配権プレミアムの実証データと、control premium / (1 + control premium) 変換の意味を理解する。</span>
+                  <span class="lang-en"><strong>What does DLOC actually measure?</strong> — Understand the empirical basis for control premiums and the meaning of the control premium / (1 + control premium) conversion.</span>
+                </span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">Q2</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>DLOMの実証研究は何を示しているか？</strong> — Restricted stock studies と IPO studies（Emory法）のアプローチ、決定要因（規模・収益性・保有比率等）、実証レンジ。</span>
+                  <span class="lang-en"><strong>What do empirical DLOM studies show?</strong> — The restricted stock and IPO study methodologies (Emory method), key determinants (size, profitability, holding size), and the empirical range.</span>
+                </span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">Q3</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>オプション評価法の3モデルは何が違うか？</strong> — Longstaff（完全情報・売却自由度上限）、Chaffe（購入プット・流動性保険コスト）、Finnerty（アジアン平均行使プット）の仮定と計測対象を比較する。</span>
+                  <span class="lang-en"><strong>How do the three option models differ?</strong> — Compare Longstaff (perfect foresight, upper-bound optionality cost), Chaffe (purchased put, liquidity insurance cost), and Finnerty (average-strike Asian put) in terms of assumptions and what each measures.</span>
+                </span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">Q4</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>DLOCとDLOMの適用順序と乗算問題とは？</strong> — 価値の階層（支配権価値→少数持分価値→非市場性少数持分価値）と、DLOCとDLOMを単純乗算することの理論的問題。</span>
+                  <span class="lang-en"><strong>What is the correct application sequence for DLOC and DLOM?</strong> — The valuation hierarchy (control value → minority interest value → non-marketable minority value) and the theoretical issue with simply multiplying the two discounts.</span>
+                </span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- 実務家への含意 -->
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">Valuation実務家への含意</span><span class="lang-en">Implications for Practitioners</span></div>
+            <ul class="implications-list">
+              <li class="implication-item">
+                <span class="lang-ja"><strong>DLOCは「何を支配できないか」で規模が決まる</strong> — 配当政策・M&A・経営陣選任の支配権がないだけで価値は大きく変わる。支配権プレミアムは業種・取引構造によって2倍以上のバラツキがある。</span>
+                <span class="lang-en"><strong>DLOC magnitude depends on what you cannot control</strong> — The inability to control dividends, M&A decisions, or management selection substantially affects value. Control premiums vary by more than 2x across industries and transaction structures.</span>
+              </li>
+              <li class="implication-item">
+                <span class="lang-ja"><strong>DLOMはモデル選択で結果が変わる</strong> — 同一パラメータ（T=5年、σ=35%）でLongstaffは54%、ChaffeのATMプットは約24%、Finnertyは約18%という数値が出る。モデル選択の根拠を開示することが不可欠だ。</span>
+                <span class="lang-en"><strong>DLOM varies significantly by model choice</strong> — Using the same parameters (T=5 years, σ=35%), Longstaff gives ~54%, Chaffe's ATM put ~24%, and Finnerty ~18%. Disclosure of the model selection rationale is essential.</span>
+              </li>
+              <li class="implication-item">
+                <span class="lang-ja"><strong>DLOCとDLOMは独立でない</strong> — 支配持分に対してDLOMを適用する文脈では、支配権を持っていればいつでも売却を強制できるためDLOMは縮小する。両者は相互依存関係にある。</span>
+                <span class="lang-en"><strong>DLOC and DLOM are not independent</strong> — When applying DLOM to a controlling interest, the DLOM should be smaller because control enables a forced sale. The two discounts are interdependent.</span>
+              </li>
+            </ul>
+          </div>
+
+        </section>
+
+        <!-- ======================================================== -->
+        <h2><span class="lang-ja">1. DLOC — 支配権欠如ディスカウントの理論</span><span class="lang-en">1. DLOC — The Theory Behind the Discount for Lack of Control</span></h2>
+
+        <h3><span class="lang-ja">支配権の価値とは何か</span><span class="lang-en">WHAT CONTROL IS WORTH</span></h3>
+
+        <p>
+          <span class="lang-ja">支配権（Control）の価値は、意思決定権限から生まれる。支配株主は以下を決定できる：配当政策と配当水準、設備投資・M&A戦略、経営陣の選任・解任、資本構成の変更（増資・借入）、会社売却・清算。少数株主にはこれらの決定権がない。</span>
+          <span class="lang-en">Control value derives from decision-making authority. A controlling shareholder can determine: dividend policy and payout levels, capital expenditures and M&A strategy, management selection and removal, capital structure changes (equity raises, borrowing), and company sale or liquidation. A minority shareholder has none of these rights.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">この非対称性が「支配権プレミアム（Control Premium）」として価格に現れる。支配権プレミアムは、買収者が少数持分の時価総額に上乗せして支払う割増率だ。</span>
+          <span class="lang-en">This asymmetry manifests as a control premium in transaction prices. The control premium is the percentage premium a buyer pays above the minority interest market value to acquire a controlling stake.</span>
+        </p>
+
+        <h3><span class="lang-ja">DLOCの計算：コントロールプレミアムからの導出</span><span class="lang-en">DERIVING DLOC FROM THE CONTROL PREMIUM</span></h3>
+
+        <p>
+          <span class="lang-ja">支配権プレミアムのデータソースとしては、Mergerstat（現BVR）のControl Premium Study、S&amp;P Capital IQ、Factsetのデータベースが代表的だ。歴史的な中央値は25〜35%のレンジに収まることが多い。</span>
+          <span class="lang-en">Key data sources for control premiums include the BVR/Mergerstat Control Premium Study, S&amp;P Capital IQ, and Factset transaction databases. Historically, the median control premium tends to fall in the 25–35% range.</span>
+        </p>
+
+        <div class="formula-label">DLOC = 1 − 1/(1 + Control Premium)</div>
+        <div class="formula">Control Premium = 30%  →  DLOC = 1 − 1/1.30 = 23.1%
+Control Premium = 40%  →  DLOC = 1 − 1/1.40 = 28.6%
+Control Premium = 20%  →  DLOC = 1 − 1/1.20 = 16.7%</div>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>なぜ Control Premium をそのままDLOCとして使えないか。</strong>Control Premiumは「少数持分価値に対する支配権価値の上乗せ率」だが、DLOCは「支配権価値に対する少数持分価値の割引率」だ。これは単純な逆数変換ではなく、分母が異なる変換だ。Control Premium 30%を「DLOC＝30%」と混同することは理論的に誤りであり、非市場性少数持分を過大に割り引く結果になる。</span>
+            <span class="lang-en"><strong>Why the control premium cannot be used directly as a DLOC.</strong> The control premium measures the premium of control value over minority value; DLOC measures the discount from control value to minority value. These are not simple reciprocals — the denominators differ. Treating a 30% control premium as a "30% DLOC" is theoretically incorrect and results in an over-discounted minority interest value.</span>
+          </p>
+        </div>
+
+        <h3><span class="lang-ja">支配権プレミアムのバラツキと決定要因</span><span class="lang-en">VARIATION AND DETERMINANTS OF CONTROL PREMIUMS</span></h3>
+
+        <p>
+          <span class="lang-ja">支配権プレミアムは一定ではない。以下の要因で大きく変動する：</span>
+          <span class="lang-en">Control premiums are not uniform. They vary significantly with the following factors:</span>
+        </p>
+
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th><span class="lang-ja">要因</span><span class="lang-en">Factor</span></th>
+              <th><span class="lang-ja">方向性</span><span class="lang-en">Direction</span></th>
+              <th><span class="lang-ja">理由</span><span class="lang-en">Reason</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="lang-ja">支配前の経営非効率</span><span class="lang-en">Pre-deal management inefficiency</span></td>
+              <td class="accent-cell"><span class="lang-ja">高い</span><span class="lang-en">High</span></td>
+              <td><span class="lang-ja">改善余地が大きいほど支配権の価値は高い</span><span class="lang-en">Greater upside from operational improvement</span></td>
+            </tr>
+            <tr>
+              <td><span class="lang-ja">シナジー（買収者固有）</span><span class="lang-en">Synergies (buyer-specific)</span></td>
+              <td class="accent-cell"><span class="lang-ja">高い</span><span class="lang-en">High</span></td>
+              <td><span class="lang-ja">特定買収者のみが実現できるシナジー</span><span class="lang-en">Synergies only one buyer can realize</span></td>
+            </tr>
+            <tr>
+              <td><span class="lang-ja">競合入札（オークション）</span><span class="lang-en">Competing bids (auction)</span></td>
+              <td class="accent-cell"><span class="lang-ja">高い</span><span class="lang-en">High</span></td>
+              <td><span class="lang-ja">入札競争が価格を引き上げる</span><span class="lang-en">Competitive bidding drives up price</span></td>
+            </tr>
+            <tr>
+              <td><span class="lang-ja">すでに実質支配されている対象</span><span class="lang-en">Target already under de facto control</span></td>
+              <td class="warn-cell"><span class="lang-ja">低い</span><span class="lang-en">Low</span></td>
+              <td><span class="lang-ja">追加の支配権価値が小さい</span><span class="lang-en">Incremental control value is small</span></td>
+            </tr>
+            <tr>
+              <td><span class="lang-ja">既存配当水準が高い</span><span class="lang-en">High existing dividend payout</span></td>
+              <td class="warn-cell"><span class="lang-ja">低い</span><span class="lang-en">Low</span></td>
+              <td><span class="lang-ja">少数株主もすでに利益配分を受けている</span><span class="lang-en">Minority shareholders already benefit from distributions</span></td>
+            </tr>
+            <tr>
+              <td><span class="lang-ja">業種（規制・許認可が価値の源泉）</span><span class="lang-en">Industry (regulated, licensed)</span></td>
+              <td class="accent-cell"><span class="lang-ja">高い</span><span class="lang-en">High</span></td>
+              <td><span class="lang-ja">規制保護が支配権取得に希少価値を与える</span><span class="lang-en">Regulatory protection creates scarcity of control value</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="warning-box">
+          <p>
+            <span class="lang-ja"><strong>実務上の落とし穴：</strong>Mergerstatのデータは「上場企業を対象にした公開買付け」のデータだ。非公開会社の少数持分売却への直接適用には注意が必要だ。上場企業の少数株主は市場で売却できる（ある程度の流動性がある）という前提があるため、DLOMが既に部分的に分離されている。</span>
+            <span class="lang-en"><strong>Practical caution:</strong> Mergerstat data reflects publicly traded company tender offers. Direct application to private company minority interests requires adjustment. Listed minority shareholders can exit through the market (with some liquidity), which means DLOM is partially separated from DLOC in the data.</span>
+          </p>
+        </div>
+
+        <!-- ======================================================== -->
+        <h2><span class="lang-ja">2. DLOM — 市場性欠如ディスカウントの実証研究</span><span class="lang-en">2. DLOM — Empirical Evidence for the Discount for Lack of Marketability</span></h2>
+
+        <h3><span class="lang-ja">2つの実証アプローチ</span><span class="lang-en">TWO EMPIRICAL APPROACHES</span></h3>
+
+        <p>
+          <span class="lang-ja">DLOMの実証研究には大きく2つのアプローチがある。</span>
+          <span class="lang-en">There are two main empirical approaches for DLOM research.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja"><strong>① Restricted Stock Studies（制限付き株式研究）：</strong>米国SECのRule 144に基づき、公開会社の株式について「流通市場で売却できる公開株価」と「転売制限（通常2年）付きで私募発行された同一会社の制限付き株式の価格」を比較する。SECおよびFASBが1970年代に複数の調査を実施し、平均DLOMは25〜35%というレンジを示した。転売制限期間がSEC改正（Rule 144の保有期間短縮）で縮小したことで、現在の研究では平均14〜20%程度が多い。</span>
+          <span class="lang-en"><strong>① Restricted Stock Studies:</strong> Under SEC Rule 144, restricted stock of publicly traded companies (placement shares subject to a transfer restriction period, typically two years) is compared with the unrestricted market price of the same company. The SEC and FASB conducted several studies in the 1970s, finding average DLOMs of 25–35%. Following SEC amendments that shortened the Rule 144 holding period, more recent studies typically show averages of 14–20%.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja"><strong>② IPO Studies（Emory法・IPO前取引研究）：</strong>IPO前3〜5ヶ月以内に行われた非公開時の私募取引価格と、その後のIPO公開価格を比較する。これによりIPO直前時点での「非市場性の価値」を推計する。Emory（1997年以降複数研究）は平均DLOMを42〜45%と報告しており、制限付き株式研究より高い値が出る傾向がある。</span>
+          <span class="lang-en"><strong>② IPO Studies (Emory Method):</strong> Pre-IPO private transaction prices (within 3–5 months before the IPO) are compared against the IPO offering price. This estimates the "marketability value" at a point close to the liquidity event. Emory's studies (multiple publications since 1997) report average DLOMs of 42–45%, consistently higher than restricted stock studies.</span>
+        </p>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>Emory法の数値が高い理由：</strong>IPO前取引には、単なる流動性欠如だけでなく「IPO成功のリスク」が価格に織り込まれている。IPOが失敗すれば投資家は流動性を得られないまま保有し続けるリスクがある。したがってEmory法のDLOMには「IPO不確実性プレミアム」が混在しており、純粋な流動性欠如の価値以上のものを計測している可能性がある。</span>
+            <span class="lang-en"><strong>Why Emory numbers are higher:</strong> Pre-IPO transaction prices embed not only illiquidity but also "IPO execution risk" — if the IPO fails, the investor remains illiquid with no exit. Emory DLOM estimates therefore contain an "IPO uncertainty premium" on top of pure marketability discount, potentially overstating the liquidity component alone.</span>
+          </p>
+        </div>
+
+        <h3><span class="lang-ja">DLOMの決定要因</span><span class="lang-en">DETERMINANTS OF DLOM</span></h3>
+
+        <p>
+          <span class="lang-ja">DLOMは一定ではない。以下の要因が規模に影響する：</span>
+          <span class="lang-en">DLOM is not a constant. The following factors influence its magnitude:</span>
+        </p>
+
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th><span class="lang-ja">要因</span><span class="lang-en">Factor</span></th>
+              <th><span class="lang-ja">DLOMへの影響</span><span class="lang-en">Effect on DLOM</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="lang-ja">会社規模（売上・時価）</span><span class="lang-en">Company size (revenue, equity value)</span></td>
+              <td class="accent-cell"><span class="lang-ja">大きいほど低い</span><span class="lang-en">Lower for larger companies</span></td>
+            </tr>
+            <tr>
+              <td><span class="lang-ja">収益性（利益率・安定性）</span><span class="lang-en">Profitability (margins, stability)</span></td>
+              <td class="accent-cell"><span class="lang-ja">高いほど低い</span><span class="lang-en">Lower for higher profitability</span></td>
+            </tr>
+            <tr>
+              <td><span class="lang-ja">配当支払（定期的配当あり）</span><span class="lang-en">Dividend payments (regular distributions)</span></td>
+              <td class="accent-cell"><span class="lang-ja">支払があれば低い</span><span class="lang-en">Lower when dividends are paid</span></td>
+            </tr>
+            <tr>
+              <td><span class="lang-ja">保有期間（転売制限・ロックアップ）</span><span class="lang-en">Holding period (lock-up / restriction)</span></td>
+              <td class="warn-cell"><span class="lang-ja">長いほど高い</span><span class="lang-en">Higher for longer restrictions</span></td>
+            </tr>
+            <tr>
+              <td><span class="lang-ja">株価ボラティリティ（σ）</span><span class="lang-en">Stock price volatility (σ)</span></td>
+              <td class="warn-cell"><span class="lang-ja">高いほど高い</span><span class="lang-en">Higher for more volatile stocks</span></td>
+            </tr>
+            <tr>
+              <td><span class="lang-ja">ブロックサイズ（保有比率が高い）</span><span class="lang-en">Block size (larger holding percentage)</span></td>
+              <td class="warn-cell"><span class="lang-ja">大きいほど高い傾向</span><span class="lang-en">Tends higher for larger blocks</span></td>
+            </tr>
+            <tr>
+              <td><span class="lang-ja">近い将来のIPO・売却見込み</span><span class="lang-en">Near-term IPO or exit prospect</span></td>
+              <td class="accent-cell"><span class="lang-ja">見込みあれば低い</span><span class="lang-en">Lower when exit is likely</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- ======================================================== -->
+        <h2><span class="lang-ja">3. オプション評価法によるDLOM — 3モデルの比較</span><span class="lang-en">3. Option-Based DLOM Models — Comparing the Three Approaches</span></h2>
+
+        <p>
+          <span class="lang-ja">オプション理論によるDLOMの直観は単純だ：「自由に売却できる投資家は、好きな時に売れるというオプションを持っている。制限付き株式の保有者はそのオプションを持っていない。このオプション価値の差がDLOMだ」。しかし、3つの代表的なモデルはそれぞれ異なる機会コストを捉えている。</span>
+          <span class="lang-en">The intuition behind option-based DLOM is simple: an unrestricted investor holds the option to sell whenever desired; a restricted holder does not. The value of this optionality difference is the DLOM. But the three leading models capture different opportunity costs within this framework.</span>
+        </p>
+
+        <div class="model-grid">
+          <div class="model-card">
+            <div class="model-name">LONGSTAFF (1995)</div>
+            <div class="model-desc">
+              <span class="lang-ja">完全情報の投資家が「最高点で売る」オプションを持つ場合の理論上限値。Lookback Optionのプレミアムとして導出。DLOM上限の理論的ベンチマーク。</span>
+              <span class="lang-en">Theoretical upper bound: the value of the option to sell at the highest price, assuming perfect foresight. Derived as a lookback option premium. A theoretical benchmark for the maximum DLOM.</span>
+            </div>
+          </div>
+          <div class="model-card">
+            <div class="model-name">CHAFFE (1993)</div>
+            <div class="model-desc">
+              <span class="lang-ja">ATM（アット・ザ・マネー）ヨーロピアン型プット・オプションの購入コストをDLOMとみなす。「流動性保険」の購入コスト。Black-Scholesで直接計算可能。</span>
+              <span class="lang-en">Treats the cost of purchasing an ATM European put as the DLOM. Interpreted as the cost of "liquidity insurance." Directly computable via Black-Scholes.</span>
+            </div>
+          </div>
+          <div class="model-card">
+            <div class="model-name">FINNERTY (2002/2012)</div>
+            <div class="model-desc">
+              <span class="lang-ja">平均行使価格アジアン・プット（Average-Strike Put）のコスト。保有期間中の平均株価を行使価格とするプット。Chaffeより保守的な値が出る傾向。</span>
+              <span class="lang-en">Cost of an average-strike Asian put option, where the exercise price equals the average price during the holding period. Tends to produce lower DLOMs than Chaffe.</span>
+            </div>
+          </div>
+        </div>
+
+        <h3><span class="lang-ja">Longstaff (1995) — 理論上限モデル</span><span class="lang-en">LONGSTAFF (1995) — THE UPPER BOUND MODEL</span></h3>
+
+        <p>
+          <span class="lang-ja">Longstaffは「流動性制限があるとしたら、完全情報のある投資家が損なう最大の機会コストはいくらか」という問いに答えた。完全情報の投資家は保有期間T中のどこかで株価が最高値をつける時点を知っており、その時点で売却できる。制限付き株式保有者はそれができない。</span>
+          <span class="lang-en">Longstaff answered the question: "What is the maximum opportunity cost an investor with perfect foresight loses due to a liquidity restriction?" An investor with perfect information knows exactly when the stock will reach its peak during holding period T and can sell at that moment. A restricted holder cannot.</span>
+        </p>
+
+        <div class="formula-label">Longstaff Bound（近似式）</div>
+        <div class="formula">DLOM_Longstaff ≈ 2 × N(σ√T/2) − 1
+
+  σ = 株価ボラティリティ（年率）
+  T = 転売制限期間（年）
+  N() = 標準正規分布の累積分布関数
+
+例：σ=35%, T=5年 → σ√T = 0.35×2.236 = 0.783
+  DLOM ≈ 2×N(0.392) − 1 ≈ 2×0.652 − 1 = 30.4%</div>
+
+        <p>
+          <span class="lang-ja">Longstaffモデルの本質的な問題は「完全情報（perfect foresight）」の仮定だ。現実の投資家は将来の株価最高値を予知できない。したがってLongstaffの値はDLOMの理論上限であり、実際の市場性欠如ディスカウントの推計値として直接使うには過大になりやすい。</span>
+          <span class="lang-en">The fundamental issue with Longstaff is the perfect foresight assumption. Real investors cannot predict the future price maximum. Longstaff therefore provides a theoretical upper bound, and using it directly as a DLOM estimate tends to overstate the actual discount.</span>
+        </p>
+
+        <h3><span class="lang-ja">Chaffe (1993) — 流動性保険コスト・モデル</span><span class="lang-en">CHAFFE (1993) — THE LIQUIDITY INSURANCE MODEL</span></h3>
+
+        <p>
+          <span class="lang-ja">Chaffeのアプローチは実用的だ：「非流動性株式を持つ投資家が、流動性を確保するためにATM ヨーロピアン・プットを購入するコストがDLOMだ」という考え方だ。</span>
+          <span class="lang-en">Chaffe's approach is more practical: the DLOM equals the cost of an ATM European put that a restricted holder would need to purchase to obtain liquidity equivalent to an unrestricted position.</span>
+        </p>
+
+        <div class="formula-label">Chaffe DLOM = ATM European Put Value / Stock Price</div>
+        <div class="formula">Black-Scholes Put:
+  P = K×e^(−rT)×N(−d2) − S×N(−d1)
+
+  S = K（ATM = 現在株価で行使）
+  d1 = (r + σ²/2)×T / (σ√T)
+  d2 = d1 − σ√T
+
+例：S=K=100, σ=35%, r=4%, T=5年
+  d1 = (0.04 + 0.0613)×5 / (0.35×2.236) = 0.501/0.783 = 0.640
+  d2 = 0.640 − 0.783 = −0.143
+  P = 100×e^(−0.20)×N(0.143) − 100×N(−0.640)
+    = 81.87×0.557 − 100×0.261
+    ≈ 45.6 − 26.1 = 19.5
+  DLOM ≈ 19.5%</div>
+
+        <p>
+          <span class="lang-ja">Chaffeモデルの批判点は「ATMプットの購入という仮定が現実の状況を正確に反映しているか」という点だ。ATMプットは「現在価格で売れる権利」を保証するが、非流動性株式保有者が実際に必要な保護はそれとは異なる可能性がある。また、ヨーロピアン・プットを使うため満期前に売れない前提があり、アメリカン型の早期行使プレミアムが加わるべき局面も多い。</span>
+          <span class="lang-en">A criticism of Chaffe is whether purchasing an ATM put accurately models what a restricted shareholder actually needs. An ATM put guarantees the right to sell at the current price, which may or may not match the actual risk a restricted holder faces. Using a European put also assumes no early exercise is needed, which may understate the DLOM when early liquidity is genuinely valuable.</span>
+        </p>
+
+        <h3><span class="lang-ja">Finnerty (2002 / 2012) — アジアン平均行使プット・モデル</span><span class="lang-en">FINNERTY (2002/2012) — THE AVERAGE-STRIKE PUT MODEL</span></h3>
+
+        <p>
+          <span class="lang-ja">Finnertyは「制限付き株式保有者は保有期間中いつでも売れる潜在的機会があったが、実際には最終時点まで保有を強制される。その機会コストは保有期間の平均価格を行使価格とするプット（アジアン平均行使プット）として表現できる」と論じた。</span>
+          <span class="lang-en">Finnerty argued that the restricted holder has potential selling opportunities throughout the holding period but is forced to hold until expiration. The opportunity cost can be expressed as an average-strike Asian put, where the exercise price equals the average stock price over the holding period.</span>
+        </p>
+
+        <div class="formula-label">Finnerty Average-Strike Put（近似）</div>
+        <div class="formula">DLOM_Finnerty ≈ 2 × N(σ_avg × √T / 2) − 1
+
+  σ_avg ≈ σ / √3  （アジアン補正：平均価格の変動率はσより小さい）
+
+例：σ=35%, T=5年
+  σ_avg = 35%/√3 = 20.2%
+  σ_avg × √T = 0.202 × 2.236 = 0.452
+  DLOM ≈ 2×N(0.226) − 1 ≈ 2×0.589 − 1 = 17.9%</div>
+
+        <p>
+          <span class="lang-ja">Finnertyモデルがもたらす数値はChaffeやLongstaffより低いことが多い。2012年の改定版では計算精度が向上し、国税当局（IRS）や裁判所での採用実績が増えている。</span>
+          <span class="lang-en">Finnerty typically produces lower estimates than Chaffe or Longstaff. The 2012 revision improved computational accuracy and has seen increased adoption in IRS proceedings and court cases.</span>
+        </p>
+
+        <h3><span class="lang-ja">3モデルの数値比較</span><span class="lang-en">NUMERICAL COMPARISON OF THE THREE MODELS</span></h3>
+
+        <div class="calc-block">
+          <div style="font-family:'Inter',sans-serif;font-size:0.78rem;color:var(--text-muted);margin-bottom:10px;"><span class="lang-ja">共通パラメータ：S=K=100, r=4%、転売制限期間 T 別DLOM比較</span><span class="lang-en">Common parameters: S=K=100, r=4%; DLOM by restriction period T</span></div>
+          <div class="calc-row">
+            <span><span class="lang-ja">モデル</span><span class="lang-en">Model</span></span>
+            <span>σ=25%, T=2年</span>
+            <span>σ=35%, T=5年</span>
+            <span>σ=50%, T=5年</span>
+          </div>
+          <div class="calc-row">
+            <span>Longstaff</span>
+            <span class="calc-warn">20.6%</span>
+            <span class="calc-warn">45.4%</span>
+            <span class="calc-warn">60.8%</span>
+          </div>
+          <div class="calc-row">
+            <span>Chaffe (ATM Put)</span>
+            <span>11.2%</span>
+            <span>19.5%</span>
+            <span>28.4%</span>
+          </div>
+          <div class="calc-row">
+            <span>Finnerty (Avg-Strike)</span>
+            <span>9.8%</span>
+            <span>17.9%</span>
+            <span>25.1%</span>
+          </div>
+          <div class="calc-row" style="font-size:0.76rem; color:var(--text-muted);">
+            <span><span class="lang-ja">参考：制限付き株式研究の平均</span><span class="lang-en">Ref: Restricted stock study average</span></span>
+            <span>14–20%</span>
+            <span>—</span>
+            <span>—</span>
+          </div>
+        </div>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>同一パラメータで結果が大きく異なる理由：</strong>3モデルは「何を機会コストとみなすか」が根本的に異なる。Longstaffは「最高値で売るオプション（完全情報）」、Chaffeは「現在価格で売るオプション（保険）」、Finnertyは「平均価格で売れなかった機会コスト」だ。これらは同じ現象の異なる側面を切り取っている。「正しいモデル」を選ぶのではなく、「対象案件の経済実態に最も近い仮定を持つモデルはどれか」を問うべきだ。</span>
+            <span class="lang-en"><strong>Why results diverge so significantly:</strong> The three models differ fundamentally in what they define as the opportunity cost. Longstaff captures "the option to sell at the peak (perfect foresight)"; Chaffe captures "the cost of buying insurance to sell at today's price"; Finnerty captures "the cost of missing the average selling price during the holding period." They measure different facets of the same phenomenon. The practitioner should not ask "which model is right" but "which model's assumptions best fit the economic reality of this case."</span>
+          </p>
+        </div>
+
+        <!-- ======================================================== -->
+        <h2><span class="lang-ja">4. DLOCとDLOMの適用順序と相互依存</span><span class="lang-en">4. Application Sequence and Interdependence of DLOC and DLOM</span></h2>
+
+        <h3><span class="lang-ja">価値の階層：3層構造</span><span class="lang-en">THE THREE-LEVEL VALUE HIERARCHY</span></h3>
+
+        <p>
+          <span class="lang-ja">非公開会社の少数持分を評価する際、価値は以下の3層で捉えられる：</span>
+          <span class="lang-en">When valuing a private company minority interest, value is structured across three levels:</span>
+        </p>
+
+        <div class="discount-stack">
+          <div class="ds-row">
+            <div class="ds-label">支配権価値</div>
+            <div class="ds-value accent"><span class="lang-ja">Control Value（上場企業のM&A価格水準）</span><span class="lang-en">Control Value (M&A price level)</span></div>
+          </div>
+          <div class="ds-row">
+            <div class="ds-label">↓ DLOC 適用</div>
+            <div class="ds-value"><span class="lang-ja">DLOC = 1 − 1/(1+Control Premium)</span><span class="lang-en">DLOC = 1 − 1/(1 + Control Premium)</span></div>
+          </div>
+          <div class="ds-row">
+            <div class="ds-label">少数持分価値（流動性あり）</div>
+            <div class="ds-value"><span class="lang-ja">Marketable Minority Value（上場少数株主相当）</span><span class="lang-en">Marketable Minority Value (equivalent to listed minority)</span></div>
+          </div>
+          <div class="ds-row">
+            <div class="ds-label">↓ DLOM 適用</div>
+            <div class="ds-value"><span class="lang-ja">DLOM（経験的研究 or オプションモデル）</span><span class="lang-en">DLOM (empirical studies or option models)</span></div>
+          </div>
+          <div class="ds-row">
+            <div class="ds-label">非市場性少数持分価値</div>
+            <div class="ds-value accent"><span class="lang-ja">Non-Marketable Minority Value（結論価値）</span><span class="lang-en">Non-Marketable Minority Value (concluded value)</span></div>
+          </div>
+        </div>
+
+        <p>
+          <span class="lang-ja">重要なのは、DLOMはDLOC適用後の「市場性少数持分価値」に対して適用することだ。DLOMをControl Valueに先に適用する（逆順）のは誤りだ。</span>
+          <span class="lang-en">Critically, DLOM is applied to the marketable minority value — after DLOC has already been applied. Applying DLOM to the control value first (reverse order) is theoretically incorrect.</span>
+        </p>
+
+        <h3><span class="lang-ja">評価方法によって出発点が異なる問題</span><span class="lang-en">THE STARTING-POINT PROBLEM BY VALUATION METHOD</span></h3>
+
+        <p>
+          <span class="lang-ja">3つの評価アプローチ（DCF・マルチプル・純資産）は、出発点の価値レベルが異なる場合がある。</span>
+          <span class="lang-en">The three valuation approaches (DCF, multiples, net assets) may differ in the level of value they inherently produce.</span>
+        </p>
+
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th><span class="lang-ja">評価方法</span><span class="lang-en">Method</span></th>
+              <th><span class="lang-ja">内在的価値レベル</span><span class="lang-en">Inherent value level</span></th>
+              <th><span class="lang-ja">DLOC必要性</span><span class="lang-en">DLOC needed?</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="lang-ja">DCF（FCF最適化前提）</span><span class="lang-en">DCF (with optimized operations)</span></td>
+              <td><span class="lang-ja">支配権価値</span><span class="lang-en">Control Value</span></td>
+              <td class="accent-cell"><span class="lang-ja">少数持分評価時は必要</span><span class="lang-en">Yes, for minority</span></td>
+            </tr>
+            <tr>
+              <td><span class="lang-ja">上場企業マルチプル（EV/EBITDA等）</span><span class="lang-en">Public company multiples (EV/EBITDA etc.)</span></td>
+              <td><span class="lang-ja">市場性少数持分価値</span><span class="lang-en">Marketable Minority Value</span></td>
+              <td class="accent-cell"><span class="lang-ja">DLOM（+場合によりDLOC）必要</span><span class="lang-en">DLOM required (DLOC may also apply)</span></td>
+            </tr>
+            <tr>
+              <td><span class="lang-ja">M&Aマルチプル（Transaction Comps）</span><span class="lang-en">M&A transaction multiples</span></td>
+              <td><span class="lang-ja">支配権価値</span><span class="lang-en">Control Value</span></td>
+              <td class="accent-cell"><span class="lang-ja">少数持分評価時は必要</span><span class="lang-en">Yes, for minority</span></td>
+            </tr>
+            <tr>
+              <td><span class="lang-ja">修正純資産（NAV）</span><span class="lang-en">Adjusted Net Asset Value (NAV)</span></td>
+              <td><span class="lang-ja">支配権価値（清算前提）</span><span class="lang-en">Control Value (liquidation basis)</span></td>
+              <td class="accent-cell"><span class="lang-ja">少数持分評価時は必要</span><span class="lang-en">Yes, for minority</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3><span class="lang-ja">DLOCとDLOMの相互依存性</span><span class="lang-en">THE INTERDEPENDENCE OF DLOC AND DLOM</span></h3>
+
+        <p>
+          <span class="lang-ja">DLOCとDLOMを単純に乗算することの問題点がある。支配持分を売却する場合、保有者は一方的に会社売却（IPO・M&A）を強制できる。つまり支配株主はいつでも非流動性から脱出できる経路を持っている。したがって、支配持分に対するDLOMは少数持分に対するDLOMより小さくなるべきだ。</span>
+          <span class="lang-en">Simply multiplying DLOC and DLOM introduces a theoretical problem. A controlling shareholder can force a liquidity event (IPO, M&A) unilaterally. This means a controlling holder always has an exit path from illiquidity. Therefore, DLOM applied to a controlling interest should be smaller than DLOM applied to a minority interest.</span>
+        </p>
+
+        <div class="warning-box">
+          <p>
+            <span class="lang-ja"><strong>実務上よく起きる誤り：</strong>DCFで支配権価値を算出し、そこにDLOC（例：20%）を掛けて少数持分価値を求め、さらにDLOM（例：25%）を掛けた値を「最終価値」とする計算。この場合、実質的な複合割引率は 1−(1−0.20)×(1−0.25) = 40%だ。DLOCとDLOMを算出した各研究が「どの出発点の価値から計測したか」を確認せずに乗算すると、二重カウントが生じる可能性がある。</span>
+            <span class="lang-en"><strong>A common error in practice:</strong> Computing control value via DCF, applying DLOC (e.g., 20%) to get minority value, then applying DLOM (e.g., 25%) to get a final value. The compound discount is 1 − (1−0.20)×(1−0.25) = 40%. If the DLOC and DLOM studies used to derive these percentages measured from different starting points, double-counting may result. Always check the reference basis of each discount before multiplying.</span>
+          </p>
+        </div>
+
+        <!-- ======================================================== -->
+        <h2><span class="lang-ja">5. 実務と法的・規制上の文脈</span><span class="lang-en">5. Practice Context: Legal and Regulatory Framework</span></h2>
+
+        <h3><span class="lang-ja">IRSとDLOM：Revenue Ruling 59-60の射程</span><span class="lang-en">IRS AND DLOM: SCOPE OF REVENUE RULING 59-60</span></h3>
+
+        <p>
+          <span class="lang-ja">米国内国歳入庁（IRS）は Revenue Ruling 59-60 において非公開会社株式のバリュエーション基準を定めており、DLOMは税務上（贈与税・相続税）でも主要な争点になる。IRS は過去の Tax Court 判決を通じて、DLOMの採用自体は認めつつも「根拠のない高率のDLOM」（35%超）には異議を唱えてきた。</span>
+          <span class="lang-en">The IRS established valuation standards for private company stock in Revenue Ruling 59-60. DLOM is a major contested issue in gift and estate tax proceedings. Through Tax Court decisions, the IRS has accepted DLOM in principle while challenging "unsupported high DLOMs" (above 35%) without adequate analytical justification.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">オプションモデルによるDLOMは、Tax Courtで採用される事例が増えている。Finnerty (2012) は特に引用実績が多く、Chaffe法もATM put の計算根拠を示すことで採用されている。Longstaffモデルはその上限値特性ゆえ、単独での使用は避け、上限チェックとして使うのが一般的だ。</span>
+          <span class="lang-en">Option-based DLOM models are increasingly accepted in Tax Court. Finnerty (2012) has the most citation history; Chaffe's ATM put method is also used when backed by transparent calculations. Longstaff is generally not used in isolation given its upper-bound nature, but serves as a check on maximum reasonable DLOM.</span>
+        </p>
+
+        <h3><span class="lang-ja">M&AにおけるPPA（Purchase Price Allocation）とDLOM</span><span class="lang-en">DLOM IN M&amp;A PURCHASE PRICE ALLOCATIONS</span></h3>
+
+        <p>
+          <span class="lang-ja">IFRS3・ASC805に基づく企業結合後のPPAでは、識別可能な無形資産（顧客関係・技術・ブランド等）に公正価値を配分する。このうち市場性のない非上場企業の株式や子会社持分を評価する際、DLOMは正式には適用されないが、割引率（WACC・WARA）の設定に非流動性プレミアムとして暗黙的に織り込まれることがある。</span>
+          <span class="lang-en">Under IFRS 3 and ASC 805, acquired intangible assets (customer relationships, technology, brands) must be allocated fair value in a PPA. Formal DLOM is not typically applied in PPA, but an illiquidity premium may be implicitly embedded in the discount rate (WACC/WARA) when valuing interests in non-listed entities with limited exit paths.</span>
+        </p>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>実務的なスタンス：</strong>DLOMとDLOCは「正しい数値」があるわけではなく、常に仮定の選択だ。採用したモデル・パラメータ・データソースを明示し、感度分析で結論値への影響を示すことが最低限の規律だ。特にオプションモデルでは、ボラティリティ（σ）と転売制限期間（T）の設定が結果に最も大きな影響を与えるため、これらの根拠を厚く開示する必要がある。</span>
+            <span class="lang-en"><strong>Practical stance:</strong> There is no "correct" DLOC or DLOM — they are always the product of analytical choices. Disclosing the model, parameters, and data sources, and showing sensitivity of the concluded value to these inputs, is the minimum standard of analytical discipline. In option models, volatility (σ) and restriction period (T) have the greatest impact on results and require the most thorough justification.</span>
+          </p>
+        </div>
+
+        <!-- ======================================================== -->
+        <h2><span class="lang-ja">まとめ — DLOCとDLOMを「理論として」使う</span><span class="lang-en">Conclusion — Using DLOC and DLOM as Theory, Not Convention</span></h2>
+
+        <p>
+          <span class="lang-ja">DLOCとDLOMは、経験則や業界慣行として「25%適用」のように機械的に使われることが多いが、その背後には明確な理論構造がある。</span>
+          <span class="lang-en">DLOC and DLOM are frequently applied as rules of thumb — "apply 25% by convention" — but each has a clear theoretical structure beneath the surface.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">DLOCは「支配権プレミアムのデータから逆算された、支配権がないことで失われるキャッシュフロー制御価値」だ。コントロールプレミアムはM&Aデータで実証されるが、業種・案件特性・シナジーによって2倍以上異なる。</span>
+          <span class="lang-en">DLOC represents the loss of cash flow control, derived from empirical control premium data. That premium varies by more than 2x across industries and deal structures.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">DLOMは「売却できないことで失われるオプション価値」だ。実証研究は14〜45%という広いレンジを示し、オプションモデルは理論的な補完を提供するが、モデルごとに異なる機会コストを計測している。Longstaff（理論上限）・Chaffe（保険コスト）・Finnerty（平均行使機会損失）は同じ問いへの3つの異なる回答だ。</span>
+          <span class="lang-en">DLOM represents lost optionality from illiquidity. Empirical evidence spans 14–45%, and option models provide theoretical grounding — but each model measures a different opportunity cost. Longstaff (theoretical upper bound), Chaffe (insurance cost), and Finnerty (average-strike opportunity loss) are three different answers to the same question.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">両ディスカウントを適用する際の最低規律は：①どの価値レベルからどのディスカウントを適用するかを明示する、②採用した経験的データ・モデル・パラメータの根拠を開示する、③感度分析で不確実性の範囲を示す——この3点に尽きる。</span>
+          <span class="lang-en">The minimum standard for applying both discounts is: ① be explicit about which value level each discount is applied to; ② disclose the empirical data, model, and parameter choices with their rationale; ③ show the range of uncertainty through sensitivity analysis. These three disciplines separate rigorous valuation practice from mechanical convention.</span>
+        </p>
+
+        <!-- NEXT ARTICLE -->
+        <div class="next-article">
+          <div>
+            <div class="next-label"><span class="lang-ja">次の記事</span><span class="lang-en">NEXT ARTICLE</span></div>
+            <div class="next-title"><span class="lang-ja">IFRS16後のEV bridgeを再考する — EV/EBITDA vs. EBITDAR</span><span class="lang-en">Rethinking EV Bridge Post-IFRS 16 — EV/EBITDA vs. EBITDAR</span></div>
+          </div>
+          <div class="next-arrow">→</div>
+        </div>
+
+      </article>
+
+      <!-- 4. サイドバー -->
+      <aside class="article-sidebar">
+
+        <div class="sidebar-card">
+          <span class="section-label">KEY NUMBERS</span>
+          <div class="key-stats">
+            <div class="fact-card highlight">
+              <div class="fact-value">25–35%</div>
+              <div class="fact-desc"><span class="lang-ja">M&A取引データにおける支配権プレミアムの歴史的中央値レンジ</span><span class="lang-en">Historical median range of control premium in M&A data</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">3モデル</div>
+              <div class="fact-desc"><span class="lang-ja">Longstaff（上限）· Chaffe（保険）· Finnerty（平均行使）— 同一パラメータで数値が大きく異なる</span><span class="lang-en">Longstaff (upper bound) · Chaffe (insurance) · Finnerty (avg-strike) — diverge significantly on same inputs</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">≠ 単純乗算</div>
+              <div class="fact-desc"><span class="lang-ja">DLOCとDLOMの機械的な乗算には二重カウントのリスク。出発点の価値レベルを必ず確認する</span><span class="lang-en">Mechanically multiplying DLOC × DLOM risks double-counting. Always verify the reference value level of each discount</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">σ, T</div>
+              <div class="fact-desc"><span class="lang-ja">オプションモデルの結論に最も大きな影響を与えるのはボラティリティσと転売制限期間T</span><span class="lang-en">Volatility σ and restriction period T are the dominant drivers of option-based DLOM results</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-card">
+          <div class="section-label">SERIES PLAN</div>
+          <ol class="highlights-list">
+            <li class="highlight-item">
+              <span class="hl-num">01</span>
+              <span class="hl-text"><a href="./2026-03-20-valuation.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">Terminal ValueはなぜDCFの70-80%を占めるのか</span><span class="lang-en">Why Terminal Value Drives 70-80% of DCF</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">02</span>
+              <span class="hl-text"><a href="./2026-03-21-wacc.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">WACCは本当に計算できるのか</span><span class="lang-en">Can WACC Really Be Calculated?</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">03</span>
+              <span class="hl-text"><a href="./2026-03-21-beta-hamada.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">Betaを信じる前に考えること</span><span class="lang-en">Before You Trust That Beta</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">04</span>
+              <span class="hl-text"><a href="./2026-03-22-cyclical.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">シクリカル企業のLTMが罠である理由</span><span class="lang-en">Why Cyclical Companies' LTM Is a Trap</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num" style="color:var(--accent-warm);font-weight:700;">05</span>
+              <span class="hl-text"><strong><span class="lang-ja">DLOC・DLOMの理論と実務 — 支配権と流動性の価格</span><span class="lang-en">DLOC and DLOM — Pricing Control and Liquidity</span></strong> — <span class="lang-ja">本稿</span><span class="lang-en">this article</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">06</span>
+              <span class="hl-text"><span class="lang-ja">IFRS16後のEV bridgeを再考する — EV/EBITDA vs. EBITDAR</span><span class="lang-en">Rethinking EV Bridge Post-IFRS 16 — EV/EBITDA vs. EBITDAR</span></span>
+            </li>
+          </ol>
+        </div>
+
+        <div class="sidebar-card">
+          <div class="section-label">KEY REFERENCES</div>
+          <ul class="source-list" style="margin-top:10px;">
+            <li><a href="https://openlibrary.org/isbn/9780471750291" target="_blank" rel="noopener">Pratt — Business Valuation Discounts and Premiums</a></li>
+            <li><a href="https://openlibrary.org/isbn/9780470385081" target="_blank" rel="noopener">Damodaran — The Dark Side of Valuation</a></li>
+            <li><span style="color:var(--text-muted);">Longstaff (1995) — "How Much Can Marketability Affect Security Values?" — Journal of Finance</span></li>
+            <li><span style="color:var(--text-muted);">Chaffe (1993) — "Option Pricing as a Proxy for Discount for Lack of Marketability" — Business Valuation Review</span></li>
+            <li><span style="color:var(--text-muted);">Finnerty (2012) — "An Average-Strike Put Option Model of the Marketability Discount" — Journal of Derivatives</span></li>
+            <li><a href="https://www.irs.gov/pub/irs-tege/rr59-60.pdf" target="_blank" rel="noopener">IRS Revenue Ruling 59-60</a></li>
+          </ul>
+        </div>
+
+      </aside>
+
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <span>Valuation Theory Lab #005 | donato Valuation Notes | 2026-03-22</span>
+  <span><span class="lang-ja">本稿は理論解説目的です。実際の投資判断・M&amp;A意思決定には専門家への確認を要します。</span><span class="lang-en">For educational purposes only. Consult qualified professionals before making investment or M&amp;A decisions.</span></span>
+</footer>
+
+<script>
+  // Progress bar
+  window.addEventListener('scroll', function() {
+    var h = document.documentElement;
+    var pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    document.getElementById('progress-bar').style.width = Math.min(pct, 100) + '%';
+  });
+
+  // Reading time (500字/分)
+  (function() {
+    var text = document.querySelector('.article-body') ? document.querySelector('.article-body').textContent : '';
+    var chars = text.length;
+    var minutes = Math.ceil(chars / 500);
+    var label = '約' + minutes + '分';
+    var el1 = document.getElementById('reading-time-badge');
+    var el2 = document.getElementById('reading-time-badge2');
+    if (el1) el1.querySelector('.lang-ja').textContent = label;
+    if (el2) el2.querySelector('.lang-ja').textContent = label;
+  })();
+
+  // Lang toggle
+  let currentLang = localStorage.getItem('hp-lang') || 'ja';
+  let currentTheme = localStorage.getItem('hp-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('hp-lang', lang);
+    document.querySelectorAll('.lang-ja').forEach(el => el.style.display = lang === 'ja' ? 'inline' : 'none');
+    document.querySelectorAll('.lang-en').forEach(el => el.style.display = lang === 'en' ? 'inline' : 'none');
+    document.querySelectorAll('.art-lang-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+    document.documentElement.lang = lang === 'ja' ? 'ja' : 'en';
+  }
+  function toggleTheme() {
+    currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+    localStorage.setItem('hp-theme', currentTheme);
+    document.body.classList.toggle('dark', currentTheme === 'dark');
+    document.getElementById('theme-btn').textContent = currentTheme === 'light' ? '☀' : '☾';
+  }
+  document.addEventListener('DOMContentLoaded', () => {
+    setLang(currentLang);
+    if (currentTheme === 'dark') {
+      document.body.classList.add('dark');
+      document.getElementById('theme-btn').textContent = '☾';
+    }
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="EV/EBITDAやP/Eを異なる会計基準（IFRS・US GAAP・J-GAAP）で比較するとき、のれん償却・IFRS 16・開発費資産計上・LIFOなど無数の差異が「見かけ上の割安/割高」を生み出す。真のApple to Apple比較に必要な調整の理論と実務手順。Valuation Theory Lab #006。">
+  <title>マルチプルの比較可能性 — 会計基準の差異調整 | Valuation Theory Lab #006 | donato</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+JP:wght@300;400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../brand.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:           #F8F7F4;
+      --bg-code:      #EEECEA;
+      --bg-quote:     #EEECEA;
+      --bg-highlight: #EBF3FB;
+      --bg-subtle:    #F0EFEB;
+      --bg-card:      #F0EFEB;
+      --bg-header:    #F8F7F4;
+      --text-primary: #111320;
+      --text-body:    #2A2C3E;
+      --text-muted:   #565C70;
+      --text-light:   #888EA0;
+      --accent:       #1A6EB0;
+      --accent-warm:  #D4A010;
+      --border:       #D4D2CC;
+      --border-quote: #B8B6B0;
+      --border-light: #D4D2CC;
+      --tag-bg:       #E4EFF8;
+      --tag-text:     #1A6EB0;
+      --table-stripe: #F0EFEB;
+    }
+
+    /* ===== PROGRESS BAR ===== */
+    #progress-bar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      width: 0%;
+      background: var(--accent);
+      z-index: 300;
+      transition: width 0.1s linear;
+    }
+
+    body {
+      font-family: 'Noto Serif JP', Georgia, serif;
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--text-primary);
+      background: var(--bg);
+    }
+
+    /* ===== SITE HEADER ===== */
+    .site-header {
+      background: var(--bg-header);
+      border-bottom: 2px solid var(--accent);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .site-header-left { display: flex; align-items: center; gap: 12px; }
+    .wordmark {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: lowercase;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+    .wordmark span { color: var(--accent-warm); }
+    .header-sep { color: var(--border-quote); font-size: 13px; }
+    .header-media {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+    }
+    .site-header-right { display: flex; align-items: center; gap: 12px; }
+    .header-back-link {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .header-back-link:hover { color: var(--accent); }
+    .lang-toggle-bar {
+      display: flex;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .art-lang-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      padding: 3px 10px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .art-lang-btn.active { background: #F5C800; color: #111320; }
+    #theme-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      padding: 3px 9px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.15s;
+    }
+    #theme-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .header-date {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-light);
+      letter-spacing: 0.08em;
+    }
+
+    /* ===== STICKY INFO BAR ===== */
+    #sticky-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg-subtle);
+      border-bottom: 1px solid var(--border-light);
+      padding: 7px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .sbar-cat {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+    }
+    .sbar-sep { color: var(--border-quote); font-size: 11px; }
+    .sbar-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+    .sbar-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      padding: 2px 8px;
+    }
+
+    /* ===== LAYOUT ===== */
+    .article-container { max-width: 1240px; margin: 0 auto; padding: 0 20px; }
+    .article-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 24px;
+    }
+    .article-body { grid-column: 2 / 10; max-width: 68ch; }
+    .article-sidebar {
+      grid-column: 10 / 13;
+      position: sticky;
+      top: 44px;
+      align-self: start;
+      max-height: calc(100vh - 56px);
+      overflow-y: auto;
+    }
+    .article-sidebar::-webkit-scrollbar { width: 4px; }
+    .article-sidebar::-webkit-scrollbar-track { background: transparent; }
+    .article-sidebar::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 2px; }
+
+    /* ===== TYPOGRAPHY ===== */
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+    }
+    .article-headline {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(2rem, 4vw, 2.6rem);
+      font-weight: 600;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+    .article-standfirst {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      font-weight: 400;
+    }
+    .byline {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    h2 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.45rem;
+      font-weight: 600;
+      line-height: 1.25;
+      color: var(--text-primary);
+      margin: 2em 0 0.75em;
+      border-top: 1px solid var(--border);
+      padding-top: 1em;
+    }
+    h3 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin: 1.75em 0 0.5em;
+    }
+    .article-body p { margin-bottom: 1.4em; font-size: 0.97rem; line-height: 1.8; }
+    .article-body ul, .article-body ol { margin: 0 0 1.4em 1.4em; }
+    .article-body li { margin-bottom: 0.4em; font-size: 0.95rem; line-height: 1.7; }
+    strong { color: var(--text-primary); font-weight: 600; }
+
+    /* ===== EXEC SUMMARY ===== */
+    .exec-summary {
+      background: var(--bg-highlight);
+      border: 1px solid var(--border-light);
+      border-left: 4px solid var(--accent);
+      padding: 24px;
+      margin: 0 0 2.5em;
+    }
+    .exec-block { margin-bottom: 20px; }
+    .exec-block:last-child { margin-bottom: 0; }
+    .exec-block + .exec-block { padding-top: 18px; border-top: 1px solid var(--border-light); }
+    .exec-tldr {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.02rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      line-height: 1.55;
+      margin-top: 8px;
+    }
+    .issues-list, .implications-list {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .issue-item { display: flex; gap: 10px; align-items: baseline; }
+    .issue-q {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 500;
+      color: var(--accent);
+      background: var(--tag-bg);
+      padding: 1px 6px;
+      white-space: nowrap;
+    }
+    .issue-text { font-size: 0.9rem; line-height: 1.6; color: var(--text-body); }
+    .implication-item { font-size: 0.9rem; line-height: 1.6; color: var(--text-body); padding-left: 1em; border-left: 2px solid var(--border); }
+
+    /* ===== CALLOUT / INSIGHT ===== */
+    .insight-box {
+      background: var(--bg-quote);
+      border-left: 3px solid var(--accent);
+      padding: 16px 20px;
+      margin: 1.6em 0;
+      font-size: 0.93rem;
+      line-height: 1.75;
+      color: var(--text-body);
+    }
+    .warning-box {
+      background: #FFF8E6;
+      border: 1px solid #E8C84A;
+      border-left: 4px solid var(--accent-warm);
+      padding: 16px 20px;
+      margin: 1.6em 0;
+      font-size: 0.93rem;
+      line-height: 1.75;
+    }
+
+    /* ===== FORMULA / CALC ===== */
+    .formula {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.88rem;
+      background: var(--bg-code);
+      border: 1px solid var(--border-light);
+      padding: 14px 18px;
+      margin: 1.2em 0;
+      line-height: 1.6;
+      color: var(--text-primary);
+      overflow-x: auto;
+    }
+    .formula-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text-light);
+      letter-spacing: 0.08em;
+      margin-bottom: 4px;
+    }
+    .calc-block {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      padding: 18px;
+      margin: 1.4em 0;
+    }
+    .calc-row {
+      display: flex;
+      justify-content: space-between;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      padding: 6px 0;
+      border-bottom: 1px solid var(--border-light);
+      color: var(--text-body);
+    }
+    .calc-row:last-child { border-bottom: none; }
+    .calc-highlight { color: var(--accent); font-weight: 600; }
+    .calc-warn { color: #C07820; }
+
+    /* ===== TABLE ===== */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      margin: 1.6em 0;
+    }
+    .data-table th {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      border-bottom: 2px solid var(--border);
+      padding: 8px 10px;
+      text-align: left;
+    }
+    .data-table td {
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--border-light);
+      vertical-align: top;
+    }
+    .data-table tr:nth-child(even) td { background: var(--table-stripe); }
+    .data-table .accent-cell { color: var(--accent); font-weight: 600; }
+    .data-table .warn-cell { color: #C07820; }
+    .data-table .ok-cell { color: #3A8A50; }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      padding: 16px;
+      margin-bottom: 16px;
+      font-size: 0.85rem;
+    }
+    .sidebar-card .section-label { margin-bottom: 12px; display: block; }
+    .key-stats { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+    .fact-card { border-left: 3px solid var(--accent); padding-left: 10px; }
+    .fact-card.highlight { background: #FFF9E6; border-left-color: var(--accent-warm); padding: 8px 10px; }
+    .fact-value { font-family: 'JetBrains Mono', monospace; font-size: 1.2rem; font-weight: 600; color: var(--accent); }
+    .fact-card.highlight .fact-value { color: var(--accent-warm); }
+    .fact-desc { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; line-height: 1.4; }
+    .fact-card.highlight .fact-desc { color: #A07828; }
+    .highlights-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+    .highlight-item { display: flex; gap: 8px; align-items: baseline; }
+    .hl-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text-light);
+      min-width: 20px;
+    }
+    .hl-text { font-size: 0.82rem; color: var(--text-body); line-height: 1.45; }
+    .source-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+    .source-list li { font-size: 0.8rem; }
+    .source-list a { color: var(--accent); text-decoration: none; }
+    .source-list a:hover { text-decoration: underline; }
+
+    /* ===== NEXT ARTICLE ===== */
+    .next-article {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      border-top: 3px solid var(--accent);
+      padding: 20px 24px;
+      margin-top: 3em;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+    }
+    .next-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text-light);
+      letter-spacing: 0.1em;
+      margin-bottom: 6px;
+    }
+    .next-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .next-arrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.4rem;
+      color: var(--accent);
+    }
+
+    /* ===== ADJUSTMENT FLOW ===== */
+    .adj-flow {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin: 1.4em 0;
+      border: 1px solid var(--border-light);
+    }
+    .adj-step {
+      display: flex;
+      align-items: stretch;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .adj-step:last-child { border-bottom: none; }
+    .adj-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.88rem;
+      font-weight: 700;
+      padding: 12px 16px;
+      background: var(--accent);
+      color: #fff;
+      min-width: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .adj-content {
+      padding: 12px 16px;
+      flex: 1;
+    }
+    .adj-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      letter-spacing: 0.06em;
+      margin-bottom: 4px;
+    }
+    .adj-desc { font-size: 0.88rem; color: var(--text-body); line-height: 1.55; }
+
+    /* ===== GAAP DIFF GRID ===== */
+    .diff-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin: 1.4em 0;
+    }
+    .diff-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-top: 3px solid var(--accent);
+      padding: 14px;
+    }
+    .diff-card.warn-top { border-top-color: var(--accent-warm); }
+    .diff-name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 6px;
+      letter-spacing: 0.06em;
+    }
+    .diff-card.warn-top .diff-name { color: var(--accent-warm); }
+    .diff-desc { font-size: 0.82rem; color: var(--text-body); line-height: 1.5; }
+
+    /* ===== LANG TOGGLE ===== */
+    .lang-en { display: none; }
+
+    /* ===== FOOTER ===== */
+    .site-footer {
+      border-top: 1px solid var(--border-light);
+      margin-top: 4em;
+      padding: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* ===== PRINT ===== */
+    @media print {
+      body { background: white; font-size: 11pt; }
+      .site-header, #sticky-bar, #progress-bar { display: none; }
+      .article-sidebar { position: static; max-height: none; overflow: visible; }
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+    @page { size: A4; margin: 20mm 15mm; }
+
+    /* ===== MOBILE ===== */
+    @media (max-width: 900px) {
+      .article-body { grid-column: 1 / -1; }
+      .article-sidebar { position: static; max-height: none; overflow: visible; grid-column: 1 / -1; }
+      .article-grid { display: block; }
+      .diff-grid { grid-template-columns: 1fr; }
+      #sticky-bar { flex-wrap: wrap; gap: 6px; }
+    }
+
+    body.dark {
+      --bg:           #0D1117;
+      --bg-code:      #161B22;
+      --bg-quote:     #161B22;
+      --bg-highlight: #0E1A2B;
+      --bg-subtle:    #161B22;
+      --bg-card:      #161B22;
+      --bg-header:    #0D1117;
+      --text-primary: #E4E2DC;
+      --text-body:    #C4C2BC;
+      --text-muted:   #8B93A8;
+      --text-light:   #575E70;
+      --accent:       #3A8FD0;
+      --accent-warm:  #F5C800;
+      --border:       #21253A;
+      --border-quote: #2A2D3E;
+      --border-light: #21253A;
+      --tag-bg:       #0E1A2B;
+      --tag-text:     #3A8FD0;
+      --table-stripe: #161B22;
+    }
+    body.dark .warning-box { background: #1A1400; border-color: #3A2D00; }
+    body.dark .fact-card.highlight { background: #1A1600; border-color: #3A2D00; }
+    body.dark .fact-card.highlight .fact-value { color: #C4900E; }
+    body.dark .fact-card.highlight .fact-desc { color: #A07828; }
+    body.dark .next-article { background: #111320; }
+    body.dark .diff-card { border-color: #21253A; }
+  </style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<!-- 1. サイトヘッダー -->
+<header class="site-header">
+  <div class="site-header-left">
+    <a class="wordmark" href="../index.html">dona<span>to</span></a>
+    <span class="header-sep">—</span>
+    <a class="header-back-link" href="./index.html"><span class="lang-ja">記事一覧</span><span class="lang-en">Articles</span></a>
+    <span class="header-sep">—</span>
+    <span class="header-media">Valuation Theory Lab</span>
+  </div>
+  <div class="site-header-right">
+    <div class="lang-toggle-bar">
+      <button class="art-lang-btn active" data-lang="ja" onclick="setLang('ja')">JP</button>
+      <button class="art-lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+    </div>
+    <button id="theme-btn" onclick="toggleTheme()" title="ダーク/ライト切替">☀</button>
+    <time class="header-date">2026-03-22</time>
+  </div>
+</header>
+
+<!-- 2. スティッキー情報バー -->
+<div id="sticky-bar">
+  <span class="sbar-cat">VALUATION THEORY LAB</span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-text"><span class="lang-ja">Series #006 · マルチプルの比較可能性 · 会計基準の差異調整</span><span class="lang-en">Series #006 · Multiples Comparability · Adjusting for Accounting Standards</span></span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-text">2026-03-22</span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-badge" id="reading-time-badge"><span class="lang-ja">計算中...</span><span class="lang-en">calculating...</span></span>
+</div>
+
+<main style="padding: 0 0 3em;">
+  <div class="article-container">
+    <div class="article-grid">
+
+      <!-- 3. 記事本文 -->
+      <article class="article-body">
+
+        <!-- 記事ヘッダー -->
+        <div style="padding: 36px 0 24px;">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+            <div class="section-label">Valuation Theory Lab &nbsp;#006</div>
+            <span class="sbar-badge" id="reading-time-badge2"><span class="lang-ja">計算中...</span><span class="lang-en">calculating...</span></span>
+          </div>
+          <h1 class="article-headline">
+            <span class="lang-ja">マルチプルの比較可能性 — 会計基準の差異を調整して本当のApple to Appleを作る</span>
+            <span class="lang-en">Comparability in Multiples Valuation — Adjusting for Accounting Standards to Achieve True Apple-to-Apple Analysis</span>
+          </h1>
+          <p class="article-standfirst">
+            <span class="lang-ja">EV/EBITDAやP/Eは「同じ」指標に見えて、実は会計処理の産物に過ぎない。IFRS・US GAAP・J-GAAPでのれん償却・リース会計・開発費資産計上・LIFOが異なる扱いを受けるとき、無調整の比較は「見かけ上の割安/割高」を生み出す。本稿では会計基準の差異がどのマルチプルにどう影響するかを解剖し、実務で使える調整の手順を体系化する。</span>
+            <span class="lang-en">EV/EBITDA and P/E look like universal metrics, but they are ultimately products of accounting choices. When goodwill amortization, lease accounting, development cost capitalization, and inventory costing differ across IFRS, US GAAP, and J-GAAP, unadjusted comparisons create phantom cheapness or richness. This article dissects how accounting standard differences affect each multiple, and provides a systematic adjustment framework for practice.</span>
+          </p>
+          <p class="byline">
+            <span class="lang-ja">Valuation Theory Lab | donato | 2026-03-22</span>
+            <span class="lang-en">Valuation Theory Lab | donato | 2026-03-22</span>
+          </p>
+        </div>
+
+        <!-- エグゼクティブサマリー -->
+        <div class="exec-summary">
+          <div class="exec-block">
+            <div class="section-label">EXEC SUMMARY</div>
+            <p class="exec-tldr">
+              <span class="lang-ja">マルチプルは分子（株価・EV）と分母（EBITDA・Net Income・BV）の比率だが、分母はすべて会計処理の結果である。IFRS適用企業とUS GAAP適用企業、またはJ-GAAP企業を並べると、経済的実態が同じでも「会計上のEBITDA」は最大20〜30%乖離することがある。これを調整せずにマルチプル比較を行うと、割安・割高の判断がひっくり返る。</span>
+              <span class="lang-en">Multiples are ratios of a numerator (price or EV) to a denominator (EBITDA, net income, or book value), but the denominator is always a product of accounting choices. Companies on IFRS vs. US GAAP vs. J-GAAP can show EBITDA differences of 20–30% even when the underlying economics are identical. Ignoring these differences when comparing multiples can completely reverse a cheap/expensive conclusion.</span>
+            </p>
+          </div>
+          <div class="exec-block">
+            <div class="section-label">CORE ISSUES</div>
+            <ul class="issues-list">
+              <li class="issue-item">
+                <span class="issue-q">IFRS 16</span>
+                <span class="issue-text"><span class="lang-ja">オペレーティングリースの資産計上義務化により、EBITDA・EBIT・Net Incomeがすべて変わる。IFRS 16適用企業とUS GAAP（ASC 842）適用企業のEV/EBITDAは同じ式でも計測対象が異なる。</span><span class="lang-en">Mandatory capitalization of operating leases changes EBITDA, EBIT, and net income simultaneously. EV/EBITDA for an IFRS 16 company and an ASC 842 company measure different things, even with the same formula.</span></span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">のれん償却</span>
+                <span class="issue-text"><span class="lang-ja">J-GAAPはのれんを最大20年で強制償却するため、M&A活発な企業ほどP/Eが低く見える。IFRS・US GAAPは減損テストのみで償却なし。この差がP/EやEV/EBITの国際比較を歪める。</span><span class="lang-en">J-GAAP mandates goodwill amortization over up to 20 years, depressing P/E for acquisitive companies. IFRS and US GAAP use impairment-only. This distorts international P/E and EV/EBIT comparisons significantly.</span></span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">開発費</span>
+                <span class="issue-text"><span class="lang-ja">IAS 38は開発フェーズのコストを条件付きで資産計上を要求する。US GAAPは原則即時費用化（ASC 730）。R&D比率の高い企業（製薬・ソフトウェア）では、分母のEBITDAに数千億円規模の差が生じうる。</span><span class="lang-en">IAS 38 requires capitalization of development-phase costs when criteria are met. US GAAP (ASC 730) requires immediate expensing for most R&D. For R&D-intensive firms (pharma, software), this can produce EBITDA differences running into billions.</span></span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">LIFO禁止</span>
+                <span class="issue-text"><span class="lang-ja">IFRSはLIFOを禁止。US GAAPは使用可能。インフレ局面でLIFO企業のコストは増大しGross Profit・EBITDAが圧縮される。マルチプル比較時はLIFO-to-FIFOリザーブ調整が必要。</span><span class="lang-en">IFRS prohibits LIFO. US GAAP permits it. In inflationary environments, LIFO firms show higher COGS and compressed EBITDA. LIFO-to-FIFO reserve adjustments are required before comparing multiples.</span></span>
+              </li>
+            </ul>
+          </div>
+          <div class="exec-block">
+            <div class="section-label">IMPLICATIONS</div>
+            <ul class="implications-list">
+              <li class="implication-item"><span class="lang-ja">「EV/EBITDAで比較する」と言っただけではApple to Appleにならない。調整されたEBITDA（Adjusted EBITDA）の定義を統一することが先決。</span><span class="lang-en">"Comparing on EV/EBITDA" does not automatically create apple-to-apple. Agreeing on a definition of Adjusted EBITDA that is consistent across standards must come first.</span></li>
+              <li class="implication-item"><span class="lang-ja">調整の方向は一律ではない。「IFRS 16の影響を除去してFIFO基準に揃える」のか「全社IFRS 16基準に統一する」のかによって、比較対象の数値が逆方向に動く。</span><span class="lang-en">The direction of adjustment is not uniform. Whether you strip IFRS 16 effects and align on pre-IFRS16 EBITDA, or restate all companies to IFRS 16 standards, moves comparables in opposite directions.</span></li>
+              <li class="implication-item"><span class="lang-ja">M&Aにおける日本企業のバリュエーションでは、J-GAAP→IFRSシフト済み企業と未シフト企業の混在が特に問題になる。のれん処理の違いが連結P/Lを根本的に変えるため、比較前にcurrent accounting policyを必ず確認する。</span><span class="lang-en">In Japanese M&A valuation, the mix of IFRS-converters and J-GAAP holdouts is particularly problematic. Goodwill treatment fundamentally changes consolidated P&L, so verifying each company's current accounting policy before comparison is essential.</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 第1節 -->
+        <h2>
+          <span class="lang-ja">マルチプルは「会計の産物」である</span>
+          <span class="lang-en">Multiples Are Products of Accounting</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">バリュエーションにおけるRelative Valuationの前提は「同質の企業群を同一の尺度で計測すれば、適正価値が市場価格から乖離しているかどうかを判定できる」という論理だ。しかしこの前提は「同一の尺度」という部分で崩れやすい。</span>
+          <span class="lang-en">The premise of relative valuation is that measuring a group of comparable companies with the same metric will reveal whether a target is mispriced relative to fair value. But this premise often breaks down at "the same metric."</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">EV/EBITDAを例にとれば、分母のEBITDAは「Earnings Before Interest, Taxes, Depreciation and Amortization」だが、どこまでを減価償却費に含めるか、どの費用が営業費用に算入されるかは会計基準によって大きく変わる。特に以下の4点が実務上の比較可能性を毀損する。</span>
+          <span class="lang-en">Take EV/EBITDA: the denominator is "Earnings Before Interest, Taxes, Depreciation and Amortization," but what counts as depreciation, and what expenses are included in operating costs, varies dramatically across accounting standards. Four issues in particular destroy practical comparability.</span>
+        </p>
+
+        <div class="insight-box">
+          <strong><span class="lang-ja">マルチプルの分母が会計の産物である以上、比較可能性の検証は分析の一部ではなく前提条件だ。</span><span class="lang-en">Since the denominator of any multiple is a product of accounting choices, comparability verification is not part of the analysis — it is its prerequisite.</span></strong>
+          <br><br>
+          <span class="lang-ja">「のれん処理が違う」「リース会計が違う」は「細かい違い」ではなく、場合によっては分母を20〜30%変動させる構造的差異である。</span>
+          <span class="lang-en">"Different goodwill treatment" and "different lease accounting" are not minor differences — in some cases they represent structural differences that move the denominator by 20–30%.</span>
+        </div>
+
+        <!-- 第2節 -->
+        <h2>
+          <span class="lang-ja">主要会計差異とマルチプルへの影響マトリクス</span>
+          <span class="lang-en">Key Accounting Differences and Their Impact on Multiples</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">以下では、クロスボーダーM&Aや国際的なPeer分析で頻繁に遭遇する会計基準差異を取り上げ、どのマルチプルにどう影響するかを整理する。</span>
+          <span class="lang-en">The following covers the accounting standard differences most commonly encountered in cross-border M&A and international peer analysis, mapping each difference to the multiples it affects.</span>
+        </p>
+
+        <h3><span class="lang-ja">① IFRS 16 / ASC 842 — オペレーティングリースの資産計上</span><span class="lang-en">① IFRS 16 / ASC 842 — Operating Lease Capitalization</span></h3>
+
+        <p>
+          <span class="lang-ja">IFRS 16（2019年強制適用）は原則としてすべてのリースをBS上に使用権資産（ROU Asset）として計上し、リース負債を認識することを要求する。従来はオペレーティングリースのレンタル料は損益計算書上の営業費用（≒EBITDA控除前のコスト）として計上されていたが、IFRS 16適用後は：</span>
+          <span class="lang-en">IFRS 16 (mandatorily applicable from 2019) requires essentially all leases to be recognized as right-of-use (ROU) assets on the balance sheet, with a corresponding lease liability. Under the old standard, operating lease payments were P&L operating expenses (reducing EBITDA). Under IFRS 16:</span>
+        </p>
+
+        <ul>
+          <li><span class="lang-ja"><strong>レンタル費用がEBITDAから消える</strong> — 使用権資産の償却費（D&A）と利息費用に分解される</span><span class="lang-en"><strong>Rental expense disappears from EBITDA</strong> — replaced by ROU asset depreciation (D&A) and interest expense</span></li>
+          <li><span class="lang-ja"><strong>EBITDAは増加、EBITは変わらず、Net Incomeは前期比減少（初期は）</strong> — D&Aが増えた分だけEBITDAが膨張</span><span class="lang-en"><strong>EBITDA rises, EBIT is roughly unchanged, net income falls (initially)</strong> — EBITDA inflates by the amount of D&A added</span></li>
+          <li><span class="lang-ja"><strong>EV側にもリース負債を加算する必要がある</strong> — EV = 時価総額 + Net Debt + リース負債（IFRS 16適用後）</span><span class="lang-en"><strong>EV must also include the lease liability</strong> — EV = market cap + net debt + lease liabilities (post-IFRS 16)</span></li>
+        </ul>
+
+        <p>
+          <span class="lang-ja">一方、US GAAP（ASC 842）は類似の方向性だが、<strong>ファイナンスリースとオペレーティングリースの二分法を維持</strong>する。オペレーティングリースは依然としてROU資産・負債を認識するものの、損益計算書では単一の「リース費用（Lease Cost）」として直線法で計上される。つまり、EBITDA計算においてASC 842でのオペレーティングリースは<em>リース費用を営業費用のまま</em>扱うため、IFRS 16のような「EBITDAの膨張」は発生しない。</span>
+          <span class="lang-en">US GAAP (ASC 842) moves in a similar direction, but <strong>retains the finance lease / operating lease distinction</strong>. Operating leases still recognize ROU assets and liabilities, but the income statement shows a single straight-line "lease cost" in operating expenses. Therefore, ASC 842 operating leases do <em>not</em> inflate EBITDA the way IFRS 16 does — the lease cost remains an operating expense above the EBITDA line.</span>
+        </p>
+
+        <div class="warning-box">
+          <strong><span class="lang-ja">実務上の落とし穴：</span><span class="lang-en">Practical trap:</span></strong>
+          <span class="lang-ja">IFRS 16適用の航空会社（例：Japan Airlines）とASC 842適用の米系エアライン（例：Delta）を「EV/EBITDA」でそのまま比較すると、JALのEBITDAは機材リース料が消え膨張し、DeltaのEBITDAはリース料が残ったまま。EV/EBITDAは数倍単位で異なって見える。正しくは双方を「リース前EBITDA（EBITDAR）」に統一するか、双方をIFRS 16ベースに統一して比較する。</span>
+          <span class="lang-en">Comparing IFRS 16-applying JAL with ASC 842-applying Delta on reported EV/EBITDA creates a phantom difference: JAL's EBITDA excludes aircraft lease costs (inflated), while Delta's EBITDA includes them. The correct approach is to either normalize both to pre-lease EBITDA (EBITDAR), or restate both to IFRS 16 / full-capitalization basis before comparing.</span>
+        </div>
+
+        <div class="calc-block">
+          <div class="calc-row">
+            <span><span class="lang-ja">オペレーティングリース費用（年間）</span><span class="lang-en">Annual operating lease expense</span></span>
+            <span>¥10,000百万</span>
+          </div>
+          <div class="calc-row">
+            <span><span class="lang-ja">IFRS 16後のEBITDA増加</span><span class="lang-en">EBITDA uplift under IFRS 16</span></span>
+            <span class="calc-highlight">+¥10,000百万 <span class="lang-ja">（リース費用がD&Aと利息に転換）</span><span class="lang-en">(lease cost reclassified to D&A + interest)</span></span>
+          </div>
+          <div class="calc-row">
+            <span><span class="lang-ja">EV増加（リース負債追加）</span><span class="lang-en">EV increase (lease liability added)</span></span>
+            <span class="calc-warn">+¥80,000百万 <span class="lang-ja">（=PV of future payments, 8年×¥10,000）</span><span class="lang-en">(≈PV of future payments)</span></span>
+          </div>
+          <div class="calc-row">
+            <span><span class="lang-ja">EV/EBITDA変化</span><span class="lang-en">Net EV/EBITDA change</span></span>
+            <span class="calc-warn"><span class="lang-ja">EV大幅増、EBITDA小幅増 → 倍率は通常上昇</span><span class="lang-en">EV rises more than EBITDA → multiple typically increases</span></span>
+          </div>
+        </div>
+
+        <h3><span class="lang-ja">② のれん償却 — J-GAAP vs. IFRS / US GAAP</span><span class="lang-en">② Goodwill Amortization — J-GAAP vs. IFRS / US GAAP</span></h3>
+
+        <p>
+          <span class="lang-ja">J-GAAPはのれんを「効果の及ぶ期間」（最長20年）にわたり定額償却する（企業会計基準第21号）。対してIFRS（IFRS 3）とUS GAAP（ASC 350）はどちらも2001年以降、のれんを償却せず毎年減損テストにかける方式（Impairment-Only Approach）を採用している。</span>
+          <span class="lang-en">J-GAAP requires straight-line amortization of goodwill over its useful life (maximum 20 years), per Accounting Standard No. 21. In contrast, both IFRS (IFRS 3) and US GAAP (ASC 350) have used the impairment-only approach since 2001 — no periodic amortization, only annual impairment testing.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">これがP/EやEV/EBITに与える影響は大きい。例えば、M&Aを活発に行ってきた日本企業のJP-GAAP連結BSに多額ののれんが積み上がっているとすると、その会社のP/Eは毎期ののれん償却費（税後）だけ分母が減少し、IFRS適用の同業他社と比べて<strong>見かけ上P/Eが高く（割高）</strong>見える。逆に言えば、J-GAAP企業をIFRS採用企業と同じ土俵で比べるにはのれん償却を「add back」しなければならない。</span>
+          <span class="lang-en">The impact on P/E and EV/EBIT is substantial. An acquisitive Japanese J-GAAP company carrying large goodwill balances will show a depressed denominator each year due to amortization (after-tax), making its P/E appear <strong>higher (more expensive)</strong> than an IFRS peer with identical economics. Conversely, comparing a J-GAAP company against IFRS peers requires adding back goodwill amortization before the comparison is valid.</span>
+        </p>
+
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th><span class="lang-ja">企業</span><span class="lang-en">Company</span></th>
+              <th><span class="lang-ja">適用基準</span><span class="lang-en">Standard</span></th>
+              <th><span class="lang-ja">のれん処理</span><span class="lang-en">Goodwill</span></th>
+              <th><span class="lang-ja">Net Income（実態）</span><span class="lang-en">Net Income (economic)</span></th>
+              <th><span class="lang-ja">のれん償却費</span><span class="lang-en">Goodwill Amort.</span></th>
+              <th><span class="lang-ja">報告NI</span><span class="lang-en">Reported NI</span></th>
+              <th><span class="lang-ja">P/E（誤）</span><span class="lang-en">P/E (unadj.)</span></th>
+              <th><span class="lang-ja">P/E（調整後）</span><span class="lang-en">P/E (adj.)</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>J社</td>
+              <td>J-GAAP</td>
+              <td><span class="lang-ja">20年償却</span><span class="lang-en">20yr amort.</span></td>
+              <td>¥100</td>
+              <td class="warn-cell">▲¥20</td>
+              <td>¥80</td>
+              <td class="warn-cell">25.0x</td>
+              <td class="ok-cell">20.0x</td>
+            </tr>
+            <tr>
+              <td>I社</td>
+              <td>IFRS</td>
+              <td><span class="lang-ja">減損テストのみ</span><span class="lang-en">Impairment only</span></td>
+              <td>¥100</td>
+              <td class="ok-cell">¥0</td>
+              <td>¥100</td>
+              <td class="accent-cell">20.0x</td>
+              <td class="accent-cell">20.0x</td>
+            </tr>
+          </tbody>
+        </table>
+        <p style="font-size:0.82rem;color:var(--text-muted);margin-top:-0.8em;"><span class="lang-ja">※ 株価はどちらも¥2,000、時価総額は同等と仮定。実態の収益力は同じでも、J-GAAPでは「割高」と誤判定される。</span><span class="lang-en">* Both companies priced at ¥2,000 per share with equivalent market caps. Identical underlying earnings power, yet J-GAAP produces an apparently "expensive" multiple.</span></p>
+
+        <h3><span class="lang-ja">③ 開発費の資産計上 — IAS 38 vs. ASC 730</span><span class="lang-en">③ Development Cost Capitalization — IAS 38 vs. ASC 730</span></h3>
+
+        <p>
+          <span class="lang-ja">IAS 38は、研究フェーズの費用は即時費用化するが、<strong>開発フェーズについては技術的実現可能性・完成意図・市場性などの6要件をすべて満たす場合に資産計上を「要求」する</strong>。一方、US GAAP（ASC 730）はソフトウェア開発の一部例外を除き、研究開発費の全額を発生時に費用化する。</span>
+          <span class="lang-en">IAS 38 requires immediate expensing of research-phase costs, but <strong>mandates capitalization of development-phase costs when all six criteria</strong> (technical feasibility, intent to complete, ability to use/sell, probable future economic benefits, adequate resources, reliable measurement) are met. US GAAP (ASC 730), with limited exceptions for software, requires all R&D to be expensed immediately.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">製薬や半導体企業でこの差異が問題になる。例えばある製薬会社が年間¥50億を開発費に費やし、IFRSでその70%を資産計上するとすれば：</span>
+          <span class="lang-en">This difference becomes material for pharma and semiconductor companies. If a pharma company spends ¥5bn annually on development and capitalizes 70% under IFRS:</span>
+        </p>
+
+        <div class="calc-block">
+          <div class="calc-row">
+            <span><span class="lang-ja">開発費総額</span><span class="lang-en">Total development spend</span></span>
+            <span>¥5,000百万</span>
+          </div>
+          <div class="calc-row">
+            <span><span class="lang-ja">IFRSでの資産計上額（70%）</span><span class="lang-en">Capitalized under IFRS (70%)</span></span>
+            <span class="calc-highlight">¥3,500百万 → BSへ計上</span>
+          </div>
+          <div class="calc-row">
+            <span><span class="lang-ja">IFRS P&L計上費用（30%）</span><span class="lang-en">Expensed under IFRS (30%)</span></span>
+            <span>¥1,500百万</span>
+          </div>
+          <div class="calc-row">
+            <span><span class="lang-ja">US GAAP P&L計上費用（100%）</span><span class="lang-en">Expensed under US GAAP (100%)</span></span>
+            <span class="calc-warn">¥5,000百万</span>
+          </div>
+          <div class="calc-row">
+            <span><span class="lang-ja">EBITDAの差異（IFRS−US GAAP）</span><span class="lang-en">EBITDA difference (IFRS minus US GAAP)</span></span>
+            <span class="calc-highlight">+¥3,500百万（IFRS > US GAAP）</span>
+          </div>
+        </div>
+
+        <p>
+          <span class="lang-ja">R&D比率の高い企業群を比較する際は、開発費の資産計上額をadd backして「全額費用化ベースのEBITDA」に揃えることが、比較可能性を確保する上で合理的だ。ただし、その際は対応する無形資産償却費も除去すべきかどうかを検討する必要がある（EBITDAはD&Aをadd backするため、通常は問題ないが、資産計上した開発費の償却年数の違いも残る）。</span>
+          <span class="lang-en">When comparing R&D-intensive companies, the cleanest approach is to add back all capitalized development costs and restate to a "fully-expensed" EBITDA basis. However, note that you must also consider whether the corresponding amortization of previously capitalized R&D assets should be removed (since EBITDA adds back D&A, this is usually handled automatically, but differences in amortization periods for capitalized R&D create a residual comparability issue).</span>
+        </p>
+
+        <h3><span class="lang-ja">④ LIFO vs. FIFO — 在庫評価の差異</span><span class="lang-en">④ LIFO vs. FIFO — Inventory Costing Differences</span></h3>
+
+        <p>
+          <span class="lang-ja">IFRSはLIFO（後入先出法）を禁止している（IAS 2）。US GAAPは現在もLIFOを認めており、エネルギー・小売・製造業の一部大企業は伝統的にLIFOを使用している。インフレ局面では：</span>
+          <span class="lang-en">IFRS prohibits LIFO (IAS 2). US GAAP still permits LIFO, and some large energy, retail, and manufacturing companies use it by tradition. In an inflationary environment:</span>
+        </p>
+
+        <ul>
+          <li><span class="lang-ja"><strong>LIFO企業</strong>：最新（高コスト）の在庫がCOGSに算入 → Gross Profit・EBITDAが圧縮される</span><span class="lang-en"><strong>LIFO companies</strong>: newest (highest-cost) inventory flows into COGS → Gross Profit and EBITDA are compressed</span></li>
+          <li><span class="lang-ja"><strong>FIFO企業（IFRS含む）</strong>：古い（低コスト）の在庫がCOGSに算入 → Gross Profit・EBITDAが相対的に高くなる</span><span class="lang-en"><strong>FIFO companies (including IFRS)</strong>: older (lower-cost) inventory flows into COGS → Gross Profit and EBITDA are relatively higher</span></li>
+        </ul>
+
+        <p>
+          <span class="lang-ja">財務諸表の注記には「LIFO Reserve」が開示されている（US GAAP適用企業の場合）。この金額は「FIFO評価に換算した場合のBS在庫増加額」を示しており、LIFO Reserveの当期変動分をCOGSに加算することでFIFOベースのGross Profitに近似できる。比較可能性のために必要な調整式は：</span>
+          <span class="lang-en">Under US GAAP, the LIFO Reserve is disclosed in the notes — it represents the cumulative excess of FIFO inventory over LIFO inventory on the balance sheet. Adding the period-over-period change in LIFO Reserve to COGS approximates FIFO-basis gross profit. The required adjustment for comparability is:</span>
+        </p>
+
+        <div class="formula-label"><span class="lang-ja">LIFO→FIFO調整後EBITDA</span><span class="lang-en">LIFO-to-FIFO Adjusted EBITDA</span></div>
+        <div class="formula">
+EBITDA_adj = EBITDA_reported + ΔLIFO Reserve (period)
+
+<span class="lang-ja">ここで ΔLIFO Reserve = LIFO Reserve(t) − LIFO Reserve(t−1)
+（インフレ局面では正値 → EBITDA増加）</span>
+<span class="lang-en">where ΔLIFO Reserve = LIFO Reserve(t) − LIFO Reserve(t−1)
+(positive in inflation → increases adjusted EBITDA)</span>
+        </div>
+
+        <h3><span class="lang-ja">⑤ PP&E再評価モデル — IAS 16 vs. US GAAP</span><span class="lang-en">⑤ PP&E Revaluation Model — IAS 16 vs. US GAAP</span></h3>
+
+        <p>
+          <span class="lang-ja">IAS 16は有形固定資産の評価について「原価モデル」と「再評価モデル」の選択適用を認める。再評価モデルでは資産を公正価値で評価し直し、簿価を時価に近づけることができる。一方US GAAPは原価モデルのみで再評価は許容されない。</span>
+          <span class="lang-en">IAS 16 permits a choice between the cost model and the revaluation model for PP&E. Under the revaluation model, assets are carried at fair value, bringing book value close to current market value. US GAAP permits only the cost model — no upward revaluation is allowed.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">これがP/B（Price/Book）に与える影響は直接的だ。再評価モデルを採用しているIFRS企業は資産の簿価が高く、P/Bは低く見える。US GAAP企業は原価基準のため、特に古い工場・不動産を保有する重厚長大型企業では含み益が簿価に反映されず、P/Bが高くなる傾向がある。</span>
+          <span class="lang-en">The impact on P/B (Price/Book) is direct. IFRS firms using the revaluation model show higher book values and thus lower P/B. US GAAP firms carrying assets at depreciated historical cost — particularly capital-intensive firms with old plants and real estate — will not reflect unrealized appreciation in book value, producing structurally higher P/B ratios.</span>
+        </p>
+
+        <!-- 第3節 -->
+        <h2>
+          <span class="lang-ja">調整の実務手順 — 3ステップフレームワーク</span>
+          <span class="lang-en">Practical Adjustment Framework — Three Steps</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">比較可能性を確保するための調整は、一度にすべてを行うのではなく、論理的な順序で実施することが重要だ。以下の3ステップは、調整の「方向性と根拠」を誤らないための構造化されたアプローチである。</span>
+          <span class="lang-en">Achieving comparability through adjustments is most reliable when done in a logical sequence rather than all at once. The following three steps provide a structured approach that keeps the "direction and rationale" of adjustments correct.</span>
+        </p>
+
+        <div class="adj-flow">
+          <div class="adj-step">
+            <div class="adj-num">01</div>
+            <div class="adj-content">
+              <div class="adj-title"><span class="lang-ja">正常化（Normalization）— 非経常項目の除去</span><span class="lang-en">Normalization — Remove Non-Recurring Items</span></div>
+              <div class="adj-desc">
+                <span class="lang-ja">リストラ費用・M&A関連費用・一過性の減損・訴訟和解金・会計方針変更の累積影響など、将来も継続しない費用・収益を除去する。これはGAAP差異調整の<em>前に</em>必ず実施する。Normalizedベースでなければ、そもそも比較の起点が狂う。</span>
+                <span class="lang-en">Remove restructuring charges, M&A transaction costs, one-time impairments, litigation settlements, and accounting policy change effects — costs and income that will not recur. This step must precede GAAP adjustment. Without a normalized base, the starting point of comparison is already distorted.</span>
+              </div>
+            </div>
+          </div>
+          <div class="adj-step">
+            <div class="adj-num">02</div>
+            <div class="adj-content">
+              <div class="adj-title"><span class="lang-ja">会計基準の統一（Comparability Adjustment）</span><span class="lang-en">Comparability Adjustment — Align Accounting Standards</span></div>
+              <div class="adj-desc">
+                <span class="lang-ja">上記①〜⑤で述べた調整を適用する。重要なのは「どの基準に統一するか」を先に決めることだ。一般的なアプローチは：（A）全社をIFRS 16後のフルキャピタリゼーションベースに統一する、または（B）全社をIFRS 16前・EBITDAR比較ベースに統一する。方向を定めずに「調整する」と、一方向に恣意的に動く。</span>
+                <span class="lang-en">Apply the adjustments described in ①–⑤ above. Critically, decide <em>which standard to align to</em> before starting. Common approaches: (A) restate all companies to post-IFRS 16 full-capitalization basis, or (B) restate all companies to pre-lease EBITDAR basis. Without deciding direction first, adjustments can be applied asymmetrically and introduce bias.</span>
+              </div>
+            </div>
+          </div>
+          <div class="adj-step">
+            <div class="adj-num">03</div>
+            <div class="adj-content">
+              <div class="adj-title"><span class="lang-ja">構造的調整（Structural Adjustment）— 資本構成・税務・セクター</span><span class="lang-en">Structural Adjustment — Capital Structure, Tax, Sector-Specific</span></div>
+              <div class="adj-desc">
+                <span class="lang-ja">企業間の税率差（実効税率の違い）、資本構成の差（高レバレッジ vs. ネットキャッシュ）、セクター固有の会計処理（保険業のFSV、不動産業のNAV、銀行業のNTAVなど）を最後に調整する。ここは業界知識が直結する領域。</span>
+                <span class="lang-en">Finally adjust for tax rate differences (effective tax rates), capital structure differences (high leverage vs. net cash), and sector-specific accounting (insurance FSV, real estate NAV, bank NTAV, etc.). This is where industry knowledge directly matters.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="insight-box">
+          <strong><span class="lang-ja">調整の順序が重要な理由：</span><span class="lang-en">Why sequence matters:</span></strong>
+          <span class="lang-ja">ステップ2の会計統一より先にステップ3の税務調整を行うと、調整後の税後利益が会計基準のどのベースに対応しているか不明確になり、後からの検証が困難になる。Normalization → Comparability → Structuralの順を守ることで、各調整のロジックが独立してトレースできる。</span>
+          <span class="lang-en">Applying step 3 (tax adjustments) before step 2 (accounting alignment) obscures which accounting basis the post-tax earnings correspond to, making later verification difficult. Maintaining the Normalization → Comparability → Structural sequence keeps the logic of each adjustment independently traceable.</span>
+        </div>
+
+        <!-- 第4節 -->
+        <h2>
+          <span class="lang-ja">マルチプル別 — 影響の大きい調整のまとめ</span>
+          <span class="lang-en">Multiples-Level Summary — Highest-Impact Adjustments by Multiple</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">各マルチプルがどの会計差異に最も感応するかをまとめると以下のようになる。</span>
+          <span class="lang-en">The following summarizes which accounting differences have the highest impact on each multiple.</span>
+        </p>
+
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th><span class="lang-ja">マルチプル</span><span class="lang-en">Multiple</span></th>
+              <th><span class="lang-ja">最重要調整</span><span class="lang-en">Top adjustment</span></th>
+              <th><span class="lang-ja">次に重要な調整</span><span class="lang-en">Second priority</span></th>
+              <th><span class="lang-ja">感応度</span><span class="lang-en">Sensitivity</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="accent-cell">EV/EBITDA</td>
+              <td><span class="lang-ja">IFRS 16 / ASC 842（リース会計）</span><span class="lang-en">IFRS 16 / ASC 842 (lease accounting)</span></td>
+              <td><span class="lang-ja">開発費資産計上（IAS 38）</span><span class="lang-en">Dev. cost capitalization (IAS 38)</span></td>
+              <td class="warn-cell"><span class="lang-ja">非常に高い</span><span class="lang-en">Very high</span></td>
+            </tr>
+            <tr>
+              <td class="accent-cell">EV/EBIT</td>
+              <td><span class="lang-ja">IFRS 16 + のれん償却</span><span class="lang-en">IFRS 16 + goodwill amortization</span></td>
+              <td><span class="lang-ja">開発費償却</span><span class="lang-en">Dev. cost amortization</span></td>
+              <td class="warn-cell"><span class="lang-ja">非常に高い</span><span class="lang-en">Very high</span></td>
+            </tr>
+            <tr>
+              <td class="accent-cell">P/E</td>
+              <td><span class="lang-ja">のれん償却（J-GAAP）</span><span class="lang-en">Goodwill amortization (J-GAAP)</span></td>
+              <td><span class="lang-ja">IFRS 16（税後影響）+ 開発費</span><span class="lang-en">IFRS 16 (after-tax) + dev. costs</span></td>
+              <td class="warn-cell"><span class="lang-ja">高い</span><span class="lang-en">High</span></td>
+            </tr>
+            <tr>
+              <td class="accent-cell">P/B</td>
+              <td><span class="lang-ja">PP&E再評価（IAS 16）</span><span class="lang-en">PP&E revaluation (IAS 16)</span></td>
+              <td><span class="lang-ja">のれん残高（累積M&A効果）</span><span class="lang-en">Goodwill balance (cumulative M&A)</span></td>
+              <td><span class="lang-ja">中程度</span><span class="lang-en">Moderate</span></td>
+            </tr>
+            <tr>
+              <td class="accent-cell">EV/Sales</td>
+              <td><span class="lang-ja">収益認識タイミング（IFRS 15 / ASC 606）</span><span class="lang-en">Revenue recognition timing (IFRS 15 / ASC 606)</span></td>
+              <td><span class="lang-ja">IFRS 16（EV側の影響）</span><span class="lang-en">IFRS 16 (EV-side impact)</span></td>
+              <td class="ok-cell"><span class="lang-ja">比較的小さい</span><span class="lang-en">Relatively low</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- 第5節 -->
+        <h2>
+          <span class="lang-ja">EV Bridgeの再考 — IFRS 16後のEBITDA vs. EBITDAR</span>
+          <span class="lang-en">Rethinking EV Bridge — Post-IFRS 16 EBITDA vs. EBITDAR</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">EV（Enterprise Value）のBridgeとは、株式時価総額からEVを算出する際の調整項目の総称だ。IFRS 16適用後はリース負債をEVに含めることが一般的になった。しかしこれを機械的に適用すると、分子（EV）と分母（EBITDA）の整合性が崩れる。</span>
+          <span class="lang-en">The EV bridge refers to the adjustments made to convert market capitalization to enterprise value. Post-IFRS 16, it has become standard to include lease liabilities in EV. However, mechanical application of this creates an inconsistency between numerator (EV including leases) and denominator (EBITDA).</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">整合性を保つためには、<strong>EV内のリース負債とEBITDA内のリース費用のadd backを対称的に扱う</strong>必要がある：</span>
+          <span class="lang-en">To maintain consistency, <strong>the lease liability in EV and the lease expense add-back in EBITDA must be treated symmetrically</strong>:</span>
+        </p>
+
+        <div class="diff-grid">
+          <div class="diff-card">
+            <div class="diff-name"><span class="lang-ja">アプローチA — IFRS 16フルキャピタリゼーション</span><span class="lang-en">Approach A — IFRS 16 Full Capitalization</span></div>
+            <div class="diff-desc">
+              <span class="lang-ja">EV = 時価総額 + 有利子負債 + <strong>リース負債</strong> − 現金<br>EBITDA = Operating Profit + D&A（<strong>ROU資産償却含む</strong>）<br>→ 分子・分母がともにリースを資産化ベースで整合。IFRS 16適用企業同士の比較に有効。</span>
+              <span class="lang-en">EV = Mkt Cap + Financial Debt + <strong>Lease Liabilities</strong> − Cash<br>EBITDA = Operating Profit + D&A (<strong>incl. ROU depreciation</strong>)<br>→ Numerator and denominator both on full-capitalization basis. Valid for comparing IFRS 16 companies with each other.</span>
+            </div>
+          </div>
+          <div class="diff-card warn-top">
+            <div class="diff-name"><span class="lang-ja">アプローチB — EBITDAR（リース費用除去）</span><span class="lang-en">Approach B — EBITDAR (Pre-Lease Basis)</span></div>
+            <div class="diff-desc">
+              <span class="lang-ja">EV = 時価総額 + 有利子負債 − 現金（<strong>リース負債は除く</strong>）<br>EBITDAR = EBITDA + <strong>リース費用</strong><br>→ IFRS 16適用前の比較基準に近い。航空・小売・外食などリース比率が高いセクターで使われる。IFRS 16企業とASC 842企業の横断比較に適している。</span>
+              <span class="lang-en">EV = Mkt Cap + Financial Debt − Cash (<strong>excluding lease liabilities</strong>)<br>EBITDAR = EBITDA + <strong>Lease Rent</strong><br>→ Approximates pre-IFRS 16 comparisons. Used in high-lease sectors (airlines, retail, restaurants). Better for cross-comparing IFRS 16 and ASC 842 companies.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="warning-box">
+          <strong><span class="lang-ja">最も避けるべきパターン（Mismatch）：</span><span class="lang-en">The pattern to avoid above all others (Mismatch):</span></strong><br>
+          <span class="lang-ja">EV = 時価総額 + 有利子負債 + <strong>リース負債</strong> − 現金（含む）<br>EBITDA = Operating Profit + 有形固定資産D&A（<strong>ROU資産償却を含まないEBITDA</strong>）<br>→ 分子はリースを含み、分母はリース除外。このMismatchはEV/EBITDAを過大表示させる。Bloombergなどのデータベースでデフォルト値を使うと、このパターンに陥ることがある。必ずadjustmentの定義を確認すること。</span>
+          <span class="lang-en">EV = Mkt Cap + Financial Debt + <strong>Lease Liabilities</strong> − Cash (leases included)<br>EBITDA = Operating Profit + PP&E D&A (<strong>EBITDA ex-ROU depreciation</strong>)<br>→ Numerator includes leases; denominator excludes them. This mismatch overstates EV/EBITDA. Default database values in Bloomberg and similar tools can produce exactly this pattern. Always verify the adjustment definition in use.</span>
+        </div>
+
+        <!-- 第6節 -->
+        <h2>
+          <span class="lang-ja">セクター別の注意点</span>
+          <span class="lang-en">Sector-Specific Considerations</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">会計基準差異の影響はセクターによって大きく異なる。以下は特に注意が必要なケースだ。</span>
+          <span class="lang-en">The impact of accounting standard differences varies significantly by sector. The following are cases requiring particular attention.</span>
+        </p>
+
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th><span class="lang-ja">セクター</span><span class="lang-en">Sector</span></th>
+              <th><span class="lang-ja">主要問題</span><span class="lang-en">Key issue</span></th>
+              <th><span class="lang-ja">調整の方向</span><span class="lang-en">Adjustment direction</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="lang-ja">航空・小売・外食</span><span class="lang-en">Airlines, Retail, Restaurants</span></td>
+              <td><span class="lang-ja">IFRS 16 vs. ASC 842 のEBITDA差</span><span class="lang-en">IFRS 16 vs. ASC 842 EBITDA gap</span></td>
+              <td><span class="lang-ja">EBITDARに統一し、EV side もリース負債除外で比較</span><span class="lang-en">Normalize to EBITDAR; exclude lease liabilities from EV</span></td>
+            </tr>
+            <tr>
+              <td><span class="lang-ja">製薬・バイオテク</span><span class="lang-en">Pharma / Biotech</span></td>
+              <td><span class="lang-ja">IAS 38 開発費資産計上、R&D費率の差</span><span class="lang-en">IAS 38 dev. cost capitalization; R&D intensity differences</span></td>
+              <td><span class="lang-ja">全開発費を費用化ベースに統一（EBITDAから資産計上額を除く）</span><span class="lang-en">Restate to fully-expensed basis (remove capitalized dev. costs from EBITDA)</span></td>
+            </tr>
+            <tr>
+              <td><span class="lang-ja">日本のM&A対象企業</span><span class="lang-en">Japanese M&A targets</span></td>
+              <td><span class="lang-ja">J-GAAP のれん償却 vs. IFRS/US GAAP 非償却</span><span class="lang-en">J-GAAP goodwill amortization vs. IFRS/US GAAP impairment-only</span></td>
+              <td><span class="lang-ja">J-GAAP企業ののれん償却をadd backし、同じのれん残高をIFRS企業と比較可能にする</span><span class="lang-en">Add back goodwill amortization for J-GAAP companies to make residual goodwill balances comparable to IFRS peers</span></td>
+            </tr>
+            <tr>
+              <td><span class="lang-ja">エネルギー・素材</span><span class="lang-en">Energy / Materials</span></td>
+              <td><span class="lang-ja">LIFO企業（US GAAP）vs. FIFO企業（IFRS）の COGS差</span><span class="lang-en">LIFO companies (US GAAP) vs. FIFO companies (IFRS) COGS difference</span></td>
+              <td><span class="lang-ja">LIFO Reserve変動分をCOGSからadd backしてFIFOベースに統一</span><span class="lang-en">Add LIFO Reserve change back to COGS to normalize to FIFO basis</span></td>
+            </tr>
+            <tr>
+              <td><span class="lang-ja">不動産・インフラ</span><span class="lang-en">Real Estate / Infrastructure</span></td>
+              <td><span class="lang-ja">PP&E再評価（IAS 16）による簿価の差</span><span class="lang-en">PP&E revaluation (IAS 16) distorting book value</span></td>
+              <td><span class="lang-ja">P/Bより NAV（Net Asset Value）ベースのマルチプルを使用するか、再評価増分を除いた原価ベースBVに調整</span><span class="lang-en">Use NAV-based multiples rather than P/B, or adjust to historical cost basis BV by stripping revaluation surplus</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- 第7節 -->
+        <h2>
+          <span class="lang-ja">実務チェックリスト — 比較前に確認すべき10項目</span>
+          <span class="lang-en">Practical Checklist — 10 Items to Verify Before Comparing Multiples</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">以下は、Peer Analysisやトランザクション・マルチプル分析を実施する前に確認すべき事項のチェックリストだ。これらをスキップすると、比較の妥当性が根本的に損なわれる。</span>
+          <span class="lang-en">The following is a checklist of items to verify before conducting peer analysis or transaction multiple analysis. Skipping these steps fundamentally undermines the validity of the comparison.</span>
+        </p>
+
+        <div class="calc-block">
+          <div class="calc-row">
+            <span>□ 01</span>
+            <span><span class="lang-ja">対象企業全社の適用会計基準（IFRS / US GAAP / J-GAAP）を確認したか</span><span class="lang-en">Confirmed accounting standard (IFRS / US GAAP / J-GAAP) for each company</span></span>
+          </div>
+          <div class="calc-row">
+            <span>□ 02</span>
+            <span><span class="lang-ja">のれんの償却・非償却を確認し、必要なadd backを実施したか</span><span class="lang-en">Confirmed goodwill amortization policy and applied necessary add-backs</span></span>
+          </div>
+          <div class="calc-row">
+            <span>□ 03</span>
+            <span><span class="lang-ja">リース負債のEV算入方法を統一したか（フルキャピタリゼーション or EBITDAR方式）</span><span class="lang-en">Standardized treatment of lease liabilities in EV (full-cap or EBITDAR approach)</span></span>
+          </div>
+          <div class="calc-row">
+            <span>□ 04</span>
+            <span><span class="lang-ja">EBITDAがROU資産の償却を含む/含まないを確認したか（③③との対称性）</span><span class="lang-en">Confirmed whether EBITDA includes / excludes ROU asset depreciation (symmetry with ③)</span></span>
+          </div>
+          <div class="calc-row">
+            <span>□ 05</span>
+            <span><span class="lang-ja">開発費の資産計上額を費用化ベースに調整したか（製薬・ソフトウェア業種で特に重要）</span><span class="lang-en">Adjusted capitalized development costs to fully-expensed basis (critical for pharma/software)</span></span>
+          </div>
+          <div class="calc-row">
+            <span>□ 06</span>
+            <span><span class="lang-ja">US GAAP企業にLIFO使用者が含まれる場合、LIFO Reserve調整を実施したか</span><span class="lang-en">Applied LIFO-to-FIFO Reserve adjustment if any US GAAP companies use LIFO</span></span>
+          </div>
+          <div class="calc-row">
+            <span>□ 07</span>
+            <span><span class="lang-ja">非経常項目（リストラ・訴訟・一過性減損）を除去したか（Normalization）</span><span class="lang-en">Removed non-recurring items (restructuring, litigation, one-time impairments) — Normalization</span></span>
+          </div>
+          <div class="calc-row">
+            <span>□ 08</span>
+            <span><span class="lang-ja">「Adjusted EBITDA」の定義が全社で同じ内容を指しているか</span><span class="lang-en">Verified that "Adjusted EBITDA" means the same thing across all companies</span></span>
+          </div>
+          <div class="calc-row">
+            <span>□ 09</span>
+            <span><span class="lang-ja">PP&E再評価を採用するIFRS企業がいる場合、P/BよりNAVベースを検討したか</span><span class="lang-en">Considered NAV-based multiples over P/B where IFRS revaluation models are used</span></span>
+          </div>
+          <div class="calc-row">
+            <span>□ 10</span>
+            <span><span class="lang-ja">収益認識の違い（long-term contract等）を確認し、EV/Salesの比較可能性を検証したか</span><span class="lang-en">Verified revenue recognition differences (long-term contracts, etc.) and their impact on EV/Sales comparability</span></span>
+          </div>
+        </div>
+
+        <!-- 締め -->
+        <h2>
+          <span class="lang-ja">まとめ — 比較可能性は仮定ではなく作業である</span>
+          <span class="lang-en">Conclusion — Comparability Is Work, Not an Assumption</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">「EV/EBITDAで比べれば会計の差異は吸収される」という言説は誤りだ。EBITDAはD&Aをadd backすることで<em>一部の</em>会計差異を緩和するが、IFRS 16のリース影響・のれん償却・開発費・LIFO/FIFOといった差異は、EBITDAレベルでも残存する。さらにEV側のリース負債算入の一貫性も問われる。</span>
+          <span class="lang-en">The claim that "EV/EBITDA absorbs accounting differences" is false. Adding back D&A does neutralize <em>some</em> accounting differences, but IFRS 16 lease impacts, goodwill amortization, development costs, and LIFO/FIFO differences all persist at the EBITDA level. Additionally, the consistent treatment of lease liabilities in EV must be verified independently.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">比較可能性は仮定として置けるものではなく、具体的な調整作業を通じて作り上げるものだ。Peer Analysisの品質は、どれだけ精緻にComparableを選んだかよりも、どれだけ正確にApple to Appleを担保できているかに依存する。</span>
+          <span class="lang-en">Comparability cannot be assumed — it must be constructed through specific adjustment work. The quality of peer analysis depends less on how carefully the peer set was selected, and more on how accurately apple-to-apple comparability has been ensured.</span>
+        </p>
+
+        <div class="insight-box">
+          <span class="lang-ja"><strong>実務上の最終判断基準：</strong>各社のAnnual Report（20-F、有価証券報告書）のSignificant Accounting Policiesセクションとは必ず照合すること。データベースの「EV/EBITDA」は、Defined termであり、その定義は提供者によって異なる。一次情報に戻ることが比較可能性確保の唯一の確実な方法だ。</span>
+          <span class="lang-en"><strong>Final practical standard:</strong> Always cross-reference each company's Significant Accounting Policies section in the Annual Report (20-F, Yukashoken Hokokusho). "EV/EBITDA" in databases is a defined term, and that definition varies by data provider. Returning to primary sources is the only reliable way to ensure comparability.</span>
+        </div>
+
+        <!-- 次の記事へ -->
+        <a class="next-article" href="./index.html">
+          <div>
+            <div class="next-label">VALUATION THEORY LAB</div>
+            <div class="next-title"><span class="lang-ja">記事一覧へ戻る</span><span class="lang-en">Back to Articles Index</span></div>
+          </div>
+          <div class="next-arrow">→</div>
+        </a>
+
+      </article>
+
+      <!-- 4. サイドバー -->
+      <aside class="article-sidebar">
+
+        <div class="sidebar-card">
+          <div class="section-label">KEY NUMBERS</div>
+          <div class="key-stats">
+            <div class="fact-card">
+              <div class="fact-value">20yr</div>
+              <div class="fact-desc"><span class="lang-ja">J-GAAPのれん最大償却期間。IFRS/US GAAPは非償却。</span><span class="lang-en">Maximum J-GAAP goodwill amortization. IFRS/US GAAP: no amortization.</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">EBITDAR</div>
+              <div class="fact-desc"><span class="lang-ja">リース費用をadd backした指標。リース比率の高い業種でIFRS 16影響を除いた比較に使う。</span><span class="lang-en">EBITDA + Rent. Used in high-lease sectors to compare on a pre-IFRS 16 basis.</span></div>
+            </div>
+            <div class="fact-card highlight">
+              <div class="fact-value">6 criteria</div>
+              <div class="fact-desc"><span class="lang-ja">IAS 38の開発費資産計上6要件。すべて満たした場合に資産計上が「要求」される。</span><span class="lang-en">Six IAS 38 criteria for development cost capitalization. All must be met; capitalization is then required, not optional.</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">LIFO Rsv</div>
+              <div class="fact-desc"><span class="lang-ja">FIFOとの在庫評価差額。US GAAP注記に開示。期間変動分でCOGSをFIFOに近似調整できる。</span><span class="lang-en">The cumulative FIFO-minus-LIFO inventory gap. Disclosed in US GAAP notes; period change adjusts COGS to FIFO approximation.</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-card">
+          <div class="section-label">SERIES PLAN</div>
+          <ol class="highlights-list">
+            <li class="highlight-item">
+              <span class="hl-num">01</span>
+              <span class="hl-text"><a href="./2026-03-20-wacc.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">WACCを解剖する</span><span class="lang-en">Dissecting WACC</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">02</span>
+              <span class="hl-text"><a href="./2026-03-20-dcf.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">DCFのTerminal Valueは本当に信頼できるか</span><span class="lang-en">Can You Trust DCF Terminal Value?</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">03</span>
+              <span class="hl-text"><a href="./2026-03-21-beta-hamada.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">Betaを信じる前に考えること</span><span class="lang-en">Before You Trust That Beta</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">04</span>
+              <span class="hl-text"><a href="./2026-03-22-cyclical.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">シクリカル企業のLTMが罠である理由</span><span class="lang-en">Why Cyclical Companies' LTM Is a Trap</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">05</span>
+              <span class="hl-text"><a href="./2026-03-22-dloc-dlom.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">DLOC・DLOMの理論と実務</span><span class="lang-en">DLOC and DLOM — Pricing Control and Liquidity</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num" style="color:var(--accent-warm);font-weight:700;">06</span>
+              <span class="hl-text"><strong><span class="lang-ja">マルチプルの比較可能性 — 会計基準の差異調整</span><span class="lang-en">Multiples Comparability — Adjusting for Accounting Standards</span></strong> — <span class="lang-ja">本稿</span><span class="lang-en">this article</span></span>
+            </li>
+          </ol>
+        </div>
+
+        <div class="sidebar-card">
+          <div class="section-label">KEY REFERENCES</div>
+          <ul class="source-list" style="margin-top:10px;">
+            <li><span style="color:var(--text-muted);">Damodaran — Investment Valuation (3rd ed.), Ch. 7–8: Relative Valuation</span></li>
+            <li><span style="color:var(--text-muted);">Koller, Goedhart, Wessels — Valuation (7th ed.), Ch. 14: Multiples</span></li>
+            <li><span style="color:var(--text-muted);">IAS 38 — Intangible Assets (development cost capitalization)</span></li>
+            <li><span style="color:var(--text-muted);">IFRS 16 — Leases (vs. ASC 842)</span></li>
+            <li><span style="color:var(--text-muted);">IFRS 3 / ASC 350 — Business Combinations / Goodwill and Intangibles</span></li>
+            <li><span style="color:var(--text-muted);">IAS 2 — Inventories (LIFO prohibition)</span></li>
+            <li><span style="color:var(--text-muted);">企業会計基準第21号 — のれんの会計処理 (J-GAAP)</span></li>
+          </ul>
+        </div>
+
+      </aside>
+
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <span>Valuation Theory Lab #006 | donato Valuation Notes | 2026-03-22</span>
+  <span><span class="lang-ja">本稿は理論解説目的です。実際の投資判断・M&amp;A意思決定には専門家への確認を要します。</span><span class="lang-en">For educational purposes only. Consult qualified professionals before making investment or M&amp;A decisions.</span></span>
+</footer>
+
+<script>
+  // Progress bar
+  window.addEventListener('scroll', function() {
+    var h = document.documentElement;
+    var pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    document.getElementById('progress-bar').style.width = Math.min(pct, 100) + '%';
+  });
+
+  // Reading time (500字/分)
+  (function() {
+    var text = document.querySelector('.article-body') ? document.querySelector('.article-body').textContent : '';
+    var chars = text.length;
+    var minutes = Math.ceil(chars / 500);
+    var label = '約' + minutes + '分';
+    var el1 = document.getElementById('reading-time-badge');
+    var el2 = document.getElementById('reading-time-badge2');
+    if (el1) el1.querySelector('.lang-ja').textContent = label;
+    if (el2) el2.querySelector('.lang-ja').textContent = label;
+  })();
+
+  // Lang toggle
+  let currentLang = localStorage.getItem('hp-lang') || 'ja';
+  let currentTheme = localStorage.getItem('hp-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('hp-lang', lang);
+    document.querySelectorAll('.lang-ja').forEach(el => el.style.display = lang === 'ja' ? 'inline' : 'none');
+    document.querySelectorAll('.lang-en').forEach(el => el.style.display = lang === 'en' ? 'inline' : 'none');
+    document.querySelectorAll('.art-lang-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+    document.documentElement.lang = lang === 'ja' ? 'ja' : 'en';
+  }
+  function toggleTheme() {
+    currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+    localStorage.setItem('hp-theme', currentTheme);
+    document.body.classList.toggle('dark', currentTheme === 'dark');
+    document.getElementById('theme-btn').textContent = currentTheme === 'light' ? '☀' : '☾';
+  }
+  document.addEventListener('DOMContentLoaded', () => {
+    setLang(currentLang);
+    if (currentTheme === 'dark') {
+      document.body.classList.add('dark');
+      document.getElementById('theme-btn').textContent = '☾';
+    }
+  });
+</script>
+
+</body>
+</html>

@@ -198,12 +198,17 @@
       font-size: clamp(42px, 6vw, 78px);
     }
 
-    /* JP gradient: CJK has no italic form → keep upright, only last char is italic */
+    /* JP gradient: CJK has no italic form → keep upright */
     h1 [data-ja] .gradient {
       font-style: normal;
     }
-    h1 [data-ja] .gradient .italic-end {
+
+    /* Last char 価: italic, color matches gradient endpoint, sits outside the gradient span
+       so -webkit-text-fill-color:transparent is NOT inherited */
+    .hero-italic-ja {
       font-style: italic;
+      color: #F5C800;
+      padding-right: 0.1em; /* prevent italic overhang clipping */
     }
 
     .hero-sub {
@@ -582,7 +587,7 @@
     </div>
     <h1>
       <span data-en>AI-powered<br><span class="gradient">Valuation.</span></span>
-      <span data-ja>AIで変わる<br><span class="gradient">企業価値評<span class="italic-end">価&thinsp;</span></span></span>
+      <span data-ja>AIで変わる<br><span class="gradient">企業価値評</span><span class="hero-italic-ja">価</span></span>
     </h1>
     <p class="hero-sub">
       <span data-en>End-to-end AI augmentation for the valuation process — from business research to final report. Built by a CPA who codes.</span>

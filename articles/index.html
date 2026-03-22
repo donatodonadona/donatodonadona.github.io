@@ -339,6 +339,7 @@
   <div class="cat-nav">
     <a href="#" class="cat-btn all active" onclick="filterArticles('all', event); return false;">All</a>
     <a href="#" class="cat-btn" onclick="filterArticles('ai', event); return false;">AI Models</a>
+    <a href="#" class="cat-btn" onclick="filterArticles('claude-code', event); return false;">Claude Code</a>
     <a href="#" class="cat-btn" onclick="filterArticles('accounting', event); return false;"><span data-en>Accounting</span><span data-ja>会計基準</span></a>
     <a href="#" class="cat-btn" onclick="filterArticles('tax', event); return false;"><span data-en>Tax</span><span data-ja>税法</span></a>
     <a href="#" class="cat-btn" onclick="filterArticles('law', event); return false;"><span data-en>Corp. Law</span><span data-ja>企業法・金商法</span></a>
@@ -350,6 +351,13 @@
   <section class="announcements" id="announcements">
     <div class="announce-header"><span data-en>Updates</span><span data-ja>お知らせ</span></div>
     <ul class="announce-list" id="announce-list">
+      <li class="announce-item">
+        <span class="announce-date">2026-03-22</span>
+        <span class="announce-text">
+          <span data-en>New series: <a href="./2026-03-22-claude-code-001.html">Claude Code Guide #001 — The Day You Graduate From the Browser</a> is now live</span>
+          <span data-ja>新連載開始: <a href="./2026-03-22-claude-code-001.html">Claude Code 実践ガイド #001 — ブラウザから卒業する日</a> を公開しました</span>
+        </span>
+      </li>
       <li class="announce-item">
         <span class="announce-date">2026-03-22</span>
         <span class="announce-text">
@@ -411,6 +419,20 @@
 
   <main>
     <div class="articles-grid" id="articles-grid">
+      <a class="article-card" data-category="claude-code" href="./2026-03-22-claude-code-001.html">
+        <p class="category"><span data-en>Claude Code Guide › #001 · Introduction</span><span data-ja>Claude Code 実践ガイド › #001 · 入門</span></p>
+        <h2>
+          <span data-en>The Day You Graduate From the Browser — Claude Code Introduction</span>
+          <span data-ja>ブラウザから卒業する日 — Claude Code 入門</span>
+        </h2>
+        <p class="summary" data-en>Claude Code is Anthropic's CLI-native AI agent that reads local files, writes code, and runs it. For Finance Professionals, this is the foundation for escaping the copy-paste bottleneck of browser AI — and automating financial data, DD materials, and reports directly.</p>
+        <p class="summary" data-ja>AnthropicのCLI型AIエージェントが、ローカルファイルを直接読み込み、コードを書いて実行する。Finance Professionalがブラウザ型AIのコピペ作業から脱却し、財務データ・DD資料・レポートを自律的に処理させるための第一歩。インストール5分。</p>
+        <div class="meta">
+          <span>2026-03-22</span>
+          <span class="read-time-badge"><span data-en>12 min read</span><span data-ja>約12分</span></span>
+          <span class="read-more"><span data-en>Read →</span><span data-ja>読む →</span></span>
+        </div>
+      </a>
       <a class="article-card" data-category="tax" href="./2026-03-22-pillar2.html">
         <p class="category"><span data-en>Tax › Pillar 2 Global Minimum Tax</span><span data-ja>Tax › Pillar 2グローバルミニマム税</span></p>
         <h2>

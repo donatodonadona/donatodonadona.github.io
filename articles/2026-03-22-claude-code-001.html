@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AnthropicのCLI型AIエージェント「Claude Code」の入門ガイド。Finance Professionalがブラウザ型AIを卒業し、ローカルファイルを直接操作する生産性革命の第一歩。">
+  <title>Claude Code #001 — ブラウザから卒業する日 | donato Finance Professional × AI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+JP:wght@300;400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:           #F8F7F4;
+      --bg-code:      #EEECEA;
+      --bg-quote:     #EEECEA;
+      --bg-highlight: #EBF3FB;
+      --bg-subtle:    #F0EFEB;
+      --bg-card:      #F0EFEB;
+      --bg-header:    #F8F7F4;
+      --text-primary: #111320;
+      --text-body:    #2A2C3E;
+      --text-muted:   #565C70;
+      --text-light:   #888EA0;
+      --accent:       #1A6EB0;
+      --accent-warm:  #D4A010;
+      --border:       #D4D2CC;
+      --border-quote: #B8B6B0;
+      --border-light: #D4D2CC;
+      --tag-bg:       #E4EFF8;
+      --tag-text:     #1A6EB0;
+      --table-stripe: #F0EFEB;
+    }
+
+    body {
+      font-family: 'Noto Serif JP', Georgia, serif;
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--text-primary);
+      background: var(--bg);
+    }
+
+    /* ===== SITE HEADER ===== */
+    .site-header {
+      background: var(--bg-header);
+      border-bottom: 2px solid var(--accent);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .site-header-left { display: flex; align-items: center; gap: 12px; }
+    .wordmark {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: lowercase;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+    .wordmark span { color: var(--accent-warm); }
+    .header-sep { color: var(--border-quote); font-size: 13px; }
+    .header-media {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+    }
+    .site-header-right { display: flex; align-items: center; gap: 12px; }
+    .header-back-link {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .header-back-link:hover { color: var(--accent); }
+    .lang-toggle-bar {
+      display: flex;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .art-lang-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      padding: 3px 10px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .art-lang-btn.active { background: #F5C800; color: #111320; }
+    #theme-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      padding: 3px 9px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.15s;
+    }
+    #theme-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .header-date {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-light);
+      letter-spacing: 0.08em;
+    }
+
+    /* ===== STICKY INFO BAR ===== */
+    #sticky-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg-subtle);
+      border-bottom: 1px solid var(--border-light);
+      padding: 7px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .sbar-cat {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+    }
+    .sbar-sep { color: var(--border-quote); font-size: 11px; }
+    .sbar-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+    .sbar-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      padding: 2px 8px;
+    }
+
+    /* ===== LAYOUT ===== */
+    .article-container { max-width: 1240px; margin: 0 auto; padding: 0 20px; }
+    .article-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 24px;
+    }
+    .article-body { grid-column: 2 / 10; max-width: 68ch; }
+    .article-sidebar {
+      grid-column: 10 / 13;
+      position: sticky;
+      top: 44px;
+      align-self: start;
+      max-height: calc(100vh - 56px);
+      overflow-y: auto;
+    }
+    .article-sidebar::-webkit-scrollbar { width: 4px; }
+    .article-sidebar::-webkit-scrollbar-track { background: transparent; }
+    .article-sidebar::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 2px; }
+
+    /* ===== TYPOGRAPHY ===== */
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+    }
+    .article-headline {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(2rem, 4vw, 2.6rem);
+      font-weight: 600;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+    .article-standfirst {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 1.1rem;
+      line-height: 1.55;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      font-weight: 400;
+    }
+    .byline {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    h2 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.45rem;
+      font-weight: 600;
+      line-height: 1.25;
+      color: var(--text-primary);
+      margin: 2em 0 0.75em;
+      border-top: 1px solid var(--border);
+      padding-top: 1em;
+    }
+    h3 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin: 1.75em 0 0.5em;
+    }
+    .article-body p { margin-bottom: 1.4em; font-size: 0.97rem; line-height: 1.8; }
+    .article-body ul, .article-body ol { margin: 0 0 1.4em 1.4em; }
+    .article-body li { margin-bottom: 0.4em; font-size: 0.95rem; line-height: 1.7; }
+    strong { color: var(--text-primary); font-weight: 600; }
+
+    /* ===== CODE BLOCK ===== */
+    .code-block {
+      background: var(--bg-code);
+      border: 1px solid var(--border-light);
+      border-left: 3px solid var(--accent);
+      padding: 16px 20px;
+      margin: 1.5em 0;
+      overflow-x: auto;
+    }
+    .code-block pre {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.6;
+      color: var(--text-body);
+      white-space: pre;
+    }
+    .code-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      color: var(--text-light);
+      margin-bottom: 8px;
+    }
+
+    /* ===== DATA TABLE ===== */
+    .data-table-wrap { overflow-x: auto; margin: 1.5em 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      background: var(--bg-subtle);
+      padding: 8px 12px;
+      text-align: left;
+      border-bottom: 2px solid var(--border);
+    }
+    td {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border-light);
+      color: var(--text-body);
+      font-family: 'Inter', sans-serif;
+    }
+    tr:nth-child(even) td { background: var(--table-stripe); }
+    td.num { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; }
+
+    /* ===== EXEC SUMMARY ===== */
+    .exec-summary {
+      background: var(--bg-highlight);
+      border: 1px solid var(--border-light);
+      border-left: 4px solid var(--accent);
+      padding: 24px;
+      margin: 0 0 2.5em;
+    }
+    .exec-block { margin-bottom: 20px; }
+    .exec-block:last-child { margin-bottom: 0; }
+    .exec-block + .exec-block { padding-top: 18px; border-top: 1px solid var(--border-light); }
+    .exec-tldr {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.02rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      line-height: 1.55;
+      margin-top: 8px;
+    }
+    .issues-list, .implications-list {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .issue-item { display: flex; gap: 10px; align-items: baseline; }
+    .issue-q {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--accent);
+      flex-shrink: 0;
+      min-width: 20px;
+    }
+    .issue-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: var(--text-body);
+      line-height: 1.55;
+    }
+    .implication-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: var(--text-body);
+      line-height: 1.55;
+      padding-left: 14px;
+      border-left: 2px solid var(--accent);
+    }
+
+    /* ===== PULL QUOTE ===== */
+    .pull-quote {
+      border-left: 4px solid var(--accent);
+      margin: 2em 0;
+      padding: 1em 20px;
+      background: var(--bg-card);
+    }
+    .pull-quote p {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.2rem;
+      font-style: italic;
+      color: var(--text-primary);
+      line-height: 1.5;
+      margin-bottom: 6px !important;
+    }
+    .pull-quote footer {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* ===== FIN PRO CALLOUT ===== */
+    .finpro-callout {
+      background: #FDF8EC;
+      border: 1px solid #E8D88A;
+      border-left: 4px solid var(--accent-warm);
+      padding: 20px 24px;
+      margin: 2em 0;
+    }
+    .finpro-callout-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      color: #8A6A00;
+      margin-bottom: 8px;
+    }
+    .finpro-callout p {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      line-height: 1.65;
+      color: #2A2000;
+      margin-bottom: 0.6em !important;
+    }
+    .finpro-callout p:last-child { margin-bottom: 0 !important; }
+    .finpro-callout ul { margin: 0.4em 0 0 1.2em; }
+    .finpro-callout li {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.88rem;
+      color: #2A2000;
+      margin-bottom: 0.3em;
+    }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .keyfacts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+    .fact-card {
+      background: var(--bg-highlight);
+      padding: 10px 8px;
+      border-radius: 2px;
+    }
+    .fact-card.highlight {
+      background: #FDF8EC;
+      border: 1px solid #E8D88A;
+    }
+    .fact-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--accent);
+      line-height: 1.2;
+    }
+    .fact-card.highlight .fact-value { color: #8A6A00; }
+    .fact-desc {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.64rem;
+      color: var(--text-muted);
+      margin-top: 3px;
+      line-height: 1.35;
+    }
+    .fact-card.highlight .fact-desc { color: #7A6020; }
+    .highlights-list { list-style: none; padding: 0; margin-top: 12px; }
+    .highlight-item {
+      padding: 9px 0;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      gap: 10px;
+      align-items: baseline;
+    }
+    .highlight-item:last-child { border-bottom: none; }
+    .hl-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--accent);
+      flex-shrink: 0;
+      min-width: 18px;
+    }
+    .hl-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.76rem;
+      color: var(--text-body);
+      line-height: 1.45;
+    }
+
+    /* ===== SERIES NAV ===== */
+    .series-nav {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .series-nav-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+    .series-item {
+      display: flex;
+      gap: 8px;
+      padding: 6px 0;
+      border-bottom: 1px solid var(--border-light);
+      align-items: baseline;
+    }
+    .series-item:last-child { border-bottom: none; }
+    .series-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+    .series-item-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.75rem;
+      color: var(--text-body);
+      line-height: 1.4;
+    }
+    .series-item-text.current { font-weight: 600; color: var(--text-primary); }
+    .series-item-text.upcoming { color: var(--text-light); }
+    .series-item-text a { color: var(--accent); text-decoration: none; }
+    .series-item-text a:hover { text-decoration: underline; }
+
+    /* ===== SOURCE LIST ===== */
+    .source-list { list-style: none; padding: 0; }
+    .source-list li { margin-bottom: 6px; }
+    .source-list a {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--accent);
+      text-decoration: none;
+      line-height: 1.5;
+    }
+    .source-list a:hover { text-decoration: underline; }
+    .source-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      margin-left: 4px;
+    }
+
+    /* ===== LANG TOGGLE ===== */
+    .lang-en { display: none; }
+
+    /* ===== FOOTER ===== */
+    .site-footer {
+      border-top: 1px solid var(--border-light);
+      margin-top: 4em;
+      padding: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* ===== PRINT ===== */
+    @media print {
+      body { background: white; font-size: 11pt; }
+      .site-header, #sticky-bar { display: none; }
+      .article-sidebar { position: static; max-height: none; overflow: visible; }
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+    @page { size: A4; margin: 20mm 15mm; }
+
+    /* ===== MOBILE ===== */
+    @media (max-width: 900px) {
+      .article-body { grid-column: 1 / -1; }
+      .article-sidebar { position: static; max-height: none; overflow: visible; grid-column: 1 / -1; }
+      .article-grid { display: block; }
+      #sticky-bar { flex-wrap: wrap; gap: 6px; }
+    }
+
+    body.dark {
+      --bg:           #0D1117;
+      --bg-code:      #161B22;
+      --bg-quote:     #161B22;
+      --bg-highlight: #0E1A2B;
+      --bg-subtle:    #161B22;
+      --bg-card:      #161B22;
+      --bg-header:    #0D1117;
+      --text-primary: #E4E2DC;
+      --text-body:    #C4C2BC;
+      --text-muted:   #8B93A8;
+      --text-light:   #575E70;
+      --accent:       #3A8FD0;
+      --accent-warm:  #F5C800;
+      --border:       #21253A;
+      --border-quote: #2A2D3E;
+      --border-light: #21253A;
+      --tag-bg:       #0E1A2B;
+      --tag-text:     #3A8FD0;
+      --table-stripe: #161B22;
+    }
+    body.dark .finpro-callout {
+      background: #1A1600;
+      border-color: #3A2D00;
+    }
+    body.dark .finpro-callout p,
+    body.dark .finpro-callout li { color: #C4B88A; }
+    body.dark .finpro-callout-label { color: #C4900E; }
+    body.dark .fact-card.highlight { background: #1A1600; border-color: #3A2D00; }
+    body.dark .fact-card.highlight .fact-value { color: #C4900E; }
+    body.dark .fact-card.highlight .fact-desc { color: #A07828; }
+  </style>
+</head>
+<body>
+
+  <!-- 1. サイトヘッダー -->
+  <header class="site-header">
+    <div class="site-header-left">
+      <a class="wordmark" href="../index.html">dona<span>to</span></a>
+      <span class="header-sep">—</span>
+      <a class="header-back-link" href="./index.html"><span class="lang-ja">記事一覧</span><span class="lang-en">Articles</span></a>
+      <span class="header-sep">—</span>
+      <span class="header-media">Finance Professional × AI</span>
+    </div>
+    <div class="site-header-right">
+      <div class="lang-toggle-bar">
+        <button class="art-lang-btn active" data-lang="ja" onclick="setLang('ja')">JP</button>
+        <button class="art-lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+      </div>
+      <button id="theme-btn" onclick="toggleTheme()" title="ダーク/ライト切替">☀</button>
+      <time class="header-date">2026-03-22</time>
+    </div>
+  </header>
+
+  <!-- 2. スティッキー情報バー -->
+  <div id="sticky-bar">
+    <span class="sbar-cat">Claude Code 実践ガイド · #001</span>
+    <span class="sbar-sep">|</span>
+    <span class="sbar-text">
+      <span class="lang-ja">対象: Claude Code 未経験〜入門</span>
+      <span class="lang-en">Level: No experience required</span>
+    </span>
+    <span class="sbar-sep">|</span>
+    <span class="sbar-text">
+      <span class="lang-ja">公開: 2026-03-22</span>
+      <span class="lang-en">Published: 2026-03-22</span>
+    </span>
+    <span class="sbar-sep">|</span>
+    <span class="sbar-badge">
+      <span class="lang-ja">約12分</span>
+      <span class="lang-en">~12 min read</span>
+    </span>
+  </div>
+
+  <main style="padding: 0 0 3em;">
+    <div class="article-container">
+      <div class="article-grid">
+
+        <!-- 3. 記事本文 -->
+        <article class="article-body">
+
+          <!-- 記事ヘッダー -->
+          <div style="padding: 36px 0 24px;">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+              <div class="section-label">
+                <span class="lang-ja">Claude Code 実践ガイド · #001</span>
+                <span class="lang-en">Claude Code Guide · #001</span>
+              </div>
+              <span class="sbar-badge">
+                <span class="lang-ja">約12分</span>
+                <span class="lang-en">~12 min read</span>
+              </span>
+            </div>
+            <h1 class="article-headline">
+              <span class="lang-ja">ブラウザから卒業する日 — Claude Code 入門</span>
+              <span class="lang-en">The Day You Graduate From the Browser — Claude Code Introduction</span>
+            </h1>
+            <p class="article-standfirst">
+              <span class="lang-ja">AnthropicのCLI型AIエージェント「Claude Code」は、ファイルを読み、コードを書き、ターミナルを操作する。Finance Professionalにとって、これはブラウザでのコピペ作業から根本的に脱却し、ローカルの財務データ・契約書・レポートと直接対話するための第一歩だ。</span>
+              <span class="lang-en">Claude Code is Anthropic's CLI-native AI agent that reads files, writes code, and controls the terminal. For Finance Professionals, it marks a fundamental break from copy-paste browser workflows — enabling direct interaction with local financial data, contracts, and reports.</span>
+            </p>
+            <div style="display:flex; gap:16px; align-items:center; border-top:1px solid var(--border-light); border-bottom:1px solid var(--border-light); padding:10px 0;">
+              <span class="byline">By <strong>donato</strong></span>
+              <span style="color:var(--border);">|</span>
+              <time class="byline" datetime="2026-03-22">
+                <span class="lang-ja">2026年3月22日</span>
+                <span class="lang-en">March 22, 2026</span>
+              </time>
+            </div>
+          </div>
+
+          <!-- エグゼクティブサマリー -->
+          <section class="exec-summary">
+
+            <div class="exec-block">
+              <div class="section-label"><span class="lang-ja">概要</span><span class="lang-en">Summary</span></div>
+              <p class="exec-tldr">
+                <span class="lang-ja">Claude Codeはターミナルから操作するAIエージェントであり、ローカルのファイルシステムを直接操作できる点でブラウザ型AIと本質的に異なる。Finance Professionalにとってその価値は「会話する」ことではなく、「財務データ・文書・レポートを自律的に処理させる」ことにある。インストール所要時間は5分。今日から使える。</span>
+                <span class="lang-en">Claude Code is a terminal-based AI agent that directly manipulates your local filesystem — fundamentally different from browser AI. For Finance Professionals, the value isn't conversation — it's autonomous processing of financial data, documents, and reports. Install time: 5 minutes. Use it today.</span>
+              </p>
+            </div>
+
+            <div class="exec-block">
+              <div class="section-label">
+                <span class="lang-ja">Finance Proが持つべき問い</span>
+                <span class="lang-en">Questions Finance Pros Should Ask</span>
+              </div>
+              <ul class="issues-list">
+                <li class="issue-item">
+                  <span class="issue-q">Q1</span>
+                  <span class="issue-text">
+                    <span class="lang-ja"><strong>ブラウザ型AIと何が違うのか？</strong> — ファイルを直接読み書きできるかどうか。ブラウザUIはコピペしか手段がない。Claude Codeはローカルの有価証券報告書・Excelファイル・契約書を指定するだけで読み込む。</span>
+                    <span class="lang-en"><strong>How is it different from browser AI?</strong> — File I/O. Browser UIs require copy-paste. Claude Code reads your local securities filings, Excel files, and contracts directly without any manual transfer.</span>
+                  </span>
+                </li>
+                <li class="issue-item">
+                  <span class="issue-q">Q2</span>
+                  <span class="issue-text">
+                    <span class="lang-ja"><strong>Finance Proはなぜ今これが必要か？</strong> — 繰り返し作業（月次レポート・データ整形・文書要約）の自動化コストが劇的に下がった。AI活用者と非活用者の生産性差は2026年に入り顕在化しており、CLIツールを習得した人間が1人でチームの業務をこなし始めている。</span>
+                    <span class="lang-en"><strong>Why do Finance Pros need this now?</strong> — The cost of automating repetitive tasks (monthly reports, data formatting, document summaries) has dropped dramatically. The productivity gap between AI-literate and non-literate professionals is widening — CLI-fluent Finance Pros are handling team-level workloads solo.</span>
+                  </span>
+                </li>
+                <li class="issue-item">
+                  <span class="issue-q">Q3</span>
+                  <span class="issue-text">
+                    <span class="lang-ja"><strong>プログラミング経験なしでも使えるか？</strong> — 使える。Claude Code自体がコードを書いて実行してくれる。ユーザーは「何をしたいか」を日本語で指示するだけでよい。ターミナルの起動方法だけ知っていれば十分。</span>
+                    <span class="lang-en"><strong>Can non-programmers use it?</strong> — Yes. Claude Code writes and executes code on your behalf. You only need to state what you want in plain language. Basic terminal navigation is the only prerequisite.</span>
+                  </span>
+                </li>
+              </ul>
+            </div>
+
+            <div class="exec-block">
+              <div class="section-label">
+                <span class="lang-ja">Finance Proへの示唆</span>
+                <span class="lang-en">Implications for Finance Professionals</span>
+              </div>
+              <ul class="implications-list">
+                <li class="implication-item">
+                  <span class="lang-ja">有価証券報告書・DD資料・契約書をローカルに置いたままAIに分析させられる</span>
+                  <span class="lang-en">Analyze securities filings, DD materials, and contracts locally without uploading to external servers</span>
+                </li>
+                <li class="implication-item">
+                  <span class="lang-ja">月次レポート生成・データ整形・比較表作成をコマンド一発で自動化できる</span>
+                  <span class="lang-en">Automate monthly reports, data formatting, and comparison tables with a single command</span>
+                </li>
+                <li class="implication-item">
+                  <span class="lang-ja">CLAUDE.mdで「自分専用のAIアシスタント」をカスタマイズできる</span>
+                  <span class="lang-en">Customize your personal AI assistant behavior via CLAUDE.md for your specific Finance domain</span>
+                </li>
+              </ul>
+            </div>
+
+          </section>
+
+          <!-- Section 1 -->
+          <h2>
+            <span class="lang-ja">1. Claude Codeとは何か</span>
+            <span class="lang-en">1. What Is Claude Code</span>
+          </h2>
+
+          <p>
+            <span class="lang-ja">Claude Codeは、AnthropicがClaude AIモデルをベースに構築した<strong>CLIネイティブのAIエージェント</strong>だ。ターミナル（コマンドライン）から起動し、ユーザーの指示に従ってローカルファイルの読み書き、コードの生成・実行、複数ファイルにわたる検索・編集を行う。</span>
+            <span class="lang-en">Claude Code is Anthropic's <strong>CLI-native AI agent</strong> built on the Claude AI model. Launched from the terminal, it reads and writes local files, generates and executes code, and performs cross-file search and editing based on user instructions.</span>
+          </p>
+
+          <p>
+            <span class="lang-ja">これはブラウザで使うClaude.aiとは本質的に異なる。Claude.aiはWebアプリケーションであり、ユーザーがテキストを貼り付けてチャットする「会話型インターフェース」だ。Claude Codeはあなたの<strong>ファイルシステムにアクセスできるエージェント</strong>であり、「指示を受けて自律的に作業を完結させる」ことができる。</span>
+            <span class="lang-en">This is fundamentally different from Claude.ai in the browser. Claude.ai is a web application — a conversational interface where you paste text and chat. Claude Code is an <strong>agent with access to your filesystem</strong>, capable of receiving instructions and autonomously completing tasks end-to-end.</span>
+          </p>
+
+          <div class="data-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th><span class="lang-ja">比較軸</span><span class="lang-en">Dimension</span></th>
+                  <th>Claude.ai（ブラウザ）</th>
+                  <th>Claude Code（CLI）</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="lang-ja">ファイルアクセス</span><span class="lang-en">File Access</span></td>
+                  <td><span class="lang-ja">手動アップロードのみ</span><span class="lang-en">Manual upload only</span></td>
+                  <td><span class="lang-ja" style="color:var(--accent);font-weight:600;">ローカル直接</span><span class="lang-en" style="color:var(--accent);font-weight:600;">Direct local access</span></td>
+                </tr>
+                <tr>
+                  <td><span class="lang-ja">コード実行</span><span class="lang-en">Code Execution</span></td>
+                  <td><span class="lang-ja">なし（出力のみ）</span><span class="lang-en">None (output only)</span></td>
+                  <td><span class="lang-ja" style="color:var(--accent);font-weight:600;">実行まで自動</span><span class="lang-en" style="color:var(--accent);font-weight:600;">Writes and runs</span></td>
+                </tr>
+                <tr>
+                  <td><span class="lang-ja">複数ファイル操作</span><span class="lang-en">Multi-file Ops</span></td>
+                  <td><span class="lang-ja">不可</span><span class="lang-en">Not possible</span></td>
+                  <td><span class="lang-ja" style="color:var(--accent);font-weight:600;">横断検索・編集</span><span class="lang-en" style="color:var(--accent);font-weight:600;">Cross-file search & edit</span></td>
+                </tr>
+                <tr>
+                  <td><span class="lang-ja">作業の自動化</span><span class="lang-en">Automation</span></td>
+                  <td><span class="lang-ja">都度コピペ</span><span class="lang-en">Manual each time</span></td>
+                  <td><span class="lang-ja" style="color:var(--accent);font-weight:600;">スクリプト化・バッチ実行</span><span class="lang-en" style="color:var(--accent);font-weight:600;">Scriptable & batchable</span></td>
+                </tr>
+                <tr>
+                  <td><span class="lang-ja">設定の永続化</span><span class="lang-en">Persistent Config</span></td>
+                  <td><span class="lang-ja">会話ごとにリセット</span><span class="lang-en">Resets each session</span></td>
+                  <td><span class="lang-ja" style="color:var(--accent);font-weight:600;">CLAUDE.mdで永続指示</span><span class="lang-en" style="color:var(--accent);font-weight:600;">Persistent via CLAUDE.md</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="finpro-callout">
+            <div class="finpro-callout-label"><span class="lang-ja">Finance Pro の視点</span><span class="lang-en">Finance Pro Perspective</span></div>
+            <p>
+              <span class="lang-ja">監査・M&A・FP&A業務の現場で感じる最大の摩擦は「AIに渡せるデータ量の制限」だ。有価証券報告書は100ページを超え、DDのVDRには数百ファイルが詰まっている。ブラウザにコピペできる量ではない。Claude Codeはこの制約を根本から崩す。</span>
+              <span class="lang-en">The biggest friction point in audit, M&A, and FP&A is the data transfer bottleneck. Securities filings exceed 100 pages; VDRs contain hundreds of files. None of this can be copy-pasted into a browser. Claude Code eliminates this constraint at the root.</span>
+            </p>
+            <p>
+              <span class="lang-ja">また、機密性の高い資料をクラウドサービスにアップロードすることへの社内規制は多くの事務所・会社で存在する。ローカルで処理できるというオプションは、セキュリティポリシーの観点からも重要だ（ただし企業別のポリシー確認は必須）。</span>
+              <span class="lang-en">Many firms also have internal policies restricting upload of sensitive materials to cloud services. The ability to process locally is therefore significant from a security-policy standpoint — though firm-specific policies must always be verified.</span>
+            </p>
+          </div>
+
+          <!-- Section 2 -->
+          <h2>
+            <span class="lang-ja">2. インストール — 5分で動かす</span>
+            <span class="lang-en">2. Installation — Up and Running in 5 Minutes</span>
+          </h2>
+
+          <h3>
+            <span class="lang-ja">必要な環境</span>
+            <span class="lang-en">Prerequisites</span>
+          </h3>
+
+          <ul>
+            <li><span class="lang-ja"><strong>OS</strong>: macOS, Linux, または Windows（WSL2推奨）</span><span class="lang-en"><strong>OS</strong>: macOS, Linux, or Windows (WSL2 recommended)</span></li>
+            <li><span class="lang-ja"><strong>Node.js</strong>: v18以上（<code>node -v</code> で確認）</span><span class="lang-en"><strong>Node.js</strong>: v18+ (check with <code>node -v</code>)</span></li>
+            <li><span class="lang-ja"><strong>Anthropicアカウント</strong>: Claude.ai ProサブスクリプションまたはAPI Key</span><span class="lang-en"><strong>Anthropic account</strong>: Claude.ai Pro subscription or API Key</span></li>
+          </ul>
+
+          <h3>
+            <span class="lang-ja">インストール手順</span>
+            <span class="lang-en">Installation Steps</span>
+          </h3>
+
+          <div class="code-block">
+            <div class="code-label">TERMINAL</div>
+            <pre># Claude Code をグローバルインストール
+npm install -g @anthropic-ai/claude-code
+
+# インストール確認
+claude --version</pre>
+          </div>
+
+          <p>
+            <span class="lang-ja">インストール後、初回起動時にAnthropicアカウントでのOAuth認証またはAPI Keyの入力を求められる。Claude.ai Proサブスクリプション（$20/月）があれば追加費用なしで利用可能。API Keyを使う場合はAnthropicコンソールから発行する。</span>
+            <span class="lang-en">After installation, first launch prompts for OAuth authentication with your Anthropic account or API Key entry. A Claude.ai Pro subscription ($20/month) covers usage with no additional cost. API Key users generate one from the Anthropic console.</span>
+          </p>
+
+          <div class="code-block">
+            <div class="code-label">TERMINAL — 初回起動</div>
+            <pre># 任意のディレクトリに移動してから起動
+cd ~/Documents/Finance
+
+# Claude Code を起動
+claude
+
+# 起動後、認証画面が表示される
+# ブラウザで自動的にOAuth認証ページが開く</pre>
+          </div>
+
+          <div class="finpro-callout">
+            <div class="finpro-callout-label"><span class="lang-ja">Finance Pro の視点 — どのプランを選ぶか</span><span class="lang-en">Finance Pro Perspective — Which Plan</span></div>
+            <p>
+              <span class="lang-ja"><strong>個人用途であればClaude.ai Proで十分。</strong> 月$20で毎日使っても十分な使用枠がある。大量のファイル処理・長大なDD資料の解析・バッチ自動化を行うなら、API従量課金（Claude Opus 4.6: $15/M input tokens）のほうが経済的になるケースがある。</span>
+              <span class="lang-en"><strong>For individual use, Claude.ai Pro is sufficient.</strong> $20/month covers daily usage comfortably. If you're doing heavy file processing, large-scale DD analysis, or batch automation, API pay-per-use (Claude Opus 4.6: $15/M input tokens) may be more economical.</span>
+            </p>
+            <p>
+              <span class="lang-ja">チームで使うなら<strong>Claude Enterprise</strong>（セルフサーブ対応）が現実的。セキュリティポリシー・データ保持設定・SSO対応が整っている。監査法人・M&Aアドバイザリー向けにはZero Data Retention（ZDR）オプションの確認が必須。</span>
+              <span class="lang-en">For team use, <strong>Claude Enterprise</strong> (now self-serve) is the practical choice. It includes security policy controls, data retention settings, and SSO. For audit firms and M&A advisories, verify Zero Data Retention (ZDR) options — this is non-negotiable for many engagements.</span>
+            </p>
+          </div>
+
+          <!-- Section 3 -->
+          <h2>
+            <span class="lang-ja">3. 最初の10分でできること</span>
+            <span class="lang-en">3. What You Can Do in the First 10 Minutes</span>
+          </h2>
+
+          <p>
+            <span class="lang-ja">起動したら対話的なプロンプトが表示される。日本語で指示できる。以下は Finance Pro が最初に試すべき4つの操作だ。</span>
+            <span class="lang-en">After launch, an interactive prompt appears. You can instruct in Japanese or English. Here are four operations Finance Pros should try first.</span>
+          </p>
+
+          <h3>
+            <span class="lang-ja">① ローカルファイルの読み込みと要約</span>
+            <span class="lang-en">① Load and Summarize a Local File</span>
+          </h3>
+
+          <div class="code-block">
+            <div class="code-label">CLAUDE CODE — 指示例</div>
+            <pre>annual_report_2025.pdf を読み込んで、
+・売上高・営業利益・純利益の3期比較
+・セグメント別業績のサマリー
+・リスク要因のトップ5
+を表形式でまとめてください</pre>
+          </div>
+
+          <p>
+            <span class="lang-ja">Claude Codeはファイルパスを認識して内容を取り込み、指定されたフォーマットで出力する。ブラウザにPDFをアップロードしてコピペする工程が完全に消える。</span>
+            <span class="lang-en">Claude Code recognizes the file path, ingests the content, and outputs in the specified format. The entire browser-upload-and-paste workflow disappears.</span>
+          </p>
+
+          <h3>
+            <span class="lang-ja">② 複数ファイルの横断比較</span>
+            <span class="lang-en">② Cross-File Comparison</span>
+          </h3>
+
+          <div class="code-block">
+            <div class="code-label">CLAUDE CODE — 指示例</div>
+            <pre>company_A_FS.xlsx と company_B_FS.xlsx を読み込んで
+EBITDA・純有利子負債・D/E比率を比較した表を作成してください
+差異のある項目には注釈を加えてください</pre>
+          </div>
+
+          <p>
+            <span class="lang-ja">M&AのComparables分析やセクター横断スクリーニングで威力を発揮する。従来はExcelで手作業だった作業が、指示一発で完成する。</span>
+            <span class="lang-en">This shines in M&A comparables analysis and sector screening. Tasks that used to require manual Excel work complete with a single instruction.</span>
+          </p>
+
+          <h3>
+            <span class="lang-ja">③ レポートの自動生成</span>
+            <span class="lang-en">③ Automated Report Generation</span>
+          </h3>
+
+          <div class="code-block">
+            <div class="code-label">CLAUDE CODE — 指示例</div>
+            <pre">data/ フォルダ内の月次P&Lデータ（CSV）を読み込んで
+前年同月比・前月比・予実差異を含む
+月次業績レポートのHTMLを生成してください
+ファイル名は monthly_report_2026_03.html としてください</pre>
+          </div>
+
+          <p>
+            <span class="lang-ja">ファイルを読んで、処理して、新しいファイルとして書き出す。この一連の流れが自然言語の指示だけで完結する。月次ルーティンをこれ一本で自動化できる。</span>
+            <span class="lang-en">Read files, process them, write output — this entire pipeline completes from a natural language instruction. Monthly reporting routines can be fully automated with this alone.</span>
+          </p>
+
+          <h3>
+            <span class="lang-ja">④ CLAUDE.md で永続指示を設定する</span>
+            <span class="lang-en">④ Set Persistent Instructions via CLAUDE.md</span>
+          </h3>
+
+          <p>
+            <span class="lang-ja">作業ディレクトリに <code>CLAUDE.md</code> というファイルを作成すると、Claude Codeは毎回の起動時にその内容を読み込む。「いつも日本語で回答すること」「財務数値は百万円単位で表示すること」「当社の会計基準はIFRS」など、繰り返し伝えることを一度書けば永続する。</span>
+            <span class="lang-en">Create a file named <code>CLAUDE.md</code> in your working directory and Claude Code reads it at every startup. "Always respond in English," "Display financial figures in millions," "Our accounting standard is IFRS" — write it once, persist forever.</span>
+          </p>
+
+          <div class="code-block">
+            <div class="code-label">CLAUDE.md — 設定例（Finance Pro向け）</div>
+            <pre"># Finance Assistant Config
+
+## 基本設定
+- 回答は必ず日本語
+- 財務数値は百万円単位（小数点1位まで）
+- 会計基準: IFRS（特に指定がない場合）
+- 計算結果は必ず根拠を併記すること
+
+## 業務コンテキスト
+- このフォルダは M&A デューデリジェンス案件用
+- 対象会社: [対象会社名]
+- 基準日: 2025年12月31日
+- 通貨: JPY（海外取引はUSD、換算レート:150円）
+
+## 出力ルール
+- 不確かな情報には [要確認] タグを付けること
+- 機密情報のスクリーンショットは作成しないこと
+- 最終成果物はoutput/フォルダに保存すること</pre>
+          </div>
+
+          <div class="finpro-callout">
+            <div class="finpro-callout-label"><span class="lang-ja">Finance Pro の視点 — CLAUDE.mdの実務価値</span><span class="lang-en">Finance Pro Perspective — CLAUDE.md Value</span></div>
+            <p>
+              <span class="lang-ja">毎回「IFRSで解釈してください」「百万円単位で」と伝えるのは非効率だ。案件ごとにCLAUDE.mdを作ることで、AIに「この案件の文脈」を覚えさせ続けられる。M&A案件フォルダ・監査クライアントフォルダ・FP&A月次フォルダにそれぞれCLAUDE.mdを置くと、誰でも即座に同じコンテキストでAIを使えるチーム運用が実現する。</span>
+              <span class="lang-en">Repeating "interpret under IFRS" and "in millions" every session is friction. Creating per-engagement CLAUDE.md files keeps the AI permanently contextualized. Place a CLAUDE.md in each M&A deal folder, audit client folder, and FP&A monthly folder — and any team member instantly gets the same AI context without briefing.</span>
+            </p>
+          </div>
+
+          <!-- Section 4 -->
+          <h2>
+            <span class="lang-ja">4. ブラウザ型AIとの使い分け</span>
+            <span class="lang-en">4. When to Use Claude Code vs Browser AI</span>
+          </h2>
+
+          <p>
+            <span class="lang-ja">Claude Codeがすべての用途で優れているわけではない。用途によって使い分けることが重要だ。</span>
+            <span class="lang-en">Claude Code isn't superior for every use case. The key is knowing when to use each.</span>
+          </p>
+
+          <div class="data-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th><span class="lang-ja">ユースケース</span><span class="lang-en">Use Case</span></th>
+                  <th><span class="lang-ja">推奨ツール</span><span class="lang-en">Recommended</span></th>
+                  <th><span class="lang-ja">理由</span><span class="lang-en">Reason</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="lang-ja">単発の質問・調査</span><span class="lang-en">One-off questions</span></td>
+                  <td><span class="lang-ja">Claude.ai</span><span class="lang-en">Claude.ai</span></td>
+                  <td><span class="lang-ja">手軽・すぐ使える</span><span class="lang-en">Quick, zero setup</span></td>
+                </tr>
+                <tr>
+                  <td><span class="lang-ja">ローカルファイルの分析</span><span class="lang-en">Local file analysis</span></td>
+                  <td><span class="lang-ja" style="color:var(--accent);font-weight:600;">Claude Code</span><span class="lang-en" style="color:var(--accent);font-weight:600;">Claude Code</span></td>
+                  <td><span class="lang-ja">直接読み込み可</span><span class="lang-en">Direct file access</span></td>
+                </tr>
+                <tr>
+                  <td><span class="lang-ja">複数ファイルの一括処理</span><span class="lang-en">Batch file processing</span></td>
+                  <td><span class="lang-ja" style="color:var(--accent);font-weight:600;">Claude Code</span><span class="lang-en" style="color:var(--accent);font-weight:600;">Claude Code</span></td>
+                  <td><span class="lang-ja">自動化・繰り返し実行</span><span class="lang-en">Automation & repeatable</span></td>
+                </tr>
+                <tr>
+                  <td><span class="lang-ja">レポート・文書の生成</span><span class="lang-en">Report / doc generation</span></td>
+                  <td><span class="lang-ja" style="color:var(--accent);font-weight:600;">Claude Code</span><span class="lang-en" style="color:var(--accent);font-weight:600;">Claude Code</span></td>
+                  <td><span class="lang-ja">ファイルとして保存まで完結</span><span class="lang-en">Saves to file automatically</span></td>
+                </tr>
+                <tr>
+                  <td><span class="lang-ja">ブレスト・アイデア出し</span><span class="lang-en">Brainstorming</span></td>
+                  <td><span class="lang-ja">Claude.ai</span><span class="lang-en">Claude.ai</span></td>
+                  <td><span class="lang-ja">対話的UIが向いている</span><span class="lang-en">Conversational UI fits better</span></td>
+                </tr>
+                <tr>
+                  <td><span class="lang-ja">定型業務の完全自動化</span><span class="lang-en">Full workflow automation</span></td>
+                  <td><span class="lang-ja" style="color:var(--accent);font-weight:600;">Claude Code</span><span class="lang-en" style="color:var(--accent);font-weight:600;">Claude Code</span></td>
+                  <td><span class="lang-ja">hooks・スクリプト化で無人運用可</span><span class="lang-en">Hooks enable unattended execution</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Section 5 -->
+          <h2>
+            <span class="lang-ja">5. Finance Pro として今すぐ始めるべき理由</span>
+            <span class="lang-en">5. Why Finance Pros Should Start Now</span>
+          </h2>
+
+          <div class="pull-quote">
+            <p>
+              <span class="lang-ja">「AIが仕事を奪う」ではなく、「AI活用者が非活用者の仕事を奪う」という構図が2026年に入り現実化している。CLIツールへの習熟は、この格差の最も大きな分岐点の一つだ。</span>
+              <span class="lang-en">"AI won't take your job — but an AI-fluent colleague might." This dynamic materialized in 2026. CLI tool fluency is one of the largest single differentiators in that gap.</span>
+            </p>
+            <footer>donato · Finance Professional × AI</footer>
+          </div>
+
+          <p>
+            <span class="lang-ja">Finance Professionalがブラウザ型AIにとどまり続ける限り、処理できるデータ量・自動化できる作業範囲は構造的に制限される。Claude Codeを習得した人間は:</span>
+            <span class="lang-en">As long as Finance Professionals stay in browser AI, their processable data volume and automation scope are structurally capped. Those who master Claude Code can:</span>
+          </p>
+
+          <ul>
+            <li><span class="lang-ja">100ページを超える有価証券報告書を<strong>全文解析</strong>して論点を抽出できる</span><span class="lang-en"><strong>Fully analyze</strong> 100+ page securities filings to extract key issues</span></li>
+            <li><span class="lang-ja">月次レポートを<strong>データ更新→レポート生成→メール送付</strong>まで自動化できる</span><span class="lang-en">Automate the full cycle: <strong>data update → report generation → email delivery</strong></span></li>
+            <li><span class="lang-ja">DD案件で数十社の比較分析を<strong>1人で一晩</strong>でこなせる</span><span class="lang-en">Run multi-company DD comparables analysis <strong>solo, overnight</strong></span></li>
+            <li><span class="lang-ja">IFRS対応・税務計算・開示チェックなど<strong>繰り返し作業を自動化</strong>してより付加価値の高い業務に集中できる</span><span class="lang-en"><strong>Automate</strong> IFRS adjustments, tax calcs, and disclosure checks — freeing time for higher-value judgment work</span></li>
+          </ul>
+
+          <p>
+            <span class="lang-ja">これは「テック系の人向け」の話ではない。Claude Codeはコードを書かなくても使える。自然言語で「何をしたいか」を指示するだけで、AIがコードを書いて実行してくれる。Finance Proに求められるのはプログラミングスキルではなく、<strong>「何を自動化したいか」を言語化するスキル</strong>だ。</span>
+            <span class="lang-en">This isn't a "tech person" story. Claude Code requires no coding. You state what you want in plain language; the AI writes and runs the code. What Finance Pros need isn't programming skill — it's the ability to <strong>articulate what should be automated</strong>.</span>
+          </p>
+
+          <h2>
+            <span class="lang-ja">次回予告</span>
+            <span class="lang-en">Coming Next</span>
+          </h2>
+
+          <p>
+            <span class="lang-ja"><strong>#002 General Tips — 生産性10倍の使い方</strong> では、Claude Codeを毎日使い続ける上での具体的なテクニックを解説する。プロンプト設計の原則・コンテキストウィンドウの正しい使い方・よくある失敗と回避策・CLAUDE.mdの本格的な構築方法を扱う。Finance Pro向けの実例を多数交えて、「日常的に使えるツール」に育てるための実践ガイドだ。</span>
+            <span class="lang-en"><strong>#002 General Tips — Techniques to 10× Your Productivity</strong> covers the concrete techniques for daily Claude Code use: prompt design principles, context window management, common failure modes and how to avoid them, and building a serious CLAUDE.md. Packed with Finance Pro examples to turn Claude Code into a tool you actually use every day.</span>
+          </p>
+
+          <h2 style="margin-top:3em;">
+            <span class="lang-ja">参考リンク</span>
+            <span class="lang-en">References</span>
+          </h2>
+          <ul class="source-list">
+            <li><a href="https://docs.anthropic.com/claude/docs/claude-code-overview" target="_blank">Claude Code Overview — Anthropic Documentation</a><span class="source-tag">[公式] Anthropic</span></li>
+            <li><a href="https://www.anthropic.com/claude-code" target="_blank">Claude Code Product Page</a><span class="source-tag">[公式] Anthropic</span></li>
+            <li><a href="https://docs.anthropic.com/claude/docs/claude-code-security" target="_blank">Claude Code Security & Privacy</a><span class="source-tag">[公式] Anthropic</span></li>
+          </ul>
+
+        </article>
+
+        <!-- 4. スティッキーサイドバー -->
+        <aside class="article-sidebar">
+
+          <div class="sidebar-card">
+            <div class="section-label">
+              <span class="lang-ja">Key Facts</span>
+              <span class="lang-en">Key Facts</span>
+            </div>
+            <div class="keyfacts-grid">
+              <div class="fact-card">
+                <div class="fact-value">5 min</div>
+                <div class="fact-desc"><span class="lang-ja">インストール所要時間</span><span class="lang-en">Install time</span></div>
+              </div>
+              <div class="fact-card">
+                <div class="fact-value">$20/mo</div>
+                <div class="fact-desc"><span class="lang-ja">Pro プランで利用可</span><span class="lang-en">Claude Pro plan</span></div>
+              </div>
+              <div class="fact-card">
+                <div class="fact-value">Node 18+</div>
+                <div class="fact-desc"><span class="lang-ja">必要な環境</span><span class="lang-en">Prerequisite</span></div>
+              </div>
+              <div class="fact-card highlight">
+                <div class="fact-value">0行</div>
+                <div class="fact-desc"><span class="lang-ja">必要なコード記述量</span><span class="lang-en">Lines of code to write</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sidebar-card">
+            <div class="section-label">
+              <span class="lang-ja">Finance Pro が最初に試すべき5つの操作</span>
+              <span class="lang-en">5 Things Finance Pros Should Try First</span>
+            </div>
+            <ul class="highlights-list">
+              <li class="highlight-item">
+                <span class="hl-num">01</span>
+                <span class="hl-text"><span class="lang-ja">有価証券報告書PDFを読ませて3期比較表を作る</span><span class="lang-en">Read a securities filing PDF → 3-year comparison table</span></span>
+              </li>
+              <li class="highlight-item">
+                <span class="hl-num">02</span>
+                <span class="hl-text"><span class="lang-ja">複数ExcelファイルのKPIを横断比較する</span><span class="lang-en">Cross-compare KPIs across multiple Excel files</span></span>
+              </li>
+              <li class="highlight-item">
+                <span class="hl-num">03</span>
+                <span class="hl-text"><span class="lang-ja">CSVデータからHTMLレポートを生成させる</span><span class="lang-en">Generate an HTML report from CSV data</span></span>
+              </li>
+              <li class="highlight-item">
+                <span class="hl-num">04</span>
+                <span class="hl-text"><span class="lang-ja">CLAUDE.mdに業務コンテキストを設定する</span><span class="lang-en">Write a CLAUDE.md with your engagement context</span></span>
+              </li>
+              <li class="highlight-item">
+                <span class="hl-num">05</span>
+                <span class="hl-text"><span class="lang-ja">契約書フォルダ全体を一括でリスク抽出する</span><span class="lang-en">Batch-extract risk clauses from a contracts folder</span></span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="series-nav">
+            <div class="series-nav-title"><span class="lang-ja">Claude Code 実践ガイド — シリーズ</span><span class="lang-en">Claude Code Guide — Series</span></div>
+            <div class="series-item">
+              <span class="series-num">#001</span>
+              <span class="series-item-text current"><span class="lang-ja">入門 — ブラウザから卒業する日</span><span class="lang-en">Intro — The Day You Graduate</span></span>
+            </div>
+            <div class="series-item">
+              <span class="series-num">#002</span>
+              <span class="series-item-text upcoming"><span class="lang-ja">General Tips — 生産性10倍の使い方</span><span class="lang-en">General Tips — 10× Productivity</span></span>
+            </div>
+            <div class="series-item">
+              <span class="series-num">#003</span>
+              <span class="series-item-text upcoming"><span class="lang-ja">Finance Pro篇① — 財務分析・レポート自動化</span><span class="lang-en">Finance Pro I — Reporting Automation</span></span>
+            </div>
+            <div class="series-item">
+              <span class="series-num">#004</span>
+              <span class="series-item-text upcoming"><span class="lang-ja">Finance Pro篇② — M&A・DD・監査への統合</span><span class="lang-en">Finance Pro II — M&A, DD & Audit</span></span>
+            </div>
+            <div class="series-item">
+              <span class="series-num">#005</span>
+              <span class="series-item-text upcoming"><span class="lang-ja">上級篇 — エージェント・MCP・チーム展開</span><span class="lang-en">Advanced — Agents, MCP & Teams</span></span>
+            </div>
+          </div>
+
+        </aside>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <span>© 2026 donato · <a href="../privacy.html" style="color:inherit;text-decoration:none;">Privacy Policy</a></span>
+    <span>
+      <span class="lang-ja">本稿は情報提供を目的としており、特定のサービス・ツールの使用を推奨するものではありません。</span>
+      <span class="lang-en">This article is for informational purposes and does not constitute a recommendation of any specific service or tool.</span>
+    </span>
+  </footer>
+
+  <script>
+    let currentLang = localStorage.getItem('hp-lang') || 'ja';
+    let currentTheme = localStorage.getItem('hp-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    function setLang(lang) {
+      currentLang = lang;
+      localStorage.setItem('hp-lang', lang);
+      document.querySelectorAll('.lang-ja').forEach(el => el.style.display = lang === 'ja' ? 'inline' : 'none');
+      document.querySelectorAll('.lang-en').forEach(el => el.style.display = lang === 'en' ? 'inline' : 'none');
+      document.querySelectorAll('.art-lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.lang === lang);
+      });
+      document.documentElement.lang = lang === 'ja' ? 'ja' : 'en';
+    }
+    function toggleTheme() {
+      currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+      localStorage.setItem('hp-theme', currentTheme);
+      document.body.classList.toggle('dark', currentTheme === 'dark');
+      document.getElementById('theme-btn').textContent = currentTheme === 'light' ? '☀' : '☾';
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+      setLang(currentLang);
+      if (currentTheme === 'dark') {
+        document.body.classList.add('dark');
+        document.getElementById('theme-btn').textContent = '☾';
+      }
+    });
+  </script>
+
+</body>
+</html>

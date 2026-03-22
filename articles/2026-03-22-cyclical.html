@@ -1,0 +1,1364 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="シクリカル企業のLTMはサイクル位置次第でEV/EBITDAを5x〜17xに歪める。Mid-cycle EBITDAの3手法（単純平均・回帰中心値・Bottom-up正規化）、業種別アプローチ、感度分析への組み込み方。Valuation Theory Lab #004。">
+  <title>シクリカル企業のLTMが罠である理由 — Mid-cycle正規化とNormalized Earnings | Valuation Theory Lab #004 | donato</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+JP:wght@300;400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:           #F8F7F4;
+      --bg-code:      #EEECEA;
+      --bg-quote:     #EEECEA;
+      --bg-highlight: #EBF3FB;
+      --bg-subtle:    #F0EFEB;
+      --bg-card:      #F0EFEB;
+      --bg-header:    #F8F7F4;
+      --text-primary: #111320;
+      --text-body:    #2A2C3E;
+      --text-muted:   #565C70;
+      --text-light:   #888EA0;
+      --accent:       #1A6EB0;
+      --accent-warm:  #D4A010;
+      --border:       #D4D2CC;
+      --border-quote: #B8B6B0;
+      --border-light: #D4D2CC;
+      --tag-bg:       #E4EFF8;
+      --tag-text:     #1A6EB0;
+      --table-stripe: #F0EFEB;
+    }
+
+    /* ===== PROGRESS BAR ===== */
+    #progress-bar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      width: 0%;
+      background: var(--accent);
+      z-index: 300;
+      transition: width 0.1s linear;
+    }
+
+    body {
+      font-family: 'Noto Serif JP', Georgia, serif;
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--text-primary);
+      background: var(--bg);
+    }
+
+    /* ===== SITE HEADER ===== */
+    .site-header {
+      background: var(--bg-header);
+      border-bottom: 2px solid var(--accent);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .site-header-left { display: flex; align-items: center; gap: 12px; }
+    .wordmark {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: lowercase;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+    .wordmark span { color: var(--accent-warm); }
+    .header-sep { color: var(--border-quote); font-size: 13px; }
+    .header-media {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+    }
+    .site-header-right { display: flex; align-items: center; gap: 12px; }
+    .header-back-link {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .header-back-link:hover { color: var(--accent); }
+    .lang-toggle-bar {
+      display: flex;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .art-lang-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      padding: 3px 10px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .art-lang-btn.active { background: #F5C800; color: #111320; }
+    #theme-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      padding: 3px 9px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.15s;
+    }
+    #theme-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .header-date {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-light);
+      letter-spacing: 0.08em;
+    }
+
+    /* ===== STICKY INFO BAR ===== */
+    #sticky-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg-subtle);
+      border-bottom: 1px solid var(--border-light);
+      padding: 7px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .sbar-cat {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+    }
+    .sbar-sep { color: var(--border-quote); font-size: 11px; }
+    .sbar-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+    .sbar-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      padding: 2px 8px;
+    }
+
+    /* ===== LAYOUT ===== */
+    .article-container { max-width: 1240px; margin: 0 auto; padding: 0 20px; }
+    .article-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 24px;
+    }
+    .article-body { grid-column: 2 / 10; max-width: 68ch; }
+    .article-sidebar {
+      grid-column: 10 / 13;
+      position: sticky;
+      top: 44px;
+      align-self: start;
+      max-height: calc(100vh - 56px);
+      overflow-y: auto;
+    }
+    .article-sidebar::-webkit-scrollbar { width: 4px; }
+    .article-sidebar::-webkit-scrollbar-track { background: transparent; }
+    .article-sidebar::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 2px; }
+
+    /* ===== TYPOGRAPHY ===== */
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+    }
+    .article-headline {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(2rem, 4vw, 2.6rem);
+      font-weight: 600;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+    .article-standfirst {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      font-weight: 400;
+    }
+    .byline {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    h2 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.45rem;
+      font-weight: 600;
+      line-height: 1.25;
+      color: var(--text-primary);
+      margin: 2em 0 0.75em;
+      border-top: 1px solid var(--border);
+      padding-top: 1em;
+    }
+    h3 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin: 1.75em 0 0.5em;
+    }
+    .article-body p { margin-bottom: 1.4em; font-size: 0.97rem; line-height: 1.8; }
+    .article-body ul, .article-body ol { margin: 0 0 1.4em 1.4em; }
+    .article-body li { margin-bottom: 0.4em; font-size: 0.95rem; line-height: 1.7; }
+    strong { color: var(--text-primary); font-weight: 600; }
+
+    /* ===== EXEC SUMMARY ===== */
+    .exec-summary {
+      background: var(--bg-highlight);
+      border: 1px solid var(--border-light);
+      border-left: 4px solid var(--accent);
+      padding: 24px;
+      margin: 0 0 2.5em;
+    }
+    .exec-block { margin-bottom: 20px; }
+    .exec-block:last-child { margin-bottom: 0; }
+    .exec-block + .exec-block { padding-top: 18px; border-top: 1px solid var(--border-light); }
+    .exec-tldr {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.02rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      line-height: 1.55;
+      margin-top: 8px;
+    }
+    .issues-list, .implications-list {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .issue-item { display: flex; gap: 10px; align-items: baseline; }
+    .issue-q {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--accent);
+      flex-shrink: 0;
+      min-width: 20px;
+    }
+    .issue-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: var(--text-body);
+      line-height: 1.55;
+    }
+    .implication-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: var(--text-body);
+      line-height: 1.55;
+      padding-left: 14px;
+      border-left: 2px solid var(--accent);
+    }
+    .read-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
+    .read-col-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.66rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 6px;
+    }
+    .read-label-yes { color: var(--accent); }
+    .read-label-no { color: var(--text-muted); }
+    .read-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-body);
+      line-height: 1.45;
+      padding-left: 10px;
+      border-left: 2px solid var(--accent);
+      margin-bottom: 5px;
+    }
+    .skip-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+      padding-left: 10px;
+      border-left: 2px solid var(--border-light);
+      margin-bottom: 5px;
+    }
+
+    /* ===== FORMULA / CALC ===== */
+    .formula {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.93em;
+      background: var(--bg-code);
+      border-left: 3px solid var(--accent);
+      padding: 14px 20px;
+      margin: 20px 0;
+      color: var(--text-primary);
+      overflow-x: auto;
+      line-height: 1.7;
+    }
+    .calc-block {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      padding: 20px 24px;
+      margin: 24px 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+      line-height: 1.8;
+    }
+    .calc-block .calc-row {
+      display: flex;
+      justify-content: space-between;
+      max-width: 480px;
+    }
+    .calc-block .calc-total {
+      border-top: 1px solid var(--border);
+      margin-top: 6px;
+      padding-top: 6px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .calc-block .calc-highlight {
+      color: var(--accent);
+      font-weight: 700;
+    }
+    .calc-block .calc-warn {
+      color: var(--accent-warm);
+      font-weight: 700;
+    }
+
+    /* ===== INSIGHT / TRAP BOX ===== */
+    .insight-box {
+      background: var(--bg-highlight);
+      border-left: 4px solid var(--accent);
+      padding: 18px 22px;
+      margin: 28px 0;
+    }
+    .insight-box p {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: var(--text-primary);
+    }
+    .insight-box strong { color: var(--accent); }
+    .trap-box {
+      background: #FEF9EC;
+      border-left: 4px solid var(--accent-warm);
+      padding: 18px 22px;
+      margin: 24px 0;
+    }
+    .trap-box p {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      line-height: 1.65;
+      color: var(--text-body);
+    }
+    .trap-box .trap-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent-warm);
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+
+    /* ===== DATA TABLE ===== */
+    .data-table-wrap { overflow-x: auto; margin: 1.5em 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      background: var(--bg-subtle);
+      padding: 8px 12px;
+      text-align: left;
+      border-bottom: 2px solid var(--border);
+    }
+    td {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border-light);
+      color: var(--text-body);
+      font-family: 'Inter', sans-serif;
+    }
+    tr:nth-child(even) td { background: var(--table-stripe); }
+    .td-accent {
+      color: var(--accent);
+      font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+    }
+    .td-warn {
+      color: var(--accent-warm);
+      font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+    }
+    .td-danger {
+      color: #c0392b;
+      font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+    }
+
+    /* ===== PULL QUOTE ===== */
+    .pull-quote {
+      border-left: 4px solid var(--accent);
+      margin: 2em 0;
+      padding: 1em 20px;
+      background: var(--bg-card);
+    }
+    .pull-quote p {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.2rem;
+      font-style: italic;
+      color: var(--text-primary);
+      line-height: 1.5;
+      margin-bottom: 6px !important;
+    }
+    .pull-quote footer {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* ===== NUMBERED LIST ===== */
+    .numbered-list {
+      list-style: none;
+      padding: 0;
+      margin: 20px 0;
+    }
+    .numbered-list li {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 16px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.92rem;
+      line-height: 1.65;
+      color: var(--text-body);
+    }
+    .numbered-list li .num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: white;
+      background: var(--accent);
+      min-width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    /* ===== SECTION SEP ===== */
+    .section-sep {
+      text-align: center;
+      color: var(--text-light);
+      font-size: 1.2rem;
+      letter-spacing: 0.5em;
+      margin: 48px 0;
+      user-select: none;
+    }
+
+    /* ===== SOURCE LIST ===== */
+    .source-list { list-style: none; padding: 0; }
+    .source-list li { margin-bottom: 6px; }
+    .source-list a {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--accent);
+      text-decoration: none;
+      line-height: 1.5;
+    }
+    .source-list a:hover { text-decoration: underline; }
+    .source-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      margin-left: 4px;
+    }
+
+    /* ===== NEXT ARTICLE CTA ===== */
+    .next-article {
+      background: var(--text-primary);
+      color: #E4E2DC;
+      padding: 28px 32px;
+      margin-top: 56px;
+    }
+    .next-article .next-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent-warm);
+      margin-bottom: 8px;
+    }
+    .next-article .next-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+    .next-article .next-desc {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.82rem;
+      color: #9299A8;
+      margin-top: 8px;
+    }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .keyfacts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+    .fact-card {
+      background: var(--bg-highlight);
+      padding: 10px 8px;
+    }
+    .fact-card.highlight {
+      background: #FDF8EC;
+      border: 1px solid #E8D88A;
+    }
+    .fact-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--accent);
+      line-height: 1.2;
+    }
+    .fact-card.highlight .fact-value { color: #8A6A00; }
+    .fact-desc {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.64rem;
+      color: var(--text-muted);
+      margin-top: 3px;
+      line-height: 1.35;
+    }
+    .fact-card.highlight .fact-desc { color: #7A6020; }
+    .highlights-list { list-style: none; padding: 0; margin-top: 12px; }
+    .highlight-item {
+      padding: 9px 0;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      gap: 10px;
+      align-items: baseline;
+    }
+    .highlight-item:last-child { border-bottom: none; }
+    .hl-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--accent);
+      flex-shrink: 0;
+      min-width: 18px;
+    }
+    .hl-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.76rem;
+      color: var(--text-body);
+      line-height: 1.45;
+    }
+
+    /* ===== LANG TOGGLE ===== */
+    .lang-en { display: none; }
+
+    /* ===== FOOTER ===== */
+    .site-footer {
+      border-top: 1px solid var(--border-light);
+      margin-top: 4em;
+      padding: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* ===== PRINT ===== */
+    @media print {
+      body { background: white; font-size: 11pt; }
+      .site-header, #sticky-bar, #progress-bar { display: none; }
+      .article-sidebar { position: static; max-height: none; overflow: visible; }
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+    @page { size: A4; margin: 20mm 15mm; }
+
+    /* ===== MOBILE ===== */
+    @media (max-width: 900px) {
+      .article-body { grid-column: 1 / -1; }
+      .article-sidebar { position: static; max-height: none; overflow: visible; grid-column: 1 / -1; }
+      .article-grid { display: block; }
+      .read-grid { grid-template-columns: 1fr; }
+      #sticky-bar { flex-wrap: wrap; gap: 6px; }
+    }
+
+    body.dark {
+      --bg:           #0D1117;
+      --bg-code:      #161B22;
+      --bg-quote:     #161B22;
+      --bg-highlight: #0E1A2B;
+      --bg-subtle:    #161B22;
+      --bg-card:      #161B22;
+      --bg-header:    #0D1117;
+      --text-primary: #E4E2DC;
+      --text-body:    #C4C2BC;
+      --text-muted:   #8B93A8;
+      --text-light:   #575E70;
+      --accent:       #3A8FD0;
+      --accent-warm:  #F5C800;
+      --border:       #21253A;
+      --border-quote: #2A2D3E;
+      --border-light: #21253A;
+      --tag-bg:       #0E1A2B;
+      --tag-text:     #3A8FD0;
+      --table-stripe: #161B22;
+    }
+    body.dark svg [fill="#F0EFEB"] { fill: #161B22; }
+    body.dark svg [fill="#EEECEA"] { fill: #1A1F2B; }
+    body.dark svg [fill="#E0DDD9"] { fill: #141920; }
+    body.dark svg [fill="#EBF3FB"] { fill: #0E1A2B; }
+    body.dark svg [fill="#D4D2CC"] { fill: #21253A; }
+    body.dark svg [stroke="#D4D2CC"] { stroke: #21253A; }
+    body.dark svg [fill="#2A2C3E"] { fill: #C4C2BC; }
+    body.dark svg [fill="#888EA0"] { fill: #575E70; }
+    body.dark svg [fill="#565C70"] { fill: #8B93A8; }
+    body.dark .trap-box { background: #1C1800; }
+    body.dark .fact-card.highlight { background: #1A1600; border-color: #3A2D00; }
+    body.dark .fact-card.highlight .fact-value { color: #C4900E; }
+    body.dark .fact-card.highlight .fact-desc { color: #A07828; }
+    body.dark .next-article { background: #111320; }
+  </style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<!-- 1. サイトヘッダー -->
+<header class="site-header">
+  <div class="site-header-left">
+    <a class="wordmark" href="../index.html">dona<span>to</span></a>
+    <span class="header-sep">—</span>
+    <a class="header-back-link" href="./index.html"><span class="lang-ja">記事一覧</span><span class="lang-en">Articles</span></a>
+    <span class="header-sep">—</span>
+    <span class="header-media">Valuation Theory Lab</span>
+  </div>
+  <div class="site-header-right">
+    <div class="lang-toggle-bar">
+      <button class="art-lang-btn active" data-lang="ja" onclick="setLang('ja')">JP</button>
+      <button class="art-lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+    </div>
+    <button id="theme-btn" onclick="toggleTheme()" title="ダーク/ライト切替">☀</button>
+    <time class="header-date">2026-03-22</time>
+  </div>
+</header>
+
+<!-- 2. スティッキー情報バー -->
+<div id="sticky-bar">
+  <span class="sbar-cat">VALUATION THEORY LAB</span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-text"><span class="lang-ja">Series #004 · シクリカル企業バリュエーション</span><span class="lang-en">Series #004 · Cyclical Company Valuation</span></span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-text">2026-03-22</span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-badge" id="reading-time-badge"><span class="lang-ja">約14分</span><span class="lang-en">~14 min</span></span>
+</div>
+
+<main style="padding: 0 0 3em;">
+  <div class="article-container">
+    <div class="article-grid">
+
+      <!-- 3. 記事本文 -->
+      <article class="article-body">
+
+        <!-- 記事ヘッダー -->
+        <div style="padding: 36px 0 24px;">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+            <div class="section-label">Valuation Theory Lab &nbsp;#004</div>
+            <span class="sbar-badge" id="reading-time-badge2"><span class="lang-ja">約14分</span><span class="lang-en">~14 min</span></span>
+          </div>
+          <h1 class="article-headline">
+            <span class="lang-ja">シクリカル企業のLTMが罠である理由<br>— Mid-cycle正規化とNormalized Earnings</span>
+            <span class="lang-en">Why Cyclical Companies' LTM Is a Trap<br>— Mid-cycle Normalization and Normalized Earnings</span>
+          </h1>
+          <p class="article-standfirst">
+            <span class="lang-ja">LTM（直近12ヶ月）は、シクリカル企業においてサイクルのどこを切り取るかによってEV/EBITDAを5xから17xに歪める。同一の企業、同一のEVでも、ピーク期と底値期のEBITDAは2〜5倍異なる。Mid-cycle EBITDAを推計する3つの手法（単純平均・回帰中心値・Bottom-up正規化）と業種別アプローチを理解することが、シクリカル企業バリュエーションの出発点だ。</span>
+            <span class="lang-en">LTM (Last Twelve Months) can distort EV/EBITDA from 5x to 17x for a cyclical company, depending on where in the cycle you take the snapshot. The same company at the same EV can show EBITDA 2–5x higher at the peak than at the trough. Understanding the three methods for estimating mid-cycle EBITDA — simple average, regression trend, and bottom-up normalization — is the starting point for valuing cyclical businesses rigorously.</span>
+          </p>
+          <div style="display:flex; gap:16px; align-items:center; border-top:1px solid var(--border-light); border-bottom:1px solid var(--border-light); padding:10px 0;">
+            <span class="byline">By <strong>Donato Valuation Notes</strong></span>
+            <span style="color:var(--border);">|</span>
+            <time class="byline" datetime="2026-03-22"><span class="lang-ja">2026年3月22日</span><span class="lang-en">March 22, 2026</span></time>
+            <span style="color:var(--border);">|</span>
+            <span class="byline"><span class="lang-ja">シクリカル · Mid-cycle · Normalized Earnings</span><span class="lang-en">Cyclical · Mid-cycle · Normalized Earnings</span></span>
+          </div>
+        </div>
+
+        <!-- 構造化エグゼクティブサマリー -->
+        <section class="exec-summary">
+
+          <!-- TL;DR -->
+          <div class="exec-block">
+            <div class="section-label">TL;DR</div>
+            <p class="exec-tldr">
+              <span class="lang-ja">LTMはある一時点の利益スナップショットにすぎない。シクリカル企業のEBITDAはサイクル振幅が大きく、ピークとトラフで2〜5倍の差が生じる。この状態でEV/LTM EBITDAを横並び比較してもバリュエーションの意味がない。Mid-cycle EBITDA（景気サイクルの中心値）を推計して正規化することが理論的に正しいアプローチだが、その推計方法自体に3通りの手法があり、それぞれ強みと限界を持つ。推計の不確実性は感度分析のドライバーとして明示的に扱うことが不可欠だ。</span>
+              <span class="lang-en">LTM is just a snapshot of earnings at one point in time. For cyclical companies, EBITDA swings 2–5x between cycle peak and trough. Using EV/LTM EBITDA comparisons in this context produces meaningless results. Estimating a mid-cycle EBITDA — the central value across the business cycle — is the theoretically correct approach, but that estimation itself has three competing methods, each with its own strengths and limitations. The uncertainty in the estimate must be handled explicitly as a driver in sensitivity analysis.</span>
+            </p>
+          </div>
+
+          <!-- 論点 -->
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">本稿の論点</span><span class="lang-en">Key Questions</span></div>
+            <ul class="issues-list">
+              <li class="issue-item">
+                <span class="issue-q">Q1</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>なぜLTMはシクリカル企業で使えないか？</strong> — サイクル位置によるEBITDA歪みのメカニズムと、EV/EBITDA倍率への非線形な影響を数値で確認する。</span>
+                  <span class="lang-en"><strong>Why does LTM fail for cyclical companies?</strong> — Understand the mechanism by which cycle position distorts EBITDA and the non-linear effect on EV/EBITDA multiples, with numerical examples.</span>
+                </span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">Q2</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>Mid-cycle EBITDAの3手法とは？</strong> — ①単純サイクル平均（backward-looking）、②回帰中心値（statistical trend）、③Bottom-up正規化（commodity-based / structural）の特徴・適用条件・限界を対比する。</span>
+                  <span class="lang-en"><strong>What are the three methods for mid-cycle EBITDA?</strong> — Compare ① simple cycle average (backward-looking), ② regression trend (statistical), and ③ bottom-up normalization (commodity-based / structural) in terms of characteristics, applicability, and limitations.</span>
+                </span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">Q3</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>業種固有のアプローチは何か？</strong> — 鉄鋼・化学・資源（コモディティ価格正規化）、建設・不動産（着工量中心値）、銀行（信用コスト正規化）でそれぞれどのように実装するか。</span>
+                  <span class="lang-en"><strong>What industry-specific approaches apply?</strong> — How do steel/chemicals/resources (commodity price normalization), construction/real estate (volume trend), and banks (normalized credit costs) each handle the problem?</span>
+                </span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">Q4</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>感度分析にどう組み込むか？</strong> — Mid-cycle EBITDAの推計幅をサイクル位置シナリオとして明示し、価値への非線形影響を捉える感度テーブルの構築方法。</span>
+                  <span class="lang-en"><strong>How to incorporate this into sensitivity analysis?</strong> — Building sensitivity tables that explicitly frame the mid-cycle EBITDA range as a cycle position scenario and capture the non-linear impact on valuation.</span>
+                </span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- 実務家への含意 -->
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">Valuation実務家への含意</span><span class="lang-en">Implications for Practitioners</span></div>
+            <ul class="implications-list">
+              <li class="implication-item">
+                <span class="lang-ja"><strong>LTM EV/EBITDAを単独で使うな</strong> — シクリカル企業では、EV/LTM EBITDAとEV/Normalized EBITDAの両方を開示し、その乖離幅をコメントで説明することが最低限の規律だ。</span>
+                <span class="lang-en"><strong>Never use LTM EV/EBITDA alone</strong> — For cyclical companies, always disclose both EV/LTM EBITDA and EV/Normalized EBITDA, and explain the divergence. This is a minimum standard of analytical discipline.</span>
+              </li>
+              <li class="implication-item">
+                <span class="lang-ja"><strong>2手法以上で三角測量する</strong> — 単純平均とBottom-up正規化が概ね一致すれば推計の信頼性が上がる。乖離が大きい場合はそれ自体が構造変化の兆候だ。</span>
+                <span class="lang-en"><strong>Triangulate with at least two methods</strong> — If simple average and bottom-up normalization broadly agree, confidence in the estimate increases. A large divergence is itself a signal of structural change.</span>
+              </li>
+              <li class="implication-item">
+                <span class="lang-ja"><strong>現在のサイクル位置を明示する</strong> — 「現在はピーク/トラフ/中盤のどこか」を分析の最初に判断し、その判断根拠を記録する。この判断がNormalized EBITDAの方向性を規定する。</span>
+                <span class="lang-en"><strong>State the current cycle position explicitly</strong> — Determine at the outset whether the company is currently at peak, trough, or mid-cycle, and document the basis for that judgment. This determination drives the direction of your normalization.</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- 読み進め判断 -->
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">この記事を読み進めるべきか</span><span class="lang-en">Who Should Read This?</span></div>
+            <div class="read-grid">
+              <div>
+                <div class="read-col-label read-label-yes"><span class="lang-ja">読むべき人</span><span class="lang-en">READ IF</span></div>
+                <div class="read-item"><span class="lang-ja">鉄鋼・化学・海運・建設・資源など景気敏感セクターのM&amp;A / 株式バリュエーションを担当する実務家</span><span class="lang-en">Practitioners responsible for M&A or equity valuation in cyclical sectors: steel, chemicals, shipping, construction, resources</span></div>
+                <div class="read-item"><span class="lang-ja">LBO / PE案件で買収タイミングがサイクルに与える影響を分析する必要がある人</span><span class="lang-en">Anyone analyzing how acquisition timing relative to the business cycle affects LBO / PE returns</span></div>
+                <div class="read-item"><span class="lang-ja">相対評価でピアグループのEBITDAを横並び比較する際に、比較可能性の問題に直面している人</span><span class="lang-en">Practitioners who have encountered comparability issues when using peer group EBITDA in relative valuation</span></div>
+              </div>
+              <div>
+                <div class="read-col-label read-label-no"><span class="lang-ja">スキップしてよい人</span><span class="lang-en">SKIP IF</span></div>
+                <div class="skip-item"><span class="lang-ja">SaaS・ソフトウェア・ヘルスケアなど景気サイクル感応度が低いセクターのみを扱う実務家</span><span class="lang-en">Practitioners working exclusively in low-cyclicality sectors such as SaaS, software, or healthcare</span></div>
+                <div class="skip-item"><span class="lang-ja">既にMid-cycle正規化の手法を確立しており、理論的背景よりも業種固有のテクニックだけを求める方</span><span class="lang-en">Those who already have an established mid-cycle normalization methodology and need only industry-specific techniques, not theoretical foundations</span></div>
+              </div>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- 本文導入 -->
+        <p>
+          <span class="lang-ja">バリュエーションにおける「LTM（直近12ヶ月）」の使用は標準的だ。しかしシクリカル企業に対してこれを適用すると、EBITDAの分母がサイクル位置によって大きく変動するため、マルチプルの比較可能性が根本的に失われる。ピーク時のEBITDAでEV/EBITDAを計算すれば「割安に見える」、トラフ時に計算すれば「割高に見える」——にもかかわらず、企業の本質的価値は大きく変わっていない。</span>
+          <span class="lang-en">Using LTM (Last Twelve Months) in valuation is standard practice. But applying it to cyclical companies fundamentally destroys the comparability of multiples: the EBITDA denominator swings dramatically with the cycle. Calculate EV/EBITDA at peak earnings and the company looks cheap; do the same at the trough and it looks expensive — even though the underlying value of the business has not changed materially.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">この問題の解決策は「Mid-cycle EBITDA」への正規化だ。Mid-cycleとは、景気サイクルの長期的な中心値——過去の山と谷を均した「普通の年」の利益水準——を指す。しかしこの正規化には厄介な問題がある：「中心値」をどう推計するかに複数の方法があり、推計結果がかなりばらつくことだ。</span>
+          <span class="lang-en">The solution is normalization to a "mid-cycle EBITDA" — the long-run central value of the business cycle, a kind of smoothed "normal year" earnings level. But this normalization comes with a difficult challenge: there are multiple ways to estimate the central value, and the estimates can diverge substantially.</span>
+        </p>
+
+        <!-- ======================================================== -->
+        <h2><span class="lang-ja">0. LTMの罠 — 数値で確認する</span><span class="lang-en">0. The LTM Trap — A Numerical Demonstration</span></h2>
+
+        <p>
+          <span class="lang-ja">具体例で確認しよう。ある鉄鋼メーカーのEVが1,000億円で安定していると仮定する。同社のEBITDAはサイクルによって以下のように変動する：</span>
+          <span class="lang-en">Consider a concrete example. A steel manufacturer with a stable EV of ¥1,000bn. The company's EBITDA varies across the cycle as follows:</span>
+        </p>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">サイクル局面</span><span class="lang-en">Cycle Phase</span></th>
+                <th><span class="lang-ja">EBITDA（億円）</span><span class="lang-en">EBITDA (¥bn)</span></th>
+                <th><span class="lang-ja">EV/LTM EBITDA</span><span class="lang-en">EV/LTM EBITDA</span></th>
+                <th><span class="lang-ja">市場の印象</span><span class="lang-en">Market Impression</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="lang-ja">ピーク</span><span class="lang-en">Peak</span></td>
+                <td class="td-accent">200</td>
+                <td class="td-accent">5.0x</td>
+                <td><span class="lang-ja">割安（買いシグナル？）</span><span class="lang-en">Cheap (buy signal?)</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">Mid-cycle（正規化後）</span><span class="lang-en">Mid-cycle (normalized)</span></td>
+                <td>130</td>
+                <td>7.7x</td>
+                <td><span class="lang-ja">適正（中立）</span><span class="lang-en">Fair (neutral)</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">トラフ</span><span class="lang-en">Trough</span></td>
+                <td class="td-warn">60</td>
+                <td class="td-warn">16.7x</td>
+                <td><span class="lang-ja">割高（売りシグナル？）</span><span class="lang-en">Expensive (sell signal?)</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="trap-box">
+          <div class="trap-label"><span class="lang-ja">実務の罠</span><span class="lang-en">PRACTICE TRAP</span></div>
+          <p>
+            <span class="lang-ja">ピークにM&amp;Aを実施した買手は「EV/EBITDA 5.0xで安く買えた」と判断するが、正規化後の倍率は7.7xだ。サイクルが反転しトラフに達すると、取得した資産のEBITDAは7割減少する。この「見かけの割安感」がシクリカルなM&amp;Aにおける高値掴みの最大の原因だ。逆に、トラフで「EV/EBITDA 16.7xは高い」として売却を決断すれば、実はNormalized baseでは7.7xという合理的な水準だったことになる。</span>
+            <span class="lang-en">A buyer executing an M&A transaction at the peak concludes "we got it cheap at 5.0x EV/EBITDA." But on a normalized basis, the multiple is 7.7x. When the cycle turns to trough, the acquired asset's EBITDA falls 70%. This apparent cheapness is the primary cause of overpaying in cyclical M&A. Conversely, a seller who declines at the trough because "16.7x EV/EBITDA is expensive" may be walking away from a deal that was actually priced at a reasonable 7.7x on a normalized basis.</span>
+          </p>
+        </div>
+
+        <p>
+          <span class="lang-ja">このメカニズムはEV/EBITDAだけでなく、P/E、EV/EBITにも等しく適用される。分母が景気サイクルに連動する限り、LTMベースのマルチプルはサイクル位置のノイズを多大に含む。</span>
+          <span class="lang-en">This mechanism applies equally to P/E and EV/EBIT, not just EV/EBITDA. As long as the denominator tracks the business cycle, LTM-based multiples carry substantial cycle-position noise.</span>
+        </p>
+
+        <div class="pull-quote">
+          <p><span class="lang-ja">"シクリカル企業は、安いときに高く見え、高いときに安く見える。"</span><span class="lang-en">"Cyclical companies look expensive when they're cheap, and cheap when they're expensive."</span></p>
+          <footer>— <span class="lang-ja">バリュー投資家の格言、LTMベースのマルチプルに対する警句</span><span class="lang-en">A value investing maxim about LTM-based multiples</span></footer>
+        </div>
+
+        <!-- ======================================================== -->
+        <h2><span class="lang-ja">1. Mid-cycle EBITDAの3つの推計手法</span><span class="lang-en">1. Three Methods for Estimating Mid-cycle EBITDA</span></h2>
+
+        <p>
+          <span class="lang-ja">Mid-cycle EBITDAを推計する方法は大きく3つある。それぞれが異なる仮定に立脚しており、結果が乖離することも多い。</span>
+          <span class="lang-en">There are three major approaches to estimating mid-cycle EBITDA. Each rests on different assumptions, and the results frequently diverge.</span>
+        </p>
+
+        <h3><span class="lang-ja">手法① 単純サイクル平均（Simple Cycle Average）</span><span class="lang-en">Method ① Simple Cycle Average</span></h3>
+
+        <p>
+          <span class="lang-ja">過去5〜7年のEBITDAを単純平均し、それをMid-cycle推計値とするアプローチだ。対象期間がフルサイクル（少なくとも1回の山と谷を含む）をカバーすることが必須条件となる。</span>
+          <span class="lang-en">This approach takes a simple average of the past 5–7 years of EBITDA as the mid-cycle estimate. A necessary condition is that the period covers a full cycle — at least one peak and one trough.</span>
+        </p>
+
+        <div class="formula">Mid-cycle EBITDA ≈ Σ(EBITDA_t) / n
+where n = 5〜7年（フルサイクル期間）</div>
+
+        <p>
+          <span class="lang-ja"><strong>利点：</strong>シンプルで説明しやすい。対象企業の実績データのみで完結する。Fairness Opinionや初期スクリーニングに適している。</span>
+          <span class="lang-en"><strong>Strengths:</strong> Simple and easy to explain. Requires only the company's own historical data. Suitable for fairness opinions and initial screening.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja"><strong>限界と留意点：</strong>期間選択バイアスが最大の問題だ。5年取るか7年取るかで結果が変わる。また、対象企業が成長フェーズにある場合、過去平均が現在のコスト構造・規模と乖離する（成長バイアス）。M&amp;AでCapexが急増したりポートフォリオが変化した場合は、そのまま過去平均を使うと構造変化を無視することになる。</span>
+          <span class="lang-en"><strong>Limitations:</strong> Period selection bias is the primary problem — using 5 vs. 7 years produces different results. If the company is in a growth phase, the historical average diverges from the current cost structure and scale (growth bias). If M&A activity has shifted the asset base, using a raw historical average ignores structural change.</span>
+        </p>
+
+        <div class="trap-box">
+          <div class="trap-label"><span class="lang-ja">期間選択バイアスの例</span><span class="lang-en">PERIOD SELECTION BIAS EXAMPLE</span></div>
+          <p>
+            <span class="lang-ja">直近のサイクルが異常に長い（例：コロナ禍の急落後、補助金依存の急回復）場合、その期間を含めるか除外するかで平均が大きく変わる。「標準的なサイクルとは何年か」という判断そのものが主観的だ。</span>
+            <span class="lang-en">If the most recent cycle was abnormally long — say, a sharp COVID-era drop followed by a subsidy-driven recovery — including or excluding that period dramatically changes the average. The judgment of "what constitutes a standard cycle" is inherently subjective.</span>
+          </p>
+        </div>
+
+        <h3><span class="lang-ja">手法② 回帰中心値（Regression Trend Normalization）</span><span class="lang-en">Method ② Regression Trend Normalization</span></h3>
+
+        <p>
+          <span class="lang-ja">過去のEBITDAに線形（または対数）トレンドを当て、そのトレンドラインの現在値をMid-cycle EBITDAとする手法だ。成長トレンドを考慮できる点が単純平均との主な差異だ。</span>
+          <span class="lang-en">This method fits a linear (or log-linear) trend to historical EBITDA and uses the current value of that trendline as the mid-cycle estimate. The primary advantage over simple averaging is that it accounts for the growth trend.</span>
+        </p>
+
+        <div class="formula">EBITDA(t) = α + β·t + ε  [線形トレンド]
+Mid-cycle EBITDA = α + β·t_current  [ε=0と置いたトレンド値]</div>
+
+        <p>
+          <span class="lang-ja"><strong>利点：</strong>サイクルの山と谷を平均するだけでなく、成長トレンドを組み込むことができる。特に緩やかに拡大しているシクリカル企業（例：東南アジアの建設需要増に乗る化学メーカー）では、単純平均より理論的に優位だ。</span>
+          <span class="lang-en"><strong>Strengths:</strong> Incorporates a growth trend rather than just averaging peaks and troughs. Theoretically superior to simple averaging for cyclical companies with a gradual expansion trend — for example, a chemical manufacturer benefiting from structural Southeast Asian construction demand growth.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja"><strong>限界と留意点：</strong>回帰の仮定（線形成長か？）が成立しない場合は誤謬が大きい。特に構造変化（例：コモディティ価格の長期上昇、技術革新によるマージン改善）が生じている場合、線形回帰は過去のトレンドを外挿するだけで未来を反映しない。また、データ期間の選択感応度は単純平均と同じ問題を持つ。</span>
+          <span class="lang-en"><strong>Limitations:</strong> Badly wrong if the linearity assumption fails. Particularly problematic when structural changes have occurred — e.g., long-run commodity price increases or technology-driven margin improvements — because linear regression merely extrapolates past trends without reflecting the new structural level. The data period sensitivity is identical to the simple average problem.</span>
+        </p>
+
+        <h3><span class="lang-ja">手法③ Bottom-up正規化（Structural / Commodity-based Normalization）</span><span class="lang-en">Method ③ Bottom-up Normalization (Structural / Commodity-based)</span></h3>
+
+        <p>
+          <span class="lang-ja">企業のEBITDAを収益ドライバーに分解し、それぞれのドライバーをMid-cycle水準に置き換えて再構築するアプローチだ。コモディティ関連企業に最も適している。</span>
+          <span class="lang-en">This approach decomposes the company's EBITDA into its revenue drivers, replaces each driver with a mid-cycle estimate, and rebuilds the EBITDA from scratch. It is most applicable to commodity-linked companies.</span>
+        </p>
+
+        <div class="formula">Normalized EBITDA = Mid-cycle Volume × Mid-cycle Price × Normalized Margin
+                        − Normalized Fixed Cost</div>
+
+        <p>
+          <span class="lang-ja">例として鉄鋼メーカーであれば、「Mid-cycle熱延鋼板スポット価格 × 生産キャパシティ稼働率の中心値 × Normalized加工スプレッド − 固定費」という構造になる。Mid-cycle商品価格は、BloombergコンセンサスのLong-termコモディティ価格予測か、過去10〜15年の実質平均を使うことが多い。</span>
+          <span class="lang-en">For a steel manufacturer, this becomes: "Mid-cycle hot-rolled coil spot price × normalized capacity utilization × normalized processing spread − fixed costs." Mid-cycle commodity prices are typically sourced from Bloomberg consensus long-term commodity price forecasts or the real average over the past 10–15 years.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja"><strong>利点：</strong>経済的に最も意味のある正規化だ。「なぜこの数字になるか」を収益ドライバーのレベルで説明できる。構造変化（例：カーボンニュートラル投資によるマージン圧縮）も部分的に組み込める。対象企業とComparableの間でドライバー水準が異なる場合も、それぞれを個別に正規化してから比較できる。</span>
+          <span class="lang-en"><strong>Strengths:</strong> Economically the most meaningful normalization. You can explain at the driver level why the number is what it is. Structural changes — e.g., margin compression from carbon-neutral investment — can be partially incorporated. When driver levels differ between the target and comparables, each can be normalized independently before comparison.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja"><strong>限界と留意点：</strong>Mid-cycle商品価格の推計自体が難しい。コンセンサス予測は短期（2〜3年）に集中し、10年先のMid-cycle価格を市場コンセンサスから得るのは困難だ。また分解に必要な社内データ（セグメント別マージン、稼働率）が非上場企業の場合は入手困難な場合がある。モデル構造の複雑化が再現性を下げるリスクもある。</span>
+          <span class="lang-en"><strong>Limitations:</strong> Estimating the mid-cycle commodity price itself is difficult. Consensus forecasts are concentrated in the short term (2–3 years), making it hard to derive a 10-year mid-cycle price from market data alone. The disaggregated data required — segment margins, utilization rates — may be unavailable for private companies. Model complexity also reduces reproducibility.</span>
+        </p>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>3手法の三角測量が原則だ。</strong>理想的には、単純平均・回帰中心値・Bottom-up正規化の3つが概ね収束することを確認する。収束すれば推計の信頼性が上がる。乖離が大きい場合（例：Bottom-upが単純平均を30%上回る）は、それ自体が構造変化の兆候——その乖離の原因を理解することがアナリストの仕事だ。</span>
+            <span class="lang-en"><strong>Triangulating across all three methods is the standard.</strong> Ideally, confirm that simple average, regression trend, and bottom-up normalization broadly converge. Convergence increases confidence. A large divergence — e.g., the bottom-up estimate exceeds the simple average by 30% — is itself a signal of structural change. Understanding the cause of that divergence is the analyst's job.</span>
+          </p>
+        </div>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">手法</span><span class="lang-en">Method</span></th>
+                <th><span class="lang-ja">主な仮定</span><span class="lang-en">Key Assumption</span></th>
+                <th><span class="lang-ja">強み</span><span class="lang-en">Strength</span></th>
+                <th><span class="lang-ja">弱み</span><span class="lang-en">Weakness</span></th>
+                <th><span class="lang-ja">適用優先</span><span class="lang-en">Best For</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong><span class="lang-ja">①単純平均</span><span class="lang-en">①Simple Average</span></strong></td>
+                <td><span class="lang-ja">過去が将来を代表する</span><span class="lang-en">Past represents the future</span></td>
+                <td><span class="lang-ja">シンプル・透明性高い</span><span class="lang-en">Simple, transparent</span></td>
+                <td><span class="lang-ja">期間選択バイアス、成長バイアス</span><span class="lang-en">Period selection bias, growth bias</span></td>
+                <td><span class="lang-ja">初期スクリーニング・安定成熟セクター</span><span class="lang-en">Initial screening, mature stable sectors</span></td>
+              </tr>
+              <tr>
+                <td><strong><span class="lang-ja">②回帰中心値</span><span class="lang-en">②Regression Trend</span></strong></td>
+                <td><span class="lang-ja">線形成長トレンドが継続</span><span class="lang-en">Linear growth trend continues</span></td>
+                <td><span class="lang-ja">成長を考慮できる</span><span class="lang-en">Accounts for growth</span></td>
+                <td><span class="lang-ja">構造変化に脆弱</span><span class="lang-en">Fragile to structural change</span></td>
+                <td><span class="lang-ja">緩やか成長のシクリカルセクター</span><span class="lang-en">Slowly growing cyclical sectors</span></td>
+              </tr>
+              <tr>
+                <td><strong><span class="lang-ja">③Bottom-up</span><span class="lang-en">③Bottom-up</span></strong></td>
+                <td><span class="lang-ja">ドライバー別のMid-cycle推計が可能</span><span class="lang-en">Per-driver mid-cycle estimation is feasible</span></td>
+                <td><span class="lang-ja">経済的意味が最も高い</span><span class="lang-en">Most economically meaningful</span></td>
+                <td><span class="lang-ja">Mid-cycle商品価格推計の困難さ</span><span class="lang-en">Difficulty estimating mid-cycle commodity prices</span></td>
+                <td><span class="lang-ja">コモディティ関連・資源セクター</span><span class="lang-en">Commodity-linked and resource sectors</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ======================================================== -->
+        <h2><span class="lang-ja">2. 業種固有のアプローチ</span><span class="lang-en">2. Industry-Specific Approaches</span></h2>
+
+        <p>
+          <span class="lang-ja">Mid-cycle正規化の実装は業種によって大きく異なる。主要なシクリカルセクターごとに整理する。</span>
+          <span class="lang-en">The implementation of mid-cycle normalization varies substantially by industry. Here is a framework by major cyclical sector.</span>
+        </p>
+
+        <h3><span class="lang-ja">① 素材・コモディティ（鉄鋼・化学・石油ガス・鉱業）</span><span class="lang-en">① Materials and Commodities (Steel, Chemicals, Oil & Gas, Mining)</span></h3>
+
+        <p>
+          <span class="lang-ja">コモディティ価格がEBITDAの最大の変動要因だ。Bottom-up正規化が最も適している。</span>
+          <span class="lang-en">Commodity prices are the dominant driver of EBITDA variance. Bottom-up normalization is the most appropriate approach.</span>
+        </p>
+
+        <div class="calc-block">
+          <div style="font-family:'Inter',sans-serif;font-size:0.78rem;color:var(--text-muted);margin-bottom:10px;"><span class="lang-ja">鉄鋼メーカーの場合（概念的なフレームワーク）</span><span class="lang-en">Steel manufacturer framework (conceptual)</span></div>
+          <div class="calc-row">
+            <span><span class="lang-ja">Mid-cycle熱延鋼板価格</span><span class="lang-en">Mid-cycle HRC price</span></span>
+            <span class="calc-highlight"><span class="lang-ja">コンセンサス長期予測 or 実質10年平均</span><span class="lang-en">LT consensus or real 10Y average</span></span>
+          </div>
+          <div class="calc-row">
+            <span>× <span class="lang-ja">Mid-cycle稼働率</span><span class="lang-en">× Mid-cycle utilization rate</span></span>
+            <span><span class="lang-ja">業界平均・過去サイクル平均</span><span class="lang-en">Industry avg / historical cycle avg</span></span>
+          </div>
+          <div class="calc-row">
+            <span>× <span class="lang-ja">Normalized加工スプレッド</span><span class="lang-en">× Normalized processing spread</span></span>
+            <span><span class="lang-ja">原料コスト正規化後</span><span class="lang-en">Post raw-material normalization</span></span>
+          </div>
+          <div class="calc-row calc-total">
+            <span>= <span class="lang-ja">Normalized EBITDA</span><span class="lang-en">= Normalized EBITDA</span></span>
+            <span class="calc-highlight"><span class="lang-ja">Mid-cycle推計値</span><span class="lang-en">Mid-cycle estimate</span></span>
+          </div>
+        </div>
+
+        <p>
+          <span class="lang-ja">石油・ガスセクターでは「Mid-cycle油価」の設定が焦点だ。ストリートでは、WTI/Brentのコンセンサス長期予測（通常5〜7年先まで）を使うか、過去の実質平均をインフレ調整した数値を使う。供給コスト（Cost of Supply）曲線の中位点をMid-cycle価格とするアプローチもある。</span>
+          <span class="lang-en">For oil and gas, the key assumption is the mid-cycle oil price. Street practice typically uses WTI/Brent consensus long-term forecasts (usually out to 5–7 years) or an inflation-adjusted historical real average. Some practitioners use the midpoint of the industry supply cost curve as the mid-cycle price anchor.</span>
+        </p>
+
+        <h3><span class="lang-ja">② 建設・不動産（ゼネコン・住宅建設・不動産デベロッパー）</span><span class="lang-en">② Construction and Real Estate (General Contractors, Homebuilders, Developers)</span></h3>
+
+        <p>
+          <span class="lang-ja">収益の変動ドライバーは商品価格ではなく「工事量・着工件数・取引ボリューム」だ。</span>
+          <span class="lang-en">The revenue variance driver is not commodity prices but construction volumes, housing starts, or transaction volumes.</span>
+        </p>
+
+        <ul>
+          <li><span class="lang-ja"><strong>Mid-cycle着工数・工事発注量：</strong>国土交通省の長期傾向、人口動態・ストック更新需要に基づく構造的中心値を推計する。</span><span class="lang-en"><strong>Mid-cycle housing starts / order volumes:</strong> Estimate the structural central value based on Ministry of Land Infrastructure Transport and Tourism long-run trends, demographics, and housing stock replacement demand.</span></li>
+          <li><span class="lang-ja"><strong>利益率の安定性：</strong>建設業は原材料（鋼材・セメント）コストの上昇を原価に転嫁しやすいか否かによってマージンの安定性が異なる。公共工事比率が高いほど安定的だ。</span><span class="lang-en"><strong>Margin stability:</strong> Construction margin stability depends on the ability to pass through raw material (steel, cement) cost increases. A higher share of public works contracts generally produces more stable margins.</span></li>
+          <li><span class="lang-ja"><strong>不動産デベロッパー：</strong>販売戸数と単価の正規化が必要だが、プロジェクト完成タイミングの影響が大きく、純粋なサイクル正規化と事業進捗による変動の分離が困難だ。</span><span class="lang-en"><strong>Property developers:</strong> Normalization requires adjusting both unit volumes and prices, but project completion timing effects are significant, making it difficult to separate pure cycle normalization from project-level delivery variance.</span></li>
+        </ul>
+
+        <h3><span class="lang-ja">③ 海運（バルク船・タンカー・コンテナ）</span><span class="lang-en">③ Shipping (Dry Bulk, Tankers, Containers)</span></h3>
+
+        <p>
+          <span class="lang-ja">運賃の変動は産業の中で最も激しい部類に入る。Baltic Dry Index (BDI) はピーク時の10,000台からトラフ時の300台まで30倍以上変動した実績がある。</span>
+          <span class="lang-en">Freight rate volatility is among the highest of any industry. The Baltic Dry Index (BDI) has historically ranged from above 10,000 at the peak to below 300 at the trough — a swing of more than 30x.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">Mid-cycle運賃の推計には、過去の長期平均（実質ベース）を用いることが多いが、船腹供給の構造変化（造船ブームによる過剰供給が解消するまでの期間）を考慮することが不可欠だ。Damodaranは海運を「EV/EBITDA倍率で評価すること自体が困難なセクター」と位置づけており、EV/船腹価値（Fleet NAV）の組み合わせが実務では多い。</span>
+          <span class="lang-en">Long-run real averages are typically used for mid-cycle freight rates, but structural changes in vessel supply — particularly the time required for a shipbuilding boom to work through the system — must be factored in. Damodaran characterizes shipping as a sector where EV/EBITDA multiples are inherently difficult to use, and in practice, EV/fleet NAV (Net Asset Value) is often combined with earnings-based multiples.</span>
+        </p>
+
+        <h3><span class="lang-ja">④ 銀行・金融機関（信用コスト正規化）</span><span class="lang-en">④ Banks and Financial Institutions (Normalized Credit Costs)</span></h3>
+
+        <p>
+          <span class="lang-ja">銀行のバリュエーションは通常P/BV（簿価倍率）を中心とするが、利益正規化が必要なケースでは、信用コスト（貸倒引当金繰入額）の正規化が焦点になる。景気拡張期は引当が低水準、収縮期は急増する。</span>
+          <span class="lang-en">Bank valuation centers on P/BV (Price-to-Book), but when earnings normalization is required, normalized credit costs (loan loss provisions) are the focal point. Provisions are low in economic expansions and spike in contractions.</span>
+        </p>
+
+        <div class="formula">Normalized Provision = Loan Book × Mid-cycle NPL Ratio × Coverage Ratio</div>
+
+        <p>
+          <span class="lang-ja">Mid-cycle NPL比率は、過去の景気サイクル全体にわたる平均不良債権率（あるいはバーゼル基準のThroughthe-cycle PD）を使う。加えて、Net Interest Margin (NIM) も政策金利サイクルに依存するため、金利環境の正規化が必要になる場合がある。</span>
+          <span class="lang-en">Mid-cycle NPL ratios typically use the average non-performing loan ratio across a full business cycle, or through-the-cycle probability of default (PD) derived from Basel framework estimates. Net Interest Margin (NIM) also depends on the policy rate cycle, and interest rate environment normalization may be necessary.</span>
+        </p>
+
+        <!-- ======================================================== -->
+        <h2><span class="lang-ja">3. マルチプルへの影響と比較可能性</span><span class="lang-en">3. Multiple Impact and Comparability</span></h2>
+
+        <p>
+          <span class="lang-ja">Mid-cycle EBITDAへの正規化を行った後、もうひとつ重要な論点が残る。ピアグループ（類似企業）のEBITDAも同様に正規化されているか、という問題だ。</span>
+          <span class="lang-en">After normalizing to mid-cycle EBITDA, one more important issue remains: whether the peer group's EBITDA has also been normalized on the same basis.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">たとえば、同一のシクリカルセクターでも、複数の類似企業がサイクルの異なる局面にいる場合がある。欧州の鉄鋼メーカーはまだ回復途上でトラフに近い一方、日本の鉄鋼メーカーはピーク付近にいる——このような状況でLTM EBITDAを横並びにしても意味のある比較はできない。</span>
+          <span class="lang-en">For example, within the same cyclical sector, multiple comparable companies can be at different cycle phases simultaneously. European steelmakers may still be recovering close to the trough while Japanese steelmakers are near the peak. Comparing LTM EBITDA across these companies side by side produces no meaningful comparison.</span>
+        </p>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>「Comparable」の定義が崩れる。</strong>EV/LTM EBITDAの比較は、分母が同等の正規化水準にある場合のみ意味を持つ。シクリカルセクターのComps分析では、全社のEBITDAをMid-cycle基準に正規化してからマルチプルを算出することが理論的に正しい。これは実務上の手間が大きいが、省略することで生じるバイアスはより大きい。</span>
+            <span class="lang-en"><strong>The definition of "comparable" breaks down.</strong> EV/LTM EBITDA comparisons are only meaningful when the denominators are at equivalent normalized levels. In cyclical sector comps analysis, the theoretically correct approach is to normalize all companies' EBITDA to a mid-cycle basis before computing multiples. This is operationally burdensome, but the bias introduced by skipping it is larger.</span>
+          </p>
+        </div>
+
+        <!-- ======================================================== -->
+        <h2><span class="lang-ja">4. 感度分析への組み込み方</span><span class="lang-en">4. Incorporating Into Sensitivity Analysis</span></h2>
+
+        <p>
+          <span class="lang-ja">Mid-cycle EBITDAの推計には本質的な不確実性がある。この不確実性を感度分析のドライバーとして明示的に扱うことが不可欠だ。</span>
+          <span class="lang-en">Mid-cycle EBITDA estimation carries inherent uncertainty. This uncertainty must be treated explicitly as a driver in sensitivity analysis.</span>
+        </p>
+
+        <h3><span class="lang-ja">推奨：サイクル位置シナリオとして扱う</span><span class="lang-en">Recommended: Frame as Cycle Position Scenarios</span></h3>
+
+        <p>
+          <span class="lang-ja">抽象的な「Mid-cycle EBITDA ±X%」ではなく、具体的なサイクル位置シナリオとして感度テーブルを構築することで、仮定の経済的意味が明確になる。</span>
+          <span class="lang-en">Rather than an abstract "Mid-cycle EBITDA ±X%," structuring the sensitivity table as specific cycle position scenarios makes the economic meaning of each assumption explicit.</span>
+        </p>
+
+        <div class="calc-block">
+          <div style="font-family:'Inter',sans-serif;font-size:0.78rem;color:var(--text-muted);margin-bottom:10px;"><span class="lang-ja">鉄鋼メーカー：サイクル位置シナリオ別EV/EBITDA感度（単位：億円）</span><span class="lang-en">Steel manufacturer: EV/EBITDA sensitivity by cycle scenario (¥bn)</span></div>
+          <div class="calc-row">
+            <span><span class="lang-ja">シナリオ</span><span class="lang-en">Scenario</span></span>
+            <span><span class="lang-ja">Normalized EBITDA</span><span class="lang-en">Normalized EBITDA</span></span>
+            <span><span class="lang-ja">インプライドEV（8.0x）</span><span class="lang-en">Implied EV (at 8.0x)</span></span>
+          </div>
+          <div class="calc-row" style="margin-top:8px;">
+            <span><span class="lang-ja">ピーク（持続的とは見ない）</span><span class="lang-en">Peak (not sustainable)</span></span>
+            <span class="calc-warn">200</span>
+            <span class="calc-warn">1,600</span>
+          </div>
+          <div class="calc-row">
+            <span><span class="lang-ja">Mid-cycle（上寄り）</span><span class="lang-en">Mid-cycle (upper)</span></span>
+            <span>150</span>
+            <span>1,200</span>
+          </div>
+          <div class="calc-row">
+            <span><strong><span class="lang-ja">Mid-cycle（中央推計）</span><span class="lang-en">Mid-cycle (central)</span></strong></span>
+            <span class="calc-highlight"><strong>130</strong></span>
+            <span class="calc-highlight"><strong>1,040</strong></span>
+          </div>
+          <div class="calc-row">
+            <span><span class="lang-ja">Mid-cycle（下寄り）</span><span class="lang-en">Mid-cycle (lower)</span></span>
+            <span>110</span>
+            <span>880</span>
+          </div>
+          <div class="calc-row">
+            <span><span class="lang-ja">トラフ（一時的とは見ない）</span><span class="lang-en">Trough (if structural)</span></span>
+            <span class="td-danger" style="color:#c0392b;">60</span>
+            <span class="td-danger" style="color:#c0392b;">480</span>
+          </div>
+        </div>
+
+        <p>
+          <span class="lang-ja">このシナリオ別のInplied EVを、実際の取引EVや現在の株式時価総額と比較することで、「市場が現在どのサイクル局面を織り込んでいるか」を逆算（Reverse DCF的アプローチ）することも可能だ。</span>
+          <span class="lang-en">Comparing these scenario-implied EVs against the actual transaction EV or current market capitalization allows you to reverse-engineer which cycle position the market is currently pricing in — a reverse DCF-style approach applied to cycle expectations.</span>
+        </p>
+
+        <h3><span class="lang-ja">追加的な感度ドライバー</span><span class="lang-en">Additional Sensitivity Drivers</span></h3>
+
+        <ul>
+          <li><span class="lang-ja"><strong>正規化手法の選択：</strong>単純平均とBottom-upが乖離する場合、その差を別軸の感度として示す。</span><span class="lang-en"><strong>Normalization method choice:</strong> If simple average and bottom-up diverge, show the difference as a separate sensitivity axis.</span></li>
+          <li><span class="lang-ja"><strong>Mid-cycleマルチプル水準：</strong>正規化EBITDAに乗じるEV/Normalized EBITDAのマルチプル自体も、金利環境・成長期待によって変動する。2軸のSensitivity Table（EBITDA × Multiple）が標準的だ。</span><span class="lang-en"><strong>Mid-cycle multiple level:</strong> The EV/Normalized EBITDA multiple applied to normalized EBITDA also varies with interest rates and growth expectations. A two-axis sensitivity table (EBITDA × Multiple) is standard.</span></li>
+          <li><span class="lang-ja"><strong>サイクル反転タイミング：</strong>サイクルがいつ転換するかの仮定は、将来CFの時価計算に影響する。明示的なサイクル位置のDCFシナリオとして扱う方が理論的には正確だが、実務ではNormalized EBITDAによる定常価値近似が一般的だ。</span><span class="lang-en"><strong>Cycle inflection timing:</strong> Assumptions about when the cycle turns affect the present value of future cash flows. Treating it as an explicit cycle-stage DCF scenario is theoretically more precise, but in practice, the steady-state approximation using normalized EBITDA is standard.</span></li>
+        </ul>
+
+        <!-- ======================================================== -->
+        <h2><span class="lang-ja">5. 実務的まとめ — 3つの規律</span><span class="lang-en">5. Practical Summary — Three Disciplines</span></h2>
+
+        <ul class="numbered-list">
+          <li>
+            <span class="num">1</span>
+            <span>
+              <span class="lang-ja"><strong>現在のサイクル位置を最初に判断し、記録する。</strong>バリュエーションを始める前に、「この企業は今サイクルのどこにいるか」を判断し、その根拠（業界生産指数、コモディティ価格水準、在庫サイクル等）を記録する。この判断がNormalized EBITDAの方向性（上方修正か下方修正か）を規定する。</span>
+              <span class="lang-en"><strong>Determine and document the current cycle position first.</strong> Before starting the valuation, judge where the company sits in the cycle and document the basis — production indices, commodity price levels, inventory cycles, etc. This judgment determines whether normalized EBITDA is adjusted up or down from LTM.</span>
+            </span>
+          </li>
+          <li>
+            <span class="num">2</span>
+            <span>
+              <span class="lang-ja"><strong>2手法以上で三角測量し、乖離を説明する。</strong>単純平均とBottom-upが収束することを確認する。乖離がある場合は構造変化の可能性を検討し、その判断を分析に明示する。「どの手法を選んだか」だけでなく「なぜその手法が適切か」を記載すること。</span>
+              <span class="lang-en"><strong>Triangulate with at least two methods and explain divergences.</strong> Confirm convergence between simple average and bottom-up. If they diverge, investigate the possibility of structural change and document your conclusion. Don't just state which method was chosen — state why it is appropriate.</span>
+            </span>
+          </li>
+          <li>
+            <span class="num">3</span>
+            <span>
+              <span class="lang-ja"><strong>EV/LTMとEV/Normalizedの両方を開示し、乖離率をコメントに入れる。</strong>最終報告書には必ず両方のマルチプルを示し、「現在はLTMがNormalizedを何%上回っている（下回っている）」という事実を明記する。Compsで類似企業と比較する場合も、全社を同一の正規化基準で統一した後に比較する。</span>
+              <span class="lang-en"><strong>Disclose both EV/LTM and EV/Normalized, and quantify the gap in your commentary.</strong> Always show both multiples in the final report, and explicitly state how much LTM currently exceeds (or falls short of) Normalized. When comparing against peers in a comps analysis, normalize all companies on the same basis before computing multiples.</span>
+            </span>
+          </li>
+        </ul>
+
+        <div class="section-sep">· · ·</div>
+
+        <!-- ======================================================== -->
+        <h2><span class="lang-ja">出典</span><span class="lang-en">References</span></h2>
+
+        <ul class="source-list">
+          <li><a href="https://pages.stern.nyu.edu/~adamodar/New_Home_Page/datafile/vebitda.html" target="_blank" rel="noopener">Damodaran, A. — EV/EBITDA by Sector and Normalized Earnings Framework, NYU Stern</a><span class="source-tag"><span class="lang-ja">[データ]</span><span class="lang-en">[Data]</span></span></li>
+          <li><a href="https://openlibrary.org/isbn/9781118011522" target="_blank" rel="noopener">Damodaran, A. — Investment Valuation: Tools and Techniques for Determining the Value of Any Asset, 3rd ed. (Wiley 2012), Ch. 14: Relative Valuation</a><span class="source-tag"><span class="lang-ja">[書籍]</span><span class="lang-en">[Book]</span></span></li>
+          <li><a href="https://openlibrary.org/isbn/9781119610885" target="_blank" rel="noopener">Koller, T., Goedhart, M., Wessels, D. — Valuation: Measuring and Managing the Value of Companies, 7th ed. (McKinsey, Wiley 2020), Ch. 17: Cyclical Companies</a><span class="source-tag"><span class="lang-ja">[書籍]</span><span class="lang-en">[Book]</span></span></li>
+          <li><a href="https://openlibrary.org/isbn/9780470650899" target="_blank" rel="noopener">Rosenbaum, J. & Pearl, J. — Investment Banking: Valuation, LBOs, M&A and IPOs, 2nd ed. (Wiley 2013)</a><span class="source-tag"><span class="lang-ja">[書籍]</span><span class="lang-en">[Book]</span></span></li>
+          <li><a href="https://www.pwc.com/gx/en/audit-services/ifrs/publications/ifrs-9/ifrs-9-cyclicality-provisioning.html" target="_blank" rel="noopener">PwC — IFRS 9 and Expected Credit Losses: Through-the-cycle vs. Point-in-time</a><span class="source-tag"><span class="lang-ja">[レポート]</span><span class="lang-en">[Report]</span></span></li>
+        </ul>
+
+        <!-- Next CTA -->
+        <div class="next-article">
+          <div class="next-label"><span class="lang-ja">次回 · Valuation Theory Lab #005</span><span class="lang-en">Next · Valuation Theory Lab #005</span></div>
+          <div class="next-title">
+            <span class="lang-ja">IFRS16後のEV bridgeを再考する<br>— EV/EBITDA vs. EBITDAR、Leaseの扱い</span>
+            <span class="lang-en">Rethinking EV Bridge Post-IFRS16<br>— EV/EBITDA vs. EBITDAR and the Treatment of Leases</span>
+          </div>
+          <div class="next-desc">
+            <span class="lang-ja">IFRS16によるオペレーティングリースのオンバランス化は、EV bridgeとEBITDAの定義を根本から変えた。EV/EBITDAとEV/EBITDARのどちらを使うか、Net debtにリース負債を含めるか否かの理論と実務。</span>
+            <span class="lang-en">IFRS 16's capitalization of operating leases fundamentally changed the definition of both EV bridge and EBITDA. Should you use EV/EBITDA or EV/EBITDAR? Should lease liabilities be included in net debt? Theory and practice.</span>
+          </div>
+        </div>
+
+      </article>
+
+      <!-- 4. サイドバー -->
+      <aside class="article-sidebar">
+
+        <div class="sidebar-card">
+          <div class="section-label">KEY FACTS</div>
+          <div class="keyfacts-grid">
+            <div class="fact-card highlight">
+              <div class="fact-value">2〜5×</div>
+              <div class="fact-desc"><span class="lang-ja">コモディティ企業のピーク/トラフEBITDA比率（鉄鋼・石油等）</span><span class="lang-en">Peak-to-trough EBITDA ratio for commodity companies (steel, oil, etc.)</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">5〜7年</div>
+              <div class="fact-desc"><span class="lang-ja">Mid-cycle単純平均の標準的な推計期間（フルサイクルカバーが条件）</span><span class="lang-en">Standard period for simple average normalization (full cycle coverage required)</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">5x→17x</div>
+              <div class="fact-desc"><span class="lang-ja">同一EVでもLTM切り取り時点によるEV/EBITDAのレンジ（鉄鋼例）</span><span class="lang-en">EV/EBITDA range from same EV depending on LTM timing (steel example)</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">3手法</div>
+              <div class="fact-desc"><span class="lang-ja">①単純平均 ②回帰中心値 ③Bottom-up正規化</span><span class="lang-en">① Simple avg ② Regression trend ③ Bottom-up normalization</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">30×</div>
+              <div class="fact-desc"><span class="lang-ja">BDIのピーク/トラフ比率（海運の運賃変動は最大級）</span><span class="lang-en">BDI peak-to-trough ratio (shipping freight has extreme cyclicality)</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">三角測量</div>
+              <div class="fact-desc"><span class="lang-ja">2手法以上の収束確認がNormalized EBITDA推計の規律</span><span class="lang-en">Triangulation across ≥2 methods is the standard discipline</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-card">
+          <div class="section-label">SERIES PLAN</div>
+          <ol class="highlights-list">
+            <li class="highlight-item">
+              <span class="hl-num">01</span>
+              <span class="hl-text"><a href="./2026-03-20-valuation.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">Terminal ValueはなぜDCFの70-80%を占めるのか</span><span class="lang-en">Why Terminal Value Drives 70-80% of DCF</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">02</span>
+              <span class="hl-text"><a href="./2026-03-21-wacc.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">WACCは本当に計算できるのか — CAPM限界論と代替アプローチ</span><span class="lang-en">Can WACC Really Be Calculated? — CAPM Limitations and Alternatives</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">03</span>
+              <span class="hl-text"><a href="./2026-03-21-beta-hamada.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">Betaを信じる前に考えること — Hamada変換の仮定と誤差の蓄積</span><span class="lang-en">Before You Trust That Beta — Hamada Transform Assumptions and Compounding Error</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num" style="color:var(--accent-warm);font-weight:700;">04</span>
+              <span class="hl-text"><strong><span class="lang-ja">シクリカル企業のLTMが罠である理由 — Mid-cycle正規化とNormalized Earnings</span><span class="lang-en">Why Cyclical Companies' LTM Is a Trap — Mid-cycle Normalization and Normalized Earnings</span></strong> — <span class="lang-ja">本稿</span><span class="lang-en">this article</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">05</span>
+              <span class="hl-text"><span class="lang-ja">IFRS16後のEV bridgeを再考する — EV/EBITDA vs. EBITDAR</span><span class="lang-en">Rethinking EV Bridge Post-IFRS16 — EV/EBITDA vs. EBITDAR</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">06</span>
+              <span class="hl-text"><span class="lang-ja">APVアプローチ再考 — MM命題・Tax shieldの現在価値</span><span class="lang-en">APV Reconsidered — MM Propositions and Tax Shield PV</span></span>
+            </li>
+          </ol>
+        </div>
+
+        <div class="sidebar-card">
+          <div class="section-label">KEY REFERENCES</div>
+          <ul class="source-list" style="margin-top:10px;">
+            <li><a href="https://pages.stern.nyu.edu/~adamodar/New_Home_Page/datafile/vebitda.html" target="_blank" rel="noopener">Damodaran — EV/EBITDA by Sector</a></li>
+            <li><a href="http://aswathdamodaran.blogspot.com/" target="_blank" rel="noopener">Damodaran — Musings on Markets</a></li>
+            <li><a href="https://openlibrary.org/isbn/9781119610885" target="_blank" rel="noopener">McKinsey Valuation 7th ed.</a></li>
+            <li><a href="https://openlibrary.org/isbn/9780470650899" target="_blank" rel="noopener">Rosenbaum & Pearl — Investment Banking</a></li>
+          </ul>
+        </div>
+
+      </aside>
+
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <span>Valuation Theory Lab #004 | donato Valuation Notes | 2026-03-22</span>
+  <span><span class="lang-ja">本稿は理論解説目的です。実際の投資判断・M&amp;A意思決定には専門家への確認を要します。</span><span class="lang-en">For educational purposes only. Consult qualified professionals before making investment or M&amp;A decisions.</span></span>
+</footer>
+
+<script>
+  // Progress bar
+  window.addEventListener('scroll', function() {
+    var h = document.documentElement;
+    var pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    document.getElementById('progress-bar').style.width = Math.min(pct, 100) + '%';
+  });
+
+  // Reading time (500字/分)
+  (function() {
+    var text = document.querySelector('.article-body') ? document.querySelector('.article-body').textContent : '';
+    var chars = text.length;
+    var minutes = Math.ceil(chars / 500);
+    var label = '約' + minutes + '分';
+    var el1 = document.getElementById('reading-time-badge');
+    var el2 = document.getElementById('reading-time-badge2');
+    if (el1) el1.querySelector('.lang-ja').textContent = label;
+    if (el2) el2.querySelector('.lang-ja').textContent = label;
+  })();
+
+  // Lang toggle
+  let currentLang = localStorage.getItem('hp-lang') || 'ja';
+  let currentTheme = localStorage.getItem('hp-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('hp-lang', lang);
+    document.querySelectorAll('.lang-ja').forEach(el => el.style.display = lang === 'ja' ? 'inline' : 'none');
+    document.querySelectorAll('.lang-en').forEach(el => el.style.display = lang === 'en' ? 'inline' : 'none');
+    document.querySelectorAll('.art-lang-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+    document.documentElement.lang = lang === 'ja' ? 'ja' : 'en';
+  }
+  function toggleTheme() {
+    currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+    localStorage.setItem('hp-theme', currentTheme);
+    document.body.classList.toggle('dark', currentTheme === 'dark');
+    document.getElementById('theme-btn').textContent = currentTheme === 'light' ? '☀' : '☾';
+  }
+  document.addEventListener('DOMContentLoaded', () => {
+    setLang(currentLang);
+    if (currentTheme === 'dark') {
+      document.body.classList.add('dark');
+      document.getElementById('theme-btn').textContent = '☾';
+    }
+  });
+</script>
+
+</body>
+</html>

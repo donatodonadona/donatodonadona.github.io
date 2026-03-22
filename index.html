@@ -671,6 +671,15 @@
   let _lang = localStorage.getItem('hp-lang') || 'en';
   let _theme = localStorage.getItem('hp-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
 
+  function normalizeCardH3() {
+    var heads = document.querySelectorAll('#latest-articles-grid h3');
+    if (!heads.length) return;
+    heads.forEach(function(h) { h.style.height = 'auto'; });
+    var max = 0;
+    heads.forEach(function(h) { max = Math.max(max, h.offsetHeight); });
+    heads.forEach(function(h) { h.style.height = max + 'px'; });
+  }
+
   function setLang(lang) {
     _lang = lang;
     localStorage.setItem('hp-lang', lang);
@@ -678,6 +687,7 @@
     document.querySelectorAll('.lang-btn').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.lang === lang);
     });
+    normalizeCardH3();
   }
 
   function toggleTheme() {
@@ -709,7 +719,7 @@
           <span data-en>${esc(a.genre_en)} · ${esc(a.date)}</span>
           <span data-ja>${esc(a.genre_ja)} · ${esc(a.date)}</span>
         </div>
-        <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:600;line-height:1.3;margin-bottom:8px;color:var(--text);min-height:4.9rem;">
+        <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:600;line-height:1.3;margin-bottom:8px;color:var(--text);">
           <span data-en>${esc(a.title_en)}</span>
           <span data-ja>${esc(a.title_ja)}</span>
         </h3>

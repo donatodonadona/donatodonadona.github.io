@@ -549,7 +549,7 @@
   <span class="sbar-sep">|</span>
   <span class="sbar-text">
     <span class="lang-ja">Context Engineering · RCTFC · 文書設計 · Few-shot · 幻覚対策</span>
-    <span class="lang-en">Context Engineering · RCTFC · Document Selection · Few-shot · Hallucination Defense</span>
+    <span class="lang-en">Context Engineering · RCTFC · Document Selection · Few-shot · Hallucination Defence</span>
   </span>
   <span class="sbar-sep">|</span>
   <span id="reading-time-badge" class="sbar-badge">
@@ -601,7 +601,7 @@
           <span class="section-label"><span class="lang-ja">概要</span><span class="lang-en">Summary</span></span>
           <p class="exec-tldr">
             <span class="lang-ja">Context Engineering（CE）とは、AIに渡すコンテキストウィンドウ全体を戦略的に設計する技術だ。従来の「プロンプトエンジニアリング」がテキスト指示の書き方に偏っていたのに対し、CEは文書選択・few-shot例・情報の順序・不要情報の除外まで含む。本稿では、Finance実務に直結するCEの核心——RCTFCフレームワーク（Role / Context / Task / Format / Constraints）・few-shot設計・コンテキスト汚染対策・幻覚の管理——を具体的な実務テンプレートとともに示す。</span>
-            <span class="lang-en">Context Engineering (CE) is the strategic design of the entire context window presented to AI. Where traditional "prompt engineering" focused narrowly on instruction text, CE encompasses document selection, few-shot examples, information sequencing, and exclusion of irrelevant data. This article presents CE essentials directly applicable to Finance work: the RCTFC framework (Role / Context / Task / Format / Constraints), few-shot design, context pollution defense, and hallucination management — with concrete practical templates throughout.</span>
+            <span class="lang-en">Context Engineering (CE) is the strategic design of the entire context window presented to AI. Where traditional "prompt engineering" focused narrowly on instruction text, CE encompasses document selection, few-shot examples, information sequencing, and exclusion of irrelevant data. This article presents CE essentials directly applicable to Finance work: the RCTFC framework (Role / Context / Task / Format / Constraints), few-shot design, context pollution defence, and hallucination management — with concrete practical templates throughout.</span>
           </p>
         </div>
 
@@ -619,7 +619,7 @@
               <span class="issue-q">Q2</span>
               <span class="issue-text">
                 <span class="lang-ja"><strong>RCTFCの5原則は何か？</strong> — Role（役割設定）、Context（文脈提供）、Task（タスク明示）、Format（出力形式）、Constraints（制約・注意事項）の5要素が、高品質なコンテキスト設計の骨格だ。この上にfew-shot例とコンテキスト汚染対策を組み合わせる。</span>
-                <span class="lang-en"><strong>What are the 5 RCTFC principles?</strong> — Role, Context, Task, Format, Constraints. These five elements are the skeleton of high-quality context design, to which few-shot examples and context pollution defenses are added.</span>
+                <span class="lang-en"><strong>What are the 5 RCTFC principles?</strong> — Role, Context, Task, Format, Constraints. These five elements are the skeleton of high-quality context design, to which few-shot examples and context pollution defences are added.</span>
               </span>
             </li>
             <li class="issue-item">
@@ -659,7 +659,7 @@
         </div>
         <div class="fact-card">
           <div class="fact-value">5+</div>
-          <div class="fact-desc"><span class="lang-ja">RCTFC（5原則）＋ few-shot例＋文書選択＋コンテキスト汚染対策</span><span class="lang-en">RCTFC (5 principles) + few-shot examples + document selection + context pollution defense</span></div>
+          <div class="fact-desc"><span class="lang-ja">RCTFC（5原則）＋ few-shot例＋文書選択＋コンテキスト汚染対策</span><span class="lang-en">RCTFC (5 principles) + few-shot examples + document selection + context pollution defence</span></div>
         </div>
         <div class="fact-card">
           <div class="fact-value">×3</div>
@@ -679,7 +679,7 @@
 
       <p>
         <span class="lang-ja">Finance Professionalが日常業務でAIを使う場面——業界分析の依頼、DDチェックリストの作成、財務モデルのレビュー、契約書の論点抽出——において、出力品質のばらつきの原因はほぼ例外なくコンテキストの設計にある。同じClaude Opus 4.6でも、「この会社の財務状況を分析して」という指示と、文書・役割・タスク・形式・制約を揃えた構造化コンテキストでは、出力の質が劇的に異なる。</span>
-        <span class="lang-en">When Finance Professionals use AI in daily work — requesting industry analysis, building DD checklists, reviewing financial models, extracting contract issues — output quality variation almost always traces back to context design. The same Claude Opus 4.6 will produce dramatically different results given "analyze this company's financials" versus a structured context built on documents, role, task, format, and constraints.</span>
+        <span class="lang-en">When Finance Professionals use AI in daily work — requesting industry analysis, building DD checklists, reviewing financial models, extracting contract issues — output quality variation almost always traces back to context design. The same Claude Opus 4.6 will produce dramatically different results given "analyse this company's financials" versus a structured context built on documents, role, task, format, and constraints.</span>
       </p>
 
       <!-- ======================================================== -->
@@ -743,7 +743,7 @@
           <tbody>
             <tr>
               <td><span class="lang-ja">① 役割なし</span><span class="lang-en">① No role</span></td>
-              <td><span class="lang-ja">「この財務諸表を分析して」</span><span class="lang-en">"Analyze this financial statement."</span></td>
+              <td><span class="lang-ja">「この財務諸表を分析して」</span><span class="lang-en">"Analyse this financial statement."</span></td>
               <td><span class="lang-ja">一般読者向けの初歩的な解説が出てくる。専門家の視点が欠落する</span><span class="lang-en">Produces basic explanation for general readers. Expert perspective is absent.</span></td>
             </tr>
             <tr>
@@ -812,7 +812,7 @@
             <div class="principle-title"><span class="lang-ja">タスク明示 — 動詞を明確にする</span><span class="lang-en">Task — make the verb explicit</span></div>
             <p class="principle-desc">
               <span class="lang-ja">「分析して」は曖昧だ。「①リスク項目を列挙し②各リスクを高/中/低で評価し③上位3つについて対応策を提案せよ」と動詞と構造を明示すると、出力が構造化される。</span>
-              <span class="lang-en">"Analyze" is vague. "① List risk items, ② rate each High/Medium/Low, ③ propose mitigation for the top three" makes the verb and structure explicit, producing structured output.</span>
+              <span class="lang-en">"Analyse" is vague. "① List risk items, ② rate each High/Medium/Low, ③ propose mitigation for the top three" makes the verb and structure explicit, producing structured output.</span>
             </p>
           </div>
         </div>
@@ -869,17 +869,17 @@
 【Format】各項目を見出し付きで整理。①は表形式（列：企業名/事業内容/売上規模/上場区分）。
 
 【Constraints】推測で数値を作らないこと。不確かな情報は「推定」と明記すること。最新情報の欠落がある場合は指摘すること。</span>
-        <span class="lang-en">【Role】You are an M&A advisor specializing in industry research.
+        <span class="lang-en">【Role】You are an M&A advisor specialising in industry research.
 
 【Context】I am identifying acquisition target candidates in [target industry]. The buyer is a [industry] operating company seeking a strategic acquisition. Known information: [fill in what you know].
 
-【Task】Please organize the following:
+【Task】Please organise the following:
 ① Major players (public and private) with estimated revenue scale
 ② Value chain structure and M&A-attractive segments
 ③ Recent M&A and restructuring trends (last 3 years)
 ④ Industry-specific risks (regulation, technology change, customer concentration)
 
-【Format】Organize under headings. ① in table format (columns: company / business / revenue / listed or private).
+【Format】Organise under headings. ① in table format (columns: company / business / revenue / listed or private).
 
 【Constraints】Do not fabricate figures. Mark uncertain information as "estimated." Note where current information may be lacking.</span>
       </div>
@@ -902,7 +902,7 @@
 【Format】各項目を見出しで分け、③はリスク項目／指摘内容／深刻度（高/中/低）の表形式で。
 
 【Constraints】財務数値は与えられたデータのみを使用すること。データから読み取れない論点は「追加データ要」と記載すること。会計基準の違い（J-GAAP vs IFRS）は都度指摘すること。</span>
-        <span class="lang-en">【Role】You are a senior FAS analyst specializing in financial due diligence, expert in detecting distortions and risks in M&A financial statements.
+        <span class="lang-en">【Role】You are a senior FAS analyst specialising in financial due diligence, expert in detecting distortions and risks in M&A financial statements.
 
 【Context】Below is [X] years of financial data for [company name]. Transaction type is share transfer; industry is [industry].
 [paste financial data here]
@@ -959,7 +959,7 @@
       </div>
 
       <!-- ======================================================== -->
-      <h2><span class="lang-ja">4. CEの情報層 — few-shot設計とコンテキスト汚染対策</span><span class="lang-en">4. CE Information Layer — Few-Shot Design &amp; Context Pollution Defense</span></h2>
+      <h2><span class="lang-ja">4. CEの情報層 — few-shot設計とコンテキスト汚染対策</span><span class="lang-en">4. CE Information Layer — Few-Shot Design &amp; Context Pollution Defence</span></h2>
 
       <h3><span class="lang-ja">few-shot例の設計</span><span class="lang-en">Few-shot example design</span></h3>
 
@@ -998,7 +998,7 @@ The following is a reference example for the format, quality, and tone I require
 Please output in this format, at this level of detail, with this logical structure.</span>
       </div>
 
-      <h3><span class="lang-ja">コンテキスト汚染（Context Pollution）への対策</span><span class="lang-en">Context pollution defense</span></h3>
+      <h3><span class="lang-ja">コンテキスト汚染（Context Pollution）への対策</span><span class="lang-en">Context pollution defence</span></h3>
 
       <p>
         <span class="lang-ja">コンテキスト汚染とは、コンテキストウィンドウに不要・矛盾・古い情報が混入し、出力品質を劣化させる現象だ。Finance実務でよく起こるパターン：</span>
@@ -1024,7 +1024,7 @@ Please output in this format, at this level of detail, with this logical structu
 
       <p>
         <span class="lang-ja">複雑な分析タスクでは、AIに「まず整理してから結論を出す」よう促すChain-of-Thought（CoT）が有効だ。</span>
-        <span class="lang-en">For complex analytical tasks, Chain-of-Thought (CoT) — prompting AI to organize its thinking before reaching conclusions — is highly effective.</span>
+        <span class="lang-en">For complex analytical tasks, Chain-of-Thought (CoT) — prompting AI to organise its thinking before reaching conclusions — is highly effective.</span>
       </p>
 
       <h3><span class="lang-ja">基本のCoT指示</span><span class="lang-en">Basic CoT instruction</span></h3>
@@ -1040,7 +1040,7 @@ Please output in this format, at this level of detail, with this logical structu
 その上で最終回答を出力してください。」</span>
         <span class="lang-en">【Append to the RCTFC prompt above】
 
-"Before responding, internally organize the following (you don't need to output this):
+"Before responding, internally organise the following (you don't need to output this):
 1. What information is needed to complete the task
 2. Where the provided information is insufficient
 3. Each logical step leading to the conclusion
@@ -1179,7 +1179,7 @@ Then output your final answer."</span>
             <tr>
               <td><span class="lang-ja">プロンプトのテスト・高速フィードバック</span><span class="lang-en">Prompt testing, rapid feedback</span></td>
               <td><span class="lang-ja">Claude Haiku 4.5</span><span class="lang-en">Claude Haiku 4.5</span></td>
-              <td><span class="lang-ja">速度最優先。プロンプトのイテレーションに使い、最終出力はOpusで確定</span><span class="lang-en">Speed first. Use for prompt iteration; finalize output with Opus.</span></td>
+              <td><span class="lang-ja">速度最優先。プロンプトのイテレーションに使い、最終出力はOpusで確定</span><span class="lang-en">Speed first. Use for prompt iteration; finalise output with Opus.</span></td>
             </tr>
           </tbody>
         </table>
@@ -1190,7 +1190,7 @@ Then output your final answer."</span>
 
       <p>
         <span class="lang-ja">RCTFCフレームワーク・few-shot設計・コンテキスト汚染対策——これらを組み合わせたContext Engineeringは複雑に見えるが、慣れれば10〜15分でプロ品質のコンテキストが設計できるようになる。最初はテンプレートをコピーし、Context と Task を書き換えるだけでいい。それだけで「使えないAI」が「実務で頼れるAI」に変わる。</span>
-        <span class="lang-en">Combining the RCTFC framework, few-shot design, and context pollution defense — Context Engineering looks complex, but with practice you can design professional-quality context in 10–15 minutes. Start by copying a template and rewriting just the Context and Task fields. That alone transforms "AI that isn't useful" into "AI that's a reliable partner in practice."</span>
+        <span class="lang-en">Combining the RCTFC framework, few-shot design, and context pollution defence — Context Engineering looks complex, but with practice you can design professional-quality context in 10–15 minutes. Start by copying a template and rewriting just the Context and Task fields. That alone transforms "AI that isn't useful" into "AI that's a reliable partner in practice."</span>
       </p>
 
       <p>
@@ -1216,7 +1216,7 @@ Then output your final answer."</span>
           <li><a href="#"><span class="lang-ja">1. Context Engineeringとは何か</span><span class="lang-en">1. What Is Context Engineering?</span></a></li>
           <li><a href="#"><span class="lang-ja">2. RCTFCフレームワーク — 5原則</span><span class="lang-en">2. RCTFC Framework — Five Principles</span></a></li>
           <li><a href="#"><span class="lang-ja">3. 実務別コンテキストテンプレート</span><span class="lang-en">3. CE Templates by Task Type</span></a></li>
-          <li><a href="#"><span class="lang-ja">4. Few-shot設計とコンテキスト汚染対策</span><span class="lang-en">4. Few-Shot Design &amp; Context Pollution Defense</span></a></li>
+          <li><a href="#"><span class="lang-ja">4. Few-shot設計とコンテキスト汚染対策</span><span class="lang-en">4. Few-Shot Design &amp; Context Pollution Defence</span></a></li>
           <li><a href="#"><span class="lang-ja">5. Chain-of-Thought</span><span class="lang-en">5. Chain-of-Thought</span></a></li>
           <li><a href="#"><span class="lang-ja">6. 幻覚と信頼性管理</span><span class="lang-en">6. Hallucination Management</span></a></li>
           <li><a href="#"><span class="lang-ja">7. モデル選択との組み合わせ</span><span class="lang-en">7. Pairing with Model Selection</span></a></li>

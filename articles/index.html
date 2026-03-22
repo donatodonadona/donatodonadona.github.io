@@ -237,7 +237,8 @@
       border: 1px solid var(--border);
       padding: 1.5rem;
       text-decoration: none;
-      display: block;
+      display: flex;
+      flex-direction: column;
       transition: border-color 0.15s;
     }
     .article-card:hover { border-color: var(--accent); }
@@ -264,7 +265,8 @@
     .article-card .summary[data-en] { font-family: 'Inter', sans-serif; }
     .article-card .summary[data-ja] { font-family: 'Noto Serif JP', serif; }
     .article-card .meta {
-      margin-top: 1rem;
+      margin-top: auto;
+      padding-top: 1rem;
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.65rem;
       color: var(--text2);

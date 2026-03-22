@@ -248,12 +248,24 @@
       transition: border-color 0.15s;
     }
     .article-card:hover { border-color: var(--accent); }
+    .card-header-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 0.6rem;
+    }
+    .card-header-row .genre-badge.card-badge {
+      display: inline-block;
+      margin-bottom: 0;
+      flex-shrink: 0;
+    }
     .article-card .category {
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.65rem;
       letter-spacing: 0.1em;
       color: var(--gold);
-      margin-bottom: 0.6rem;
+      margin: 0;
     }
     .article-card h2 {
       font-family: 'Cormorant Garamond', Georgia, serif;
@@ -486,8 +498,10 @@
   <main>
     <div class="articles-grid" id="articles-grid">
       <a class="article-card" data-category="damodaran" href="./2026-03-22-damodaran-ai-scenarios.html">
-        <span class="genre-badge badge-damodaran card-badge">Damodaran Watch</span>
-        <p class="category"><span data-en>Damodaran Watch › #001 · AI Scenarios · 3P Test · Disruption Framework</span><span data-ja>Damodaran Watch › #001 · AIシナリオ · 3Pテスト · ディスラプション分析</span></p>
+        <div class="card-header-row">
+          <span class="genre-badge badge-damodaran card-badge">Damodaran Watch</span>
+          <p class="category"><span data-en>#001 · AI Scenarios · 3P Test · Disruption Framework</span><span data-ja>#001 · AIシナリオ · 3Pテスト · ディスラプション分析</span></p>
+        </div>
         <h2>
           <span data-en>AI Scenarios — From Doomsday Destruction to Do-Nothing Bots</span>
           <span data-ja>AIシナリオ — ドゥームズデイから無害なボットまで</span>
@@ -501,8 +515,10 @@
         </div>
       </a>
       <a class="article-card" data-category="ai" href="./2026-03-22-ai-prompt.html">
-        <span class="genre-badge badge-ai card-badge">AI</span>
-        <p class="category"><span data-en>AI Models &amp; Tools › #02 · Context Engineering · RCTFC · Few-shot · Hallucination</span><span data-ja>AI Models &amp; Tools › #02 · Context Engineering · RCTFC · Few-shot · 幻覚対策</span></p>
+        <div class="card-header-row">
+          <span class="genre-badge badge-ai card-badge">AI</span>
+          <p class="category"><span data-en>#02 · Context Engineering · RCTFC · Few-shot · Hallucination</span><span data-ja>#02 · Context Engineering · RCTFC · Few-shot · 幻覚対策</span></p>
+        </div>
         <h2>
           <span data-en>Context Engineering in Practice — Designing AI Output Quality for Finance Professionals</span>
           <span data-ja>Context Engineeringの実務 — Finance Professionalが知るべきAI出力品質の設計術</span>
@@ -516,8 +532,10 @@
         </div>
       </a>
       <a class="article-card" data-category="ma" href="./2026-03-22-ma-process.html">
-        <span class="genre-badge badge-ma card-badge"><span data-en>M&amp;A</span><span data-ja>M&amp;A</span></span>
-        <p class="category"><span data-en>M&amp;A × AI Practice › #001 · Sourcing · DD · Valuation · PMI</span><span data-ja>M&Aプロセス × AI実務 › #001 · ソーシング · DD · バリュエーション · PMI</span></p>
+        <div class="card-header-row">
+          <span class="genre-badge badge-ma card-badge"><span data-en>M&amp;A</span><span data-ja>M&amp;A</span></span>
+          <p class="category"><span data-en>#001 · Sourcing · DD · Valuation · PMI</span><span data-ja>#001 · ソーシング · DD · バリュエーション · PMI</span></p>
+        </div>
         <h2>
           <span data-en>M&amp;A Process × AI — Making AI Your Edge from DD to Closing</span>
           <span data-ja>M&Aプロセス × AI実務 — DDからクロージングまでAIを武器にする</span>
@@ -531,8 +549,10 @@
         </div>
       </a>
       <a class="article-card" data-category="law" href="./2026-03-22-securities-law.html">
-        <span class="genre-badge badge-law card-badge"><span data-en>Corp. Law</span><span data-ja>企業法・金商法</span></span>
-        <p class="category"><span data-en>Corp. Law &amp; FIEA › Disclosure · Insider Trading · AI Workflow</span><span data-ja>企業法・金商法 › 開示規制 · インサイダー取引 · AI実務活用</span></p>
+        <div class="card-header-row">
+          <span class="genre-badge badge-law card-badge"><span data-en>Corp. Law</span><span data-ja>企業法・金商法</span></span>
+          <p class="category"><span data-en>Disclosure · Insider Trading · AI Workflow</span><span data-ja>開示規制 · インサイダー取引 · AI実務活用</span></p>
+        </div>
         <h2>
           <span data-en>Corporate Law &amp; FIEA × AI — Decoding Disclosure Rules and Insider Trading with AI</span>
           <span data-ja>企業法・金商法 × AI実務 — 開示規制・インサイダー取引をAIで読み解く</span>
@@ -546,8 +566,10 @@
         </div>
       </a>
       <a class="article-card" data-category="claude-code" href="./2026-03-22-claude-code-001.html">
-        <span class="genre-badge badge-claude-code card-badge">Claude Code</span>
-        <p class="category"><span data-en>Claude Code Guide › #001 · Introduction</span><span data-ja>Claude Code 実践ガイド › #001 · 入門</span></p>
+        <div class="card-header-row">
+          <span class="genre-badge badge-claude-code card-badge">Claude Code</span>
+          <p class="category"><span data-en>#001 · Introduction</span><span data-ja>#001 · 入門</span></p>
+        </div>
         <h2>
           <span data-en>The Day You Graduate From the Browser — Claude Code Introduction</span>
           <span data-ja>ブラウザから卒業する日 — Claude Code 入門</span>
@@ -561,8 +583,10 @@
         </div>
       </a>
       <a class="article-card" data-category="tax" href="./2026-03-22-pillar2.html">
-        <span class="genre-badge badge-tax card-badge"><span data-en>Tax</span><span data-ja>税法</span></span>
-        <p class="category"><span data-en>Tax › Pillar 2 Global Minimum Tax</span><span data-ja>Tax › Pillar 2グローバルミニマム税</span></p>
+        <div class="card-header-row">
+          <span class="genre-badge badge-tax card-badge"><span data-en>Tax</span><span data-ja>税法</span></span>
+          <p class="category"><span data-en>Pillar 2 Global Minimum Tax</span><span data-ja>Pillar 2グローバルミニマム税</span></p>
+        </div>
         <h2>
           <span data-en>Pillar 2 Global Minimum Tax — Japan Implementation Checklist 2026</span>
           <span data-ja>Pillar 2グローバルミニマム税 — 日本企業の実務対応チェックリスト2026</span>
@@ -576,8 +600,10 @@
         </div>
       </a>
       <a class="article-card" data-category="valuation" href="./2026-03-22-multiples-comparability.html">
-        <span class="genre-badge badge-valuation card-badge">Valuation</span>
-        <p class="category"><span data-en>Valuation Theory Lab › #006 · Multiples Comparability</span><span data-ja>Valuation Theory Lab › #006 · マルチプルの比較可能性</span></p>
+        <div class="card-header-row">
+          <span class="genre-badge badge-valuation card-badge">Valuation</span>
+          <p class="category"><span data-en>#006 · Multiples Comparability</span><span data-ja>#006 · マルチプルの比較可能性</span></p>
+        </div>
         <h2>
           <span data-en>Multiples Comparability — Adjusting for Accounting Standards to Achieve True Apple-to-Apple Analysis</span>
           <span data-ja>マルチプルの比較可能性 — 会計基準の差異を調整して本当のApple to Appleを作る</span>
@@ -591,8 +617,10 @@
         </div>
       </a>
       <a class="article-card" data-category="valuation" href="./2026-03-22-dloc-dlom.html">
-        <span class="genre-badge badge-valuation card-badge">Valuation</span>
-        <p class="category"><span data-en>Valuation Theory Lab › #005 · DLOC / DLOM</span><span data-ja>Valuation Theory Lab › #005 · DLOC / DLOM</span></p>
+        <div class="card-header-row">
+          <span class="genre-badge badge-valuation card-badge">Valuation</span>
+          <p class="category"><span data-en>#005 · DLOC / DLOM</span><span data-ja>#005 · DLOC / DLOM</span></p>
+        </div>
         <h2>
           <span data-en>DLOC and DLOM: Theory and Practice — Pricing Control and Liquidity</span>
           <span data-ja>DLOC・DLOMの理論と実務 — 支配権と流動性の価格をどう計測するか</span>
@@ -606,8 +634,10 @@
         </div>
       </a>
       <a class="article-card" data-category="valuation" href="./2026-03-22-cyclical.html">
-        <span class="genre-badge badge-valuation card-badge">Valuation</span>
-        <p class="category"><span data-en>Valuation Theory Lab › #004 · Cyclical Company Valuation</span><span data-ja>Valuation Theory Lab › #004 · シクリカル企業バリュエーション</span></p>
+        <div class="card-header-row">
+          <span class="genre-badge badge-valuation card-badge">Valuation</span>
+          <p class="category"><span data-en>#004 · Cyclical Company Valuation</span><span data-ja>#004 · シクリカル企業バリュエーション</span></p>
+        </div>
         <h2>
           <span data-en>Why Cyclical Companies' LTM Is a Trap — Mid-cycle Normalisation and Normalised Earnings</span>
           <span data-ja>シクリカル企業のLTMが罠である理由 — Mid-cycle正規化とNormalised Earnings</span>
@@ -621,8 +651,10 @@
         </div>
       </a>
       <a class="article-card" data-category="career" href="./2026-03-21-career.html">
-        <span class="genre-badge badge-career card-badge">Career</span>
-        <p class="category"><span data-en>Career › Finance Career in the AI Era</span><span data-ja>Career › AIエラのFinance人材戦略</span></p>
+        <div class="card-header-row">
+          <span class="genre-badge badge-career card-badge">Career</span>
+          <p class="category"><span data-en>Finance Career in the AI Era</span><span data-ja>AIエラのFinance人材戦略</span></p>
+        </div>
         <h2>
           <span data-en>Finance Career Strategy in the AI Era — Where Roles Survive and Where They Don't</span>
           <span data-ja>AIエラのFinanceキャリア戦略 — 生き残る人材と消える仕事の分岐点</span>
@@ -636,8 +668,10 @@
         </div>
       </a>
       <a class="article-card" data-category="accounting" href="./2026-03-21-ifrs18.html">
-        <span class="genre-badge badge-accounting card-badge"><span data-en>Accounting</span><span data-ja>会計</span></span>
-        <p class="category"><span data-en>Accounting Standards › IFRS 18</span><span data-ja>会計基準 › IFRS 18</span></p>
+        <div class="card-header-row">
+          <span class="genre-badge badge-accounting card-badge"><span data-en>Accounting</span><span data-ja>会計</span></span>
+          <p class="category"><span data-en>IFRS 18</span><span data-ja>IFRS 18</span></p>
+        </div>
         <h2>
           <span data-en>IFRS 18 Explained — The Three-Category P&amp;L and Mandatory MPM Disclosures</span>
           <span data-ja>IFRS 18 完全解説 — 損益計算書の3区分化と経営者業績指標の開示義務</span>
@@ -651,8 +685,10 @@
         </div>
       </a>
       <a class="article-card" data-category="valuation" href="./2026-03-21-beta-hamada.html">
-        <span class="genre-badge badge-valuation card-badge">Valuation</span>
-        <p class="category"><span data-en>Valuation Theory Lab › #003 · Beta Transformation</span><span data-ja>Valuation Theory Lab › #003 · Beta変換理論</span></p>
+        <div class="card-header-row">
+          <span class="genre-badge badge-valuation card-badge">Valuation</span>
+          <p class="category"><span data-en>#003 · Beta Transformation</span><span data-ja>#003 · Beta変換理論</span></p>
+        </div>
         <h2>
           <span data-en>Before You Trust That Beta — Hamada Transform Assumptions and Compounding Error</span>
           <span data-ja>Betaを信じる前に考えること — Hamada変換の仮定と誤差の蓄積</span>
@@ -666,8 +702,10 @@
         </div>
       </a>
       <a class="article-card" data-category="valuation" href="./2026-03-21-wacc.html">
-        <span class="genre-badge badge-valuation card-badge">Valuation</span>
-        <p class="category"><span data-en>Valuation Theory Lab › #002 · Cost of Capital</span><span data-ja>Valuation Theory Lab › #002 · 資本コスト</span></p>
+        <div class="card-header-row">
+          <span class="genre-badge badge-valuation card-badge">Valuation</span>
+          <p class="category"><span data-en>#002 · Cost of Capital</span><span data-ja>#002 · 資本コスト</span></p>
+        </div>
         <h2>
           <span data-en>Can WACC Really Be Calculated? — CAPM Limitations and Alternatives</span>
           <span data-ja>WACCは本当に計算できるのか — CAPM限界論と代替アプローチ</span>
@@ -681,8 +719,10 @@
         </div>
       </a>
       <a class="article-card" data-category="valuation" href="./2026-03-20-valuation.html">
-        <span class="genre-badge badge-valuation card-badge">Valuation</span>
-        <p class="category">Valuation Theory Lab › #001 · DCF</p>
+        <div class="card-header-row">
+          <span class="genre-badge badge-valuation card-badge">Valuation</span>
+          <p class="category">#001 · DCF</p>
+        </div>
         <h2>
           <span data-en>Why Terminal Value Accounts for 70–80% of DCF</span>
           <span data-ja>Terminal ValueはなぜDCFの70-80%を占めるのか</span>
@@ -696,8 +736,10 @@
         </div>
       </a>
       <a class="article-card" data-category="ai" href="./2026-03-20-ai.html">
-        <span class="genre-badge badge-ai card-badge">AI</span>
-        <p class="category">Finance Professional × AI › AI Models &amp; Tools</p>
+        <div class="card-header-row">
+          <span class="genre-badge badge-ai card-badge">AI</span>
+          <p class="category">AI Models &amp; Tools</p>
+        </div>
         <h2>
           <span data-en>AI Model Front Report — March 2026</span>
           <span data-ja>AIモデル戦線レポート — 2026年3月</span>

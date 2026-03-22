@@ -320,14 +320,15 @@
       flex-shrink: 0;
     }
     .genre-badge.card-badge { display: block; width: fit-content; margin-bottom: 0.6rem; }
-    .badge-valuation   { background: var(--gold); color: #0A0B10; }
-    .badge-ai          { background: var(--accent); color: #fff; }
-    .badge-claude-code { background: #7B68EE; color: #fff; }
-    .badge-tax         { background: #27AE60; color: #fff; }
-    .badge-accounting  { background: #0984E3; color: #fff; }
-    .badge-career      { background: #E17055; color: #fff; }
-    .badge-law         { background: #636E72; color: #fff; }
-    .badge-ma          { background: #4A5568; color: #fff; border: 1px solid var(--border); }
+    /* Brand-compliant badges: blue family (#1A6EB0→#2E88CA→#0F4F80→#0A3560) + gold + grayscale only */
+    .badge-valuation   { background: var(--gold);   color: #0A0B10; }   /* Chrome Yellow — premium/finance */
+    .badge-ai          { background: var(--accent);  color: #fff; }      /* Deep Nordic — tech */
+    .badge-claude-code { background: #2E88CA;        color: #0A0B10; }   /* Light Nordic */
+    .badge-accounting  { background: #0F4F80;        color: #E4E2DC; }   /* Dark Nordic */
+    .badge-tax         { background: #0A3560;        color: #E4E2DC; border: 1px solid #1A6EB0; }  /* Deeper Nordic */
+    .badge-career      { background: #7A8099;        color: #0A0B10; }   /* Muted gray */
+    .badge-law         { background: #3D4260;        color: #E4E2DC; }   /* Dim gray */
+    .badge-ma          { background: #21253A;        color: #7A8099; border: 1px solid var(--border); } /* Border gray */
 
     @media print { body { background: white; color: black; } }
   </style>

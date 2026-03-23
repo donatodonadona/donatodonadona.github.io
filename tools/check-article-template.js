@@ -46,6 +46,18 @@ process.stdin.on('end', () => {
       pattern: /class="exec-tldr"/,
       label: '<p class="exec-tldr"> がない',
     },
+    {
+      pattern: /id="reading-time-badge"/,
+      label: 'id="reading-time-badge" がない（sbar-badge にIDが必要。template.html を参照）',
+    },
+    {
+      pattern: /id="reading-time-badge2"/,
+      label: 'id="reading-time-badge2" がない（sbar-badge にIDが必要。template.html を参照）',
+    },
+    {
+      pattern: /getElementById\(.*reading-time-badge/,
+      label: '読了時間JS（getElementById("reading-time-badge")）がない（CLAUDE.md を参照）',
+    },
   ];
 
   const forbidden = [

@@ -1,10 +1,15 @@
 #!/usr/bin/env node
 /**
- * PreToolUse hook — Write ツール実行前に articles/*.html の構造を検証する。
+ * PreToolUse hook — Write/Edit ツール実行前に articles/*.html の構造を検証する。
  * テンプレート必須要素が揃っていない場合は exit(2) でブロックする。
  *
- * 登録: settings.json の PreToolUse → matcher: "Write"
+ * 登録: settings.json の PreToolUse → matcher: "Edit|Write"
+ *
+ * Write: tool_input.content をそのままチェック
+ * Edit:  現在のファイルに old_string→new_string を適用した結果をチェック
  */
+
+const fs = require('fs');
 
 let input = '';
 process.stdin.on('data', chunk => { input += chunk; });
@@ -13,7 +18,7 @@ process.stdin.on('end', () => {
   try { data = JSON.parse(input); } catch { process.exit(0); }
 
   const toolName = data?.tool_name || data?.tool || '';
-  if (toolName !== 'Write') process.exit(0);
+  if (toolName !== 'Write' && toolName !== 'Edit') process.exit(0);
 
   const filePath = (data?.tool_input?.file_path || data?.file_path || '').replace(/\\/g, '/');
 
@@ -23,7 +28,22 @@ process.stdin.on('end', () => {
   if (filePath.endsWith('index.html')) process.exit(0);
   if (filePath.endsWith('template.html')) process.exit(0);
 
-  const content = data?.tool_input?.content || data?.content || '';
+  let content;
+
+  if (toolName === 'Write') {
+    content = data?.tool_input?.content || data?.content || '';
+  } else {
+    // Edit: ファイルを読んで old_string→new_string を適用
+    const nativePath = filePath.replace(/\//g, process.platform === 'win32' ? '\\' : '/');
+    try {
+      const original = fs.readFileSync(nativePath, 'utf8');
+      const oldStr = data?.tool_input?.old_string || '';
+      const newStr = data?.tool_input?.new_string || '';
+      content = original.replace(oldStr, newStr);
+    } catch {
+      process.exit(0); // ファイル読み取り失敗は通過（新規ファイルなど）
+    }
+  }
 
   const checks = [
     {

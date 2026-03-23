@@ -602,10 +602,7 @@
       <span class="lang-en">Published: 2026-03-22</span>
     </span>
     <span class="sbar-sep">|</span>
-    <span class="sbar-badge">
-      <span class="lang-ja">約15分</span>
-      <span class="lang-en">~15 min read</span>
-    </span>
+    <span class="sbar-badge" id="reading-time-badge"><span class="lang-ja">計算中</span><span class="lang-en">...</span></span>
   </div>
 
   <main style="padding: 0 0 3em;">
@@ -622,10 +619,7 @@
                 <span class="lang-ja">Claude Code 実践ガイド · #002</span>
                 <span class="lang-en">Claude Code Guide · #002</span>
               </div>
-              <span class="sbar-badge">
-                <span class="lang-ja">約15分</span>
-                <span class="lang-en">~15 min read</span>
-              </span>
+              <span class="sbar-badge" id="reading-time-badge2"><span class="lang-ja">計算中</span><span class="lang-en">...</span></span>
             </div>
             <h1 class="article-headline">
               <span class="lang-ja">生産性10倍の使い方 — Claude Code General Tips</span>
@@ -1167,6 +1161,19 @@ HTMLレポートとして output/report_2026_03.html に保存。
       document.getElementById('progress-bar').style.width = Math.min(pct, 100) + '%';
     });
 
+
+    // Reading time (500字/分)
+    (function() {
+      var text = document.querySelector('.article-body') ? document.querySelector('.article-body').textContent : '';
+      var chars = text.length;
+      var minutes = Math.ceil(chars / 500);
+      var el1 = document.getElementById('reading-time-badge');
+      var el2 = document.getElementById('reading-time-badge2');
+      if (el1) el1.querySelector('.lang-ja').textContent = '約' + minutes + '分';
+      if (el2) el2.querySelector('.lang-ja').textContent = '約' + minutes + '分';
+      if (el1) el1.querySelector('.lang-en').textContent = '~' + minutes + ' min read';
+      if (el2) el2.querySelector('.lang-en').textContent = '~' + minutes + ' min read';
+    })();
     let currentLang = localStorage.getItem('hp-lang') || 'ja';
     let currentTheme = localStorage.getItem('hp-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
     function setLang(lang) {

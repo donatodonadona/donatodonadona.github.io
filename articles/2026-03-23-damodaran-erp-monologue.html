@@ -597,7 +597,7 @@
             <span class="lang-en">The Price of Risk: An Equity Risk Premium Monologue</span>
           </h1>
           <p class="article-standfirst">
-            <span class="lang-ja">歴史的ERPは5.5%〜14.5%という幅の広い数字を出すが、その数字は危機時に逆向きに動き、使い物にならない。Damodaranは現在の株価とキャッシュフロー予測から逆算するインプライドERPこそが、市場評価の唯一の正確な物差しであると論じる。</span>
+            <span class="lang-ja">歴史的ERPは5.5%〜14.5%という幅の広い数字を出すが、その数字は危機時に逆向きに動き、アナリストのバイアスにもさらされており、使い物にならない。Damodaranは現在の株価とキャッシュフロー予測から逆算するインプライドERPこそが、市場評価の唯一の正確な物差しであると論じる。</span>
             <span class="lang-en">Historical ERP estimates range from 5.5% to 14.5% — but they move in the wrong direction during crises and are plagued by analyst bias. Damodaran argues that the implied ERP, backed out from current prices and projected cash flows, is the only accurate measure of how markets are pricing risk.</span>
           </p>
           <div style="display:flex; gap:16px; align-items:center; border-top:1px solid var(--border-light); border-bottom:1px solid var(--border-light); padding:10px 0;">
@@ -649,8 +649,8 @@
             <div class="section-label"><span class="lang-ja">Damodaran Watchからの含意</span><span class="lang-en">Implications — Damodaran Watch</span></div>
             <ul class="implications-list">
               <li class="implication-item">
-                <span class="lang-ja"><strong>固定ERPを使う評価は市場評価を混入させる</strong> — 「ERP 5.5%」を固定値で使い続けると、個別企業の価値ではなく市場全体の割高・割安を評価していることになる</span>
-                <span class="lang-en"><strong>Static ERP contaminates company valuation with market valuation</strong> — using a fixed 5.5% ERP embeds market-level over/undervaluation into what should be a company-specific analysis</span>
+                <span class="lang-ja"><strong>古いERPを使うと割引率が歪み、企業固有の割安さを見誤る</strong> — 「ERP 5.5%」を固定値で使い続けると、割引率に過去の市場リスク認識が埋め込まれ、企業が本当に割安なのかERPが古いだけなのかを区別できなくなる</span>
+                <span class="lang-en"><strong>A stale ERP distorts the discount rate, masking genuine company value</strong> — using a fixed 5.5% ERP embeds historical market risk pricing into the discount rate, making it impossible to tell whether a company looks cheap because it genuinely is, or simply because the ERP is outdated</span>
               </li>
               <li class="implication-item">
                 <span class="lang-ja"><strong>インプライドERPは危機時の「市場の体温計」になる</strong> — ERPが急上昇しないということは、市場が当該リスクを局所的と判断していることを示す</span>
@@ -677,7 +677,7 @@
         </p>
 
         <p>
-          <span class="lang-ja">ERPに対するDamodaranの懐疑心は長年にわたって形成されてきた。なぜなら、実務家も学者も、この数字を驚くほど無頓着に扱ってきたからである。</span>
+          <span class="lang-ja">ERPに対するDamodaranの懐疑心は長年にわたって形成されてきた。なぜなら、実務家も学者も、この重要な数字を驚くほど無頓着に扱ってきたからである。</span>
           <span class="lang-en">His scepticism toward ERP estimates has built over decades, born from watching both practitioners and academics treat this critical number with surprising carelessness.</span>
         </p>
 
@@ -712,7 +712,7 @@
         </h2>
 
         <p>
-          <span class="lang-ja">Damodaranが提唱するのは、現在の株価とアナリストのキャッシュフロー予測から期待リターンを逆算し、そこからリスクフリーレートを引く「インプライドERP」だ。この手法は株式市場全体を一種のDCFモデルとして扱い、現在価格が成立するためにはどのような期待リターンが必要かを解く。</span>
+          <span class="lang-ja">Damodaranが提唱するのは、現在の株価とアナリストのキャッシュフロー予測から期待リターンを逆算し、そこからリスクフリーレートを引く「インプライドERP」だ。この手法は株式市場全体を一種のDCFモデルとして扱い、現在価格が成立するためにはどのような期待リターンが必要かを解く。フォワードルッキングで、モデルに依存せず、現在の市場センチメントを直接反映する。</span>
           <span class="lang-en">Damodaran's preferred approach treats the entire equity market as a DCF model and solves for the expected return that justifies current prices. Subtracting the risk-free rate yields the implied ERP. This is forward-looking by construction, model-agnostic, and directly reflects current market sentiment.</span>
         </p>
 
@@ -806,7 +806,7 @@
         </h2>
 
         <div class="pull-quote">
-          <p><span class="lang-ja">「エクイティ・リスク・プレミアムは動的に変動する数字である。古いプレミアムを使い続けることは、市場評価と個別企業評価を混同させる。」</span><span class="lang-en">"The equity risk premium is a dynamic and shifting number. Using outdated premiums conflates market valuation with company valuation."</span></p>
+          <p><span class="lang-ja">「エクイティ・リスク・プレミアムは動的に変動する数字であり、適切な推定値はこのボラティリティを反映していなければならない。」</span><span class="lang-en">"The equity risk premium is a dynamic and shifting number, and a good estimate of the premium should reflect this volatility."</span></p>
           <footer>Aswath Damodaran, March 2026</footer>
         </div>
 
@@ -967,11 +967,12 @@
     var text = document.querySelector('.article-body') ? document.querySelector('.article-body').textContent : '';
     var chars = text.length;
     var minutes = Math.ceil(chars / 500);
-    var label = '約' + minutes + '分';
     var el1 = document.getElementById('reading-time-badge');
     var el2 = document.getElementById('reading-time-badge2');
-    if (el1) el1.querySelector('.lang-ja').textContent = label;
-    if (el2) el2.querySelector('.lang-ja').textContent = label;
+    if (el1) el1.querySelector('.lang-ja').textContent = '約' + minutes + '分';
+    if (el2) el2.querySelector('.lang-ja').textContent = '約' + minutes + '分';
+    if (el1) el1.querySelector('.lang-en').textContent = '~' + minutes + ' min read';
+    if (el2) el2.querySelector('.lang-en').textContent = '~' + minutes + ' min read';
   })();
 
   // Lang toggle

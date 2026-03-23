@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Claude Codeを「毎日頼れるツール」に育てるための実践ガイド。プロンプト設計の4原則・コンテキストウィンドウ管理・CLAUDE.mdの本格構築・よくある失敗の回避策をFinance Professionalの視点で解説。">
+  <title>Claude Code #002 — 生産性10倍の使い方 | donato Finance Professional × AI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+JP:wght@300;400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../brand.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:           #F8F7F4;
+      --bg-code:      #EEECEA;
+      --bg-quote:     #EEECEA;
+      --bg-highlight: #EBF3FB;
+      --bg-subtle:    #F0EFEB;
+      --bg-card:      #F0EFEB;
+      --bg-header:    #F8F7F4;
+      --text-primary: #111320;
+      --text-body:    #2A2C3E;
+      --text-muted:   #565C70;
+      --text-light:   #888EA0;
+      --accent:       #1A6EB0;
+      --accent-warm:  #D4A010;
+      --border:       #D4D2CC;
+      --border-quote: #B8B6B0;
+      --border-light: #D4D2CC;
+      --tag-bg:       #E4EFF8;
+      --tag-text:     #1A6EB0;
+      --table-stripe: #F0EFEB;
+    }
+
+    #progress-bar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      width: 0%;
+      background: var(--accent);
+      z-index: 300;
+      transition: width 0.1s linear;
+    }
+
+    body {
+      font-family: 'Noto Serif JP', Georgia, serif;
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--text-primary);
+      background: var(--bg);
+    }
+
+    /* ===== SITE HEADER ===== */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg-header);
+      border-bottom: 2px solid var(--accent);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .site-header-left { display: flex; align-items: center; gap: 12px; }
+    .wordmark {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: lowercase;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+    .wordmark span { color: var(--accent-warm); }
+    .header-sep { color: var(--border-quote); font-size: 13px; }
+    .header-media {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+    }
+    .site-header-right { display: flex; align-items: center; gap: 12px; }
+    .header-back-link {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .header-back-link:hover { color: var(--accent); }
+    .lang-toggle-bar {
+      display: flex;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .art-lang-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      padding: 3px 10px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .art-lang-btn.active { background: #F5C800; color: #111320; }
+    #theme-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      padding: 3px 9px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.15s;
+    }
+    #theme-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .header-date {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-light);
+      letter-spacing: 0.08em;
+    }
+
+    /* ===== STICKY INFO BAR ===== */
+    #sticky-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg-subtle);
+      border-bottom: 1px solid var(--border-light);
+      padding: 7px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .sbar-cat {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+    }
+    .sbar-sep { color: var(--border-quote); font-size: 11px; }
+    .sbar-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+    .sbar-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      padding: 2px 8px;
+    }
+
+    /* ===== LAYOUT ===== */
+    .article-container { max-width: 1240px; margin: 0 auto; padding: 0 20px; }
+    .article-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 24px;
+    }
+    .article-body { grid-column: 2 / 10; max-width: 68ch; }
+    .article-sidebar {
+      grid-column: 10 / 13;
+      position: sticky;
+      top: 44px;
+      align-self: start;
+      max-height: calc(100vh - 56px);
+      overflow-y: auto;
+    }
+    .article-sidebar::-webkit-scrollbar { width: 4px; }
+    .article-sidebar::-webkit-scrollbar-track { background: transparent; }
+    .article-sidebar::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 2px; }
+
+    /* ===== TYPOGRAPHY ===== */
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+    }
+    .article-headline {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(2rem, 4vw, 2.6rem);
+      font-weight: 600;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+    .article-standfirst {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 1.1rem;
+      line-height: 1.55;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      font-weight: 400;
+    }
+    .byline {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    h2 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.45rem;
+      font-weight: 600;
+      line-height: 1.25;
+      color: var(--text-primary);
+      margin: 2em 0 0.75em;
+      border-top: 1px solid var(--border);
+      padding-top: 1em;
+    }
+    h3 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin: 1.75em 0 0.5em;
+    }
+    .article-body p { margin-bottom: 1.4em; font-size: 0.97rem; line-height: 1.8; }
+    .article-body ul, .article-body ol { margin: 0 0 1.4em 1.4em; }
+    .article-body li { margin-bottom: 0.4em; font-size: 0.95rem; line-height: 1.7; }
+    strong { color: var(--text-primary); font-weight: 600; }
+
+    /* ===== CODE BLOCK ===== */
+    .code-block {
+      background: var(--bg-code);
+      border: 1px solid var(--border-light);
+      border-left: 3px solid var(--accent);
+      padding: 16px 20px;
+      margin: 1.5em 0;
+      overflow-x: auto;
+    }
+    .code-block pre {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.6;
+      color: var(--text-body);
+      white-space: pre;
+    }
+    .code-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      color: var(--text-light);
+      margin-bottom: 8px;
+    }
+
+    /* ===== DATA TABLE ===== */
+    .data-table-wrap { overflow-x: auto; margin: 1.5em 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      background: var(--bg-subtle);
+      padding: 8px 12px;
+      text-align: left;
+      border-bottom: 2px solid var(--border);
+    }
+    td {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border-light);
+      color: var(--text-body);
+      font-family: 'Inter', sans-serif;
+    }
+    tr:nth-child(even) td { background: var(--table-stripe); }
+    td.num { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; }
+
+    /* ===== EXEC SUMMARY ===== */
+    .exec-summary {
+      background: var(--bg-highlight);
+      border: 1px solid var(--border-light);
+      border-left: 4px solid var(--accent);
+      padding: 24px;
+      margin: 0 0 2.5em;
+    }
+    .exec-block { margin-bottom: 20px; }
+    .exec-block:last-child { margin-bottom: 0; }
+    .exec-block + .exec-block { padding-top: 18px; border-top: 1px solid var(--border-light); }
+    .exec-tldr {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.02rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      line-height: 1.55;
+      margin-top: 8px;
+    }
+    .issues-list, .implications-list {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .issue-item { display: flex; gap: 10px; align-items: baseline; }
+    .issue-q {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--accent);
+      flex-shrink: 0;
+      min-width: 20px;
+    }
+    .issue-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: var(--text-body);
+      line-height: 1.55;
+    }
+    .implication-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: var(--text-body);
+      line-height: 1.55;
+      padding-left: 14px;
+      border-left: 2px solid var(--accent);
+    }
+
+    /* ===== PULL QUOTE ===== */
+    .pull-quote {
+      border-left: 4px solid var(--accent);
+      margin: 2em 0;
+      padding: 1em 20px;
+      background: var(--bg-card);
+    }
+    .pull-quote p {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.2rem;
+      font-style: italic;
+      color: var(--text-primary);
+      line-height: 1.5;
+      margin-bottom: 6px !important;
+    }
+    .pull-quote footer {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* ===== FIN PRO CALLOUT ===== */
+    .finpro-callout {
+      background: #FDF8EC;
+      border: 1px solid #E8D88A;
+      border-left: 4px solid var(--accent-warm);
+      padding: 20px 24px;
+      margin: 2em 0;
+    }
+    .finpro-callout-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      color: #8A6A00;
+      margin-bottom: 8px;
+    }
+    .finpro-callout p {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      line-height: 1.65;
+      color: #2A2000;
+      margin-bottom: 0.6em !important;
+    }
+    .finpro-callout p:last-child { margin-bottom: 0 !important; }
+    .finpro-callout ul { margin: 0.4em 0 0 1.2em; }
+    .finpro-callout li {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.88rem;
+      color: #2A2000;
+      margin-bottom: 0.3em;
+    }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .keyfacts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+    .fact-card {
+      background: var(--bg-highlight);
+      padding: 10px 8px;
+      border-radius: 2px;
+    }
+    .fact-card.highlight {
+      background: #FDF8EC;
+      border: 1px solid #E8D88A;
+    }
+    .fact-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--accent);
+      line-height: 1.2;
+    }
+    .fact-card.highlight .fact-value { color: #8A6A00; }
+    .fact-desc {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.64rem;
+      color: var(--text-muted);
+      margin-top: 3px;
+      line-height: 1.35;
+    }
+    .fact-card.highlight .fact-desc { color: #7A6020; }
+    .highlights-list { list-style: none; padding: 0; margin-top: 12px; }
+    .highlight-item {
+      padding: 9px 0;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      gap: 10px;
+      align-items: baseline;
+    }
+    .highlight-item:last-child { border-bottom: none; }
+    .hl-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--accent);
+      flex-shrink: 0;
+      min-width: 18px;
+    }
+    .hl-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.76rem;
+      color: var(--text-body);
+      line-height: 1.45;
+    }
+
+    /* ===== SERIES NAV ===== */
+    .series-nav {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .series-nav-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+    .series-item {
+      display: flex;
+      gap: 8px;
+      padding: 6px 0;
+      border-bottom: 1px solid var(--border-light);
+      align-items: baseline;
+    }
+    .series-item:last-child { border-bottom: none; }
+    .series-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+    .series-item-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.75rem;
+      color: var(--text-body);
+      line-height: 1.4;
+    }
+    .series-item-text.current { font-weight: 600; color: var(--text-primary); }
+    .series-item-text.upcoming { color: var(--text-light); }
+    .series-item-text a { color: var(--accent); text-decoration: none; }
+    .series-item-text a:hover { text-decoration: underline; }
+
+    /* ===== SOURCE LIST ===== */
+    .source-list { list-style: none; padding: 0; }
+    .source-list li { margin-bottom: 6px; }
+    .source-list a {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--accent);
+      text-decoration: none;
+      line-height: 1.5;
+    }
+    .source-list a:hover { text-decoration: underline; }
+    .source-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      margin-left: 4px;
+    }
+
+    /* ===== LANG TOGGLE ===== */
+    .lang-en { display: none; }
+
+    /* ===== FOOTER ===== */
+    .site-footer {
+      border-top: 1px solid var(--border-light);
+      margin-top: 4em;
+      padding: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* ===== PRINT ===== */
+    @media print {
+      body { background: white; font-size: 11pt; }
+      .site-header, #sticky-bar { display: none; }
+      .article-sidebar { position: static; max-height: none; overflow: visible; }
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+    @page { size: A4; margin: 20mm 15mm; }
+
+    /* ===== MOBILE ===== */
+    @media (max-width: 900px) {
+      .article-body { grid-column: 1 / -1; }
+      .article-sidebar { position: static; max-height: none; overflow: visible; grid-column: 1 / -1; }
+      .article-grid { display: block; }
+      #sticky-bar { flex-wrap: wrap; gap: 6px; }
+    }
+
+    body.dark {
+      --bg:           #0D1117;
+      --bg-code:      #161B22;
+      --bg-quote:     #161B22;
+      --bg-highlight: #0E1A2B;
+      --bg-subtle:    #161B22;
+      --bg-card:      #161B22;
+      --bg-header:    #0D1117;
+      --text-primary: #E4E2DC;
+      --text-body:    #C4C2BC;
+      --text-muted:   #8B93A8;
+      --text-light:   #575E70;
+      --accent:       #3A8FD0;
+      --accent-warm:  #F5C800;
+      --border:       #21253A;
+      --border-quote: #2A2D3E;
+      --border-light: #21253A;
+      --tag-bg:       #0E1A2B;
+      --tag-text:     #3A8FD0;
+      --table-stripe: #161B22;
+    }
+    body.dark .finpro-callout {
+      background: #1A1600;
+      border-color: #3A2D00;
+    }
+    body.dark .finpro-callout p,
+    body.dark .finpro-callout li { color: #C4B88A; }
+    body.dark .finpro-callout-label { color: #C4900E; }
+    body.dark .fact-card.highlight { background: #1A1600; border-color: #3A2D00; }
+    body.dark .fact-card.highlight .fact-value { color: #C4900E; }
+    body.dark .fact-card.highlight .fact-desc { color: #A07828; }
+  </style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+  <!-- 1. サイトヘッダー -->
+  <header class="site-header">
+    <div class="site-header-left">
+      <a class="wordmark" href="../index.html">dona<span>to</span></a>
+      <span class="header-sep">—</span>
+      <a class="header-back-link" href="./index.html"><span class="lang-ja">記事一覧</span><span class="lang-en">Articles</span></a>
+      <span class="header-sep">—</span>
+      <span class="header-media">Finance Professional × AI</span>
+    </div>
+    <div class="site-header-right">
+      <div class="lang-toggle-bar">
+        <button class="art-lang-btn active" data-lang="ja" onclick="setLang('ja')">JP</button>
+        <button class="art-lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+      </div>
+      <button id="theme-btn" onclick="toggleTheme()" title="ダーク/ライト切替">☀</button>
+      <time class="header-date">2026-03-22</time>
+    </div>
+  </header>
+
+  <!-- 2. スティッキー情報バー -->
+  <div id="sticky-bar">
+    <span class="sbar-cat">Claude Code 実践ガイド · #002</span>
+    <span class="sbar-sep">|</span>
+    <span class="sbar-text">
+      <span class="lang-ja">対象: Claude Code 入門済み</span>
+      <span class="lang-en">Level: Installed &amp; familiar with basics</span>
+    </span>
+    <span class="sbar-sep">|</span>
+    <span class="sbar-text">
+      <span class="lang-ja">公開: 2026-03-22</span>
+      <span class="lang-en">Published: 2026-03-22</span>
+    </span>
+    <span class="sbar-sep">|</span>
+    <span class="sbar-badge">
+      <span class="lang-ja">約15分</span>
+      <span class="lang-en">~15 min read</span>
+    </span>
+  </div>
+
+  <main style="padding: 0 0 3em;">
+    <div class="article-container">
+      <div class="article-grid">
+
+        <!-- 3. 記事本文 -->
+        <article class="article-body">
+
+          <!-- 記事ヘッダー -->
+          <div style="padding: 36px 0 24px;">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+              <div class="section-label">
+                <span class="lang-ja">Claude Code 実践ガイド · #002</span>
+                <span class="lang-en">Claude Code Guide · #002</span>
+              </div>
+              <span class="sbar-badge">
+                <span class="lang-ja">約15分</span>
+                <span class="lang-en">~15 min read</span>
+              </span>
+            </div>
+            <h1 class="article-headline">
+              <span class="lang-ja">生産性10倍の使い方 — Claude Code General Tips</span>
+              <span class="lang-en">Techniques to 10× Your Productivity — Claude Code General Tips</span>
+            </h1>
+            <p class="article-standfirst">
+              <span class="lang-ja">Claude Codeをインストールした翌日から、多くのユーザーが「なんとなく使える」段階で止まる。この記事は、プロンプト設計・コンテキストウィンドウ管理・CLAUDE.mdの本格構築・よくある失敗の回避策という4つの柱で、Finance Professionalが「毎日頼れるツール」に育てるための実践ガイドだ。</span>
+              <span class="lang-en">Most users stall at "somewhat functional" the day after installing Claude Code. This guide covers the four pillars that transform it into a daily workhorse: prompt design, context window management, serious CLAUDE.md construction, and avoiding the most common failure modes — all through the lens of Finance Professional workflows.</span>
+            </p>
+            <div style="display:flex; gap:16px; align-items:center; border-top:1px solid var(--border-light); border-bottom:1px solid var(--border-light); padding:10px 0;">
+              <span class="byline">By <strong>donato</strong></span>
+              <span style="color:var(--border);">|</span>
+              <time class="byline" datetime="2026-03-22">
+                <span class="lang-ja">2026年3月22日</span>
+                <span class="lang-en">March 22, 2026</span>
+              </time>
+            </div>
+          </div>
+
+          <!-- エグゼクティブサマリー -->
+          <section class="exec-summary">
+
+            <div class="exec-block">
+              <div class="section-label"><span class="lang-ja">概要</span><span class="lang-en">Summary</span></div>
+              <p class="exec-tldr">
+                <span class="lang-ja">Claude Codeの潜在能力を引き出すには4つの習慣が必要だ——①プロンプトに「役割・制約・フォーマット・例示」を組み込む、②コンテキストウィンドウの消費を意識してリセットタイミングを管理する、③案件・業務別にCLAUDE.mdを構築してAIに文脈を記憶させる、④よくある失敗パターンを知って回避する。これを実践すれば、Claude Codeは「たまに使うツール」から「毎日の生産性エンジン」になる。</span>
+                <span class="lang-en">Four habits unlock Claude Code's potential: ① embed Role, Constraints, Format, and Examples in every prompt; ② monitor context window consumption and manage reset timing; ③ build context-rich CLAUDE.md files per engagement; ④ know and avoid the most common failure patterns. Master these and Claude Code transforms from an occasional tool into a daily productivity engine.</span>
+              </p>
+            </div>
+
+            <div class="exec-block">
+              <div class="section-label"><span class="lang-ja">本稿の論点</span><span class="lang-en">Key Questions</span></div>
+              <ul class="issues-list">
+                <li class="issue-item">
+                  <span class="issue-q">Q1</span>
+                  <span class="issue-text">
+                    <span class="lang-ja"><strong>プロンプトのどこを直せば出力が変わるか？</strong> — 「〇〇して」と言うだけでは不十分。役割・制約・フォーマット・例示の4要素を明示することで出力品質が劇的に変わる。特に「フォーマット指定」の効果が最も大きく、Excelに貼れる表が欲しければその構造を書くだけでよい。</span>
+                    <span class="lang-en"><strong>Which parts of a prompt actually change the output?</strong> — "Do X" is insufficient. Explicitly specifying Role, Constraints, Format, and Examples dramatically shifts output quality. Format specification has the highest impact — if you want a table you can paste into Excel, specify that structure.</span>
+                  </span>
+                </li>
+                <li class="issue-item">
+                  <span class="issue-q">Q2</span>
+                  <span class="issue-text">
+                    <span class="lang-ja"><strong>コンテキストウィンドウとは何か、なぜ管理が必要か？</strong> — Claude Codeは200kトークンの文脈を持つが、長い会話・大量ファイル読み込みで消耗すると後半の回答品質が落ちる。「新しい作業は新しいセッション」という原則と、<code>/compact</code>コマンドの使い方を理解することが品質維持の鍵だ。</span>
+                    <span class="lang-en"><strong>What is the context window and why does it need managing?</strong> — Claude Code holds 200k tokens of context, but quality degrades as long conversations and heavy file loading consume it. "New task, new session" is the core principle — understanding when and how to use <code>/compact</code> and <code>/clear</code> is key to sustained output quality.</span>
+                  </span>
+                </li>
+                <li class="issue-item">
+                  <span class="issue-q">Q3</span>
+                  <span class="issue-text">
+                    <span class="lang-ja"><strong>CLAUDE.mdはどこまで書くべきか？</strong> — 最低限は「言語・通貨単位・会計基準」の3行。本格運用では「業務コンテキスト・出力ルール・禁止事項・ファイル構造」の4ブロック構成が効果的。グローバルCLAUDE.md（全作業共通）とプロジェクトCLAUDE.md（案件固有）の2層構造が実務に最も合う。</span>
+                    <span class="lang-en"><strong>How much should you put in CLAUDE.md?</strong> — The minimum viable config is three lines: language, currency unit, accounting standard. For serious use, a four-block structure covers Work Context, Output Rules, Prohibitions, and File Structure. The two-layer approach — global CLAUDE.md for universal preferences and project-level files per engagement — fits Finance Professional workflows best.</span>
+                  </span>
+                </li>
+              </ul>
+            </div>
+
+            <div class="exec-block">
+              <div class="section-label">
+                <span class="lang-ja">実務家への含意</span>
+                <span class="lang-en">Implications for Practitioners</span>
+              </div>
+              <ul class="implications-list">
+                <li class="implication-item">
+                  <span class="lang-ja">プロンプト改善は「AIの問題」ではなく「入力設計の問題」——質問の仕方を変えれば出力が変わる</span>
+                  <span class="lang-en">Prompt improvement is an input design problem, not an AI capability problem — changing how you ask changes what you get</span>
+                </li>
+                <li class="implication-item">
+                  <span class="lang-ja">コンテキスト汚染を避けるため、長時間作業は必ずセッションを区切る習慣をつける</span>
+                  <span class="lang-en">Avoid context pollution by habitually starting fresh sessions for each distinct task — don't carry yesterday's context into today's work</span>
+                </li>
+                <li class="implication-item">
+                  <span class="lang-ja">CLAUDE.mdは「AIへのオンボーディング文書」として書く——新人スタッフに業務説明書を渡す感覚で</span>
+                  <span class="lang-en">Write CLAUDE.md as an AI onboarding document — think of it as a briefing pack for a new team member who never forgets</span>
+                </li>
+              </ul>
+            </div>
+
+          </section>
+
+          <!-- Section 1 -->
+          <h2>
+            <span class="lang-ja">1. プロンプト設計の4原則</span>
+            <span class="lang-en">1. The 4 Principles of Prompt Design</span>
+          </h2>
+
+          <p>
+            <span class="lang-ja">Claude Codeに「〇〇して」と指示するだけでも動く。しかし出力の品質は、指示の構造によって劇的に変わる。Finance Proが覚えるべき4要素は次のとおりだ。</span>
+            <span class="lang-en">Claude Code will respond to a simple "do X" instruction. But output quality shifts dramatically based on how you structure the instruction. The four elements Finance Pros need to internalise are as follows.</span>
+          </p>
+
+          <ul>
+            <li><span class="lang-ja"><strong>役割 (Role)</strong>: AIにどの専門家として振る舞わせるか。「M&AアドバイザーのシニアアナリストAIアシスタント」と定義するだけで、回答のトーン・粒度・前提知識が変わる。</span><span class="lang-en"><strong>Role</strong>: Which expert persona should the AI adopt. Defining it as "a senior analyst AI assistant at an M&A advisory firm" alone changes tone, granularity, and assumed domain knowledge.</span></li>
+            <li><span class="lang-ja"><strong>制約 (Constraints)</strong>: 会計基準・通貨・出力言語・精度要件。「IFRS、百万円単位、不確かな情報には[要確認]タグ」のような具体的な制約が回答の信頼性を高める。</span><span class="lang-en"><strong>Constraints</strong>: Accounting standard, currency, output language, accuracy requirements. Specific constraints like "IFRS, in millions, flag uncertain information with [verify]" raise output reliability.</span></li>
+            <li><span class="lang-ja"><strong>フォーマット (Format)</strong>: 表・箇条書き・レポート・JSON・HTML。出力形式を明示することが最も効果の大きい改善だ。Excelに貼り付けられる表が欲しいならその列構成を書く。HTMLレポートが欲しいならそのまま言う。</span><span class="lang-en"><strong>Format</strong>: Table, bullet list, report, JSON, HTML. Specifying output format is the single highest-impact improvement. Want a table you can paste into Excel — write the column structure. Want an HTML report — say so.</span></li>
+            <li><span class="lang-ja"><strong>例示 (Examples)</strong>: few-shotで期待するアウトプット構造を見せる。「以下のサンプルと同じ構造で」と1つの例を渡すだけで、AIは意図を正確に読み取る。</span><span class="lang-en"><strong>Examples</strong>: Show the expected output structure via few-shot examples. Providing one sample with "follow this structure" precisely communicates intent in a way words alone cannot.</span></li>
+          </ul>
+
+          <p>
+            <span class="lang-ja">この4要素を「すべて同時に書く」必要はない。しかし意識して取捨選択することで、最初の一発で意図した出力が得られる確率が大きく上がる。以下に典型的な悪例と良例を示す。</span>
+            <span class="lang-en">You don't need all four elements every time. But consciously selecting which to include dramatically increases the probability of getting the intended output on the first attempt. Below are representative bad and good examples.</span>
+          </p>
+
+          <div class="code-block">
+            <div class="code-label">BAD — 曖昧な指示 / Ambiguous instruction</div>
+            <pre>この財務データを分析してください</pre>
+          </div>
+
+          <div class="code-block">
+            <div class="code-label">GOOD — 4原則を組み込んだ指示 / Instruction using all 4 principles</div>
+            <pre>あなたはM&AアドバイザリーファームのシニアアナリストAIアシスタントです。
+
+【制約】
+- 会計基準: IFRS（特に指定なき場合）
+- 数値単位: 百万円（小数点1位まで）
+- 不確かな情報には [要確認] タグを付ける
+
+【タスク】
+添付の financial_data.xlsx を読み込み、以下を作成してください：
+1. EBITDA・純有利子負債・D/E比率の3期比較表
+2. 各指標の前年比変化率（%）
+3. 業界平均との差異コメント（2〜3行）
+
+【フォーマット】
+| 指標 | FY2023 | FY2024 | FY2025 | YoY変化 |
+のような表形式。コメントは表の下に記載。</pre>
+          </div>
+
+          <div class="finpro-callout">
+            <div class="finpro-callout-label"><span class="lang-ja">Finance Pro の視点 — フォーマット指定の威力</span><span class="lang-en">Finance Pro Perspective — The Power of Format Specification</span></div>
+            <p>
+              <span class="lang-ja">4原則の中で最も効果が大きいのはフォーマット指定だ。Excelに貼り付けられる表が欲しいならその構造を書く。HTMLレポートが欲しいならそのまま言う。AIは指示された出力形式に従う——曖昧にすると、AIが「適切だと判断した」形式で出力する。「また形式が違う」という繰り返しのやり取りは、フォーマット指定一行で消える。</span>
+              <span class="lang-en">Format specification has the highest impact of the four principles. If you want a table you can paste into Excel, specify that structure. If you want an HTML report, say so. AI follows the output format it is given — leave it ambiguous and you get whatever format the AI judges appropriate. The repetitive back-and-forth of "wrong format again" disappears with a single format line.</span>
+            </p>
+          </div>
+
+          <!-- Section 2 -->
+          <h2>
+            <span class="lang-ja">2. コンテキストウィンドウを理解する</span>
+            <span class="lang-en">2. Understanding the Context Window</span>
+          </h2>
+
+          <p>
+            <span class="lang-ja">Claude Codeのコンテキストウィンドウは200kトークン——日本語の長編小説1冊分に相当する広大な「作業記憶」だ。しかしFinance Proの実務では、これを想像以上に早く消費する。</span>
+            <span class="lang-en">Claude Code's context window holds 200k tokens — roughly equivalent to a full-length novel. But in Finance Professional workflows, you consume it faster than you might expect.</span>
+          </p>
+
+          <div class="data-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th><span class="lang-ja">ファイル・操作</span><span class="lang-en">File / Operation</span></th>
+                  <th><span class="lang-ja">目安トークン数</span><span class="lang-en">Approx. Tokens</span></th>
+                  <th><span class="lang-ja">200kに占める割合</span><span class="lang-en">% of 200k Window</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="lang-ja">有価証券報告書100p PDF</span><span class="lang-en">100-page securities filing (PDF)</span></td>
+                  <td class="num">~40,000</td>
+                  <td class="num">20%</td>
+                </tr>
+                <tr>
+                  <td><span class="lang-ja">月次P&amp;L Excel（3シート）</span><span class="lang-en">Monthly P&amp;L Excel (3 sheets)</span></td>
+                  <td class="num">~8,000</td>
+                  <td class="num">4%</td>
+                </tr>
+                <tr>
+                  <td><span class="lang-ja">長い会話30往復</span><span class="lang-en">30-turn conversation</span></td>
+                  <td class="num">~15,000</td>
+                  <td class="num">8%</td>
+                </tr>
+                <tr>
+                  <td><span class="lang-ja">コード実行出力（1回）</span><span class="lang-en">Code execution output (per run)</span></td>
+                  <td class="num">~2,000</td>
+                  <td class="num">1%</td>
+                </tr>
+                <tr>
+                  <td><span class="lang-ja">DDレポート5本分</span><span class="lang-en">5 DD reports</span></td>
+                  <td class="num">~100,000</td>
+                  <td class="num">50%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>
+            <span class="lang-ja">問題はトークン数そのものではなく、<strong>コンテキスト汚染</strong>だ。会話が長くなるにつれ、初期の指示（「IFRSで解釈せよ」「百万円単位で」）が後半になるほど薄く扱われ始める。AIの「注意」は均等ではなく、直近の内容に引っ張られる。</span>
+            <span class="lang-en">The issue isn't token count per se — it's <strong>context pollution</strong>. As conversations grow longer, early instructions ("interpret under IFRS," "in millions") receive progressively less weight. AI attention is not uniform; it's pulled toward recent content.</span>
+          </p>
+
+          <h3>
+            <span class="lang-ja">2つのリセットコマンド</span>
+            <span class="lang-en">Two Reset Commands</span>
+          </h3>
+
+          <div class="code-block">
+            <div class="code-label">TERMINAL — コンテキスト管理コマンド</div>
+            <pre>/compact   # 会話を要約してコンテキストを圧縮する（作業継続したい場合）
+/clear     # コンテキストを完全にリセット（新規セッション相当）</pre>
+          </div>
+
+          <p>
+            <span class="lang-ja"><code>/compact</code>は長くなった会話を要約してトークンを節約しながら作業を継続する。<code>/clear</code>は完全に白紙に戻す——新しい案件・新しいタスクの開始時に使う。</span>
+            <span class="lang-en"><code>/compact</code> summarises the conversation to save tokens while continuing work. <code>/clear</code> resets to a blank slate — use it when starting a new engagement or a distinct new task.</span>
+          </p>
+
+          <div class="pull-quote">
+            <p>
+              <span class="lang-ja">「1つの作業タスク = 1セッション」——これがコンテキスト管理の基本原則だ。</span>
+              <span class="lang-en">"One task, one session" — this is the fundamental principle of context management.</span>
+            </p>
+            <footer>donato · Claude Code 実践ガイド</footer>
+          </div>
+
+          <div class="finpro-callout">
+            <div class="finpro-callout-label"><span class="lang-ja">Finance Pro の視点 — DDでのバッチ戦略</span><span class="lang-en">Finance Pro Perspective — Batching Strategy for DD</span></div>
+            <p>
+              <span class="lang-ja">DDでVDRの50ファイルを一気に読み込もうとするのは悪手だ。10ファイルずつバッチに分けてセッションを分けると、品質が安定する。「全部一度に」はコンテキスト汚染の最短経路だ。</span>
+              <span class="lang-en">Attempting to load 50 VDR files in a single session is counterproductive. Batch them into groups of 10 per session and quality stabilises. "Everything at once" is the fastest route to context pollution.</span>
+            </p>
+            <p>
+              <span class="lang-ja">実務的なアプローチ: タスクごとにCLAUDE.mdに「今日の作業範囲」を書き加えておくと、セッションをリセットした後でも素早くコンテキストを復元できる。</span>
+              <span class="lang-en">A practical approach: add "today's scope" to your CLAUDE.md so that after a context reset, you can rapidly restore the relevant context without repeating a lengthy briefing.</span>
+            </p>
+          </div>
+
+          <!-- Section 3 -->
+          <h2>
+            <span class="lang-ja">3. CLAUDE.mdの本格構築</span>
+            <span class="lang-en">3. Building a Production CLAUDE.md</span>
+          </h2>
+
+          <p>
+            <span class="lang-ja">CLAUDE.mdはClaude Codeが起動時に必ず読み込む設定ファイルだ。「AIへのオンボーディング文書」として書くとよい——新人スタッフに渡す業務説明書と同じ感覚で。推奨するのは<strong>2層構造</strong>だ。</span>
+            <span class="lang-en">CLAUDE.md is the configuration file Claude Code reads at every startup. Think of it as an AI onboarding document — written the same way you would brief a new team member. The recommended structure is <strong>two layers</strong>.</span>
+          </p>
+
+          <ul>
+            <li><span class="lang-ja"><strong>グローバルCLAUDE.md</strong>（<code>~/.claude/CLAUDE.md</code>）: すべての作業に適用される普遍的設定。言語・通貨・会計基準・自分のバックグラウンドを書く。</span><span class="lang-en"><strong>Global CLAUDE.md</strong> (<code>~/.claude/CLAUDE.md</code>): Universal settings applied to all work. Language, currency, accounting standard, your professional background.</span></li>
+            <li><span class="lang-ja"><strong>プロジェクトCLAUDE.md</strong>（<code>./CLAUDE.md</code>）: 案件・業務フォルダに置く案件固有設定。対象会社・基準日・フォルダ構造・禁止事項を書く。</span><span class="lang-en"><strong>Project CLAUDE.md</strong> (<code>./CLAUDE.md</code>): Engagement-specific settings placed in each deal/work folder. Target company, reference date, folder structure, prohibited actions.</span></li>
+          </ul>
+
+          <div class="code-block">
+            <div class="code-label">グローバルCLAUDE.md（~/.claude/CLAUDE.md）</div>
+            <pre># Global Finance Professional Config
+
+## 基本設定
+- 回答言語: 日本語（特に指定なき場合）
+- 財務数値: 百万円単位（小数点1位まで）
+- 不確実情報: [要確認] タグを付ける
+- エラー時: 理由と代替案を必ず示す
+
+## 私のバックグラウンド
+- 専門: M&Aアドバイザリー / 企業価値評価 / 監査
+- 主要会計基準: IFRS（JGAAP対応も必要な場合あり）
+- 業界知識: 製造業・ヘルスケア・テクノロジー
+
+## 出力ルール
+- 計算結果は根拠（数式・参照セル）を必ず併記
+- 「できません」だけで終わらず代替案を示す
+- 重要な仮定は [仮定] タグで明示</pre>
+          </div>
+
+          <div class="code-block">
+            <div class="code-label">案件別CLAUDE.md（M&A DDプロジェクトフォルダ）</div>
+            <pre># Project: [対象会社名] M&A デューデリジェンス
+# 基準日: 2025年12月31日
+# 作成: 担当者名 | 更新: 2026-03-01
+
+## 案件コンテキスト
+- 対象会社: [対象会社名]（製造業、上場）
+- 取引種別: 株式取得（100%）
+- 通貨: JPY（海外売上はUSD、換算: 150円/USD）
+- 会計基準: J-GAAP → IFRSへの転換分析も要対応
+
+## フォルダ構造
+- input/  : VDRからダウンロードした原データ（読み取り専用）
+- work/   : 分析作業ファイル
+- output/ : 最終成果物（ここにのみ書き込む）
+- memo/   : メモ・論点整理
+
+## 禁止事項
+- input/ フォルダへの書き込み禁止
+- スクリーンショット・画像ファイルの生成禁止
+- 対象会社名をファイル名に含める場合は [TARGET] を使う
+
+## 重要な論点（調査中）
+- [要確認] 関連当事者取引の開示範囲
+- [要確認] 未払い残業代リスク（労務DD未完了）
+- [確定] のれん: 3,200百万円（買収時計上）</pre>
+          </div>
+
+          <div class="finpro-callout">
+            <div class="finpro-callout-label"><span class="lang-ja">Finance Pro の視点 — チーム共有の威力</span><span class="lang-en">Finance Pro Perspective — The Power of Team Sharing</span></div>
+            <p>
+              <span class="lang-ja">CLAUDE.mdの最大の価値は「チーム共有」だ。案件フォルダにCLAUDE.mdを置いてgit管理すれば、チームメンバー全員が同じコンテキストでClaudeを使える。マネージャーがCLAUDE.mdを書き、スタッフがそのコンテキストでClaudeに作業させる——これが次世代のチームワークフローだ。「Claudeに何を教えたか」の差が、チームの生産性差になる。</span>
+              <span class="lang-en">CLAUDE.md's greatest value is team-sharing. Place it in the deal folder under git version control and every team member uses Claude with identical context. The manager writes the CLAUDE.md; staff members direct Claude within that context — this is the next-generation team workflow. The gap in "what each team told Claude" becomes the productivity gap between teams.</span>
+            </p>
+          </div>
+
+          <!-- Section 4 -->
+          <h2>
+            <span class="lang-ja">4. よくある失敗パターンと回避策</span>
+            <span class="lang-en">4. Common Failure Patterns and Fixes</span>
+          </h2>
+
+          <p>
+            <span class="lang-ja">Claude Codeを使い始めた Finance Pro が頻繁に踏む落とし穴を整理する。知っておくだけで時間のロスが大きく減る。</span>
+            <span class="lang-en">Here are the pitfalls Finance Pros most commonly encounter when starting with Claude Code. Knowing them in advance saves significant wasted time.</span>
+          </p>
+
+          <h3>
+            <span class="lang-ja">① 「なんでもやってください」問題 — 指示が広すぎる</span>
+            <span class="lang-en">① "Do everything" problem — instruction too broad</span>
+          </h3>
+
+          <p>
+            <span class="lang-ja"><strong>症状:</strong> 「このフォルダを分析してください」と言ったら、期待と全然違う出力が返ってきた。<br>
+            <strong>回避策:</strong> タスクを1つに絞り、「このファイルの、このデータの、この形式で」まで具体化する。複数タスクは複数の指示に分割する。</span>
+            <span class="lang-en"><strong>Symptom:</strong> You asked "analyse this folder" and got output completely different from what you needed.<br>
+            <strong>Fix:</strong> Narrow to one task and specify "this file, this data, in this format." Split multiple tasks into separate instructions.</span>
+          </p>
+
+          <h3>
+            <span class="lang-ja">② コンテキスト引き継ぎミス — 「さっき言ったこと」が通じない</span>
+            <span class="lang-en">② Context drift — "I told you earlier" stops working</span>
+          </h3>
+
+          <p>
+            <span class="lang-ja"><strong>症状:</strong> 長い会話の後半で、冒頭に伝えた制約（IFRS・百万円単位）が無視されている。<br>
+            <strong>回避策:</strong> <code>/compact</code>でリセット後、新しい会話冒頭で制約を再掲する。恒久的な制約はCLAUDE.mdに書くことで根本解決できる。</span>
+            <span class="lang-en"><strong>Symptom:</strong> Deep into a long conversation, the constraints you stated at the start (IFRS, in millions) are being ignored.<br>
+            <strong>Fix:</strong> After <code>/compact</code>, restate constraints at the top of the new conversation. Permanently solving this: write standing constraints into CLAUDE.md.</span>
+          </p>
+
+          <h3>
+            <span class="lang-ja">③ ファイルパスエラー — 「ファイルが見つかりません」</span>
+            <span class="lang-en">③ File path errors — "file not found"</span>
+          </h3>
+
+          <p>
+            <span class="lang-ja"><strong>症状:</strong> ファイル名を指定したのに「存在しない」と言われる。<br>
+            <strong>回避策:</strong> まず「今どのディレクトリにいるか確認して」と聞く。フルパスまたは相対パスを正確に渡す。WSL2使用時はWindowsのバックスラッシュに注意（<code>\</code> → <code>/</code>）。</span>
+            <span class="lang-en"><strong>Symptom:</strong> You specified a filename but Claude says it doesn't exist.<br>
+            <strong>Fix:</strong> First ask Claude to confirm the current directory. Pass the full or accurate relative path. When using WSL2, watch for Windows backslash issues (<code>\</code> → <code>/</code>).</span>
+          </p>
+
+          <h3>
+            <span class="lang-ja">④ 「確認なしに書き込んだ」問題 — 元データが上書きされた</span>
+            <span class="lang-en">④ Silent writes — source data overwritten without warning</span>
+          </h3>
+
+          <p>
+            <span class="lang-ja"><strong>症状:</strong> 分析中に原本ファイルが変更・上書きされた。<br>
+            <strong>回避策:</strong> CLAUDE.mdの禁止事項に「input/フォルダへの書き込み禁止」を明記。重要な作業前に<code>git commit</code>でスナップショットを保存する習慣をつける。</span>
+            <span class="lang-en"><strong>Symptom:</strong> Source files were modified or overwritten during analysis.<br>
+            <strong>Fix:</strong> Explicitly prohibit "no writes to the input/ folder" in your CLAUDE.md. Make a habit of running <code>git commit</code> before significant operations to create a recoverable snapshot.</span>
+          </p>
+
+          <h3>
+            <span class="lang-ja">⑤ 数値の「それっぽい嘘」 — ハルシネーション</span>
+            <span class="lang-en">⑤ Plausible-looking errors — hallucination</span>
+          </h3>
+
+          <p>
+            <span class="lang-ja"><strong>症状:</strong> 計算結果が一見正しそうに見えるが、元データと照合すると誤っている。<br>
+            <strong>回避策:</strong> 「計算根拠（数式・参照元）を必ず示せ」をCLAUDE.mdに書く。財務数値は必ず元データと照合する。「AIが言ったから正しい」は禁物——特に重要な意思決定に使う数値は必ずダブルチェックをルール化する。</span>
+            <span class="lang-en"><strong>Symptom:</strong> A calculation result looks correct but doesn't match the source data on verification.<br>
+            <strong>Fix:</strong> Add "always show calculation basis (formula and source)" to your CLAUDE.md. Always verify financial figures against source data. Never treat "AI said so" as sufficient — especially for figures that inform significant decisions, double-checking must be a non-negotiable rule.</span>
+          </p>
+
+          <!-- Section 5 -->
+          <h2>
+            <span class="lang-ja">5. Finance Pro の日常的な使い方パターン</span>
+            <span class="lang-en">5. Daily Usage Patterns for Finance Pros</span>
+          </h2>
+
+          <p>
+            <span class="lang-ja">ここまでの4原則を日常業務に落とし込んだ具体例を示す。月次業績レポートの自動生成は、Finance Proが最初に自動化すべき定番ルーティンだ。</span>
+            <span class="lang-en">Here is a concrete application of the four principles to daily work. Monthly performance report generation is the canonical routine Finance Pros should automate first.</span>
+          </p>
+
+          <div class="code-block">
+            <div class="code-label">CLAUDE CODE — 月次業績レポート自動生成プロンプト（テンプレート）</div>
+            <pre>あなたはFP&Aチームの上級アナリストAIアシスタントです。
+
+【制約】
+- 会計基準: J-GAAP、単位: 百万円（小数点1位まで）
+- 前月比・前年同月比・予実差異を必ず計算
+- 不確かな数値には [要確認] を付ける
+
+【タスク】
+data/monthly/ フォルダ内の2026年3月分CSVを読み込み：
+1. 売上高・粗利率・営業利益率のサマリー表を作成
+2. 前月比・前年同月比・予実差異を各指標に付記
+3. 異常値（前月比±20%超）があればコメントを添付
+
+【フォーマット】
+HTMLレポートとして output/report_2026_03.html に保存。
+経営会議提出用レイアウト（A4印刷対応）。</pre>
+          </div>
+
+          <p>
+            <span class="lang-ja">このプロンプトを月次でコピペして月と年を変えるだけで、毎月のレポート生成が半自動化される。最初の1時間をプロンプト設計に投資することで、毎月2〜3時間の作業が5分に変わる。</span>
+            <span class="lang-en">Copy this prompt monthly, update the date, and report generation becomes semi-automated. Investing one hour in prompt design upfront converts 2–3 hours of monthly work into 5 minutes.</span>
+          </p>
+
+          <div class="finpro-callout">
+            <div class="finpro-callout-label"><span class="lang-ja">Finance Pro の視点 — プロンプトも「資産」として管理する</span><span class="lang-en">Finance Pro Perspective — Treat Prompts as Assets</span></div>
+            <p>
+              <span class="lang-ja">設計したプロンプトは<code>prompts/</code>フォルダにMarkdownファイルとして保存してgit管理する。「月次レポート用」「DDサマリー用」「開示チェック用」と業務別に整理すれば、チームで共有・改善できるプロンプトライブラリになる。AIへの指示は、いまや<strong>業務ノウハウそのもの</strong>だ。</span>
+              <span class="lang-en">Save your designed prompts as Markdown files in a <code>prompts/</code> folder under git version control. Organise by task — "monthly report," "DD summary," "disclosure check" — and you have a team-shareable, continuously improving prompt library. Instructions to AI are now <strong>institutional knowledge</strong> in their own right.</span>
+            </p>
+          </div>
+
+          <h2>
+            <span class="lang-ja">次回予告</span>
+            <span class="lang-en">Coming Next</span>
+          </h2>
+
+          <p>
+            <span class="lang-ja"><strong>#003 Finance Pro篇① — 財務分析・レポート自動化</strong>では、有価証券報告書・財務モデル・月次レポートといったFinance Proの核心業務をClaude Codeで自動化する具体的なワークフローを解説する。Excelとの連携・PDF解析・HTMLレポート生成を実務レベルで掘り下げる。プロンプトテンプレートを多数収録予定だ。</span>
+            <span class="lang-en"><strong>#003 Finance Pro I — Reporting Automation</strong> covers concrete workflows for automating the core Finance Professional workload with Claude Code: securities filings analysis, financial modelling, and monthly reporting. Excel integration, PDF parsing, and HTML report generation are explored at production depth, with a comprehensive set of prompt templates.</span>
+          </p>
+
+          <h2 style="margin-top:3em;">
+            <span class="lang-ja">参考リンク</span>
+            <span class="lang-en">References</span>
+          </h2>
+          <ul class="source-list">
+            <li><a href="https://docs.anthropic.com/claude/docs/claude-code-overview" target="_blank">Claude Code Overview — Anthropic Documentation</a><span class="source-tag">[公式] Anthropic</span></li>
+            <li><a href="https://docs.anthropic.com/claude/docs/build-with-claude/prompt-engineering/overview" target="_blank">Prompt Engineering Overview — Anthropic Documentation</a><span class="source-tag">[公式] Anthropic</span></li>
+            <li><a href="https://docs.anthropic.com/claude/docs/claude-code-memory" target="_blank">Claude Code Memory &amp; CLAUDE.md — Anthropic Documentation</a><span class="source-tag">[公式] Anthropic</span></li>
+          </ul>
+
+        </article>
+
+        <!-- 4. スティッキーサイドバー -->
+        <aside class="article-sidebar">
+
+          <div class="sidebar-card">
+            <div class="section-label">
+              <span class="lang-ja">Key Facts</span>
+              <span class="lang-en">Key Facts</span>
+            </div>
+            <div class="keyfacts-grid">
+              <div class="fact-card">
+                <div class="fact-value">4要素</div>
+                <div class="fact-desc"><span class="lang-ja">プロンプトの基本構造</span><span class="lang-en">Prompt structure</span></div>
+              </div>
+              <div class="fact-card">
+                <div class="fact-value">200k</div>
+                <div class="fact-desc"><span class="lang-ja">コンテキストウィンドウ</span><span class="lang-en">Context window</span></div>
+              </div>
+              <div class="fact-card">
+                <div class="fact-value">/compact</div>
+                <div class="fact-desc"><span class="lang-ja">コンテキスト圧縮コマンド</span><span class="lang-en">Context compression</span></div>
+              </div>
+              <div class="fact-card highlight">
+                <div class="fact-value">2層</div>
+                <div class="fact-desc"><span class="lang-ja">CLAUDE.md推奨構造</span><span class="lang-en">Recommended CLAUDE.md</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sidebar-card">
+            <div class="section-label">
+              <span class="lang-ja">すぐに実践できる5つのこと</span>
+              <span class="lang-en">5 Things to Do Right Now</span>
+            </div>
+            <ul class="highlights-list">
+              <li class="highlight-item">
+                <span class="hl-num">01</span>
+                <span class="hl-text"><span class="lang-ja">次のプロンプトに役割・制約・フォーマットを追加する</span><span class="lang-en">Add Role, Constraints, and Format to your next prompt</span></span>
+              </li>
+              <li class="highlight-item">
+                <span class="hl-num">02</span>
+                <span class="hl-text"><span class="lang-ja">「1タスク = 1セッション」を今日から徹底する</span><span class="lang-en">Enforce "one task, one session" starting today</span></span>
+              </li>
+              <li class="highlight-item">
+                <span class="hl-num">03</span>
+                <span class="hl-text"><span class="lang-ja">グローバルCLAUDE.mdを作成して基本設定を書く</span><span class="lang-en">Create a global CLAUDE.md with your base settings</span></span>
+              </li>
+              <li class="highlight-item">
+                <span class="hl-num">04</span>
+                <span class="hl-text"><span class="lang-ja">input/フォルダの書き込み禁止をCLAUDE.mdに明記</span><span class="lang-en">Declare input folder write-protected in CLAUDE.md</span></span>
+              </li>
+              <li class="highlight-item">
+                <span class="hl-num">05</span>
+                <span class="hl-text"><span class="lang-ja">最初の自動化プロンプトをprompts/フォルダに保存</span><span class="lang-en">Save your first automation prompt to a prompts/ folder</span></span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="series-nav">
+            <div class="series-nav-title"><span class="lang-ja">Claude Code 実践ガイド — シリーズ</span><span class="lang-en">Claude Code Guide — Series</span></div>
+            <div class="series-item">
+              <span class="series-num">#001</span>
+              <span class="series-item-text"><a href="./2026-03-22-claude-code-001.html"><span class="lang-ja">入門 — ブラウザから卒業する日</span><span class="lang-en">Intro — The Day You Graduate</span></a></span>
+            </div>
+            <div class="series-item">
+              <span class="series-num">#002</span>
+              <span class="series-item-text current"><span class="lang-ja">General Tips — 生産性10倍の使い方</span><span class="lang-en">General Tips — 10× Productivity</span></span>
+            </div>
+            <div class="series-item">
+              <span class="series-num">#003</span>
+              <span class="series-item-text upcoming"><span class="lang-ja">Finance Pro篇① — 財務分析・レポート自動化</span><span class="lang-en">Finance Pro I — Reporting Automation</span></span>
+            </div>
+            <div class="series-item">
+              <span class="series-num">#004</span>
+              <span class="series-item-text upcoming"><span class="lang-ja">Finance Pro篇② — M&A・DD・監査への統合</span><span class="lang-en">Finance Pro II — M&A, DD &amp; Audit</span></span>
+            </div>
+            <div class="series-item">
+              <span class="series-num">#005</span>
+              <span class="series-item-text upcoming"><span class="lang-ja">上級篇 — エージェント・MCP・チーム展開</span><span class="lang-en">Advanced — Agents, MCP &amp; Teams</span></span>
+            </div>
+          </div>
+
+        </aside>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <span>© 2026 donato · <a href="../privacy.html" style="color:inherit;text-decoration:none;">Privacy Policy</a></span>
+    <span>
+      <span class="lang-ja">本稿は情報提供を目的としており、特定のサービス・ツールの使用を推奨するものではありません。</span>
+      <span class="lang-en">This article is for informational purposes and does not constitute a recommendation of any specific service or tool.</span>
+    </span>
+  </footer>
+
+  <script>
+    // Progress bar
+    window.addEventListener('scroll', function() {
+      var h = document.documentElement;
+      var pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+      document.getElementById('progress-bar').style.width = Math.min(pct, 100) + '%';
+    });
+
+    let currentLang = localStorage.getItem('hp-lang') || 'ja';
+    let currentTheme = localStorage.getItem('hp-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    function setLang(lang) {
+      currentLang = lang;
+      localStorage.setItem('hp-lang', lang);
+      document.querySelectorAll('.lang-ja').forEach(el => el.style.display = lang === 'ja' ? 'inline' : 'none');
+      document.querySelectorAll('.lang-en').forEach(el => el.style.display = lang === 'en' ? 'inline' : 'none');
+      document.querySelectorAll('.art-lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.lang === lang);
+      });
+      document.documentElement.lang = lang === 'ja' ? 'ja' : 'en';
+    }
+    function toggleTheme() {
+      currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+      localStorage.setItem('hp-theme', currentTheme);
+      document.body.classList.toggle('dark', currentTheme === 'dark');
+      document.getElementById('theme-btn').textContent = currentTheme === 'light' ? '☀' : '☾';
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+      setLang(currentLang);
+      if (currentTheme === 'dark') {
+        document.body.classList.add('dark');
+        document.getElementById('theme-btn').textContent = '☾';
+      }
+    });
+  </script>
+
+</body>
+</html>

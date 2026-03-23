@@ -1,5 +1,16 @@
 [
   {
+    "date": "2026-03-23",
+    "category": "damodaran",
+    "genre_en": "Damodaran Watch  #002",
+    "genre_ja": "Damodaran Watch  #002",
+    "href": "./articles/2026-03-23-damodaran-erp-monologue.html",
+    "title_en": "The Price of Risk: An Equity Risk Premium Monologue",
+    "title_ja": "リスクの価格 — エクイティ・リスク・プレミアム独白",
+    "summary_en": "Historical ERP estimates range from 5.5% to 14.5% — but they move in the wrong direction during crises and are plagued by analyst bias. Damodaran argues that the implied ERP, backed out from current prices and projected cash flows, is the only accurate measure of how markets are pricing risk.",
+    "summary_ja": "歴史的ERPは5.5%〜14.5%という幅の広い数字を出すが、その数字は危機時に逆向きに動き、使い物にならない。Damodaranは現在の株価とキャッシュフロー予測から逆算するインプライドERPこそが、市場評価の唯一の正確な物差しであると論じる。"
+  },
+  {
     "date": "2026-03-22",
     "category": "ai",
     "genre_en": "AI MODELS & TOOLS",
@@ -20,6 +31,17 @@
     "title_ja": "ブラウザから卒業する日 — Claude Code 入門",
     "summary_en": "Claude Code is Anthropic's CLI-native AI agent that reads files, writes code, and controls the terminal. For Finance Professionals, it marks a fundamental break from copy-paste browser workflows — enabling direct interaction with local financial data, contracts, and reports.",
     "summary_ja": "AnthropicのCLI型AIエージェント「Claude Code」は、ファイルを読み、コードを書き、ターミナルを操作する。Finance Professionalにとって、これはブラウザでのコピペ作業から根本的に脱却し、ローカルの財務データ・契約書・レポートと直接対話するための第一歩だ。"
+  },
+  {
+    "date": "2026-03-22",
+    "category": "claude",
+    "genre_en": "Claude Code Guide · #002",
+    "genre_ja": "Claude Code 実践ガイド · #002",
+    "href": "./articles/2026-03-22-claude-code-002.html",
+    "title_en": "Techniques to 10× Your Productivity — Claude Code General Tips",
+    "title_ja": "生産性10倍の使い方 — Claude Code General Tips",
+    "summary_en": "Most users stall at \"somewhat functional\" the day after installing Claude Code. This guide covers the four pillars that transform it into a daily workhorse: prompt design, context window management, serious CLAUDE.md construction, and avoiding the most common failure modes — all through the lens of Finance Professional workflows.",
+    "summary_ja": "Claude Codeをインストールした翌日から、多くのユーザーが「なんとなく使える」段階で止まる。この記事は、プロンプト設計・コンテキストウィンドウ管理・CLAUDE.mdの本格構築・よくある失敗の回避策という4つの柱で、Finance Professionalが「毎日頼れるツール」に育てるための実践ガイドだ。"
   },
   {
     "date": "2026-03-22",

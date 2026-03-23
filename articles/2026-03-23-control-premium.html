@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="M&A買収プレミアムの理論的根拠。スタンドアローン価値と買収後価値の分離、シナジーのDCF評価、競争オークションでシナジーが売り手に移転するメカニズム。Valuation Theory Lab #008。">
+  <title>Control Premium &amp; Synergy Valuation — M&A価格の理論的根拠 | Valuation Theory Lab #008 | donato</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+JP:wght@300;400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../brand.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:           #F8F7F4;
+      --bg-code:      #EEECEA;
+      --bg-quote:     #EEECEA;
+      --bg-highlight: #EBF3FB;
+      --bg-subtle:    #F0EFEB;
+      --bg-card:      #F0EFEB;
+      --bg-header:    #F8F7F4;
+      --text-primary: #111320;
+      --text-body:    #2A2C3E;
+      --text-muted:   #565C70;
+      --text-light:   #888EA0;
+      --accent:       #1A6EB0;
+      --accent-warm:  #D4A010;
+      --border:       #D4D2CC;
+      --border-quote: #B8B6B0;
+      --border-light: #D4D2CC;
+      --tag-bg:       #E4EFF8;
+      --tag-text:     #1A6EB0;
+      --table-stripe: #F0EFEB;
+    }
+
+    /* ===== PROGRESS BAR ===== */
+    #progress-bar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      width: 0%;
+      background: var(--accent);
+      z-index: 300;
+      transition: width 0.1s linear;
+    }
+
+    body {
+      font-family: 'Noto Serif JP', Georgia, serif;
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--text-primary);
+      background: var(--bg);
+    }
+
+    /* ===== SITE HEADER ===== */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg-header);
+      border-bottom: 2px solid var(--accent);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .site-header-left { display: flex; align-items: center; gap: 12px; }
+    .wordmark {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: lowercase;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+    .wordmark span { color: var(--accent-warm); }
+    .header-sep { color: var(--border-quote); font-size: 13px; }
+    .header-media {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+    }
+    .site-header-right { display: flex; align-items: center; gap: 12px; }
+    .header-back-link {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .header-back-link:hover { color: var(--accent); }
+    .lang-toggle-bar {
+      display: flex;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .art-lang-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      padding: 3px 10px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .art-lang-btn.active { background: #F5C800; color: #111320; }
+    #theme-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      padding: 3px 9px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.15s;
+    }
+    #theme-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .header-date {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-light);
+      letter-spacing: 0.08em;
+    }
+
+    /* ===== STICKY INFO BAR ===== */
+    #sticky-bar {
+      position: sticky;
+      top: 44px;
+      z-index: 200;
+      background: var(--bg-subtle);
+      border-bottom: 1px solid var(--border-light);
+      padding: 7px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .sbar-cat {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+    }
+    .sbar-sep { color: var(--border-quote); font-size: 11px; }
+    .sbar-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+    .sbar-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      padding: 2px 8px;
+    }
+
+    /* ===== LAYOUT ===== */
+    .article-container { max-width: 1240px; margin: 0 auto; padding: 0 20px; }
+    .article-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 24px;
+    }
+    .article-body { grid-column: 2 / 10; max-width: 68ch; }
+    .article-sidebar {
+      grid-column: 10 / 13;
+      position: sticky;
+      top: 78px;
+      align-self: start;
+      max-height: calc(100vh - 90px);
+      overflow-y: auto;
+    }
+    .article-sidebar::-webkit-scrollbar { width: 4px; }
+    .article-sidebar::-webkit-scrollbar-track { background: transparent; }
+    .article-sidebar::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 2px; }
+
+    /* ===== TYPOGRAPHY ===== */
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+    }
+    .article-headline {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(2rem, 4vw, 2.6rem);
+      font-weight: 600;
+      line-height: 1.15;
+      color: var(--text-primary);
+      margin: 14px 0 16px;
+    }
+    .article-standfirst {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.02rem;
+      line-height: 1.65;
+      color: var(--text-body);
+      margin-bottom: 20px;
+    }
+    .byline {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+    }
+
+    h2 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.55rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 40px 0 14px;
+      line-height: 1.25;
+      border-bottom: 1px solid var(--border-light);
+      padding-bottom: 6px;
+    }
+    h3 {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 28px 0 10px;
+      letter-spacing: 0.02em;
+    }
+    p {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      line-height: 1.75;
+      color: var(--text-body);
+      margin-bottom: 16px;
+    }
+    ul, ol { margin: 16px 0 16px 20px; }
+    li {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.92rem;
+      line-height: 1.65;
+      color: var(--text-body);
+      margin-bottom: 10px;
+    }
+    strong { color: var(--text-primary); font-weight: 600; }
+
+    /* ===== EXEC SUMMARY ===== */
+    .exec-summary {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      padding: 20px 24px;
+      margin: 24px 0 36px;
+    }
+    .exec-block { margin-bottom: 18px; }
+    .exec-block:last-child { margin-bottom: 0; }
+    .exec-tldr {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      line-height: 1.7;
+      color: var(--text-body);
+      margin-top: 8px;
+    }
+    .issues-list { list-style: none; padding: 0; margin: 10px 0 0 0; }
+    .issue-item {
+      display: flex;
+      gap: 10px;
+      align-items: baseline;
+      padding: 7px 0;
+      border-bottom: 1px solid var(--border-light);
+      margin-bottom: 0;
+    }
+    .issue-item:last-child { border-bottom: none; }
+    .issue-q {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--accent);
+      flex-shrink: 0;
+      min-width: 22px;
+      font-weight: 500;
+    }
+    .issue-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      line-height: 1.55;
+      color: var(--text-body);
+    }
+    .implications-list { list-style: none; padding: 0; margin: 10px 0 0 0; }
+    .implication-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      color: var(--text-body);
+      padding: 6px 0;
+      border-bottom: 1px solid var(--border-light);
+      margin-bottom: 0;
+    }
+    .implication-item:last-child { border-bottom: none; }
+
+    /* ===== FORMULA BLOCK ===== */
+    .formula {
+      background: var(--bg-code);
+      border-left: 3px solid var(--accent);
+      padding: 16px 20px;
+      margin: 20px 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.8;
+      color: var(--text-primary);
+      overflow-x: auto;
+    }
+
+    /* ===== CALC BLOCK ===== */
+    .calc-block {
+      background: var(--bg-code);
+      border: 1px solid var(--border);
+      padding: 16px 20px;
+      margin: 20px 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+    }
+    .calc-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 5px 0;
+      border-bottom: 1px solid var(--border-light);
+      color: var(--text-body);
+      font-size: 0.82rem;
+    }
+    .calc-row:last-child { border-bottom: none; }
+    .calc-total {
+      font-weight: 600;
+      color: var(--text-primary);
+      border-top: 2px solid var(--border-quote);
+      padding-top: 8px;
+      margin-top: 4px;
+    }
+    .calc-highlight { color: var(--accent); font-weight: 500; }
+    .calc-warn { color: var(--accent-warm); font-weight: 500; }
+
+    /* ===== DATA TABLE ===== */
+    .data-table-wrap { overflow-x: auto; margin: 20px 0; }
+    table { width: 100%; border-collapse: collapse; font-family: 'Inter', sans-serif; font-size: 0.82rem; }
+    thead th {
+      background: var(--bg-subtle);
+      font-weight: 600;
+      padding: 9px 12px;
+      text-align: left;
+      border-bottom: 2px solid var(--border);
+      color: var(--text-primary);
+    }
+    tbody tr:nth-child(even) { background: var(--table-stripe); }
+    tbody td { padding: 9px 12px; border-bottom: 1px solid var(--border-light); color: var(--text-body); vertical-align: top; }
+    .td-accent { color: var(--accent); font-weight: 500; }
+    .td-warn { color: var(--accent-warm); font-weight: 500; }
+
+    /* ===== PULL QUOTE ===== */
+    .pull-quote {
+      border-left: 3px solid var(--accent-warm);
+      padding: 14px 20px;
+      margin: 24px 0;
+      background: var(--bg-quote);
+    }
+    .pull-quote p {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.05rem;
+      font-style: italic;
+      line-height: 1.65;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+    .pull-quote footer {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    /* ===== TRAP / INSIGHT BOXES ===== */
+    .trap-box {
+      background: #FFF8EC;
+      border: 1px solid #E8D88A;
+      border-left: 3px solid var(--accent-warm);
+      padding: 14px 18px;
+      margin: 22px 0;
+    }
+    .trap-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      color: var(--accent-warm);
+      margin-bottom: 8px;
+    }
+    .trap-box p {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.88rem;
+      line-height: 1.65;
+      color: var(--text-body);
+      margin-bottom: 0;
+    }
+    .insight-box {
+      background: var(--bg-highlight);
+      border: 1px solid #B8D4EE;
+      border-left: 3px solid var(--accent);
+      padding: 14px 18px;
+      margin: 22px 0;
+    }
+    .insight-box p {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.88rem;
+      line-height: 1.65;
+      color: var(--text-body);
+      margin-bottom: 0;
+    }
+
+    /* ===== NUMBERED LIST ===== */
+    .numbered-list { list-style: none; padding: 0; margin: 20px 0; }
+    .numbered-list li {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 16px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.92rem;
+      line-height: 1.65;
+      color: var(--text-body);
+    }
+    .numbered-list li .num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: white;
+      background: var(--accent);
+      min-width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    /* ===== SECTION SEP ===== */
+    .section-sep {
+      text-align: center;
+      color: var(--text-light);
+      font-size: 1.2rem;
+      letter-spacing: 0.5em;
+      margin: 48px 0;
+      user-select: none;
+    }
+
+    /* ===== SOURCE LIST ===== */
+    .source-list { list-style: none; padding: 0; }
+    .source-list li { margin-bottom: 6px; }
+    .source-list a {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--accent);
+      text-decoration: none;
+      line-height: 1.5;
+    }
+    .source-list a:hover { text-decoration: underline; }
+    .source-tag { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--text-muted); margin-left: 4px; }
+
+    /* ===== NEXT ARTICLE CTA ===== */
+    .next-article {
+      background: var(--text-primary);
+      color: #E4E2DC;
+      padding: 28px 32px;
+      margin-top: 56px;
+    }
+    .next-article .next-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      color: var(--accent-warm);
+      margin-bottom: 8px;
+    }
+    .next-article .next-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+    .next-article .next-desc {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.82rem;
+      color: #9299A8;
+      margin-top: 8px;
+    }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .keyfacts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+    .fact-card { background: var(--bg-highlight); padding: 10px 8px; }
+    .fact-card.highlight { background: #FDF8EC; border: 1px solid #E8D88A; }
+    .fact-value { font-family: 'JetBrains Mono', monospace; font-size: 1rem; font-weight: 500; color: var(--accent); line-height: 1.2; }
+    .fact-card.highlight .fact-value { color: #8A6A00; }
+    .fact-desc { font-family: 'Inter', sans-serif; font-size: 0.64rem; color: var(--text-muted); margin-top: 3px; line-height: 1.35; }
+    .fact-card.highlight .fact-desc { color: #7A6020; }
+    .highlights-list { list-style: none; padding: 0; margin-top: 12px; }
+    .highlight-item { padding: 9px 0; border-bottom: 1px solid var(--border-light); display: flex; gap: 10px; align-items: baseline; }
+    .highlight-item:last-child { border-bottom: none; }
+    .hl-num { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--accent); flex-shrink: 0; min-width: 18px; }
+    .hl-text { font-family: 'Inter', sans-serif; font-size: 0.76rem; color: var(--text-body); line-height: 1.45; }
+
+    /* ===== LANG TOGGLE ===== */
+    .lang-en { display: none; }
+
+    /* ===== FOOTER ===== */
+    .site-footer {
+      border-top: 1px solid var(--border-light);
+      margin-top: 4em;
+      padding: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* ===== PRINT ===== */
+    @media print {
+      body { background: white; font-size: 11pt; }
+      .site-header, #sticky-bar, #progress-bar { display: none; }
+      .article-sidebar { position: static; max-height: none; overflow: visible; }
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+    @page { size: A4; margin: 20mm 15mm; }
+
+    /* ===== MOBILE ===== */
+    @media (max-width: 900px) {
+      .article-body { grid-column: 1 / -1; }
+      .article-sidebar { position: static; max-height: none; overflow: visible; grid-column: 1 / -1; }
+      .article-grid { display: block; }
+      #sticky-bar { flex-wrap: wrap; gap: 6px; }
+    }
+
+    body.dark {
+      --bg:           #0D1117;
+      --bg-code:      #161B22;
+      --bg-quote:     #161B22;
+      --bg-highlight: #0E1A2B;
+      --bg-subtle:    #161B22;
+      --bg-card:      #161B22;
+      --bg-header:    #0D1117;
+      --text-primary: #E4E2DC;
+      --text-body:    #C4C2BC;
+      --text-muted:   #8B93A8;
+      --text-light:   #575E70;
+      --accent:       #3A8FD0;
+      --accent-warm:  #F5C800;
+      --border:       #21253A;
+      --border-quote: #2A2D3E;
+      --border-light: #21253A;
+      --tag-bg:       #0E1A2B;
+      --tag-text:     #3A8FD0;
+      --table-stripe: #161B22;
+    }
+    body.dark .trap-box { background: #1C1800; }
+    body.dark .fact-card.highlight { background: #1A1600; border-color: #3A2D00; }
+    body.dark .fact-card.highlight .fact-value { color: #C4900E; }
+    body.dark .fact-card.highlight .fact-desc { color: #A07828; }
+    body.dark .next-article { background: #111320; }
+  </style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<!-- 1. サイトヘッダー -->
+<header class="site-header">
+  <div class="site-header-left">
+    <a class="wordmark" href="../index.html">dona<span>to</span></a>
+    <span class="header-sep">—</span>
+    <a class="header-back-link" href="./index.html"><span class="lang-ja">記事一覧</span><span class="lang-en">Articles</span></a>
+    <span class="header-sep">—</span>
+    <span class="header-media">Valuation Theory Lab</span>
+  </div>
+  <div class="site-header-right">
+    <div class="lang-toggle-bar">
+      <button class="art-lang-btn active" data-lang="ja" onclick="setLang('ja')">JP</button>
+      <button class="art-lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+    </div>
+    <button id="theme-btn" onclick="toggleTheme()" title="ダーク/ライト切替">☀</button>
+    <time class="header-date">2026-03-23</time>
+  </div>
+</header>
+
+<!-- 2. スティッキー情報バー -->
+<div id="sticky-bar">
+  <span class="sbar-cat">VALUATION THEORY LAB</span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-text"><span class="lang-ja">#008 · Control Premium &amp; Synergy Valuation</span><span class="lang-en">#008 · Control Premium &amp; Synergy Valuation</span></span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-text">2026-03-23</span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-badge" id="reading-time-badge"><span class="lang-ja">計算中</span><span class="lang-en">...</span></span>
+</div>
+
+<main style="padding: 0 0 3em;">
+  <div class="article-container">
+    <div class="article-grid">
+
+      <!-- 3. 記事本文 -->
+      <article class="article-body">
+
+        <!-- 記事ヘッダー -->
+        <div style="padding: 36px 0 24px;">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+            <div class="section-label">Valuation Theory Lab &nbsp;#008</div>
+            <span class="sbar-badge" id="reading-time-badge2"><span class="lang-ja">計算中</span><span class="lang-en">...</span></span>
+          </div>
+          <h1 class="article-headline">
+            <span class="lang-ja">Control Premium &amp; Synergy Valuation — M&amp;A価格の理論的根拠</span>
+            <span class="lang-en">Control Premium &amp; Synergy Valuation — The Theoretical Basis of M&amp;A Pricing</span>
+          </h1>
+          <p class="article-standfirst">
+            <span class="lang-ja">買収プレミアムはなぜ正当化されるのか。スタンドアローン価値（少数持分の市場価値）と買収後価値（シナジー込みの支配持分価値）を分離することが、M&Aプライシングの起点である。シナジーをDCFで評価する方法と、競争オークションで「シナジーの価値が売り手に移転する」メカニズムを解析する。</span>
+            <span class="lang-en">Why is an acquisition premium justified at all? Separating standalone value — the minority market value — from post-acquisition value — the controlling stake inclusive of synergies — is the starting point of disciplined M&amp;A pricing. This article examines how to value synergies through a DCF framework and explains the mechanism by which competitive auctions systematically transfer synergy value to sellers.</span>
+          </p>
+          <div style="display:flex; gap:16px; align-items:center; border-top:1px solid var(--border-light); border-bottom:1px solid var(--border-light); padding:10px 0;">
+            <span class="byline">By <strong>Donato Valuation Notes</strong></span>
+            <span style="color:var(--border);">|</span>
+            <time class="byline" datetime="2026-03-23"><span class="lang-ja">2026年3月23日</span><span class="lang-en">23 March 2026</span></time>
+            <span style="color:var(--border);">|</span>
+            <span class="byline"><span class="lang-ja">M&amp;A · コントロール · シナジー · DCF</span><span class="lang-en">M&amp;A · Control · Synergies · DCF</span></span>
+          </div>
+        </div>
+
+        <!-- 構造化エグゼクティブサマリー -->
+        <section class="exec-summary">
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">概要</span><span class="lang-en">Summary</span></div>
+            <p class="exec-tldr">
+              <span class="lang-ja">コントロール・プレミアムとは、少数持分のスタンドアローン価値を超えて支払うプレミアムであり、その理論的上限はPV(シナジー) − 統合コストである。#005（DLOC/DLOM）の逆向きの命題として、「コントロールの価値はどこから来るか」を問うことが起点となる。競争オークションでは均衡条件として入札者がシナジーの大部分を売り手に譲渡することになり、純粋な価値創造は買い手にほとんど残らない。</span>
+              <span class="lang-en">A control premium is the excess paid above the standalone minority value, and its theoretical ceiling is PV(synergies) minus integration costs. As the inverse of #005 (DLOC/DLOM), the central question is: where does the value of control originate? In competitive auctions, equilibrium bidding transfers most synergy value to sellers, leaving the buyer with little or no value creation unless it possesses unique synergies unavailable to rival bidders.</span>
+            </p>
+          </div>
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">本稿の論点</span><span class="lang-en">Key Questions</span></div>
+            <ul class="issues-list">
+              <li class="issue-item">
+                <span class="issue-q">Q1</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>スタンドアローン価値と買収後価値の分離</strong> — DCFにシナジーを含める前の「現経営陣・現資本構成に基づく価値」をどう算定するか。なぜこの分離が#007のEBITDA正規化と同じ論理構造を持つのか</span>
+                  <span class="lang-en"><strong>Separating standalone from post-acquisition value</strong> — How do you determine "intrinsic value under current management and capital structure" before incorporating synergies? Why does this separation share the same logical structure as the EBITDA normalisation covered in #007?</span>
+                </span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">Q2</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>シナジーのDCF評価とWACC調整</strong> — 収益シナジー・コストシナジー・財務シナジーはそれぞれリスクプロファイルが異なる。どのWACCを使うべきか、そのWACC自体がM&A後にどう変化するか</span>
+                  <span class="lang-en"><strong>DCF valuation of synergies and WACC adjustments</strong> — Revenue, cost, and financial synergies carry materially different risk profiles. Which WACC should be applied to each synergy stream, and how does the WACC itself change post-acquisition?</span>
+                </span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">Q3</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>競争入札とシナジーの移転</strong> — 複数の買い手が競合する場合、なぜ「最も高いシナジーを見込む買い手が入札を制し、そのシナジーの大部分を売り手に支払う」という均衡が生じるのか。Winner's Curseの構造的原因</span>
+                  <span class="lang-en"><strong>Competitive bidding and synergy transfer</strong> — When multiple bidders compete, why does equilibrium produce an outcome where the highest-synergy buyer wins but pays most of that synergy to the seller? The structural cause of the winner's curse in M&amp;A auctions.</span>
+                </span>
+              </li>
+            </ul>
+          </div>
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">Valuation実務家への含意</span><span class="lang-en">Implications for Practitioners</span></div>
+            <ul class="implications-list">
+              <li class="implication-item">
+                <span class="lang-ja"><strong>Walk-away priceの計算を先に行う</strong> — 入札前に「スタンドアローン価値 + PV(シナジー) − 統合コスト = 最大支払い可能価格」を算定し、その価格を超えたら撤退する規律を組織として持つ</span>
+                <span class="lang-en"><strong>Calculate walk-away price before bidding</strong> — Before entering any auction, determine: standalone value + PV(synergies) − integration costs = maximum price. The discipline to walk away when this ceiling is reached must be institutionalised, not left to deal-team momentum.</span>
+              </li>
+              <li class="implication-item">
+                <span class="lang-ja"><strong>固有シナジーこそが競争優位</strong> — 競合他社が持てないシナジー（独自技術の結合、重複する地理展開等）を持つ入札者だけが、真の意味でプレミアムを正当化できる。汎用シナジーは入札競争で消える</span>
+                <span class="lang-en"><strong>Proprietary synergies are the only durable competitive advantage in auctions</strong> — Only a bidder with synergies unavailable to rivals — unique technology combinations, geographic overlaps, regulatory licences — can justify a premium that creates value. Generic cost-cutting synergies are competed away in any serious auction process.</span>
+              </li>
+              <li class="implication-item">
+                <span class="lang-ja"><strong>#007との二重計上を絶対に避ける</strong> — EBITDAの正規化でシナジーを一部取り込み、かつDCFでも同じシナジーを評価するダブルカウントは、プレミアム過大払いの最短経路である</span>
+                <span class="lang-en"><strong>Never double-count with #007 normalisation</strong> — Including a synergy in normalised EBITDA and then also valuing it in the DCF is the most direct route to overpaying. Once a synergy is in the EBITDA base, it is already capitalised at the entry multiple — including it again in the DCF pays for it twice.</span>
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- ===== 本文 ===== -->
+
+        <h2>
+          <span class="lang-ja">コントロール・プレミアムの起源：なぜ支配権に価値があるか</span>
+          <span class="lang-en">The Origin of Control Premium: Why Control Has Value</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">#005（DLOC/DLOM）では「少数持分は支配持分に対してなぜディスカウントされるか」を論じた。今回はその逆、すなわち<strong>「支配権を取得するために支払う追加プレミアムはどこから来るか」</strong>という問いに答える。この二つは同一の経済現象の正逆であり、DLOC（少数持分ディスカウント）とコントロール・プレミアムは数学的に補完関係にある。</span>
+          <span class="lang-en">In #005 (DLOC/DLOM), we asked why minority interests trade at a discount to controlling interests. This article inverts the question: <strong>where does the incremental premium paid to acquire control come from?</strong> The two are opposite faces of the same economic phenomenon — DLOC (discount for lack of control) and control premium are mathematical complements.</span>
+        </p>
+
+        <div class="formula">
+          <span class="lang-ja">
+            Control Premium(%) = (Acquisition Price − Standalone Value) / Standalone Value × 100<br>
+            <br>
+            DLOC(%) = 1 − 1 / (1 + Control Premium(%)/100)<br>
+            <br>
+            例: Control Premium = 30% → DLOC ≈ 23%
+          </span>
+          <span class="lang-en">
+            Control Premium(%) = (Acquisition Price − Standalone Value) / Standalone Value × 100<br>
+            <br>
+            DLOC(%) = 1 − 1 / (1 + Control Premium(%)/100)<br>
+            <br>
+            e.g.: Control Premium = 30% → DLOC ≈ 23%
+          </span>
+        </div>
+
+        <p>
+          <span class="lang-ja">支配権の価値は抽象的ではない。コントロールを持つ株主は、持たない株主と比べて以下の具体的な権利を行使できる。</span>
+          <span class="lang-en">The value of control is not abstract. A controlling shareholder exercises concrete rights that a minority holder cannot:</span>
+        </p>
+
+        <ul>
+          <li>
+            <span class="lang-ja"><strong>戦略の変更</strong>：現経営陣を交代させ、事業ポートフォリオを再編し、成長投資の方向を変える権利</span>
+            <span class="lang-en"><strong>Strategic change</strong>: The right to replace management, restructure the business portfolio, and redirect capital allocation</span>
+          </li>
+          <li>
+            <span class="lang-ja"><strong>配当・資本政策の決定</strong>：現金の社外流出タイミングと規模を自ら決定する権利</span>
+            <span class="lang-en"><strong>Dividend and capital policy</strong>: The right to determine the timing and quantum of cash distributions</span>
+          </li>
+          <li>
+            <span class="lang-ja"><strong>シナジーの実現</strong>：自社グループの他の事業と結合させることで、スタンドアローンでは生み出せない価値を創出する権利</span>
+            <span class="lang-en"><strong>Synergy realisation</strong>: The right to combine the business with other group assets to create value impossible for a standalone entity</span>
+          </li>
+          <li>
+            <span class="lang-ja"><strong>出口の選択</strong>：IPO・売却・清算のタイミングを自ら選択する権利</span>
+            <span class="lang-en"><strong>Exit selection</strong>: The right to choose the timing and mechanism of exit — IPO, sale, or liquidation</span>
+          </li>
+        </ul>
+
+        <p>
+          <span class="lang-ja">実証研究では、公開市場のM&A取引における平均コントロール・プレミアムは20〜35%のレンジに分布する（Mergerstat, Thomson Reuters等のデータベース）。ただしこの「平均」は取引の性格（戦略買収 vs. PE、友好的 vs. 敵対的）・業種・マクロ環境によって大きく変動する。平均値を直接使うことに慎重であるべき理由は後述する。</span>
+          <span class="lang-en">Empirical data places the average control premium in public M&amp;A transactions in the 20–35% range (Mergerstat, Thomson Reuters). However, this "average" varies substantially with transaction character (strategic vs. PE, friendly vs. hostile), industry, and macro environment. The reasons for treating averages with caution are examined below.</span>
+        </p>
+
+        <h2>
+          <span class="lang-ja">スタンドアローン価値と買収後価値の分離</span>
+          <span class="lang-en">Separating Standalone Value from Post-Acquisition Value</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">M&Aプライシングの理論的核心は<strong>「スタンドアローン価値（intrinsic value）」と「買収後価値（acquisition value）」を明確に分離すること</strong>にある。</span>
+          <span class="lang-en">The theoretical core of M&amp;A pricing is the <strong>clear separation of standalone value (intrinsic value) from post-acquisition value (acquisition value)</strong>.</span>
+        </p>
+
+        <div class="calc-block">
+          <div class="calc-row" style="font-weight:500; margin-bottom:8px;">
+            <span><span class="lang-ja">買収後価値の構造</span><span class="lang-en">Structure of Post-Acquisition Value</span></span>
+          </div>
+          <div class="calc-row">
+            <span><span class="lang-ja">Standalone Value（現経営・現資本構成・シナジーなし）</span><span class="lang-en">Standalone Value (current mgmt, current capital structure, no synergies)</span></span>
+            <span class="calc-highlight">= A</span>
+          </div>
+          <div class="calc-row">
+            <span><span class="lang-ja">+ PV(Revenue Synergies)（収益シナジーの現在価値）</span><span class="lang-en">+ PV(Revenue Synergies)</span></span>
+            <span class="calc-highlight">+ B</span>
+          </div>
+          <div class="calc-row">
+            <span><span class="lang-ja">+ PV(Cost Synergies)（コストシナジーの現在価値）</span><span class="lang-en">+ PV(Cost Synergies)</span></span>
+            <span class="calc-highlight">+ C</span>
+          </div>
+          <div class="calc-row">
+            <span><span class="lang-ja">+ PV(Financial Synergies)（財務シナジーの現在価値）</span><span class="lang-en">+ PV(Financial Synergies)</span></span>
+            <span class="calc-highlight">+ D</span>
+          </div>
+          <div class="calc-row">
+            <span><span class="lang-ja">− Integration Costs（統合コストの現在価値）</span><span class="lang-en">− Integration Costs (PV of integration expense)</span></span>
+            <span class="calc-warn">− E</span>
+          </div>
+          <div class="calc-row calc-total">
+            <span><span class="lang-ja">Post-Acquisition Value（買収後価値）</span><span class="lang-en">Post-Acquisition Value</span></span>
+            <span class="calc-highlight">= A + B + C + D − E</span>
+          </div>
+          <div class="calc-row calc-total" style="border-top: 2px solid var(--accent-warm); color: var(--accent-warm);">
+            <span><span class="lang-ja">最大支払い可能価格（Walk-Away Price）</span><span class="lang-en">Maximum Walk-Away Price</span></span>
+            <span>≤ Post-Acquisition Value</span>
+          </div>
+        </div>
+
+        <p>
+          <span class="lang-ja">この枠組みはDamodaranが繰り返し強調する区別——<strong>「価値（Value）と価格（Price）は異なる」</strong>——を実務に落とし込んだものだ。スタンドアローン価値（A）は売り手の内在価値であり、買い手が独立して推計するものだ。PV(シナジー)（B+C+D）は買い手固有の価値であり、売り手の財務諸表には存在しない。この分離を曖昧にすることが、M&A失敗の最大の原因の一つである。</span>
+          <span class="lang-en">This framework operationalises the distinction Damodaran repeatedly emphasises: <strong>value and price are not the same thing</strong>. Standalone value (A) is the seller's intrinsic value, independently estimated by the buyer. PV(synergies) (B+C+D) is the buyer's own value — it does not exist in the seller's financial statements. Blurring this separation is one of the primary causes of M&amp;A value destruction.</span>
+        </p>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>#007との接続：</strong>前稿でEBITDAの正規化において「Reported EBITDA」から「Normalised EBITDA」を分離した論理は、ここでのStandalone Valueの推計と同じ構造を持つ。どちらも「現在の姿（baseline）」と「将来の可能性（synergy / adjustment）」を混在させないことが求められる。</span>
+            <span class="lang-en"><strong>Connection to #007:</strong> The logic of separating "reported EBITDA" from "normalised EBITDA" in the previous article is structurally identical to estimating standalone value here. Both demand that the current baseline not be contaminated with future possibilities (synergies or run-rate adjustments that have not yet occurred).</span>
+          </p>
+        </div>
+
+        <h2>
+          <span class="lang-ja">シナジーのDCF評価：3つのカテゴリとWACC</span>
+          <span class="lang-en">DCF Valuation of Synergies: Three Categories and WACC</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">シナジーをDCFで評価する際、重要なのは<strong>シナジーの種類によってリスクプロファイルが大きく異なる</strong>という点だ。適用するWACCはシナジーのキャッシュフロー・プロファイルに応じて選択する必要がある。</span>
+          <span class="lang-en">When valuing synergies through DCF, the critical insight is that <strong>different synergy types carry materially different risk profiles</strong>. The discount rate applied must reflect the risk inherent in each synergy's cash flow profile.</span>
+        </p>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">シナジーの種類</span><span class="lang-en">Synergy Type</span></th>
+                <th><span class="lang-ja">主な内容</span><span class="lang-en">Examples</span></th>
+                <th><span class="lang-ja">リスク水準</span><span class="lang-en">Risk Level</span></th>
+                <th><span class="lang-ja">適用WACC</span><span class="lang-en">Applicable WACC</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="lang-ja">コストシナジー</span><span class="lang-en">Cost Synergies</span></td>
+                <td><span class="lang-ja">重複機能統合、調達スケール、製造統合</span><span class="lang-en">Duplicate function elimination, procurement scale, manufacturing integration</span></td>
+                <td class="td-accent"><span class="lang-ja">比較的低</span><span class="lang-en">Relatively low</span></td>
+                <td><span class="lang-ja">結合後企業のWACC（やや低め）</span><span class="lang-en">Combined entity WACC (slightly lower)</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">収益シナジー</span><span class="lang-en">Revenue Synergies</span></td>
+                <td><span class="lang-ja">クロスセル、地理展開、価格プレミアム</span><span class="lang-en">Cross-selling, geographic expansion, pricing premium</span></td>
+                <td class="td-warn"><span class="lang-ja">高（実現確度が低い）</span><span class="lang-en">High (realisation uncertain)</span></td>
+                <td><span class="lang-ja">結合後企業のWACC + リスクプレミアム</span><span class="lang-en">Combined WACC + risk premium</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">財務シナジー</span><span class="lang-en">Financial Synergies</span></td>
+                <td><span class="lang-ja">負債容量の増大、税盾効果の拡大、信用格付け向上</span><span class="lang-en">Increased debt capacity, expanded tax shield, improved credit rating</span></td>
+                <td class="td-accent"><span class="lang-ja">中〜低（構造的に予測可能）</span><span class="lang-en">Medium–low (structurally predictable)</span></td>
+                <td><span class="lang-ja">負債コストまたはAPVアプローチ</span><span class="lang-en">Cost of debt or APV approach</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>
+          <span class="lang-ja">コストシナジーの評価</span>
+          <span class="lang-en">Valuing Cost Synergies</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">コストシナジーは最も確実性が高く、M&A取引では中心的な価値ドライバーとなることが多い。典型的なものは、本社機能・IT・購買部門の統合による固定費削減と、サプライヤーとの価格交渉力向上による変動費削減だ。</span>
+          <span class="lang-en">Cost synergies are the most certain and often the primary value driver in M&amp;A. The most common forms are fixed cost reduction through integration of head office, IT, and procurement functions, and variable cost savings through improved supplier negotiating leverage.</span>
+        </p>
+
+        <div class="formula">
+          <span class="lang-ja">
+            PV(Cost Synergies)<br>
+            = Σ [ΔCost_t × (1 − Tax Rate)] / (1 + WACC_combined)^t<br>
+            <br>
+            注: 統合コスト（一時費用）は別途現在価値で控除する
+          </span>
+          <span class="lang-en">
+            PV(Cost Synergies)<br>
+            = Σ [ΔCost_t × (1 − Tax Rate)] / (1 + WACC_combined)^t<br>
+            <br>
+            Note: Integration costs (one-time expenses) are discounted and deducted separately
+          </span>
+        </div>
+
+        <h3>
+          <span class="lang-ja">収益シナジーの評価と「シナジー幻想」</span>
+          <span class="lang-en">Valuing Revenue Synergies — and the "Synergy Illusion"</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">収益シナジーはコストシナジーより実現確度が低く、かつ実現に時間を要する。クロスセルが機能するには、顧客の購買パターン変更、営業チームの再教育、製品適合性の確認が必要だ。地理的展開は新市場での競合との戦いを意味する。実証研究（McKinsey, BCG等）は、M&Aで想定した収益シナジーの50〜70%が未達に終わることを示している。</span>
+          <span class="lang-en">Revenue synergies are less certain than cost synergies and take longer to materialise. Cross-selling requires customers to change purchasing behaviour, sales teams to be retrained, and product compatibility to be confirmed. Geographic expansion means competing in new markets. Empirical research (McKinsey, BCG) shows that 50–70% of anticipated revenue synergies in M&amp;A fail to materialise.</span>
+        </p>
+
+        <div class="trap-box">
+          <div class="trap-label">SYNERGY ILLUSION</div>
+          <p>
+            <span class="lang-ja">投資銀行のフェアネス・オピニオンやプレゼンテーション資料で示される「シナジー」の多くは収益シナジーに偏っており、かつリスク調整が不十分である。コストシナジーは統合後18〜24ヶ月で実現が確認できるが、収益シナジーの「検証」は5年後にしか行えない——したがって過大評価が発覚しにくい。これを「シナジー幻想（Synergy Illusion）」と呼ぶ。収益シナジーには必ず独立したシナリオ分析とヘアカット（少なくとも50%）を適用すること。</span>
+            <span class="lang-en">Most "synergies" presented in investment bank fairness opinions and pitch books are weighted towards revenue synergies with inadequate risk adjustment. Cost synergies can be verified within 18–24 months of closing; revenue synergies cannot be tested for five years — making overstatement very difficult to detect. Apply independent scenario analysis and a haircut of at least 50% to all revenue synergy projections.</span>
+          </p>
+        </div>
+
+        <h3>
+          <span class="lang-ja">財務シナジーとWACC変化</span>
+          <span class="lang-en">Financial Synergies and WACC Changes</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">財務シナジーの中で最も重要なのは<strong>負債容量の増大</strong>だ。M&A後、結合企業は単体では利用できなかった追加借入を行い、その節税効果（Interest Tax Shield）を享受できる。これはAPV（Adjusted Present Value）アプローチで評価する。</span>
+          <span class="lang-en">The most important financial synergy is <strong>increased debt capacity</strong>. Post-merger, the combined entity can access additional leverage unavailable to the standalone businesses, capturing the associated interest tax shield. This is best valued using an Adjusted Present Value (APV) approach.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">また、M&A後にデフォルト相関が低い事業を結合することでベータが変化し、WACCそのものが変わりうる（Hamada方程式：#003参照）。ただし実務上は「結合後WACCは合併前双方のWACCの加重平均に近い」という近似が使われることが多い。</span>
+          <span class="lang-en">Additionally, combining businesses with low default correlation may alter the beta of the combined entity, changing the WACC itself (Hamada equation — see #003). In practice, the approximation that the combined WACC is close to the weighted average of the pre-merger WACCs of each entity is commonly used as a first step.</span>
+        </p>
+
+        <h2>
+          <span class="lang-ja">競争オークションとWinner's Curse：シナジーはなぜ売り手に移転するか</span>
+          <span class="lang-en">Competitive Auctions and the Winner's Curse: Why Synergies Transfer to Sellers</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">M&Aのオークション理論において、最も重要な命題の一つは<strong>「競争オークションでは、入札者が持つシナジーの大部分が売り手に移転する」</strong>というものだ。なぜそうなるか。</span>
+          <span class="lang-en">One of the most important propositions in M&amp;A auction theory is that <strong>in a competitive auction, most of a bidder's synergy value transfers to the seller</strong>. Why does this happen?</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">入札者A、B、Cがスタンドアローン価値100のターゲットに対して競合しているとする。各入札者のシナジー価値を次のように仮定する。</span>
+          <span class="lang-en">Suppose bidders A, B, and C compete for a target with a standalone value of 100. Assume each bidder's synergy value is as follows:</span>
+        </p>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">入札者</span><span class="lang-en">Bidder</span></th>
+                <th><span class="lang-ja">スタンドアローン価値</span><span class="lang-en">Standalone Value</span></th>
+                <th><span class="lang-ja">シナジー（固有）</span><span class="lang-en">Synergies (proprietary)</span></th>
+                <th><span class="lang-ja">最大入札可能額</span><span class="lang-en">Max bid</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>A</td>
+                <td>100</td>
+                <td class="td-accent">+40</td>
+                <td class="td-accent">140</td>
+              </tr>
+              <tr>
+                <td>B</td>
+                <td>100</td>
+                <td>+25</td>
+                <td>125</td>
+              </tr>
+              <tr>
+                <td>C</td>
+                <td>100</td>
+                <td>+15</td>
+                <td>115</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>
+          <span class="lang-ja">均衡では、入札者Aは125超の価格で入札して落札する。このとき入札者Aが持つシナジー価値40のうち、少なくとも25（≒ 125 − 100）が売り手に支払われ、入札者Aの価値創造は最大でも15（= 40 − 25）に留まる。</span>
+          <span class="lang-en">In equilibrium, bidder A wins by bidding just above 125. Of bidder A's 40 in synergies, at least 25 (≈ 125 − 100) is transferred to the seller as price premium. Bidder A's value creation is capped at 15 (= 40 − 25) at best.</span>
+        </p>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>この均衡が示す実務的含意は明確だ。</strong>競争オークションで価値を創造できる唯一の条件は、<strong>他の入札者が持てない固有のシナジーを保有すること</strong>だ。入札者AとBが共に「重複するバックオフィスのコスト削減」というシナジーを主張する場合、そのシナジーは汎用（generic）であり、競争によって全額売り手に移転する。固有（proprietary）シナジーだけが買い手の価値創造に残る。</span>
+            <span class="lang-en"><strong>The practical implication is clear.</strong> The only condition under which a buyer can create value in a competitive auction is if it possesses <strong>proprietary synergies unavailable to rival bidders</strong>. If bidders A and B both claim "duplicate back-office cost savings," that synergy is generic and is competed entirely to the seller. Only proprietary synergies remain with the buyer.</span>
+          </p>
+        </div>
+
+        <h3>
+          <span class="lang-ja">Winner's Curseの構造的原因</span>
+          <span class="lang-en">The Structural Cause of the Winner's Curse</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">Winner's Curse（勝者の呪い）とは、競争入札で「最も楽観的な推計を持つ入札者が勝者となり、かつ過大に支払う」という現象だ。M&Aでは以下の2つのメカニズムが重なる。</span>
+          <span class="lang-en">The winner's curse describes the phenomenon where "the most optimistic estimator wins the auction — and overpays." In M&amp;A, two mechanisms compound each other:</span>
+        </p>
+
+        <ol class="numbered-list">
+          <li>
+            <span class="num">1</span>
+            <span>
+              <span class="lang-ja"><strong>情報の非対称性</strong>：各入札者はターゲットの私的情報を独立に推計する。推計値の分散が大きいほど、最高値は「真の価値」を超えて乖離する統計的性質がある</span>
+              <span class="lang-en"><strong>Information asymmetry</strong>: Each bidder estimates private information about the target independently. The greater the dispersion of estimates, the more the highest estimate systematically exceeds the true value — this is a statistical property, not a behavioural bias</span>
+            </span>
+          </li>
+          <li>
+            <span class="num">2</span>
+            <span>
+              <span class="lang-ja"><strong>Deal momentum</strong>：時間・費用・組織的コミットメントが蓄積するにつれ、「撤退コスト」が上昇し、合理的なWalk-away priceを超えた入札が行われやすくなる</span>
+              <span class="lang-en"><strong>Deal momentum</strong>: As time, fees, and organisational commitment accumulate, the perceived "exit cost" rises, making it increasingly likely that bids exceed the rational walk-away price</span>
+            </span>
+          </li>
+        </ol>
+
+        <div class="pull-quote">
+          <p><span class="lang-ja">「M&Aの歴史は合理的な買収価格の限界を超えた取引で満ちている。Buy-sideのアドバイザーがシナジーの現在価値を入札価格の正当化に使うとき、最終的には株主が統合コストとシナジー未達のリスクを負う。」</span><span class="lang-en">"The history of M&amp;A is littered with transactions that exceeded the rational ceiling of acquisition value. When buy-side advisers use synergy NPVs to justify bid prices, it is ultimately shareholders who bear the integration costs and the risk of synergy shortfall."</span></p>
+          <footer>— Valuation practice principle</footer>
+        </div>
+
+        <h2>
+          <span class="lang-ja">実務的フレームワーク：入札前に行うべき5つのステップ</span>
+          <span class="lang-en">Practical Framework: Five Steps Before Placing a Bid</span>
+        </h2>
+
+        <ol class="numbered-list">
+          <li>
+            <span class="num">1</span>
+            <span>
+              <span class="lang-ja"><strong>スタンドアローンDCFの構築</strong>：売り手の財務計画ではなく、独立した仮定（market-implied growth、業界WACCベースの資本コスト）でターゲットのDCFを再構築する。売り手のIM・CIMに示されたEBITDA projectionはスタート地点にすぎない</span>
+              <span class="lang-en"><strong>Build an independent standalone DCF</strong>: Reconstruct the target's DCF using independent assumptions — market-implied growth, industry-benchmarked WACC — not the seller's financial projections. The EBITDA forecasts in the seller's IM or CIM are a starting point only</span>
+            </span>
+          </li>
+          <li>
+            <span class="num">2</span>
+            <span>
+              <span class="lang-ja"><strong>シナジーの分類と確実性評価</strong>：コスト・収益・財務シナジーを分類し、それぞれに実現タイムラインと確実性スコアを設定する。収益シナジーには少なくとも50%ヘアカットを適用する</span>
+              <span class="lang-en"><strong>Classify synergies and score certainty</strong>: Categorise cost, revenue, and financial synergies, assigning each a realisation timeline and certainty score. Apply a minimum 50% haircut to all revenue synergies</span>
+            </span>
+          </li>
+          <li>
+            <span class="num">3</span>
+            <span>
+              <span class="lang-ja"><strong>統合コストの独立推計</strong>：売り手が提示する「synergy case」には統合コストが過小評価されているか、省略されていることが多い。Day 1コスト（システム統合、人員移行）とDay 2コスト（組織変更、ブランド統合）を分けて推計する</span>
+              <span class="lang-en"><strong>Independently estimate integration costs</strong>: Synergy cases presented by sellers routinely understate or omit integration costs. Separately estimate Day 1 costs (systems integration, workforce transition) and Day 2 costs (organisational restructuring, brand integration)</span>
+            </span>
+          </li>
+          <li>
+            <span class="num">4</span>
+            <span>
+              <span class="lang-ja"><strong>Walk-away priceの算定と制度化</strong>：Standalone Value + PV(Synergies) − Integration Costs = Maximum Price を算出し、組織として「この価格を超えたら撤退する」と決議する。これはM&A委員会の承認事項として記録に残す</span>
+              <span class="lang-en"><strong>Calculate and institutionalise the walk-away price</strong>: Determine: Standalone Value + PV(Synergies) − Integration Costs = Maximum Price. Formally resolve, at M&amp;A committee level, that the organisation will exit the process if this ceiling is exceeded. Record this as a standing commitment</span>
+            </span>
+          </li>
+          <li>
+            <span class="num">5</span>
+            <span>
+              <span class="lang-ja"><strong>比較可能マルチプルによるサニティチェック</strong>：算定した買収後価値が、対象企業の業種・規模感での過去のM&A取引マルチプル（EV/EBITDA、EV/Revenue）と整合するかを確認する。乖離が大きい場合はシナジー推計の再検討を要する</span>
+              <span class="lang-en"><strong>Sanity check against comparable transaction multiples</strong>: Verify that the implied acquisition multiple — EV/EBITDA, EV/Revenue — is consistent with precedent transactions in the same sector and size bracket. A large deviation demands a rethink of the synergy assumptions</span>
+            </span>
+          </li>
+        </ol>
+
+        <h2>
+          <span class="lang-ja">平均コントロール・プレミアムを使ってはならない理由</span>
+          <span class="lang-en">Why You Should Not Use Average Control Premiums</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">fairness opinionや株式評価の文脈で「業界平均コントロール・プレミアム30%」を機械的に適用するアプローチがある。これには理論的な問題がある。</span>
+          <span class="lang-en">In fairness opinions and equity valuations, mechanically applying an "industry average control premium of 30%" is a common but theoretically flawed approach.</span>
+        </p>
+
+        <ul>
+          <li>
+            <span class="lang-ja"><strong>観測バイアス</strong>：データベースに記録される取引は「成立した取引」のみだ。Winner's Curseの影響で、過払い取引が多く含まれている可能性がある</span>
+            <span class="lang-en"><strong>Survivorship bias</strong>: Databases record only completed transactions. Given the winner's curse, the sample is likely skewed towards overpayment</span>
+          </li>
+          <li>
+            <span class="lang-ja"><strong>状況依存性</strong>：友好的取引と敵対的TOBではプレミアムが異なる。業界ごとにシナジーの性質が異なる。マクロ環境（金利水準）が資本コストを変える</span>
+            <span class="lang-en"><strong>Context dependence</strong>: Premiums differ between friendly transactions and hostile tender offers. Synergy characteristics vary by industry. The macro environment — particularly interest rate levels — shifts the cost of capital and therefore the premium ceiling</span>
+          </li>
+          <li>
+            <span class="lang-ja"><strong>循環論法</strong>：過去のプレミアムを「正当化の根拠」として使うことは、過去の過ちを現在の正当性に転化することに等しい</span>
+            <span class="lang-en"><strong>Circular reasoning</strong>: Using historical premiums as a justification is equivalent to treating past mistakes as a licence for present ones</span>
+          </li>
+        </ul>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>理論的に正しいアプローチ</strong>は、コントロール・プレミアムを独立変数（外から与えられるもの）として扱うのではなく、<strong>買い手固有のシナジーから積み上げで算出する</strong>ことだ。平均値はせいぜい「合理的なレンジ内にあるかどうかの参照」に使うにとどめる。</span>
+            <span class="lang-en"><strong>The theoretically correct approach</strong> treats the control premium not as an exogenous variable imported from averages, but as a <strong>bottom-up calculation from the buyer's own synergy estimates</strong>. Average premiums serve at most as a sanity check on whether the result falls within a reasonable range — nothing more.</span>
+          </p>
+        </div>
+
+        <div class="section-sep">· · ·</div>
+
+        <p>
+          <span class="lang-ja">次回の#009では、#008（コントロール・プレミアム）と#003（Hamada方程式）の延長として、LBOバリュエーションを扱う。財務レバレッジが価値をどう変えるか、PE投資家のIRR思考とDCFの接続、Leveraged buyoutにおける複数の出口シナリオ評価がテーマとなる。</span>
+          <span class="lang-en">In #009, building on #008 (control premium) and #003 (Hamada equation), we examine LBO valuation — how financial leverage transforms value, the connection between PE investors' IRR thinking and DCF, and the evaluation of multiple exit scenarios in a leveraged buyout.</span>
+        </p>
+
+        <!-- NEXT ARTICLE CTA -->
+        <div class="next-article">
+          <div class="next-label">NEXT — Valuation Theory Lab #009</div>
+          <div class="next-title">
+            <span class="lang-ja">LBOバリュエーション — レバレッジが価値を変えるメカニズム</span>
+            <span class="lang-en">LBO Valuation — How Leverage Transforms Value</span>
+          </div>
+          <div class="next-desc">
+            <span class="lang-ja">PE投資家のIRR思考とDCFの統合。Leveraged buyoutにおけるデット・キャパシティ、出口マルチプルの感応度分析、Equity waterfall。</span>
+            <span class="lang-en">Integrating PE investors' IRR mindset with DCF. Debt capacity in leveraged buyouts, exit multiple sensitivity analysis, and equity waterfall mechanics.</span>
+          </div>
+        </div>
+
+      </article>
+
+      <!-- 4. サイドバー -->
+      <aside class="article-sidebar">
+
+        <div class="sidebar-card">
+          <div class="section-label">KEY CONCEPTS</div>
+          <div class="keyfacts-grid">
+            <div class="fact-card">
+              <div class="fact-value">20–35%</div>
+              <div class="fact-desc"><span class="lang-ja">M&Aの平均コントロール・プレミアム範囲</span><span class="lang-en">Average control premium range in M&amp;A</span></div>
+            </div>
+            <div class="fact-card highlight">
+              <div class="fact-value">50%+</div>
+              <div class="fact-desc"><span class="lang-ja">収益シナジー未達率の実証的目安</span><span class="lang-en">Empirical shortfall rate for revenue synergies</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">Walk-away</div>
+              <div class="fact-desc"><span class="lang-ja">最大支払い可能価格を事前に制度化</span><span class="lang-en">Maximum price — institutionalise before bidding</span></div>
+            </div>
+            <div class="fact-card highlight">
+              <div class="fact-value">APV</div>
+              <div class="fact-desc"><span class="lang-ja">財務シナジー評価に適したアプローチ</span><span class="lang-en">Best approach for financial synergy valuation</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-card">
+          <div class="section-label"><span class="lang-ja">価値を創造する条件 vs 破壊する条件</span><span class="lang-en">Value Creation vs Destruction</span></div>
+          <ul class="highlights-list" style="margin-top:12px;">
+            <li class="highlight-item">
+              <span class="hl-num" style="color:var(--accent);">✓</span>
+              <span class="hl-text"><span class="lang-ja">競合が持てない固有シナジーの保有</span><span class="lang-en">Proprietary synergies unavailable to rivals</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num" style="color:var(--accent);">✓</span>
+              <span class="hl-text"><span class="lang-ja">Walk-away priceの事前確定と遵守</span><span class="lang-en">Walk-away price set and enforced in advance</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num" style="color:var(--accent);">✓</span>
+              <span class="hl-text"><span class="lang-ja">統合コストの独立かつ保守的な推計</span><span class="lang-en">Conservative, independent integration cost estimate</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num" style="color:var(--accent-warm);">✗</span>
+              <span class="hl-text"><span class="lang-ja">収益シナジーをリスク調整なしで計上</span><span class="lang-en">Revenue synergies without risk adjustment</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num" style="color:var(--accent-warm);">✗</span>
+              <span class="hl-text"><span class="lang-ja">#007と本稿のシナジー二重計上</span><span class="lang-en">Synergy double-counting across #007 and DCF</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num" style="color:var(--accent-warm);">✗</span>
+              <span class="hl-text"><span class="lang-ja">平均プレミアムの機械的適用</span><span class="lang-en">Mechanical application of average premiums</span></span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="sidebar-card">
+          <div class="section-label">SERIES INDEX</div>
+          <ol class="highlights-list" style="list-style:none;padding:0;margin-top:12px;">
+            <li class="highlight-item">
+              <span class="hl-num">01</span>
+              <span class="hl-text"><a href="./2026-03-20-valuation.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">ターミナルバリューとDCF</span><span class="lang-en">Terminal Value &amp; DCF</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">02</span>
+              <span class="hl-text"><a href="./2026-03-21-wacc.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">資本コスト（WACC）</span><span class="lang-en">Cost of Capital (WACC)</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">03</span>
+              <span class="hl-text"><a href="./2026-03-21-beta-hamada.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">Beta変換とHamada方程式</span><span class="lang-en">Beta &amp; Hamada Equation</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">04</span>
+              <span class="hl-text"><a href="./2026-03-22-cyclical.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">景気循環企業の評価</span><span class="lang-en">Valuing Cyclical Businesses</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">05</span>
+              <span class="hl-text"><a href="./2026-03-22-dloc-dlom.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">DLOC・DLOM</span><span class="lang-en">DLOC &amp; DLOM</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">06</span>
+              <span class="hl-text"><a href="./2026-03-22-multiples-comparability.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">マルチプルの比較可能性</span><span class="lang-en">Multiples Comparability</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">07</span>
+              <span class="hl-text"><a href="./2026-03-23-normalised-ebitda.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">Normalised EBITDA</span><span class="lang-en">Normalised EBITDA</span></a></span>
+            </li>
+            <li class="highlight-item" style="border-bottom:none;">
+              <span class="hl-num" style="color:var(--accent-warm);">08</span>
+              <span class="hl-text" style="color:var(--text-primary);font-weight:500;"><span class="lang-ja">Control Premium &amp; Synergy ← 本稿</span><span class="lang-en">Control Premium &amp; Synergy ← this article</span></span>
+            </li>
+          </ol>
+        </div>
+
+        <div class="sidebar-card">
+          <div class="section-label">KEY REFERENCES</div>
+          <ul class="source-list" style="margin-top:10px;">
+            <li><a href="#" target="_blank" rel="noopener">Damodaran — The Value of Control (NYU Stern)</a><span class="source-tag">PAPER</span></li>
+            <li><a href="#" target="_blank" rel="noopener">Rosenbaum &amp; Pearl — Investment Banking (Wiley)</a><span class="source-tag">BOOK</span></li>
+            <li><a href="#" target="_blank" rel="noopener">McKinsey — The Real Deal on M&amp;A Synergies</a><span class="source-tag">ARTICLE</span></li>
+            <li><a href="#" target="_blank" rel="noopener">Mergerstat Control Premium Study</a><span class="source-tag">DATA</span></li>
+            <li><a href="#" target="_blank" rel="noopener">Bruner — Applied Mergers and Acquisitions (Wiley)</a><span class="source-tag">BOOK</span></li>
+          </ul>
+        </div>
+
+      </aside>
+
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <span>Valuation Theory Lab #008 | donato Valuation Notes | 2026-03-23</span>
+  <span>
+    <span class="lang-ja">本稿は理論解説を目的としており、投資・M&amp;A意思決定にあたっては専門家への確認を要します。</span>
+    <span class="lang-en">For educational purposes only. Consult a qualified adviser before making investment or M&amp;A decisions.</span>
+  </span>
+</footer>
+
+<script>
+  // Progress bar
+  window.addEventListener('scroll', function() {
+    var h = document.documentElement;
+    var pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    document.getElementById('progress-bar').style.width = Math.min(pct, 100) + '%';
+  });
+
+  // Reading time (500字/分)
+  (function() {
+    var text = document.querySelector('.article-body') ? document.querySelector('.article-body').textContent : '';
+    var chars = text.length;
+    var minutes = Math.ceil(chars / 500);
+    var el1 = document.getElementById('reading-time-badge');
+    var el2 = document.getElementById('reading-time-badge2');
+    if (el1) el1.querySelector('.lang-ja').textContent = '約' + minutes + '分';
+    if (el2) el2.querySelector('.lang-ja').textContent = '約' + minutes + '分';
+    if (el1) el1.querySelector('.lang-en').textContent = '~' + minutes + ' min read';
+    if (el2) el2.querySelector('.lang-en').textContent = '~' + minutes + ' min read';
+  })();
+
+  // Lang toggle
+  let currentLang = localStorage.getItem('hp-lang') || 'ja';
+  let currentTheme = localStorage.getItem('hp-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('hp-lang', lang);
+    document.querySelectorAll('.lang-ja').forEach(el => el.style.display = lang === 'ja' ? 'inline' : 'none');
+    document.querySelectorAll('.lang-en').forEach(el => el.style.display = lang === 'en' ? 'inline' : 'none');
+    document.querySelectorAll('.art-lang-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+    document.documentElement.lang = lang === 'ja' ? 'ja' : 'en';
+  }
+  function toggleTheme() {
+    currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+    localStorage.setItem('hp-theme', currentTheme);
+    document.body.classList.toggle('dark', currentTheme === 'dark');
+    document.getElementById('theme-btn').textContent = currentTheme === 'light' ? '☀' : '☾';
+  }
+  document.addEventListener('DOMContentLoaded', () => {
+    setLang(currentLang);
+    if (currentTheme === 'dark') {
+      document.body.classList.add('dark');
+      document.getElementById('theme-btn').textContent = '☾';
+    }
+  });
+</script>
+
+</body>
+</html>

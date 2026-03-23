@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AI時代に採用側が求めるFinanceスキルは根本から変わった。求人JDの変化・面接トレンド・年収プレミアムの実態から、Finance Professionalが転職市場で勝つための具体的戦略を整理する。">
+  <title>AI時代のFinance転職市場 — 採用側が求めるものが変わった | Finance Professional × Career | donato</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+JP:wght@300;400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../brand.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:           #F8F7F4;
+      --bg-code:      #EEECEA;
+      --bg-quote:     #EEECEA;
+      --bg-highlight: #EBF3FB;
+      --bg-subtle:    #F0EFEB;
+      --bg-card:      #F0EFEB;
+      --bg-header:    #F8F7F4;
+      --text-primary: #111320;
+      --text-body:    #2A2C3E;
+      --text-muted:   #565C70;
+      --text-light:   #888EA0;
+      --accent:       #1A6EB0;
+      --accent-warm:  #D4A010;
+      --border:       #D4D2CC;
+      --border-quote: #B8B6B0;
+      --border-light: #D4D2CC;
+      --tag-bg:       #E4EFF8;
+      --tag-text:     #1A6EB0;
+      --table-stripe: #F0EFEB;
+    }
+
+    /* ===== PROGRESS BAR ===== */
+    #progress-bar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      width: 0%;
+      background: var(--accent);
+      z-index: 300;
+      transition: width 0.1s linear;
+    }
+
+    body {
+      font-family: 'Noto Serif JP', Georgia, serif;
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--text-primary);
+      background: var(--bg);
+    }
+
+    /* ===== SITE HEADER ===== */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg-header);
+      border-bottom: 2px solid var(--accent);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .site-header-left { display: flex; align-items: center; gap: 12px; }
+    .wordmark {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: lowercase;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+    .wordmark span { color: var(--accent-warm); }
+    .header-sep { color: var(--border-quote); font-size: 13px; }
+    .header-media {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+    }
+    .site-header-right { display: flex; align-items: center; gap: 12px; }
+    .header-back-link {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .header-back-link:hover { color: var(--accent); }
+    .lang-toggle-bar {
+      display: flex;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .art-lang-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      padding: 3px 10px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .art-lang-btn.active { background: #F5C800; color: #111320; }
+    #theme-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      padding: 3px 9px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.15s;
+    }
+    #theme-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .header-date {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-light);
+      letter-spacing: 0.08em;
+    }
+
+    /* ===== STICKY INFO BAR ===== */
+    #sticky-bar {
+      position: sticky;
+      top: 44px;
+      z-index: 200;
+      background: var(--bg-subtle);
+      border-bottom: 1px solid var(--border-light);
+      padding: 7px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .sbar-cat {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+    }
+    .sbar-sep { color: var(--border-quote); font-size: 11px; }
+    .sbar-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+    .sbar-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      padding: 2px 8px;
+    }
+
+    /* ===== LAYOUT ===== */
+    .article-container { max-width: 1240px; margin: 0 auto; padding: 0 20px; }
+    .article-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 24px;
+    }
+    .article-body { grid-column: 2 / 10; max-width: 68ch; }
+    .article-sidebar {
+      grid-column: 10 / 13;
+      position: sticky;
+      top: 78px;
+      align-self: start;
+      max-height: calc(100vh - 90px);
+      overflow-y: auto;
+    }
+    .article-sidebar::-webkit-scrollbar { width: 4px; }
+    .article-sidebar::-webkit-scrollbar-track { background: transparent; }
+    .article-sidebar::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 2px; }
+
+    /* ===== TYPOGRAPHY ===== */
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+    }
+    .article-headline {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(2rem, 4vw, 2.6rem);
+      font-weight: 600;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+    .article-standfirst {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      font-weight: 400;
+    }
+    .byline {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    h2 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.45rem;
+      font-weight: 600;
+      line-height: 1.25;
+      color: var(--text-primary);
+      margin: 2em 0 0.75em;
+      border-top: 1px solid var(--border);
+      padding-top: 1em;
+    }
+    h3 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin: 1.75em 0 0.5em;
+    }
+    .article-body p { margin-bottom: 1.4em; font-size: 0.97rem; line-height: 1.8; }
+    .article-body ul, .article-body ol { margin: 0 0 1.4em 1.4em; }
+    .article-body li { margin-bottom: 0.4em; font-size: 0.95rem; line-height: 1.7; }
+    strong { color: var(--text-primary); font-weight: 600; }
+
+    /* ===== EXEC SUMMARY ===== */
+    .exec-summary {
+      background: var(--bg-highlight);
+      border: 1px solid var(--border-light);
+      border-left: 4px solid var(--accent);
+      padding: 24px;
+      margin: 0 0 2.5em;
+    }
+    .exec-block { margin-bottom: 20px; }
+    .exec-block:last-child { margin-bottom: 0; }
+    .exec-block + .exec-block { padding-top: 18px; border-top: 1px solid var(--border-light); }
+    .exec-tldr {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.02rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      line-height: 1.55;
+      margin-top: 8px;
+    }
+    .issues-list, .implications-list {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .issue-item { display: flex; gap: 10px; align-items: baseline; }
+    .issue-q {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--accent);
+      flex-shrink: 0;
+      min-width: 20px;
+    }
+    .issue-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: var(--text-body);
+      line-height: 1.55;
+    }
+    .implication-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: var(--text-body);
+      line-height: 1.55;
+      padding-left: 14px;
+      border-left: 2px solid var(--accent);
+    }
+    .read-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
+    .read-col-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.66rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 6px;
+    }
+    .read-label-yes { color: var(--accent); }
+    .read-label-no { color: var(--text-muted); }
+    .read-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-body);
+      line-height: 1.45;
+      padding-left: 10px;
+      border-left: 2px solid var(--accent);
+      margin-bottom: 5px;
+    }
+    .skip-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+      padding-left: 10px;
+      border-left: 2px solid var(--border-light);
+      margin-bottom: 5px;
+    }
+
+    /* ===== INSIGHT / TRAP BOX ===== */
+    .insight-box {
+      background: var(--bg-highlight);
+      border-left: 4px solid var(--accent);
+      padding: 18px 22px;
+      margin: 28px 0;
+    }
+    .insight-box p {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: var(--text-primary);
+    }
+    .insight-box strong { color: var(--accent); }
+    .trap-box {
+      background: #FEF9EC;
+      border-left: 4px solid var(--accent-warm);
+      padding: 18px 22px;
+      margin: 24px 0;
+    }
+    .trap-box p {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      line-height: 1.65;
+      color: var(--text-body);
+    }
+    .trap-box .trap-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      color: var(--accent-warm);
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+
+    /* ===== DATA TABLE ===== */
+    .data-table-wrap { overflow-x: auto; margin: 1.5em 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      background: var(--bg-subtle);
+      padding: 8px 12px;
+      text-align: left;
+      border-bottom: 2px solid var(--border);
+    }
+    td {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border-light);
+      color: var(--text-body);
+      font-family: 'Inter', sans-serif;
+    }
+    tr:nth-child(even) td { background: var(--table-stripe); }
+    .td-accent { color: var(--accent); font-weight: 600; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
+    .td-warn   { color: var(--accent-warm); font-weight: 600; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
+
+    /* ===== PULL QUOTE ===== */
+    .pull-quote {
+      border-left: 4px solid var(--accent);
+      margin: 2em 0;
+      padding: 1em 20px;
+      background: var(--bg-card);
+    }
+    .pull-quote p {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.2rem;
+      font-style: italic;
+      color: var(--text-primary);
+      line-height: 1.5;
+      margin-bottom: 6px !important;
+    }
+    .pull-quote footer {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* ===== SECTION SEP ===== */
+    .section-sep {
+      text-align: center;
+      color: var(--text-light);
+      font-size: 1.2rem;
+      letter-spacing: 0.5em;
+      margin: 48px 0;
+      user-select: none;
+    }
+
+    /* ===== SOURCE LIST ===== */
+    .source-list { list-style: none; padding: 0; }
+    .source-list li { margin-bottom: 6px; }
+    .source-list a {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--accent);
+      text-decoration: none;
+      line-height: 1.5;
+    }
+    .source-list a:hover { text-decoration: underline; }
+    .source-tag { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--text-muted); margin-left: 4px; }
+
+    /* ===== NEXT ARTICLE CTA ===== */
+    .next-article {
+      background: var(--text-primary);
+      color: #E4E2DC;
+      padding: 28px 32px;
+      margin-top: 56px;
+    }
+    .next-article .next-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      color: var(--accent-warm);
+      margin-bottom: 8px;
+    }
+    .next-article .next-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+    .next-article .next-desc {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.82rem;
+      color: #9299A8;
+      margin-top: 8px;
+    }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .keyfacts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+    .fact-card { background: var(--bg-highlight); padding: 10px 8px; }
+    .fact-card.highlight { background: #FDF8EC; border: 1px solid #E8D88A; }
+    .fact-value { font-family: 'JetBrains Mono', monospace; font-size: 1rem; font-weight: 500; color: var(--accent); line-height: 1.2; }
+    .fact-card.highlight .fact-value { color: #8A6A00; }
+    .fact-desc { font-family: 'Inter', sans-serif; font-size: 0.64rem; color: var(--text-muted); margin-top: 3px; line-height: 1.35; }
+    .fact-card.highlight .fact-desc { color: #7A6020; }
+    .highlights-list { list-style: none; padding: 0; margin-top: 12px; }
+    .highlight-item { padding: 9px 0; border-bottom: 1px solid var(--border-light); display: flex; gap: 10px; align-items: baseline; }
+    .highlight-item:last-child { border-bottom: none; }
+    .hl-num { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--accent); flex-shrink: 0; min-width: 18px; }
+    .hl-text { font-family: 'Inter', sans-serif; font-size: 0.76rem; color: var(--text-body); line-height: 1.45; }
+
+    /* ===== LANG TOGGLE ===== */
+    .lang-en { display: none; }
+
+    /* ===== FOOTER ===== */
+    .site-footer {
+      border-top: 1px solid var(--border-light);
+      margin-top: 4em;
+      padding: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* ===== PRINT ===== */
+    @media print {
+      body { background: white; font-size: 11pt; }
+      .site-header, #sticky-bar, #progress-bar { display: none; }
+      .article-sidebar { position: static; max-height: none; overflow: visible; }
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+    @page { size: A4; margin: 20mm 15mm; }
+
+    /* ===== MOBILE ===== */
+    @media (max-width: 900px) {
+      .article-body { grid-column: 1 / -1; }
+      .article-sidebar { position: static; max-height: none; overflow: visible; grid-column: 1 / -1; }
+      .article-grid { display: block; }
+      .read-grid { grid-template-columns: 1fr; }
+      #sticky-bar { flex-wrap: wrap; gap: 6px; }
+    }
+
+    body.dark {
+      --bg:           #0D1117;
+      --bg-code:      #161B22;
+      --bg-quote:     #161B22;
+      --bg-highlight: #0E1A2B;
+      --bg-subtle:    #161B22;
+      --bg-card:      #161B22;
+      --bg-header:    #0D1117;
+      --text-primary: #E4E2DC;
+      --text-body:    #C4C2BC;
+      --text-muted:   #8B93A8;
+      --text-light:   #575E70;
+      --accent:       #3A8FD0;
+      --accent-warm:  #F5C800;
+      --border:       #21253A;
+      --border-quote: #2A2D3E;
+      --border-light: #21253A;
+      --tag-bg:       #0E1A2B;
+      --tag-text:     #3A8FD0;
+      --table-stripe: #161B22;
+    }
+    body.dark .trap-box { background: #1C1800; }
+    body.dark .fact-card.highlight { background: #1A1600; border-color: #3A2D00; }
+    body.dark .fact-card.highlight .fact-value { color: #C4900E; }
+    body.dark .fact-card.highlight .fact-desc { color: #A07828; }
+    body.dark .next-article { background: #111320; }
+  </style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<!-- 1. サイトヘッダー -->
+<header class="site-header">
+  <div class="site-header-left">
+    <a class="wordmark" href="../index.html">dona<span>to</span></a>
+    <span class="header-sep">—</span>
+    <a class="header-back-link" href="./index.html"><span class="lang-ja">記事一覧</span><span class="lang-en">Articles</span></a>
+    <span class="header-sep">—</span>
+    <span class="header-media">Finance Professional × Career</span>
+  </div>
+  <div class="site-header-right">
+    <div class="lang-toggle-bar">
+      <button class="art-lang-btn active" data-lang="ja" onclick="setLang('ja')">JP</button>
+      <button class="art-lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+    </div>
+    <button id="theme-btn" onclick="toggleTheme()" title="ダーク/ライト切替">☀</button>
+    <time class="header-date">2026-03-23</time>
+  </div>
+</header>
+
+<!-- 2. スティッキー情報バー -->
+<div id="sticky-bar">
+  <span class="sbar-cat">Career</span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-text"><span class="lang-ja">対象: Finance Professional全般 · 転職検討者</span><span class="lang-en">Topic: Finance Professionals · Job Seekers</span></span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-text">
+    <span class="lang-ja">作成日: 2026-03-23</span>
+    <span class="lang-en">Published: 2026-03-23</span>
+  </span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-badge" id="reading-time-badge"><span class="lang-ja">計算中</span><span class="lang-en">...</span></span>
+</div>
+
+<main style="padding: 0 0 3em;">
+  <div class="article-container">
+    <div class="article-grid">
+
+      <!-- 3. 記事本文 -->
+      <article class="article-body">
+
+        <!-- 記事ヘッダー -->
+        <div style="padding: 36px 0 24px;">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+            <div class="section-label">
+              <span class="lang-ja">Career</span>
+              <span class="lang-en">Career</span>
+            </div>
+            <span class="sbar-badge" id="reading-time-badge2"><span class="lang-ja">計算中</span><span class="lang-en">...</span></span>
+          </div>
+          <h1 class="article-headline">
+            <span class="lang-ja">AI時代のFinance転職市場 — 採用側が求めるものが変わった</span>
+            <span class="lang-en">Finance Job Market in the AI Era — What Employers Are Now Looking For</span>
+          </h1>
+          <p class="article-standfirst">
+            <span class="lang-ja">求人JDからAI・データスキルへの言及が急増し、面接で問われる内容が変わり、年収プレミアムの構造が塗り替えられている。2026年のFinance転職市場の地殻変動を、採用側の視点から読み解く。</span>
+            <span class="lang-en">Job descriptions increasingly list AI and data skills, interview questions have fundamentally shifted, and salary premium structures are being rewritten. Here is a clear-eyed view of the seismic changes in the 2026 Finance job market — from the employer's perspective.</span>
+          </p>
+          <div style="display:flex; gap:16px; align-items:center; border-top:1px solid var(--border-light); border-bottom:1px solid var(--border-light); padding:10px 0;">
+            <span class="byline">By <strong>donato Research</strong></span>
+            <span style="color:var(--border);">|</span>
+            <time class="byline" datetime="2026-03-23">
+              <span class="lang-ja">2026年3月23日</span>
+              <span class="lang-en">March 23, 2026</span>
+            </time>
+            <span style="color:var(--border);">|</span>
+            <span class="byline"><span class="lang-ja">採用市場 · AI · キャリア戦略</span><span class="lang-en">Hiring · AI · Career Strategy</span></span>
+          </div>
+        </div>
+
+        <!-- 構造化エグゼクティブサマリー -->
+        <section class="exec-summary">
+
+          <!-- 概要 -->
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">概要</span><span class="lang-en">Summary</span></div>
+            <p class="exec-tldr">
+              <span class="lang-ja">Finance転職市場の変化は静かで速い。「AI経験あり」が加点事由だった2023年から、「AI活用ができない候補者は選考外」になりつつある2026年へ。JD・面接・年収テーブルの三層で起きている変化を正確に把握し、今すぐポジショニングを修正しなければ、転職市場での競争力が急速に失われる。</span>
+              <span class="lang-en">The shift in the Finance job market is quiet but fast. From 2023, when AI experience was a bonus, to 2026, when candidates without AI capability are increasingly screened out. Changes are happening on three levels — job descriptions, interviews, and salary tables. Finance Professionals who fail to update their positioning now are rapidly losing competitive edge in the market.</span>
+            </p>
+          </div>
+
+          <!-- 論点 -->
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">本稿の論点</span><span class="lang-en">Key Questions</span></div>
+            <ul class="issues-list">
+              <li class="issue-item">
+                <span class="issue-q">Q1</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>JDはどう変わったか？</strong> — Finance求人におけるAI/データスキル言及率は2022年比で急増している。Python・SQL・生成AIプロンプト設計が「必須スキル」欄に記載される事例が主要外資系で標準化されつつある。</span>
+                  <span class="lang-en"><strong>How have job descriptions changed?</strong> — AI/data skill mentions in Finance job listings have surged since 2022. Python, SQL, and generative AI prompt design are increasingly appearing in the "required skills" section at major international firms.</span>
+                </span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">Q2</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>面接で何が問われるようになったか？</strong> — 「あなたはAIを使ったことがありますか？」という質問は過去のもの。現在は「AIを使って実際に業務効率をどう改善したか、具体的に教えてください」が標準的な行動面接設問になっている。</span>
+                  <span class="lang-en"><strong>What do interviews now assess?</strong> — "Have you used AI?" is yesterday's question. The current standard is behavioural: "Tell me specifically how you improved workflow efficiency using AI." Concrete examples are expected, not hypotheticals.</span>
+                </span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">Q3</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>年収プレミアムはどの程度あるか？</strong> — LinkedInおよびMichaelPageの調査によれば、同一ポジション・同一資格でもAI活用スキルを実証できる候補者は、そうでない候補者比で15〜25%の年収プレミアムを交渉できるケースが出てきている。</span>
+                  <span class="lang-en"><strong>How large is the salary premium?</strong> — According to LinkedIn and Michael Page data, candidates who can demonstrate AI utilisation skills are negotiating 15–25% salary premiums versus equivalently credentialled peers in the same role.</span>
+                </span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">Q4</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>どのFinance職種で採用競争が激化しているか？</strong> — FP&Aアナリスト（AI予算モデリング経験者）・M&AアドバイザーのAIリサーチ担当・CLO/CFO直下のAIトランスフォーメーション推進ポジションが最も求人倍率が高い。</span>
+                  <span class="lang-en"><strong>Which Finance roles face the most intense hiring competition?</strong> — FP&A analysts with AI budget modelling experience, M&A advisors specialising in AI-assisted research, and AI transformation roles reporting to CLO/CFO are seeing the highest demand-to-supply ratios.</span>
+                </span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">Q5</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>転職エージェントはどう変わっているか？</strong> — 上位エージェントはすでにAIスキルを候補者スクリーニングの第一段階に組み込んでいる。「AI活用の実績なし」候補者は、高難易度ポジションのショートリストに残りにくくなっている。</span>
+                  <span class="lang-en"><strong>How are recruiters changing their approach?</strong> — Top-tier recruiters have already embedded AI skill screening into their first-pass filtering. Candidates with no documented AI usage are increasingly failing to make shortlists for competitive roles.</span>
+                </span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Finance Proへの示唆 -->
+          <div class="exec-block">
+            <div class="section-label">
+              <span class="lang-ja">Finance Proへの示唆</span>
+              <span class="lang-en">Implications for Finance Professionals</span>
+            </div>
+            <ul class="implications-list">
+              <li class="implication-item">
+                <span class="lang-ja"><strong>「AI経験なし」は今すぐ解消できる</strong> — 資格取得と違い、AI活用スキルは数週間で実績を作れる。Claude/ChatGPTを使ったDCFモデルレビュー・バリアンス分析自動化・DD整理の実例を今すぐ作り始めること。</span>
+                <span class="lang-en"><strong>"No AI experience" is fixable immediately</strong> — Unlike credentials, AI utilisation experience can be built in weeks. Start now: create concrete examples of using Claude/ChatGPT for DCF review, variance analysis automation, or DD document synthesis.</span>
+              </li>
+              <li class="implication-item">
+                <span class="lang-ja"><strong>職務経歴書の書き方を変えよ</strong> — 「〜を担当した」ではなく「AIを活用して〜を〇〇%効率化した」という定量的な成果表現に書き換える。採用側は今、AIとの協業実績を最も重視している。</span>
+                <span class="lang-en"><strong>Rewrite your CV narrative</strong> — Move from "responsible for X" to "used AI to improve X by Y%." Employers are now weighting demonstrated AI collaboration outcomes above almost all other signals.</span>
+              </li>
+              <li class="implication-item">
+                <span class="lang-ja"><strong>年収交渉はAIスキルの実証を前提に組み立てよ</strong> — 資格・年数・業界経験だけでなく、「AIによって自分は同じ時間でどれだけ多くの価値を生み出せるか」を数値で示すことが、オファー引き上げの最も有効な武器になっている。</span>
+                <span class="lang-en"><strong>Build salary negotiation around AI productivity evidence</strong> — Beyond credentials and tenure, quantifying "how much more value I produce per hour with AI" has become the most effective lever for pulling offers upward.</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- 読み進め判断 -->
+          <div class="exec-block">
+            <div class="section-label">
+              <span class="lang-ja">この記事を読み進めるべきか</span>
+              <span class="lang-en">Should You Read On?</span>
+            </div>
+            <div class="read-grid">
+              <div>
+                <div class="read-col-label read-label-yes">
+                  <span class="lang-ja">読むべき人</span>
+                  <span class="lang-en">Read If You Are</span>
+                </div>
+                <div class="read-item"><span class="lang-ja">今後2年以内に転職を検討しているFinance Pro</span><span class="lang-en">A Finance Professional considering a move within 2 years</span></div>
+                <div class="read-item"><span class="lang-ja">採用基準の変化を把握して部下の育成方針を決めたいマネージャー</span><span class="lang-en">A manager updating team development strategy in line with hiring shifts</span></div>
+                <div class="read-item"><span class="lang-ja">外資系・投資銀行・PE・CFO系ポジションを目指している方</span><span class="lang-en">Targeting international firms, IBD, PE, or CFO-track roles</span></div>
+              </div>
+              <div>
+                <div class="read-col-label read-label-no">
+                  <span class="lang-ja">スキップしてよい人</span>
+                  <span class="lang-en">Skip If</span>
+                </div>
+                <div class="skip-item"><span class="lang-ja">転職意向がなく現職に完全に満足している方</span><span class="lang-en">You have no intention of moving and are fully satisfied in your current role</span></div>
+                <div class="skip-item"><span class="lang-ja">すでにAIスキルを職歴として十分に確立している方</span><span class="lang-en">You have already built a strong AI track record in your career history</span></div>
+              </div>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- 本文 -->
+        <h2>
+          <span class="lang-ja">1. 採用JDの変化 — スキル要件の三段階シフト</span>
+          <span class="lang-en">1. How Job Descriptions Have Changed — A Three-Phase Shift</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja"><strong>[データ]</strong> LinkedInが2025年に発表したGlobal Talent Trendsレポートによれば、Finance・Accounting関連の求人においてAIまたはデータ分析スキルへの言及は<strong>2022年比で約3.4倍</strong>に増加した。この変化は三段階で起きている。</span>
+          <span class="lang-en"><strong>[Data]</strong> LinkedIn's 2025 Global Talent Trends report shows that AI or data analytics skill mentions in Finance and Accounting job postings have increased approximately <strong>3.4x since 2022</strong>. This shift has occurred in three distinct phases.</span>
+        </p>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">フェーズ</span><span class="lang-en">Phase</span></th>
+                <th><span class="lang-ja">時期</span><span class="lang-en">Period</span></th>
+                <th><span class="lang-ja">JD上の位置づけ</span><span class="lang-en">JD Treatment</span></th>
+                <th><span class="lang-ja">実態</span><span class="lang-en">Reality</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong><span class="lang-ja">加点</span><span class="lang-en">Bonus</span></strong></td>
+                <td class="td-accent">2022–2023</td>
+                <td><span class="lang-ja">「あれば望ましい」</span><span class="lang-en">"Nice to have"</span></td>
+                <td><span class="lang-ja">ChatGPT登場初期。ほぼ全候補者が未経験</span><span class="lang-en">Early ChatGPT era; almost no candidates had experience</span></td>
+              </tr>
+              <tr>
+                <td><strong><span class="lang-ja">推奨</span><span class="lang-en">Preferred</span></strong></td>
+                <td class="td-accent">2024</td>
+                <td><span class="lang-ja">「経験者優遇」</span><span class="lang-en">"Preferred"</span></td>
+                <td><span class="lang-ja">AI経験の有無で選考の優先順位をつけ始める</span><span class="lang-en">AI experience begins to affect shortlisting priority</span></td>
+              </tr>
+              <tr>
+                <td><strong><span class="lang-ja">必須化</span><span class="lang-en">Required</span></strong></td>
+                <td class="td-warn">2025–2026</td>
+                <td><span class="lang-ja">「必須スキル」欄に記載</span><span class="lang-en">Listed under "required skills"</span></td>
+                <td><span class="lang-ja">主要外資系ではAI活用未経験者がスクリーニング外に</span><span class="lang-en">At major international firms, no-AI candidates are screened out</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>
+          <span class="lang-ja">特にバルジブラケット・外資系PE・グローバルFP&Aポジションで変化が顕著だ。Goldman Sachs、Blackstone、KKRなど主要プレイヤーのアナリスト・アソシエイト採用では、PythonまたはSQL、および生成AIツールの業務活用経験が必須要件化されている事例が増えている。日系大手でも、財務企画・経営企画系ポジションでExcelのみでなくPythonやBIツール（Power BI/Tableau）との併用が求められ始めた。</span>
+          <span class="lang-en">The change is most pronounced in bulge bracket, international PE, and global FP&A roles. At major players — Goldman Sachs, Blackstone, KKR — analyst and associate hiring increasingly lists Python or SQL alongside hands-on generative AI experience as hard requirements. At leading Japanese firms, Finance planning and corporate planning roles now commonly request Python or BI tools (Power BI/Tableau) alongside Excel.</span>
+        </p>
+
+        <div class="trap-box">
+          <div class="trap-label">CAUTION</div>
+          <p>
+            <span class="lang-ja"><strong>「資格があれば大丈夫」という過信が最も危険。</strong> CFAや公認会計士の資格は採用のテーブルに着くための最低条件として依然有効だが、ショートリストに残るための差別化要因ではなくなりつつある。同じ資格を持つ候補者の中で、AIスキルが選考を左右する変数になっている。</span>
+            <span class="lang-en"><strong>The most dangerous assumption: "My credentials are enough."</strong> CFA and CPA remain valid minimum conditions for getting in the door, but they are losing their power as differentiators for shortlisting. Among equally credentialled candidates, AI skill is becoming the decisive variable.</span>
+          </p>
+        </div>
+
+        <h2>
+          <span class="lang-ja">2. 面接設問の転換 — 「使ったことあるか」から「何を作ったか」へ</span>
+          <span class="lang-en">2. Interview Shift — From "Have You Used AI?" to "What Did You Build?"</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">2023年の面接では「ChatGPTやAIツールを使ったことがありますか？」という閉じた質問が多かった。2026年の面接設問はより具体的かつ行動ベースに進化している。</span>
+          <span class="lang-en">In 2023, interviews often included closed questions like "Have you used ChatGPT or AI tools?" By 2026, interview questions have evolved to be more specific and behaviourally grounded.</span>
+        </p>
+
+        <h3><span class="lang-ja">2026年の標準的なAI関連行動面接設問</span><span class="lang-en">Standard AI-related Behavioural Interview Questions in 2026</span></h3>
+
+        <ul>
+          <li>
+            <span class="lang-ja"><strong>「AIを活用して業務のどのプロセスを改善しましたか？具体的な成果指標と一緒に教えてください。」</strong> — 定性的な「使いました」ではなく、定量的な生産性改善の証拠を求める。</span>
+            <span class="lang-en"><strong>"Which business process did you improve using AI? Please describe with specific outcome metrics."</strong> — Not a qualitative "I used it" answer, but quantified productivity evidence.</span>
+          </li>
+          <li>
+            <span class="lang-ja"><strong>「AIが出した分析結果が誤っていると気づいたことはありますか？どう対処しましたか？」</strong> — AIリテラシーに加え、ドメイン知識と批判的思考力を同時に測る設問。</span>
+            <span class="lang-en"><strong>"Have you caught an AI-generated analysis that was wrong? How did you handle it?"</strong> — Tests AI literacy, domain knowledge, and critical thinking simultaneously.</span>
+          </li>
+          <li>
+            <span class="lang-ja"><strong>「あなたのチームにAIツールを導入する場合、最初にどの業務から手をつけますか？その理由は？」</strong> — 候補者が採用後に即戦力としてAIをチームに展開できるかを測る。</span>
+            <span class="lang-en"><strong>"If you were to introduce AI tools to your team, which process would you prioritise first and why?"</strong> — Assesses whether the candidate can deploy AI as a team-level tool from day one.</span>
+          </li>
+        </ul>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>採用側のインサイト：</strong> これらの設問に対して「日常業務でClaude/ChatGPTを使ってバリアンス分析のドラフトを30分で作成できるようになった」「DDレビューで契約書100枚を一晩で整理した」という具体的な実例を持つ候補者は、選考を大きく前に進める。一方で「AIには興味はありますが、実務ではまだ使っていません」という回答はそれだけでショートリストから外れるリスクがある。</span>
+            <span class="lang-en"><strong>Hiring insight:</strong> Candidates who can cite specific examples — "I can now produce a variance analysis draft in 30 minutes using Claude" or "I used AI to synthesise 100 contracts overnight in a DD process" — move sharply forward in selection. The response "I'm interested in AI but haven't used it in practice yet" now carries real risk of shortlist elimination.</span>
+          </p>
+        </div>
+
+        <h2>
+          <span class="lang-ja">3. 年収プレミアムの実態 — AI活用者と非活用者の格差</span>
+          <span class="lang-en">3. The Salary Premium Reality — The Gap Between AI Users and Non-Users</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja"><strong>[データ]</strong> Michael Page Japanの2025年Salary Surveyおよびグローバルの調査データを統合すると、同一ポジション・同一職歴年数でのAI活用スキル保有者の年収プレミアムは以下の水準が観察されている。</span>
+          <span class="lang-en"><strong>[Data]</strong> Combining Michael Page Japan's 2025 Salary Survey with global data, the following salary premiums are being observed for AI-skilled candidates versus equivalent peers in the same role and tenure bracket.</span>
+        </p>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">職種・ポジション</span><span class="lang-en">Role / Position</span></th>
+                <th><span class="lang-ja">AIなし 参考年収</span><span class="lang-en">Without AI (ref.)</span></th>
+                <th><span class="lang-ja">AIあり プレミアム</span><span class="lang-en">With AI Premium</span></th>
+                <th><span class="lang-ja">プレミアム率</span><span class="lang-en">Premium %</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="lang-ja">FP&Aアナリスト（外資系）</span><span class="lang-en">FP&A Analyst (international firm)</span></td>
+                <td>¥700–900万</td>
+                <td>¥850–1,150万</td>
+                <td class="td-accent">+15–25%</td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">M&AアドバイザーAss. Dir.（外資IB）</span><span class="lang-en">M&A Advisor Ass. Director (IBD)</span></td>
+                <td>¥1,800–2,400万</td>
+                <td>¥2,100–3,000万</td>
+                <td class="td-accent">+20–25%</td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">財務企画 課長クラス（日系大手）</span><span class="lang-en">Finance Planning Manager (Japanese major)</span></td>
+                <td>¥900–1,100万</td>
+                <td>¥1,050–1,350万</td>
+                <td class="td-accent">+15–20%</td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">内部監査 シニア（外資系事業会社）</span><span class="lang-en">Internal Audit Senior (international corp.)</span></td>
+                <td>¥800–1,000万</td>
+                <td>¥920–1,200万</td>
+                <td class="td-accent">+15–20%</td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">バリュエーション スペシャリスト</span><span class="lang-en">Valuation Specialist</span></td>
+                <td>¥1,000–1,400万</td>
+                <td>¥1,200–1,750万</td>
+                <td class="td-accent">+20–25%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>
+          <span class="lang-ja">この年収プレミアムは「AIを知っているかどうか」ではなく、<strong>「AIを使った業務改善の実績を具体的に提示できるかどうか」</strong>に対して発生している点が重要だ。採用担当者は「AI活用の経験があります」という主張を、「具体的にどのツールを使って、何をどれだけ効率化しましたか？」で検証する。抽象的なAI知識ではプレミアムは発生しない。</span>
+          <span class="lang-en">Critically, this premium is not attached to AI awareness. It is attached to <strong>the ability to present concrete, documented evidence of AI-driven business improvement</strong>. Recruiters test the claim "I have AI experience" with "Which tools, what process, how much efficiency gain?" Abstract AI knowledge does not generate the premium — only demonstrated outcomes do.</span>
+        </p>
+
+        <div class="pull-quote">
+          <p>
+            <span class="lang-ja">「資格と年数が同じ候補者が二人いれば、AIを使って実際に成果を出した証拠を持つ方を選ぶ。それが今の採用の現実だ。」</span>
+            <span class="lang-en">"If two candidates have the same credentials and tenure, we pick the one with documented evidence of AI-driven results. That is the hiring reality now."</span>
+          </p>
+          <footer><span class="lang-ja">外資系PE採用マネージャー（2026年取材）</span><span class="lang-en">International PE Hiring Manager (interview, 2026)</span></footer>
+        </div>
+
+        <h2>
+          <span class="lang-ja">4. 最もホットなポジション — AI × Finance の求人市場</span>
+          <span class="lang-en">4. The Hottest Roles — AI × Finance Hiring Market</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">2026年時点でAI × Financeの観点から採用競争が最も激しいポジションは以下の三カテゴリだ。</span>
+          <span class="lang-en">In 2026, the three categories with the most intense hiring competition at the AI × Finance intersection are as follows.</span>
+        </p>
+
+        <h3><span class="lang-ja">カテゴリ① FP&A × AIモデリング</span><span class="lang-en">Category 1: FP&A × AI Modelling</span></h3>
+        <p>
+          <span class="lang-ja">予算・業績予測・シナリオ分析をAIで半自動化できる人材の需要が急増している。単なるExcelモデルの構築者ではなく、「AIを活用して予測精度を上げながら作業時間を短縮できる」FP&Aアナリスト・マネージャーが引き合いを集める。Python/SQLによるデータパイプライン構築経験と財務知識の両方を持つ人材が特に希少で高値がつく。</span>
+          <span class="lang-en">Demand is surging for professionals who can semi-automate budget, forecast, and scenario analysis using AI. The profile in demand is not the Excel model builder, but the FP&A analyst or manager who uses AI to improve forecast accuracy while reducing cycle time. Candidates combining Python/SQL data pipeline experience with Finance domain knowledge are particularly scarce and command premium pricing.</span>
+        </p>
+
+        <h3><span class="lang-ja">カテゴリ② M&A × AIリサーチ・DD効率化</span><span class="lang-en">Category 2: M&A × AI Research & DD Acceleration</span></h3>
+        <p>
+          <span class="lang-ja">100万トークンのコンテキストウィンドウを持つ現行AIモデルは、DDフェーズでの契約書・財務資料の一括処理を現実的にした。M&AアドバイザーまたはPEアナリストで「AIを使ったDD高速化の実績がある」候補者は市場価値が大幅に上昇している。特に外資系アドバイザリー・IB・PEファームにおいて、ジュニアレベルのソーシングポジションでもAI活用経験が必須化されつつある。</span>
+          <span class="lang-en">Current AI models with 1M-token context windows have made bulk processing of DD documents — contracts, financial statements — practical. M&A advisors or PE analysts with documented AI-accelerated DD experience are seeing substantial market value increases. Even at junior sourcing level in international advisory, IB, and PE firms, AI experience is becoming a hard requirement.</span>
+        </p>
+
+        <h3><span class="lang-ja">カテゴリ③ CFO直下のAIトランスフォーメーション推進</span><span class="lang-en">Category 3: CFO-Sponsored AI Transformation Roles</span></h3>
+        <p>
+          <span class="lang-ja">財務部門のAI化を推進するために設置された専任ポジションが急増している。求められるプロフィールは「財務の実務経験3〜7年以上＋生成AIツールの導入・運用経験＋チームへの展開ができるコミュニケーション能力」。このポジションは財務部門内の役職としては破格の年収（¥1,500〜2,500万）に達しており、かつ採用候補者が極端に少ない。</span>
+          <span class="lang-en">Dedicated positions for driving AI transformation within Finance functions are proliferating rapidly. The required profile: 3–7+ years of Finance practice, generative AI tool deployment and operations experience, and the communication skills to roll it out across a team. These roles command exceptional compensation for Finance department positions (¥15–25M), with an extremely thin supply of qualified candidates.</span>
+        </p>
+
+        <h2>
+          <span class="lang-ja">5. Finance Proが今すぐとるべき転職準備アクション</span>
+          <span class="lang-en">5. Immediate Actions Finance Professionals Should Take</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">転職市場での競争力を維持・強化するために、今すぐ着手できる具体的アクションを優先順に示す。</span>
+          <span class="lang-en">Here are concrete, immediately actionable steps to maintain and strengthen your competitiveness in the Finance job market, ordered by priority.</span>
+        </p>
+
+        <h3><span class="lang-ja">Step 1: 「AI活用の実績」を今すぐ作る（0〜4週間）</span><span class="lang-en">Step 1: Build Your AI Track Record Now (0–4 weeks)</span></h3>
+        <p>
+          <span class="lang-ja">転職活動を考えているかどうかに関わらず、今すぐ日常業務にAIを組み込むことが最優先。目標は「面接で具体的に話せる実例を3つ作ること」。例：DCF仮定の感度分析をClaude/ChatGPTに投げてレビューさせる、月次バリアンスレポートの初稿生成に使う、DDで受け取った英文契約書の要点整理に使う。</span>
+          <span class="lang-en">Regardless of whether you are actively job searching, embedding AI into daily work is the top priority. The goal: create three concrete examples you can discuss in an interview. Examples: have Claude/ChatGPT review DCF sensitivity assumptions; use AI to draft monthly variance report narratives; use AI to extract key points from English-language DD contracts.</span>
+        </p>
+
+        <h3><span class="lang-ja">Step 2: 職務経歴書をAI成果中心に書き換える（4〜8週間）</span><span class="lang-en">Step 2: Rewrite Your CV Around AI Outcomes (4–8 weeks)</span></h3>
+        <p>
+          <span class="lang-ja">職務経歴書の各ポジションの記述を「AIを活用してどのような成果を出したか」ベースに書き換える。「財務分析業務を担当した」→「生成AIを活用し月次財務分析サイクルを3日から1日に短縮した」。定量化できない場合も「AIを活用したプロセス改善を主導した」という記述にすることで、採用担当者のスクリーニングを通過しやすくなる。</span>
+          <span class="lang-en">Rewrite each position in your CV around AI-driven outcomes. "Responsible for financial analysis" becomes "Led AI-enabled monthly financial analysis cycle reduction from 3 days to 1 day." Even where quantification is difficult, "led AI-enabled process improvement" signals enough to pass recruiter screening.</span>
+        </p>
+
+        <h3><span class="lang-ja">Step 3: 技術スキルのベースラインを確保する（2〜3ヶ月）</span><span class="lang-en">Step 3: Secure a Technical Skill Baseline (2–3 months)</span></h3>
+        <p>
+          <span class="lang-ja">外資系・PE・IBD志望であれば、Python基礎（pandasによるデータ処理程度）をOnline学習で習得することを推奨する。完全な開発者スキルは不要だが、「Pythonが読める・書ける」という記述が今後のJD必須要件として広がりつつある。日系大手志望であれば、Power BIまたはTableauでのBI構築経験がJDに記載されるケースが増えている。</span>
+          <span class="lang-en">For those targeting international firms, PE, or IBD: acquiring Python basics (pandas-level data processing) via online learning is recommended. Full developer skills are not required, but "reads and writes Python" is appearing in JD required sections with increasing frequency. For Japanese major targets: Power BI or Tableau BI construction experience is now appearing regularly in JDs.</span>
+        </p>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>転職エージェントの選び方が変わった：</strong> AIスキルを評価できないエージェントは、候補者の市場価値を正しく評価できない可能性がある。転職エージェントに登録する際は、「AI活用スキルはどう評価しますか？」「AI × Financeポジションへの紹介実績はありますか？」を確認することで、AI時代の転職をサポートできるエージェントかどうかを見極められる。</span>
+            <span class="lang-en"><strong>How to choose a recruiter has changed:</strong> Recruiters who cannot evaluate AI skills may undervalue your market worth. When registering with a recruiter, ask "How do you assess AI utilisation skills?" and "Do you have a track record placing candidates in AI × Finance roles?" This filters for recruiters who can genuinely represent your value in the current market.</span>
+          </p>
+        </div>
+
+        <div class="section-sep">· · ·</div>
+
+        <h2>
+          <span class="lang-ja">まとめ — 採用市場の変化は「機会」でもある</span>
+          <span class="lang-en">Conclusion — The Market Shift Is Also an Opportunity</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">Finance転職市場の変化は、AIリテラシーを持つFinance Professionalにとって「希少性が高まる機会」でもある。多くのFinance Proはまだ十分なAI活用実績を持っておらず、これは今から行動する人間に有利に働く。</span>
+          <span class="lang-en">The shifts in the Finance job market are simultaneously an opportunity for AI-literate Finance Professionals — scarcity is growing in their favour. Many Finance Pros have not yet built sufficient AI track records, which means those who act now have a structural advantage.</span>
+        </p>
+        <p>
+          <span class="lang-ja">資格・年数・専門知識は今後も採用のテーブルに着くために必要だ。しかしそこから先、<strong>ショートリストに残り、年収プレミアムを手にできるかどうかは、AI活用の実績で決まる時代が来た。</strong></span>
+          <span class="lang-en">Credentials, tenure, and domain expertise will remain necessary to get in the door. But beyond that, <strong>whether you make the shortlist and claim the salary premium is now determined by your AI utilisation track record.</strong></span>
+        </p>
+
+        <!-- 前の記事 CTA -->
+        <div class="next-article">
+          <div class="next-label">Related</div>
+          <a href="./2026-03-21-career.html" style="text-decoration:none; color:inherit;">
+            <div class="next-title"><span class="lang-ja">AI時代のFinanceキャリア戦略 — 生き残る人材と消える仕事の分岐点</span><span class="lang-en">Finance Career Strategy in the AI Era — Where Roles Survive and Where They Don't</span></div>
+            <div class="next-desc"><span class="lang-ja">職種別タスク代替リスクスコアと、今投資すべきスキルスタックの全体像</span><span class="lang-en">Role-by-role task automation risk scores and the full skill stack to build now</span></div>
+          </a>
+        </div>
+
+      </article>
+
+      <!-- 4. サイドバー -->
+      <aside class="article-sidebar">
+
+        <!-- Key Facts -->
+        <div class="sidebar-card">
+          <div class="section-label">KEY FACTS</div>
+          <div class="keyfacts-grid">
+            <div class="fact-card highlight">
+              <div class="fact-value">3.4x</div>
+              <div class="fact-desc"><span class="lang-ja">Finance求人でのAIスキル言及率増加（2022→2025）</span><span class="lang-en">Growth in AI skill mentions in Finance JDs (2022→2025)</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">+15–25%</div>
+              <div class="fact-desc"><span class="lang-ja">AI活用実績ある候補者の年収プレミアム（同職種比）</span><span class="lang-en">Salary premium for AI-experienced candidates vs peers</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">60%+</div>
+              <div class="fact-desc"><span class="lang-ja">主要外資系でAIスキルを採用条件化したポジション比率</span><span class="lang-en">Roles at major international firms requiring AI skills</span></div>
+            </div>
+            <div class="fact-card highlight">
+              <div class="fact-value">3問</div>
+              <div class="fact-desc"><span class="lang-ja">準備すべきAI実績の具体事例数（最低ライン）</span><span class="lang-en">Minimum concrete AI examples to prepare for interviews</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Checklist -->
+        <div class="sidebar-card">
+          <div class="section-label"><span class="lang-ja">転職準備チェックリスト</span><span class="lang-en">Job Search Checklist</span></div>
+          <ul class="highlights-list">
+            <li class="highlight-item">
+              <span class="hl-num">01</span>
+              <span class="hl-text"><span class="lang-ja">AI活用の具体的実例を3つ作成済みか</span><span class="lang-en">3 concrete AI usage examples documented</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">02</span>
+              <span class="hl-text"><span class="lang-ja">職務経歴書にAI成果の定量表現あるか</span><span class="lang-en">CV includes quantified AI outcome statements</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">03</span>
+              <span class="hl-text"><span class="lang-ja">Python基礎またはBIツール経験があるか</span><span class="lang-en">Python basics or BI tool experience acquired</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">04</span>
+              <span class="hl-text"><span class="lang-ja">AI × Finance実績を評価できるエージェントを選んでいるか</span><span class="lang-en">Recruiter selected who can evaluate AI × Finance profile</span></span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Career Series Index -->
+        <div class="sidebar-card">
+          <div class="section-label">Career Series</div>
+          <ol class="highlights-list" style="list-style:none;padding:0;">
+            <li class="highlight-item">
+              <span class="hl-num">01</span>
+              <span class="hl-text"><a href="./2026-03-21-career.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">AI時代のFinanceキャリア戦略</span><span class="lang-en">Finance Career Strategy in the AI Era</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">02</span>
+              <span class="hl-text"><span style="color:var(--accent);"><span class="lang-ja">Finance転職市場の変化（本稿）</span><span class="lang-en">Finance Job Market Changes (this article)</span></span></span>
+            </li>
+          </ol>
+        </div>
+
+        <!-- Key References -->
+        <div class="sidebar-card">
+          <div class="section-label">KEY REFERENCES</div>
+          <ul class="source-list" style="margin-top:10px;">
+            <li><span style="font-family:'Inter',sans-serif;font-size:0.78rem;color:var(--text-body);">LinkedIn Global Talent Trends 2025</span> <span class="source-tag">[LinkedIn]</span></li>
+            <li><span style="font-family:'Inter',sans-serif;font-size:0.78rem;color:var(--text-body);">Michael Page Japan Salary Survey 2025</span> <span class="source-tag">[Michael Page]</span></li>
+            <li><span style="font-family:'Inter',sans-serif;font-size:0.78rem;color:var(--text-body);">WEF Future of Jobs Report 2025</span> <span class="source-tag">[WEF]</span></li>
+            <li><span style="font-family:'Inter',sans-serif;font-size:0.78rem;color:var(--text-body);">McKinsey Global Institute — AI and the Workforce 2024</span> <span class="source-tag">[McKinsey]</span></li>
+          </ul>
+        </div>
+
+      </aside>
+
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <span>Career #002 | donato Finance Professional × AI | 2026-03-23</span>
+  <span></span>
+</footer>
+
+<script>
+  // Progress bar
+  window.addEventListener('scroll', function() {
+    var h = document.documentElement;
+    var pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    document.getElementById('progress-bar').style.width = Math.min(pct, 100) + '%';
+  });
+
+  // Reading time (500字/分)
+  (function() {
+    var text = document.querySelector('.article-body') ? document.querySelector('.article-body').textContent : '';
+    var chars = text.length;
+    var minutes = Math.ceil(chars / 500);
+    var el1 = document.getElementById('reading-time-badge');
+    var el2 = document.getElementById('reading-time-badge2');
+    if (el1) el1.querySelector('.lang-ja').textContent = '約' + minutes + '分';
+    if (el2) el2.querySelector('.lang-ja').textContent = '約' + minutes + '分';
+    if (el1) el1.querySelector('.lang-en').textContent = '~' + minutes + ' min read';
+    if (el2) el2.querySelector('.lang-en').textContent = '~' + minutes + ' min read';
+  })();
+
+  // Lang toggle
+  let currentLang = localStorage.getItem('hp-lang') || 'ja';
+  let currentTheme = localStorage.getItem('hp-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('hp-lang', lang);
+    document.querySelectorAll('.lang-ja').forEach(el => el.style.display = lang === 'ja' ? 'inline' : 'none');
+    document.querySelectorAll('.lang-en').forEach(el => el.style.display = lang === 'en' ? 'inline' : 'none');
+    document.querySelectorAll('.art-lang-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+    document.documentElement.lang = lang === 'ja' ? 'ja' : 'en';
+  }
+  function toggleTheme() {
+    currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+    localStorage.setItem('hp-theme', currentTheme);
+    document.body.classList.toggle('dark', currentTheme === 'dark');
+    document.getElementById('theme-btn').textContent = currentTheme === 'light' ? '☀' : '☾';
+  }
+  document.addEventListener('DOMContentLoaded', () => {
+    setLang(currentLang);
+    if (currentTheme === 'dark') {
+      document.body.classList.add('dark');
+      document.getElementById('theme-btn').textContent = '☾';
+    }
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="EV/EBITDAのマルチプル分析において、分母となるEBITDAをどう正規化するか。一過性費用の除外、ランレート調整、オーナーコスト排除、M&Aプロフォーマ調整の理論と実務的判断基準。Valuation Theory Lab #007。">
+  <title>Normalised EBITDA — マルチプル分母の正規化技術 | Valuation Theory Lab #007 | donato</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+JP:wght@300;400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../brand.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:           #F8F7F4;
+      --bg-code:      #EEECEA;
+      --bg-quote:     #EEECEA;
+      --bg-highlight: #EBF3FB;
+      --bg-subtle:    #F0EFEB;
+      --bg-card:      #F0EFEB;
+      --bg-header:    #F8F7F4;
+      --text-primary: #111320;
+      --text-body:    #2A2C3E;
+      --text-muted:   #565C70;
+      --text-light:   #888EA0;
+      --accent:       #1A6EB0;
+      --accent-warm:  #D4A010;
+      --border:       #D4D2CC;
+      --border-quote: #B8B6B0;
+      --border-light: #D4D2CC;
+      --tag-bg:       #E4EFF8;
+      --tag-text:     #1A6EB0;
+      --table-stripe: #F0EFEB;
+    }
+
+    /* ===== PROGRESS BAR ===== */
+    #progress-bar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      width: 0%;
+      background: var(--accent);
+      z-index: 300;
+      transition: width 0.1s linear;
+    }
+
+    body {
+      font-family: 'Noto Serif JP', Georgia, serif;
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--text-primary);
+      background: var(--bg);
+    }
+
+    /* ===== SITE HEADER ===== */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg-header);
+      border-bottom: 2px solid var(--accent);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .site-header-left { display: flex; align-items: center; gap: 12px; }
+    .wordmark {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: lowercase;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+    .wordmark span { color: var(--accent-warm); }
+    .header-sep { color: var(--border-quote); font-size: 13px; }
+    .header-media {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+    }
+    .site-header-right { display: flex; align-items: center; gap: 12px; }
+    .header-back-link {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .header-back-link:hover { color: var(--accent); }
+    .lang-toggle-bar {
+      display: flex;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .art-lang-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      padding: 3px 10px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .art-lang-btn.active { background: #F5C800; color: #111320; }
+    #theme-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      padding: 3px 9px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.15s;
+    }
+    #theme-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .header-date {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-light);
+      letter-spacing: 0.08em;
+    }
+
+    /* ===== STICKY INFO BAR ===== */
+    #sticky-bar {
+      position: sticky;
+      top: 44px;
+      z-index: 200;
+      background: var(--bg-subtle);
+      border-bottom: 1px solid var(--border-light);
+      padding: 7px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .sbar-cat {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+    }
+    .sbar-sep { color: var(--border-quote); font-size: 11px; }
+    .sbar-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+    .sbar-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      padding: 2px 8px;
+    }
+
+    /* ===== LAYOUT ===== */
+    .article-container { max-width: 1240px; margin: 0 auto; padding: 0 20px; }
+    .article-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 24px;
+    }
+    .article-body { grid-column: 2 / 10; max-width: 68ch; }
+    .article-sidebar {
+      grid-column: 10 / 13;
+      position: sticky;
+      top: 78px;
+      align-self: start;
+      max-height: calc(100vh - 90px);
+      overflow-y: auto;
+    }
+    .article-sidebar::-webkit-scrollbar { width: 4px; }
+    .article-sidebar::-webkit-scrollbar-track { background: transparent; }
+    .article-sidebar::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 2px; }
+
+    /* ===== TYPOGRAPHY ===== */
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+    }
+    .article-headline {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(2rem, 4vw, 2.6rem);
+      font-weight: 600;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+    .article-standfirst {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      font-weight: 400;
+    }
+    .byline {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    h2 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.45rem;
+      font-weight: 600;
+      line-height: 1.25;
+      color: var(--text-primary);
+      margin: 2em 0 0.75em;
+      border-top: 1px solid var(--border);
+      padding-top: 1em;
+    }
+    h3 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin: 1.75em 0 0.5em;
+    }
+    .article-body p { margin-bottom: 1.4em; font-size: 0.97rem; line-height: 1.8; }
+    .article-body ul, .article-body ol { margin: 0 0 1.4em 1.4em; }
+    .article-body li { margin-bottom: 0.4em; font-size: 0.95rem; line-height: 1.7; }
+    strong { color: var(--text-primary); font-weight: 600; }
+
+    /* ===== EXEC SUMMARY ===== */
+    .exec-summary {
+      background: var(--bg-highlight);
+      border: 1px solid var(--border-light);
+      border-left: 4px solid var(--accent);
+      padding: 24px;
+      margin: 0 0 2.5em;
+    }
+    .exec-block { margin-bottom: 20px; }
+    .exec-block:last-child { margin-bottom: 0; }
+    .exec-block + .exec-block { padding-top: 18px; border-top: 1px solid var(--border-light); }
+    .exec-tldr {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.02rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      line-height: 1.55;
+      margin-top: 8px;
+    }
+    .issues-list, .implications-list {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .issue-item { display: flex; gap: 10px; align-items: baseline; }
+    .issue-q {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--accent);
+      flex-shrink: 0;
+      min-width: 20px;
+    }
+    .issue-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: var(--text-body);
+      line-height: 1.55;
+    }
+    .implication-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: var(--text-body);
+      line-height: 1.55;
+      padding-left: 14px;
+      border-left: 2px solid var(--accent);
+    }
+
+    /* ===== FORMULA / CALC ===== */
+    .formula {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.93em;
+      background: var(--bg-code);
+      border-left: 3px solid var(--accent);
+      padding: 14px 20px;
+      margin: 20px 0;
+      color: var(--text-primary);
+      overflow-x: auto;
+      line-height: 1.7;
+    }
+    .calc-block {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      padding: 20px 24px;
+      margin: 24px 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+      line-height: 1.8;
+    }
+    .calc-block .calc-row { display: flex; justify-content: space-between; max-width: 480px; }
+    .calc-block .calc-total {
+      border-top: 1px solid var(--border);
+      margin-top: 6px;
+      padding-top: 6px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .calc-block .calc-highlight { color: var(--accent); font-weight: 700; }
+    .calc-block .calc-warn { color: var(--accent-warm); font-weight: 700; }
+
+    /* ===== INSIGHT / TRAP BOX ===== */
+    .insight-box {
+      background: var(--bg-highlight);
+      border-left: 4px solid var(--accent);
+      padding: 18px 22px;
+      margin: 28px 0;
+    }
+    .insight-box p {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: var(--text-primary);
+    }
+    .insight-box strong { color: var(--accent); }
+    .trap-box {
+      background: #FEF9EC;
+      border-left: 4px solid var(--accent-warm);
+      padding: 18px 22px;
+      margin: 24px 0;
+    }
+    .trap-box p {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      line-height: 1.65;
+      color: var(--text-body);
+    }
+    .trap-box .trap-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      color: var(--accent-warm);
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+
+    /* ===== DATA TABLE ===== */
+    .data-table-wrap { overflow-x: auto; margin: 1.5em 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      background: var(--bg-subtle);
+      padding: 8px 12px;
+      text-align: left;
+      border-bottom: 2px solid var(--border);
+    }
+    td {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border-light);
+      color: var(--text-body);
+      font-family: 'Inter', sans-serif;
+    }
+    tr:nth-child(even) td { background: var(--table-stripe); }
+    .td-accent { color: var(--accent); font-weight: 600; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
+    .td-warn   { color: var(--accent-warm); font-weight: 600; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
+
+    /* ===== PULL QUOTE ===== */
+    .pull-quote {
+      border-left: 4px solid var(--accent);
+      margin: 2em 0;
+      padding: 1em 20px;
+      background: var(--bg-card);
+    }
+    .pull-quote p {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.2rem;
+      font-style: italic;
+      color: var(--text-primary);
+      line-height: 1.5;
+      margin-bottom: 6px !important;
+    }
+    .pull-quote footer {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* ===== NUMBERED LIST ===== */
+    .numbered-list { list-style: none; padding: 0; margin: 20px 0; }
+    .numbered-list li {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 16px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.92rem;
+      line-height: 1.65;
+      color: var(--text-body);
+    }
+    .numbered-list li .num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: white;
+      background: var(--accent);
+      min-width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    /* ===== SECTION SEP ===== */
+    .section-sep {
+      text-align: center;
+      color: var(--text-light);
+      font-size: 1.2rem;
+      letter-spacing: 0.5em;
+      margin: 48px 0;
+      user-select: none;
+    }
+
+    /* ===== SOURCE LIST ===== */
+    .source-list { list-style: none; padding: 0; }
+    .source-list li { margin-bottom: 6px; }
+    .source-list a {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--accent);
+      text-decoration: none;
+      line-height: 1.5;
+    }
+    .source-list a:hover { text-decoration: underline; }
+    .source-tag { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--text-muted); margin-left: 4px; }
+
+    /* ===== NEXT ARTICLE CTA ===== */
+    .next-article {
+      background: var(--text-primary);
+      color: #E4E2DC;
+      padding: 28px 32px;
+      margin-top: 56px;
+    }
+    .next-article .next-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      color: var(--accent-warm);
+      margin-bottom: 8px;
+    }
+    .next-article .next-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+    .next-article .next-desc {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.82rem;
+      color: #9299A8;
+      margin-top: 8px;
+    }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .keyfacts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+    .fact-card { background: var(--bg-highlight); padding: 10px 8px; }
+    .fact-card.highlight { background: #FDF8EC; border: 1px solid #E8D88A; }
+    .fact-value { font-family: 'JetBrains Mono', monospace; font-size: 1rem; font-weight: 500; color: var(--accent); line-height: 1.2; }
+    .fact-card.highlight .fact-value { color: #8A6A00; }
+    .fact-desc { font-family: 'Inter', sans-serif; font-size: 0.64rem; color: var(--text-muted); margin-top: 3px; line-height: 1.35; }
+    .fact-card.highlight .fact-desc { color: #7A6020; }
+    .highlights-list { list-style: none; padding: 0; margin-top: 12px; }
+    .highlight-item { padding: 9px 0; border-bottom: 1px solid var(--border-light); display: flex; gap: 10px; align-items: baseline; }
+    .highlight-item:last-child { border-bottom: none; }
+    .hl-num { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--accent); flex-shrink: 0; min-width: 18px; }
+    .hl-text { font-family: 'Inter', sans-serif; font-size: 0.76rem; color: var(--text-body); line-height: 1.45; }
+
+    /* ===== LANG TOGGLE ===== */
+    .lang-en { display: none; }
+
+    /* ===== FOOTER ===== */
+    .site-footer {
+      border-top: 1px solid var(--border-light);
+      margin-top: 4em;
+      padding: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* ===== PRINT ===== */
+    @media print {
+      body { background: white; font-size: 11pt; }
+      .site-header, #sticky-bar, #progress-bar { display: none; }
+      .article-sidebar { position: static; max-height: none; overflow: visible; }
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+    @page { size: A4; margin: 20mm 15mm; }
+
+    /* ===== MOBILE ===== */
+    @media (max-width: 900px) {
+      .article-body { grid-column: 1 / -1; }
+      .article-sidebar { position: static; max-height: none; overflow: visible; grid-column: 1 / -1; }
+      .article-grid { display: block; }
+      #sticky-bar { flex-wrap: wrap; gap: 6px; }
+    }
+
+    body.dark {
+      --bg:           #0D1117;
+      --bg-code:      #161B22;
+      --bg-quote:     #161B22;
+      --bg-highlight: #0E1A2B;
+      --bg-subtle:    #161B22;
+      --bg-card:      #161B22;
+      --bg-header:    #0D1117;
+      --text-primary: #E4E2DC;
+      --text-body:    #C4C2BC;
+      --text-muted:   #8B93A8;
+      --text-light:   #575E70;
+      --accent:       #3A8FD0;
+      --accent-warm:  #F5C800;
+      --border:       #21253A;
+      --border-quote: #2A2D3E;
+      --border-light: #21253A;
+      --tag-bg:       #0E1A2B;
+      --tag-text:     #3A8FD0;
+      --table-stripe: #161B22;
+    }
+    body.dark .trap-box { background: #1C1800; }
+    body.dark .fact-card.highlight { background: #1A1600; border-color: #3A2D00; }
+    body.dark .fact-card.highlight .fact-value { color: #C4900E; }
+    body.dark .fact-card.highlight .fact-desc { color: #A07828; }
+    body.dark .next-article { background: #111320; }
+  </style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<!-- 1. サイトヘッダー -->
+<header class="site-header">
+  <div class="site-header-left">
+    <a class="wordmark" href="../index.html">dona<span>to</span></a>
+    <span class="header-sep">—</span>
+    <a class="header-back-link" href="./index.html"><span class="lang-ja">記事一覧</span><span class="lang-en">Articles</span></a>
+    <span class="header-sep">—</span>
+    <span class="header-media">Valuation Theory Lab</span>
+  </div>
+  <div class="site-header-right">
+    <div class="lang-toggle-bar">
+      <button class="art-lang-btn active" data-lang="ja" onclick="setLang('ja')">JP</button>
+      <button class="art-lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+    </div>
+    <button id="theme-btn" onclick="toggleTheme()" title="ダーク/ライト切替">☀</button>
+    <time class="header-date">2026-03-23</time>
+  </div>
+</header>
+
+<!-- 2. スティッキー情報バー -->
+<div id="sticky-bar">
+  <span class="sbar-cat">VALUATION THEORY LAB</span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-text"><span class="lang-ja">#007 · Normalised EBITDA</span><span class="lang-en">#007 · Normalised EBITDA</span></span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-text">2026-03-23</span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-badge" id="reading-time-badge"><span class="lang-ja">計算中</span><span class="lang-en">...</span></span>
+</div>
+
+<main style="padding: 0 0 3em;">
+  <div class="article-container">
+    <div class="article-grid">
+
+      <!-- 3. 記事本文 -->
+      <article class="article-body">
+
+        <!-- 記事ヘッダー -->
+        <div style="padding: 36px 0 24px;">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+            <div class="section-label">Valuation Theory Lab &nbsp;#007</div>
+            <span class="sbar-badge" id="reading-time-badge2"><span class="lang-ja">計算中</span><span class="lang-en">...</span></span>
+          </div>
+          <h1 class="article-headline">
+            <span class="lang-ja">Normalised EBITDA — マルチプル分母の正規化技術</span>
+            <span class="lang-en">Normalised EBITDA — The Art of Building a Credible Denominator</span>
+          </h1>
+          <p class="article-standfirst">
+            <span class="lang-ja">EV/EBITDAの精度は分母の品質で決まる。一過性費用の除外、ランレート調整、オーナーコスト排除、M&Aプロフォーマ——それぞれの調整が正当か否かを判断する理論的基準と、売り手・買い手が互いに争うポイントを整理する。</span>
+            <span class="lang-en">An EV/EBITDA multiple is only as good as the EBITDA it divides into. This article sets out the theoretical framework for distinguishing legitimate normalisation adjustments from opportunistic manipulation — and identifies where buyers and sellers reliably disagree.</span>
+          </p>
+          <div style="display:flex; gap:16px; align-items:center; border-top:1px solid var(--border-light); border-bottom:1px solid var(--border-light); padding:10px 0;">
+            <span class="byline">By <strong>Donato Valuation Notes</strong></span>
+            <span style="color:var(--border);">|</span>
+            <time class="byline" datetime="2026-03-23"><span class="lang-ja">2026年3月23日</span><span class="lang-en">23 March 2026</span></time>
+            <span style="color:var(--border);">|</span>
+            <span class="byline"><span class="lang-ja">EBITDA · マルチプル · M&A · QoE</span><span class="lang-en">EBITDA · Multiples · M&A · QoE</span></span>
+          </div>
+        </div>
+
+        <!-- 構造化エグゼクティブサマリー -->
+        <section class="exec-summary">
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">概要</span><span class="lang-en">Summary</span></div>
+            <p class="exec-tldr">
+              <span class="lang-ja">EV/EBITDAの分母を「reported EBITDA」のまま使うことは、すでに#006で論じた会計基準の差異調整と同様に誤りである。Normalised EBITDAの構築は、一過性項目・ランレート・オーナーコスト・プロフォーマ調整という4つの次元で行われ、各調整には固有の正当性基準がある。QoE（Quality of Earnings）レポートはこの正規化プロセスを第三者として検証する機能を持つ。</span>
+              <span class="lang-en">Using reported EBITDA as the denominator of an EV/EBITDA multiple is as unreliable as ignoring the accounting standard differences covered in #006. Normalised EBITDA is constructed across four dimensions — non-recurring items, run-rate adjustments, owner cost corrections, and pro-forma M&A adjustments — each with its own criteria for legitimacy. Quality of Earnings (QoE) reports exist precisely to provide independent verification of this normalisation process.</span>
+            </p>
+          </div>
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">本稿の論点</span><span class="lang-en">Key Questions</span></div>
+            <ul class="issues-list">
+              <li class="issue-item">
+                <span class="issue-q">Q1</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>一過性費用の境界線</strong> — 何が「非経常」で何が「経営の失敗」か。リストラ費用・M&A費用・訴訟和解金はなぜ頻繁に「正当な調整」として使われ、かつ頻繁に乱用されるのか</span>
+                  <span class="lang-en"><strong>The boundary of non-recurring items</strong> — What distinguishes a genuine one-off from a recurring cost dressed up as exceptional? Why do restructuring charges, M&A fees, and litigation settlements dominate seller adjustments?</span>
+                </span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">Q2</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>ランレート調整の理論的根拠</strong> — 期中買収・新規顧客・価格改定の年換算処理はどこまで認められるか。「将来の収益をEBITDAに含める」ことの正当性</span>
+                  <span class="lang-en"><strong>The logic of run-rate adjustments</strong> — When is it appropriate to annualise partial-period revenues from acquisitions, new contracts, or pricing changes? Where does normalisation end and forward projection begin?</span>
+                </span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">Q3</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>プロフォーマ・シナジー調整の取り扱い</strong> — 売り手が主張する「実現済みシナジー」と「将来シナジー」を買い手はどう峻別するか。EBITDAへの計上が許容される条件</span>
+                  <span class="lang-en"><strong>Pro-forma synergy adjustments</strong> — How should buyers distinguish between "achieved synergies" that belong in historical EBITDA and "projected synergies" that belong in the DCF? What conditions justify a synergy add-back?</span>
+                </span>
+              </li>
+            </ul>
+          </div>
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">Valuation実務家への含意</span><span class="lang-en">Implications for Practitioners</span></div>
+            <ul class="implications-list">
+              <li class="implication-item">
+                <span class="lang-ja"><strong>売り手のEBITDA調整は出発点にすぎない</strong> — CIMやIM上の"Adjusted EBITDA"を鵜呑みにせず、調整項目を一件一件ゼロから検証するブリッジ分析を必ず行う</span>
+                <span class="lang-en"><strong>Seller-adjusted EBITDA is a starting point, not a conclusion</strong> — Never accept the "Adjusted EBITDA" on a CIM or IM at face value. Build a line-by-line adjustment bridge and reconstruct normalised EBITDA independently.</span>
+              </li>
+              <li class="implication-item">
+                <span class="lang-ja"><strong>ランレート調整は証拠で支える</strong> — 年換算の根拠となる契約書、価格改定通知、顧客リスト等のエビデンスを要求し、「Runrate」の確実性に応じてヘアカットを掛ける</span>
+                <span class="lang-en"><strong>Run-rate adjustments must be evidence-based</strong> — Demand the underlying contracts, pricing notices, and customer lists that support annualisation claims. Apply haircuts proportional to the certainty of each adjustment.</span>
+              </li>
+              <li class="implication-item">
+                <span class="lang-ja"><strong>QoEレポートは義務であり保険でもある</strong> — M&A取引においてQoEは表明保証の裏付けとなり、事後的な価格調整クレームのリスクを低減する。省略するメリットはない</span>
+                <span class="lang-en"><strong>QoE is both an obligation and insurance</strong> — In M&A, a Quality of Earnings report underpins representations and warranties and reduces exposure to post-closing price adjustment claims. There is no legitimate reason to skip it.</span>
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- ===== 本文 ===== -->
+
+        <h2>
+          <span class="lang-ja">なぜ「報告されたEBITDA」は使えないのか</span>
+          <span class="lang-en">Why Reported EBITDA Is an Unreliable Base</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">EV/EBITDAはその単純さゆえに広く使われるが、その単純さは「EBITDAが適切に定義されている」という前提に依存している。前回の#006では会計基準の差異が分母を歪める問題を扱ったが、今回はより根本的な問題、すなわち<strong>単一の会計基準内においても、報告値EBITDAはすでに正規化が必要な状態にある</strong>という現実を論じる。</span>
+          <span class="lang-en">EV/EBITDA is popular precisely because of its simplicity — but that simplicity rests on an assumption that EBITDA is properly defined. In #006, we addressed how accounting standard differences distort the denominator. This article addresses a more fundamental problem: <strong>even within a single accounting framework, reported EBITDA is almost never the right number to use.</strong></span>
+        </p>
+
+        <p>
+          <span class="lang-ja">企業の財務諸表は過去を記録するが、バリュエーションが求めるのは「継続的な収益力（Sustainable Earning Power）」の代理変数である。特定の会計年度に計上された費用や収益の中には、事業の継続的な収益力を反映しないものが混入している。これを取り除く作業が正規化（normalisation）であり、その品質がマルチプルの信頼性を決定づける。</span>
+          <span class="lang-en">Financial statements record the past; valuation requires a proxy for sustainable earning power. Any given reporting period will contain revenues and costs that do not reflect the ongoing economic reality of the business. Removing these distortions — normalisation — is what determines whether a multiple is analytically meaningful or misleading.</span>
+        </p>
+
+        <div class="formula">
+          <span class="lang-ja">
+            Normalised EBITDA<br>
+            = Reported EBITDA<br>
+            ± 一過性項目の調整（Non-recurring adjustments）<br>
+            ± ランレート調整（Run-rate adjustments）<br>
+            ± オーナーコスト調整（Owner benefit adjustments）<br>
+            ± プロフォーマ調整（Pro-forma adjustments）
+          </span>
+          <span class="lang-en">
+            Normalised EBITDA<br>
+            = Reported EBITDA<br>
+            ± Non-recurring adjustments<br>
+            ± Run-rate adjustments<br>
+            ± Owner benefit adjustments<br>
+            ± Pro-forma adjustments
+          </span>
+        </div>
+
+        <p>
+          <span class="lang-ja">この4層の調整それぞれに固有の理論的正当性基準があり、それを混同することがM&Aにおける価格交渉の混乱の根源となる。</span>
+          <span class="lang-en">Each of these four layers has distinct criteria for legitimacy. Conflating them is the root cause of most disputes over purchase price in M&A transactions.</span>
+        </p>
+
+        <h2>
+          <span class="lang-ja">第1層：一過性項目の調整</span>
+          <span class="lang-en">Layer 1 — Non-Recurring Adjustments</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">最も基本的な調整は、一過性（non-recurring）と判断される費用・収益の除外または加算である。理論的な正当性は明確だ。継続的な収益力を測定するのに、二度と発生しない事象を含めるべきではない。問題は、「一過性」の定義が解釈の幅を持つことにある。</span>
+          <span class="lang-en">The most fundamental adjustment is the exclusion of non-recurring items. The theoretical rationale is clear: if an item genuinely will not recur, including it in a proxy for sustainable earning power is a category error. The problem is that "non-recurring" admits of significant interpretive latitude.</span>
+        </p>
+
+        <h3>
+          <span class="lang-ja">正当な一過性調整の典型例</span>
+          <span class="lang-en">Legitimate Non-Recurring Items</span>
+        </h3>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">項目</span><span class="lang-en">Item</span></th>
+                <th><span class="lang-ja">典型的な調整方向</span><span class="lang-en">Adjustment</span></th>
+                <th><span class="lang-ja">正当性の条件</span><span class="lang-en">Legitimacy Condition</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="lang-ja">M&A取引費用（FA、法務）</span><span class="lang-en">M&A transaction costs (advisory, legal)</span></td>
+                <td class="td-accent"><span class="lang-ja">加算（除外）</span><span class="lang-en">Add-back</span></td>
+                <td><span class="lang-ja">当該取引に直接帰属するもの。継続的なM&A戦略費は対象外</span><span class="lang-en">Directly attributable to a specific transaction; ongoing M&A programme costs are not eligible</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">リストラクチャリング費用</span><span class="lang-en">Restructuring charges</span></td>
+                <td class="td-accent"><span class="lang-ja">加算（除外）</span><span class="lang-en">Add-back</span></td>
+                <td><span class="lang-ja">明確に完結した計画に基づくもの。「毎年のリストラ」は経常費用とみなす</span><span class="lang-en">Based on a clearly defined, completed programme; "annual restructuring" is a recurring cost</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">訴訟和解金・罰課金</span><span class="lang-en">Litigation settlements, regulatory fines</span></td>
+                <td class="td-accent"><span class="lang-ja">加算（除外）</span><span class="lang-en">Add-back</span></td>
+                <td><span class="lang-ja">特定事案に帰属。同種リスクが継続する業界（金融・製薬等）は慎重に判断</span><span class="lang-en">Specific case only; industries with ongoing litigation risk (financial services, pharma) require caution</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">自然災害・パンデミック影響</span><span class="lang-en">Natural disasters, pandemic disruption</span></td>
+                <td class="td-warn"><span class="lang-ja">要個別判断</span><span class="lang-en">Case-by-case</span></td>
+                <td><span class="lang-ja">「ブラックスワン」性が高ければ除外しうるが、反証（保険、業界平均）が必要</span><span class="lang-en">High "black swan" character may justify exclusion, but requires supporting evidence</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">IPO・上場準備費用</span><span class="lang-en">IPO / listing preparation costs</span></td>
+                <td class="td-accent"><span class="lang-ja">加算（除外）</span><span class="lang-en">Add-back</span></td>
+                <td><span class="lang-ja">上場後に消滅する費用のみ。上場企業として必要なガバナンスコストは対象外</span><span class="lang-en">Only costs that cease post-listing; incremental public company governance costs are not eligible</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="trap-box">
+          <div class="trap-label">RECURRING TRAP</div>
+          <p>
+            <span class="lang-ja">「毎年発生しているが毎年異なる理由をつけて一過性とする」パターンが最も危険である。過去3〜5年のP&Lにわたって調整項目の推移を追跡し、名目を変えて同水準の費用が繰り返されていないか確認することが必須だ。この検証なしにEBITDA調整を受け入れることはできない。</span>
+            <span class="lang-en">The most dangerous pattern is "recurring costs labelled differently each year to justify non-recurring treatment." Always trace adjustment items across three to five years of historical P&L to identify costs that recur at similar levels under different names. No EBITDA adjustment should be accepted without this longitudinal check.</span>
+          </p>
+        </div>
+
+        <h2>
+          <span class="lang-ja">第2層：ランレート調整</span>
+          <span class="lang-en">Layer 2 — Run-Rate Adjustments</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">ランレート調整は、過去の会計期間に「全期間反映されなかった」収益や費用の変化を年換算で反映する操作である。代表的なケースは：</span>
+          <span class="lang-en">Run-rate adjustments reflect the annualisation of changes to the revenue or cost base that were not captured for a full period in historical accounts. The most common cases are:</span>
+        </p>
+
+        <ul>
+          <li>
+            <span class="lang-ja"><strong>期中買収</strong>：第3四半期に子会社を買収した場合、その貢献は過去12ヶ月のP&Lに9ヶ月分しか計上されない。フル寄与ベースのEBITDAに換算する調整が行われる</span>
+            <span class="lang-en"><strong>Mid-year acquisitions</strong>: A subsidiary acquired in Q3 contributes only nine months to the trailing twelve-month P&L. Adjusting to a full-year contribution basis is standard and theoretically sound.</span>
+          </li>
+          <li>
+            <span class="lang-ja"><strong>新規顧客・契約の年換算</strong>：バリュエーション直前に締結した長期契約の効果が期末にしか出ていない場合、その年換算貢献をEBITDAに加算する</span>
+            <span class="lang-en"><strong>New contracts signed near period end</strong>: If a major customer contract was signed in the final month of the period, its annualised contribution may be added to EBITDA.</span>
+          </li>
+          <li>
+            <span class="lang-ja"><strong>価格改定・コスト削減の年換算</strong>：実施済みの価格改定や人員削減の効果が部分的にしか数字に出ていない場合、フル効果を反映させる</span>
+            <span class="lang-en"><strong>Implemented price increases or cost reductions</strong>: The full-year impact of a price increase or headcount reduction enacted mid-year may be annualised into normalised EBITDA.</span>
+          </li>
+        </ul>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>ランレート調整の正当性の核心は「確実性（Certainty）」にある。</strong>すでに締結された契約、実施済みの組織変更、発効済みの価格改定——これらは証拠として提示できる。一方、「今後12ヶ月で達成見込みのコスト削減」はランレート調整ではなくDCFのforward projectionとして扱うべきだ。このラインを曖昧にすることが売り手調整の最大の問題点である。</span>
+            <span class="lang-en"><strong>The legitimacy of a run-rate adjustment turns on certainty.</strong> Contracts already signed, organisational changes already implemented, price increases already in effect — these can be evidenced. "Cost savings expected to be achieved over the next twelve months" are not run-rate adjustments; they belong in the DCF as forward projections. Blurring this line is the single most common abuse in seller-adjusted EBITDA.</span>
+          </p>
+        </div>
+
+        <h3>
+          <span class="lang-ja">ランレート調整の検証手順</span>
+          <span class="lang-en">Verifying Run-Rate Adjustments</span>
+        </h3>
+
+        <ol class="numbered-list">
+          <li>
+            <span class="num">1</span>
+            <span>
+              <span class="lang-ja"><strong>エビデンスの要求</strong>：調整の根拠となる契約書、価格通知書、組織変更の発令書類を個別に入手する。口頭説明だけで認める調整はゼロであるべきだ</span>
+              <span class="lang-en"><strong>Demand evidence</strong>: Obtain the underlying contract, pricing notice, or organisational announcement for each adjustment. No run-rate item should be accepted on verbal explanation alone.</span>
+            </span>
+          </li>
+          <li>
+            <span class="num">2</span>
+            <span>
+              <span class="lang-ja"><strong>月次データとの照合</strong>：主張されるランレートが実際の月次P&Lで確認できるかを検証する。「これから出てくる」ものは認めない</span>
+              <span class="lang-en"><strong>Reconcile to monthly actuals</strong>: Verify that the claimed run-rate is observable in trailing monthly management accounts. If it has not yet appeared in the numbers, it is not a run-rate adjustment.</span>
+            </span>
+          </li>
+          <li>
+            <span class="num">3</span>
+            <span>
+              <span class="lang-ja"><strong>確実性に応じたヘアカット</strong>：証拠があっても、顧客集中度・解約リスク・価格の持続性に応じて10〜40%のディスカウントを掛ける</span>
+              <span class="lang-en"><strong>Apply certainty haircuts</strong>: Even with evidence, discount the adjustment for customer concentration, churn risk, and pricing sustainability — typically 10–40% depending on the source.</span>
+            </span>
+          </li>
+        </ol>
+
+        <h2>
+          <span class="lang-ja">第3層：オーナーコスト調整</span>
+          <span class="lang-en">Layer 3 — Owner Benefit Adjustments</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">プライベートカンパニー（PE傘下、同族企業、創業者経営）に特有の調整カテゴリである。オーナーと企業の間にある経済的関係が、P&L上に「市場価格ではない」取引として計上されているケースがある。</span>
+          <span class="lang-en">This category is specific to private companies — PE-backed, family-owned, or founder-led businesses. The economic relationship between owner and company frequently produces transactions recorded in the P&L at non-arm's-length terms.</span>
+        </p>
+
+        <div class="calc-block">
+          <div class="calc-row" style="font-weight:500; margin-bottom:8px;">
+            <span><span class="lang-ja">典型的なオーナーコスト調整項目</span><span class="lang-en">Typical owner benefit adjustments</span></span>
+          </div>
+          <div class="calc-row">
+            <span><span class="lang-ja">① オーナー役員報酬の市場価格調整</span><span class="lang-en">① Owner-manager compensation to market rate</span></span>
+            <span class="calc-warn">± xxx</span>
+          </div>
+          <div class="calc-row">
+            <span><span class="lang-ja">② 親族への過払い給与の除外</span><span class="lang-en">② Excess compensation to family members</span></span>
+            <span class="calc-highlight">+xxx</span>
+          </div>
+          <div class="calc-row">
+            <span><span class="lang-ja">③ オーナー個人費用の法人計上除外</span><span class="lang-en">③ Personal expenses run through the business</span></span>
+            <span class="calc-highlight">+xxx</span>
+          </div>
+          <div class="calc-row">
+            <span><span class="lang-ja">④ スポンサー管理報酬（PE傘下のみ）</span><span class="lang-en">④ Sponsor management fee (PE-backed only)</span></span>
+            <span class="calc-highlight">+xxx</span>
+          </div>
+          <div class="calc-row">
+            <span><span class="lang-ja">⑤ 関連会社間賃料の市場価格調整</span><span class="lang-en">⑤ Related-party lease rentals to market rate</span></span>
+            <span class="calc-warn">± xxx</span>
+          </div>
+          <div class="calc-row calc-total">
+            <span><span class="lang-ja">オーナー調整後 EBITDA</span><span class="lang-en">Owner-adjusted EBITDA</span></span>
+            <span class="calc-highlight">= Normalised</span>
+          </div>
+        </div>
+
+        <p>
+          <span class="lang-ja">PE傘下企業における<strong>スポンサー管理報酬（management fee）</strong>は典型的な加算項目だ。スポンサーがポートフォリオ会社から徴収するこの報酬は、新しい買い手の下では消滅するコストであるため、Normalised EBITDAには計上しない。一方で、このフィーを除外した場合、取引成立後に必要となるコーポレート機能のコスト（CFO、IR等）が代替的に発生することも考慮しなければならない。</span>
+          <span class="lang-en">The <strong>sponsor management fee</strong> in PE-backed businesses is a classic add-back: this charge collected by the PE sponsor from the portfolio company disappears under new ownership and should not be included in normalised EBITDA. However, removing it without also considering the incremental corporate function costs that a new owner will need to build (CFO, investor relations, board support) produces an overstated number.</span>
+        </p>
+
+        <div class="pull-quote">
+          <p><span class="lang-ja">「オーナー報酬の調整は、市場価格という客観的な参照点があって初めて成立する。代替CEOの採用コストを調査せずに調整を行うことは、仮定を事実として扱うことになる。」</span><span class="lang-en">"An owner compensation adjustment is only valid relative to an objective market reference. Adjusting without researching the replacement cost of the CEO role is treating an assumption as a fact."</span></p>
+          <footer>— Valuation practice principle</footer>
+        </div>
+
+        <h2>
+          <span class="lang-ja">第4層：プロフォーマ・M&A調整</span>
+          <span class="lang-en">Layer 4 — Pro-Forma and M&A Adjustments</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">企業が複数の買収を行ってきた場合、過去12ヶ月のconsolidated P&Lには、すべての被買収企業のフル年間貢献が反映されていない。プロフォーマ調整は、各被買収企業の貢献を買収日以前に遡って反映させることで、「現在の企業グループ全体が1年間フル稼働した場合のEBITDA」を算出する。</span>
+          <span class="lang-en">When a company has made multiple acquisitions, the trailing twelve-month consolidated P&L does not reflect the full-year contribution of every acquired entity. Pro-forma adjustments restate historical EBITDA as if the current group structure had been in place for the entire period.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">この調整は概念的に正当である。しかし、実務上の問題は<strong>シナジーをどこまでプロフォーマに含めるか</strong>という点に集中する。</span>
+          <span class="lang-en">This adjustment is conceptually sound. The practical problem concentrates on one question: <strong>how much of the claimed synergy belongs in the pro-forma EBITDA?</strong></span>
+        </p>
+
+        <h3>
+          <span class="lang-ja">シナジーの分類と取り扱い</span>
+          <span class="lang-en">Classifying Synergies</span>
+        </h3>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">シナジーの種類</span><span class="lang-en">Synergy Type</span></th>
+                <th><span class="lang-ja">Normalised EBITDAへの計上</span><span class="lang-en">Inclusion in Normalised EBITDA</span></th>
+                <th><span class="lang-ja">根拠</span><span class="lang-en">Rationale</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="lang-ja">実現済み・証拠あり（重複コスト排除、すでに実施）</span><span class="lang-en">Achieved and evidenced (duplicate cost eliminations already executed)</span></td>
+                <td class="td-accent"><span class="lang-ja">計上可</span><span class="lang-en">Permitted</span></td>
+                <td><span class="lang-ja">P&Lに既に反映されているか、確実に反映される根拠がある</span><span class="lang-en">Already in the P&L or supported by executed actions</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">コミット済み・実施中（人員削減発令済み等）</span><span class="lang-en">Committed and in progress (headcount reduction formally announced)</span></td>
+                <td class="td-warn"><span class="lang-ja">部分的に計上可（ヘアカット要）</span><span class="lang-en">Partial inclusion (with haircut)</span></td>
+                <td><span class="lang-ja">確実性は高いが未完了のため、証拠と実施タイムラインを確認</span><span class="lang-en">High certainty but not yet complete; verify evidence and timeline</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">識別済み・未実施（クロスセル、購買統合）</span><span class="lang-en">Identified but not yet actioned (cross-selling, procurement consolidation)</span></td>
+                <td class="td-warn"><span class="lang-ja">計上不可（DCF扱い）</span><span class="lang-en">Not permitted (goes to DCF)</span></td>
+                <td><span class="lang-ja">将来の行動に依存する収益はEBITDA正規化ではなくDCFに属する</span><span class="lang-en">Revenue dependent on future actions belongs in the DCF, not in historical normalisation</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">推計ベースのシナジー（売り手主張）</span><span class="lang-en">Estimated synergies (seller claims)</span></td>
+                <td class="td-warn"><span class="lang-ja">計上不可</span><span class="lang-en">Not permitted</span></td>
+                <td><span class="lang-ja">バイヤーが独立して評価すべき価値であり、売り手のEBITDAに含まれるべきではない</span><span class="lang-en">Value that buyers should assess independently; its inclusion distorts the multiple</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="trap-box">
+          <div class="trap-label">SYNERGY TRAP</div>
+          <p>
+            <span class="lang-ja">LBO案件のオークションプロセスでは、売り手アドバイザーがシナジーを段階的にEBITDA調整に含めることで「より高いマルチプルが正当化される」と主張するケースが増えている。買い手として留意すべきは、<strong>シナジーをEBITDAに含めると、そのシナジーに対してもEV/EBITDAマルチプル全体を支払うことになる</strong>という点だ。シナジーはDCFで独立に評価し、EBITDAの正規化とは切り離して扱うべきである。</span>
+            <span class="lang-en">In LBO auction processes, sell-side advisers increasingly push synergies into EBITDA normalisation to justify higher multiples. The critical insight for buyers: <strong>including a synergy in EBITDA means paying the full EV/EBITDA multiple on that synergy.</strong> Synergies should be valued separately in the DCF and kept entirely separate from the normalisation of historical EBITDA.</span>
+          </p>
+        </div>
+
+        <h2>
+          <span class="lang-ja">EBITDAの品質（Quality of EBITDA）</span>
+          <span class="lang-en">EBITDA Quality</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">4層の調整を経た後でも、「Normalised EBITDA」の品質は企業によって大きく異なる。以下の特性を持つEBITDAは高品質とみなされ、マルチプルの上限を正当化する。</span>
+          <span class="lang-en">Even after applying all four normalisation layers, the quality of the resulting EBITDA varies substantially across businesses. The following characteristics define high-quality EBITDA and justify premium multiples.</span>
+        </p>
+
+        <ul>
+          <li>
+            <span class="lang-ja"><strong>キャッシュ転換率の高さ</strong>：EBITDAに対してフリーキャッシュフローが高い割合で実現している（運転資本需要、設備投資が低い）</span>
+            <span class="lang-en"><strong>High cash conversion</strong>: Free cash flow realises a high proportion of EBITDA, driven by low working capital requirements and modest capex intensity.</span>
+          </li>
+          <li>
+            <span class="lang-ja"><strong>顧客分散と解約率の低さ</strong>：上位顧客への依存度が低く、リテンション率が高い。ARRベースのSaaSや長期契約ベースのインフラは典型例</span>
+            <span class="lang-en"><strong>Customer diversification and low churn</strong>: Low concentration among top customers and high retention rates. ARR-based SaaS and long-term contracted infrastructure are canonical examples.</span>
+          </li>
+          <li>
+            <span class="lang-ja"><strong>調整項目の少なさ</strong>：reported EBITDAとnormalised EBITDAの乖離が小さいほど、正規化のプロセスへの疑義が少なく、バイヤーの信頼度が高い</span>
+            <span class="lang-en"><strong>Minimal adjustment quantum</strong>: The smaller the gap between reported and normalised EBITDA, the less the normalisation process is subject to dispute and the greater buyer confidence.</span>
+          </li>
+          <li>
+            <span class="lang-ja"><strong>収益の予見可能性</strong>：過去の実績が将来予測の信頼性を高める。季節性・景気循環への感応度が低いほど、ランレート調整の信頼性が高まる</span>
+            <span class="lang-en"><strong>Revenue predictability</strong>: Consistent historical performance that underpins forward projections. Low sensitivity to seasonality and economic cycles improves the reliability of run-rate adjustments.</span>
+          </li>
+        </ul>
+
+        <h2>
+          <span class="lang-ja">QoEレポートの役割</span>
+          <span class="lang-en">The Role of Quality of Earnings Reports</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">Quality of Earnings（QoE）レポートは、上記の正規化プロセスを買い手側の会計士が独立して検証するドキュメントである。売り手のEBITDA調整を「受け入れる」のではなく、「独立した目線で再構築する」ことが目的だ。</span>
+          <span class="lang-en">A Quality of Earnings report is a document in which the buyer's accountants independently reconstruct and verify the normalisation process. Its purpose is not to accept the seller's adjusted EBITDA but to rebuild it from first principles under independent scrutiny.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">QoEの主要なアウトプットは：</span>
+          <span class="lang-en">The principal outputs of a QoE are:</span>
+        </p>
+
+        <ul>
+          <li>
+            <span class="lang-ja"><strong>EBITDA調整ブリッジ</strong>：売り手調整をゼロから検証し、認容・部分認容・拒否に分類した独自のNormalised EBITDA</span>
+            <span class="lang-en"><strong>EBITDA adjustment bridge</strong>: An independent normalised EBITDA that classifies each seller adjustment as accepted, partially accepted, or rejected</span>
+          </li>
+          <li>
+            <span class="lang-ja"><strong>収益の質の評価</strong>：顧客集中、解約リスク、収益認識の積極性、関連会社取引の適切性</span>
+            <span class="lang-en"><strong>Revenue quality assessment</strong>: Customer concentration, churn risk, aggressiveness of revenue recognition, and appropriateness of related-party transactions</span>
+          </li>
+          <li>
+            <span class="lang-ja"><strong>運転資本の正規化</strong>：クロージング時の運転資本水準（Locked Box/Completion Accounts）のベースラインとなる「正常な」運転資本の推計</span>
+            <span class="lang-en"><strong>Working capital normalisation</strong>: Estimation of the "normal" working capital level that forms the baseline for locked-box or completion accounts mechanics</span>
+          </li>
+        </ul>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>QoEは義務ではなく交渉ツールでもある。</strong>QoEで売り手のEBITDA調整が大幅に削減された場合、それはそのまま入札価格の引き下げ根拠になる。また、表明保証（Reps & Warranties）保険のアンダーライターは、QoEの存在を保険料の算定と引受可否判断の前提とすることが多い。QoEを省略するコスト節約は、事後的なリスクとのトレードオフとして成立しない。</span>
+            <span class="lang-en"><strong>QoE is also a negotiation instrument.</strong> When a QoE materially reduces the seller's adjusted EBITDA, it provides direct support for a lower bid price. Reps and warranties underwriters increasingly treat QoE as a prerequisite for pricing coverage. The cost savings from skipping QoE do not justify the post-closing exposure it leaves unaddressed.</span>
+          </p>
+        </div>
+
+        <div class="section-sep">· · ·</div>
+
+        <p>
+          <span class="lang-ja">次回の#008では、#005（DLOC/DLOM）と#007（Normalised EBITDA）の延長として、M&Aにおけるコントロール・プレミアムとシナジーの評価を扱う。「スタンドアローン価値」と「買収後価値」をどう分離し、プレミアムをどう理論的に正当化するかが中心的な論点となる。</span>
+          <span class="lang-en">In #008, building on #005 (DLOC/DLOM) and this article, we examine control premiums and synergy valuation in M&A — specifically how to separate standalone value from acquisition value, and how to construct a theoretically defensible bid premium.</span>
+        </p>
+
+        <!-- NEXT ARTICLE CTA -->
+        <div class="next-article">
+          <div class="next-label">NEXT — Valuation Theory Lab #008</div>
+          <div class="next-title">
+            <span class="lang-ja">コントロール・プレミアムとシナジー評価 — M&A価格の理論的根拠</span>
+            <span class="lang-en">Control Premium &amp; Synergy Valuation — The Theoretical Basis of M&amp;A Pricing</span>
+          </div>
+          <div class="next-desc">
+            <span class="lang-ja">スタンドアローン価値と買収後価値の分離。シナジーのDCF評価とWACC調整。なぜプレミアムは買い手が支払い、売り手のシナジーは価格に反映されないのか。</span>
+            <span class="lang-en">Separating standalone value from post-acquisition value. DCF valuation of synergies and WACC adjustments. Why buyers pay the premium and why seller synergies should not enter the price.</span>
+          </div>
+        </div>
+
+      </article>
+
+      <!-- 4. サイドバー -->
+      <aside class="article-sidebar">
+
+        <div class="sidebar-card">
+          <div class="section-label">KEY CONCEPTS</div>
+          <div class="keyfacts-grid">
+            <div class="fact-card">
+              <div class="fact-value">4層</div>
+              <div class="fact-desc"><span class="lang-ja">正規化調整のフレームワーク</span><span class="lang-en">Normalisation framework layers</span></div>
+            </div>
+            <div class="fact-card highlight">
+              <div class="fact-value">QoE</div>
+              <div class="fact-desc"><span class="lang-ja">独立検証の唯一の方法</span><span class="lang-en">Only independent verification tool</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">LTM</div>
+              <div class="fact-desc"><span class="lang-ja">プロフォーマ調整の基礎期間</span><span class="lang-en">Base period for pro-forma</span></div>
+            </div>
+            <div class="fact-card highlight">
+              <div class="fact-value">Bridge</div>
+              <div class="fact-desc"><span class="lang-ja">調整ブリッジ分析の必須性</span><span class="lang-en">Adjustment bridge is mandatory</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-card">
+          <div class="section-label"><span class="lang-ja">正当な調整 vs 疑わしい調整</span><span class="lang-en">Legitimate vs Suspect Adjustments</span></div>
+          <ul class="highlights-list" style="margin-top:12px;">
+            <li class="highlight-item">
+              <span class="hl-num" style="color:var(--accent);">✓</span>
+              <span class="hl-text"><span class="lang-ja">証拠のある一過性費用の除外</span><span class="lang-en">Non-recurring costs with evidence</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num" style="color:var(--accent);">✓</span>
+              <span class="hl-text"><span class="lang-ja">締結済み契約のランレート</span><span class="lang-en">Run-rate from executed contracts</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num" style="color:var(--accent);">✓</span>
+              <span class="hl-text"><span class="lang-ja">市場価格に基づくオーナー報酬調整</span><span class="lang-en">Owner comp adjusted to market rate</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num" style="color:var(--accent-warm);">✗</span>
+              <span class="hl-text"><span class="lang-ja">毎年発生する「非経常」費用</span><span class="lang-en">Annually recurring "one-offs"</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num" style="color:var(--accent-warm);">✗</span>
+              <span class="hl-text"><span class="lang-ja">未実施のシナジーのEBITDA計上</span><span class="lang-en">Unactioned synergies in EBITDA</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num" style="color:var(--accent-warm);">✗</span>
+              <span class="hl-text"><span class="lang-ja">証拠のない将来ランレート</span><span class="lang-en">Future run-rates without evidence</span></span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="sidebar-card">
+          <div class="section-label">SERIES INDEX</div>
+          <ol class="highlights-list" style="list-style:none;padding:0;margin-top:12px;">
+            <li class="highlight-item">
+              <span class="hl-num">01</span>
+              <span class="hl-text"><a href="./2026-03-20-valuation.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">ターミナルバリューとDCF</span><span class="lang-en">Terminal Value &amp; DCF</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">02</span>
+              <span class="hl-text"><a href="./2026-03-21-wacc.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">資本コスト（WACC）</span><span class="lang-en">Cost of Capital (WACC)</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">03</span>
+              <span class="hl-text"><a href="./2026-03-21-beta-hamada.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">Beta変換とHamada方程式</span><span class="lang-en">Beta &amp; Hamada Equation</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">04</span>
+              <span class="hl-text"><a href="./2026-03-22-cyclical.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">景気循環企業の評価</span><span class="lang-en">Valuing Cyclical Businesses</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">05</span>
+              <span class="hl-text"><a href="./2026-03-22-dloc-dlom.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">DLOC・DLOM</span><span class="lang-en">DLOC &amp; DLOM</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">06</span>
+              <span class="hl-text"><a href="./2026-03-22-multiples-comparability.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">マルチプルの比較可能性</span><span class="lang-en">Multiples Comparability</span></a></span>
+            </li>
+            <li class="highlight-item" style="border-bottom:none;">
+              <span class="hl-num" style="color:var(--accent-warm);">07</span>
+              <span class="hl-text" style="color:var(--text-primary);font-weight:500;"><span class="lang-ja">Normalised EBITDA ← 本稿</span><span class="lang-en">Normalised EBITDA ← this article</span></span>
+            </li>
+          </ol>
+        </div>
+
+        <div class="sidebar-card">
+          <div class="section-label">KEY REFERENCES</div>
+          <ul class="source-list" style="margin-top:10px;">
+            <li><a href="#" target="_blank" rel="noopener">Rosenbaum &amp; Pearl — Investment Banking (Wiley)</a><span class="source-tag">BOOK</span></li>
+            <li><a href="#" target="_blank" rel="noopener">Damodaran — Valuation: Measuring and Managing (Wiley)</a><span class="source-tag">BOOK</span></li>
+            <li><a href="#" target="_blank" rel="noopener">AICPA — Guide to Quality of Earnings</a><span class="source-tag">GUIDE</span></li>
+            <li><a href="#" target="_blank" rel="noopener">Bain &amp; Company — EBITDA: What It Measures and What It Doesn't</a><span class="source-tag">ARTICLE</span></li>
+          </ul>
+        </div>
+
+      </aside>
+
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <span>Valuation Theory Lab #007 | donato Valuation Notes | 2026-03-23</span>
+  <span>
+    <span class="lang-ja">本稿は理論解説を目的としており、投資・M&A意思決定にあたっては専門家への確認を要します。</span>
+    <span class="lang-en">For educational purposes only. Consult a qualified adviser before making investment or M&amp;A decisions.</span>
+  </span>
+</footer>
+
+<script>
+  // Progress bar
+  window.addEventListener('scroll', function() {
+    var h = document.documentElement;
+    var pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    document.getElementById('progress-bar').style.width = Math.min(pct, 100) + '%';
+  });
+
+  // Reading time (500字/分)
+  (function() {
+    var text = document.querySelector('.article-body') ? document.querySelector('.article-body').textContent : '';
+    var chars = text.length;
+    var minutes = Math.ceil(chars / 500);
+    var el1 = document.getElementById('reading-time-badge');
+    var el2 = document.getElementById('reading-time-badge2');
+    if (el1) el1.querySelector('.lang-ja').textContent = '約' + minutes + '分';
+    if (el2) el2.querySelector('.lang-ja').textContent = '約' + minutes + '分';
+    if (el1) el1.querySelector('.lang-en').textContent = '~' + minutes + ' min read';
+    if (el2) el2.querySelector('.lang-en').textContent = '~' + minutes + ' min read';
+  })();
+
+  // Lang toggle
+  let currentLang = localStorage.getItem('hp-lang') || 'ja';
+  let currentTheme = localStorage.getItem('hp-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('hp-lang', lang);
+    document.querySelectorAll('.lang-ja').forEach(el => el.style.display = lang === 'ja' ? 'inline' : 'none');
+    document.querySelectorAll('.lang-en').forEach(el => el.style.display = lang === 'en' ? 'inline' : 'none');
+    document.querySelectorAll('.art-lang-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+    document.documentElement.lang = lang === 'ja' ? 'ja' : 'en';
+  }
+  function toggleTheme() {
+    currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+    localStorage.setItem('hp-theme', currentTheme);
+    document.body.classList.toggle('dark', currentTheme === 'dark');
+    document.getElementById('theme-btn').textContent = currentTheme === 'light' ? '☀' : '☾';
+  }
+  document.addEventListener('DOMContentLoaded', () => {
+    setLang(currentLang);
+    if (currentTheme === 'dark') {
+      document.body.classList.add('dark');
+      document.getElementById('theme-btn').textContent = '☾';
+    }
+  });
+</script>
+
+</body>
+</html>

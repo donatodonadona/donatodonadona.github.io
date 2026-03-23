@@ -1126,7 +1126,7 @@
                 <span class="lang-en">IFRS 18 Explained — Three-Category P&amp;L and MPM Disclosures</span>
               </a>
               <a href="./2026-03-21-career.html" style="display:block; font-family:'Inter',sans-serif; font-size:0.78rem; color:var(--accent); text-decoration:none; line-height:1.45; padding:8px 0;">
-                <span class="lang-ja">AIエラのFinanceキャリア戦略</span>
+                <span class="lang-ja">AI時代のFinanceキャリア戦略</span>
                 <span class="lang-en">Finance Career Strategy in the AI Era</span>
               </a>
             </div>
@@ -1150,6 +1150,19 @@
       var pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
       document.getElementById('progress-bar').style.width = Math.min(pct, 100) + '%';
     });
+
+    // Reading time (500字/分)
+    (function() {
+      var text = document.querySelector('.article-body') ? document.querySelector('.article-body').textContent : '';
+      var chars = text.length;
+      var minutes = Math.ceil(chars / 500);
+      var el1 = document.getElementById('reading-time-badge');
+      var el2 = document.getElementById('reading-time-badge2');
+      if (el1) el1.querySelector('.lang-ja').textContent = '約' + minutes + '分';
+      if (el2) el2.querySelector('.lang-ja').textContent = '約' + minutes + '分';
+      if (el1) el1.querySelector('.lang-en').textContent = '~' + minutes + ' min read';
+      if (el2) el2.querySelector('.lang-en').textContent = '~' + minutes + ' min read';
+    })();
 
     // Lang toggle
     let currentLang = localStorage.getItem('hp-lang') || 'ja';

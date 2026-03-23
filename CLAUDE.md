@@ -23,14 +23,41 @@
 
 ---
 
-## 記事カードの読了時間はハードコード禁止
+## 読了時間の実装ルール（必須）
+
+### 記事ページ（必須JS）
+
+**全記事ページは以下の読了時間 JS ブロックを必ず含むこと。**
+`articles/template.html` を使えば自動的に含まれる。
+
+```js
+// Reading time (500字/分)
+(function() {
+  var text = document.querySelector('.article-body') ? document.querySelector('.article-body').textContent : '';
+  var chars = text.length;
+  var minutes = Math.ceil(chars / 500);
+  var el1 = document.getElementById('reading-time-badge');
+  var el2 = document.getElementById('reading-time-badge2');
+  if (el1) el1.querySelector('.lang-ja').textContent = '約' + minutes + '分';
+  if (el2) el2.querySelector('.lang-ja').textContent = '約' + minutes + '分';
+  if (el1) el1.querySelector('.lang-en').textContent = '~' + minutes + ' min read';
+  if (el2) el2.querySelector('.lang-en').textContent = '~' + minutes + ' min read';
+})();
+```
+
+- **JA のみ更新は禁止** — EN も必ず同時に更新する
+- `.lang-ja` だけ更新するパターン（旧バグ）は使わない
+- 挿入位置: Lang toggle セクションの直前
+
+### 記事一覧（index.html）
 
 `articles/index.html` の読了時間バッジ（`.read-time-badge`）は **JS が動的に上書きする**。
-新規記事を追加する際、カードにプレースホルダー値（例: `10 min read`）を書くことは許容されるが、
+新規カードにプレースホルダー値（例: `10 min read`）を書くことは許容されるが、
 **それが最終値だと思ってはならない。**
 
 - 実際の値は index.html ロード時に各記事をfetchして `.article-body` の文字数÷500で算出される
 - ハードコード値を「正しい」と確認・報告することは禁止
+- index.html と記事ページは同一の計算式を使うため、両者は常に一致する
 
 ---
 

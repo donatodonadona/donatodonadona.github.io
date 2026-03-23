@@ -1172,6 +1172,19 @@
       document.getElementById('progress-bar').style.width = Math.min(pct, 100) + '%';
     });
 
+    // Reading time (500字/分)
+    (function() {
+      var text = document.querySelector('.article-body') ? document.querySelector('.article-body').textContent : '';
+      var chars = text.length;
+      var minutes = Math.ceil(chars / 500);
+      var el1 = document.getElementById('reading-time-badge');
+      var el2 = document.getElementById('reading-time-badge2');
+      if (el1) el1.querySelector('.lang-ja').textContent = '約' + minutes + '分';
+      if (el2) el2.querySelector('.lang-ja').textContent = '約' + minutes + '分';
+      if (el1) el1.querySelector('.lang-en').textContent = '~' + minutes + ' min read';
+      if (el2) el2.querySelector('.lang-en').textContent = '~' + minutes + ' min read';
+    })();
+
     // Persist EN/JP and Dark/Light across all pages via localStorage
     let currentLang = localStorage.getItem('hp-lang') || 'ja';
     let currentTheme = localStorage.getItem('hp-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');

@@ -1233,6 +1233,8 @@ EBITDA_adj = EBITDA_reported + ΔLIFO Reserve (period)
     var el2 = document.getElementById('reading-time-badge2');
     if (el1) el1.querySelector('.lang-ja').textContent = label;
     if (el2) el2.querySelector('.lang-ja').textContent = label;
+    if (el1) el1.querySelector('.lang-en').textContent = '~' + minutes + ' min read';
+    if (el2) el2.querySelector('.lang-en').textContent = '~' + minutes + ' min read';
   })();
 
   // Lang toggle

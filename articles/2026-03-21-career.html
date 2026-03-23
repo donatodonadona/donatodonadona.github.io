@@ -5,7 +5,7 @@
   <link rel="icon" type="image/svg+xml" href="../favicon.svg">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="AIが財務・会計・監査の業務を再編する2026年、Finance Professionalのキャリア戦略は根本から問い直される。生き残る職種と代替される職種の分岐点、今投資すべきスキルスタックを整理する。">
-  <title>AIエラのFinanceキャリア戦略 — 生き残る人材と消える仕事の分岐点 | donato Finance Professional × AI</title>
+  <title>AI時代のFinanceキャリア戦略 — 生き残る人材と消える仕事の分岐点 | donato Finance Professional × AI</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+JP:wght@300;400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../brand.css">
   <style>
@@ -605,7 +605,7 @@
               </span>
             </div>
             <h1 class="article-headline">
-              <span class="lang-ja">AIエラのFinanceキャリア戦略 — 生き残る人材と消える仕事の分岐点</span>
+              <span class="lang-ja">AI時代のFinanceキャリア戦略 — 生き残る人材と消える仕事の分岐点</span>
               <span class="lang-en">Finance Career Strategy in the AI Era — Where Roles Survive and Where They Don't</span>
             </h1>
             <p class="article-standfirst">
@@ -1133,6 +1133,19 @@
       var pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
       document.getElementById('progress-bar').style.width = Math.min(pct, 100) + '%';
     });
+
+    // Reading time (500字/分)
+    (function() {
+      var text = document.querySelector('.article-body') ? document.querySelector('.article-body').textContent : '';
+      var chars = text.length;
+      var minutes = Math.ceil(chars / 500);
+      var el1 = document.getElementById('reading-time-badge');
+      var el2 = document.getElementById('reading-time-badge2');
+      if (el1) el1.querySelector('.lang-ja').textContent = '約' + minutes + '分';
+      if (el2) el2.querySelector('.lang-ja').textContent = '約' + minutes + '分';
+      if (el1) el1.querySelector('.lang-en').textContent = '~' + minutes + ' min read';
+      if (el2) el2.querySelector('.lang-en').textContent = '~' + minutes + ' min read';
+    })();
 
     // Persist EN/JP and Dark/Light across all pages via localStorage
     let currentLang = localStorage.getItem('hp-lang') || 'ja';

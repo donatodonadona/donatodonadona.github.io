@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>English Mastery — 英検1級 · CPE C2 · Beyond CPE</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+JP:wght@300;400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:      #0A0B10;
+  --bg2:     #12141C;
+  --bg3:     #1A1D28;
+  --border:  #21253A;
+  --accent:  #1A6EB0;
+  --accent2: #F5C800;
+  --text:    #E4E2DC;
+  --text2:   #7A8099;
+  --text3:   #3D4260;
+}
+body.light {
+  --bg:      #F6F5F0;
+  --bg2:     #EDECEA;
+  --bg3:     #E0DED8;
+  --border:  #CCCAC4;
+  --accent:  #1A6EB0;
+  --accent2: #D4A010;
+  --text:    #111320;
+  --text2:   #50566A;
+  --text3:   #999;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  min-height: 100vh;
+  transition: background 0.2s, color 0.2s;
+}
+[data-ja], :lang(ja) { font-family: 'Noto Serif JP', serif; font-weight: 300; }
+body.en [data-ja] { display: none; }
+body.ja [data-en] { display: none; }
+span[data-en], span[data-ja] { display: inline !important; }
+body.ja span[data-en] { display: none !important; }
+body.en span[data-ja] { display: none !important; }
+
+/* Progress bar */
+#progress-bar {
+  position: fixed; top: 0; left: 0; height: 2px;
+  background: linear-gradient(90deg, #1A6EB0, #F5C800);
+  width: 0%; z-index: 9999; transition: width 0.1s;
+}
+
+/* Nav */
+.donato-nav {
+  position: sticky; top: 0; z-index: 200;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 14px 2rem;
+  background: rgba(10,11,16,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+body.light .donato-nav { background: rgba(246,245,240,0.92); }
+.wordmark {
+  font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 500;
+  letter-spacing: 0.14em; text-transform: lowercase;
+  color: var(--text); text-decoration: none;
+}
+.wordmark span { color: var(--accent2); }
+.nav-right { display: flex; align-items: center; gap: 1rem; }
+.nav-links { list-style: none; display: flex; gap: 1.5rem; }
+.nav-links a { color: var(--text2); text-decoration: none; font-size: 13px; font-weight: 500; transition: color 0.2s; }
+.nav-links a:hover, .nav-links a.current { color: var(--text); }
+.lang-toggle { display: flex; gap: 4px; }
+.lang-btn {
+  font-family: 'JetBrains Mono', monospace; font-size: 11px;
+  padding: 3px 8px; border-radius: 4px; border: 1px solid var(--border);
+  background: transparent; color: var(--text2); cursor: pointer; transition: all 0.2s;
+}
+.lang-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+#theme-btn {
+  background: transparent; border: 1px solid var(--border);
+  color: var(--text2); padding: 3px 8px; border-radius: 4px;
+  cursor: pointer; font-size: 13px; transition: all 0.2s;
+}
+#theme-btn:hover { border-color: var(--accent); color: var(--text); }
+
+/* Hero */
+.hero {
+  padding: 5rem 2rem 3rem;
+  max-width: 900px; margin: 0 auto;
+}
+.hero-label {
+  font-family: 'JetBrains Mono', monospace; font-size: 11px;
+  letter-spacing: 0.12em; color: var(--accent2); margin-bottom: 1rem;
+}
+.hero h1 {
+  font-family: 'Cormorant Garamond', serif; font-weight: 600;
+  font-size: clamp(2.2rem, 5vw, 3.5rem); line-height: 1.15; margin-bottom: 1rem;
+}
+.gradient-text {
+  font-style: italic;
+  background: linear-gradient(135deg, #1A6EB0 0%, #F5C800 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-desc { color: var(--text2); font-size: 1rem; max-width: 600px; }
+.gradient-line {
+  height: 2px; background: linear-gradient(90deg, #1A6EB0, #F5C800);
+  margin: 2rem 0; border: none;
+}
+
+/* Tab nav */
+.tab-nav {
+  display: flex; gap: 0; overflow-x: auto;
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem; max-width: 900px; margin: 0 auto;
+  scrollbar-width: none;
+}
+.tab-nav::-webkit-scrollbar { display: none; }
+.tab-btn {
+  font-family: 'JetBrains Mono', monospace; font-size: 11px;
+  letter-spacing: 0.08em; padding: 12px 20px;
+  border: none; background: transparent; color: var(--text2);
+  cursor: pointer; border-bottom: 2px solid transparent;
+  white-space: nowrap; transition: all 0.2s;
+  margin-bottom: -1px;
+}
+.tab-btn:hover { color: var(--text); }
+.tab-btn.active { color: var(--accent2); border-bottom-color: var(--accent2); }
+
+/* Main content */
+.main { max-width: 900px; margin: 0 auto; padding: 2rem; }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* Section headers */
+.section-h {
+  font-family: 'Cormorant Garamond', serif; font-weight: 600;
+  font-size: 1.6rem; margin: 2.5rem 0 1rem; color: var(--text);
+}
+.section-sub {
+  font-size: 0.875rem; color: var(--text2); margin-bottom: 1.5rem;
+}
+
+/* Phrase grid */
+.phrase-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 10px; margin-bottom: 2rem;
+}
+.phrase-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 14px 16px;
+  cursor: pointer; transition: all 0.2s; position: relative;
+}
+.phrase-card:hover { border-color: var(--accent); background: var(--bg3); }
+.phrase-en {
+  font-size: 0.9rem; font-weight: 500; color: var(--text);
+  margin-bottom: 4px;
+}
+.phrase-ja {
+  font-family: 'Noto Serif JP', serif; font-size: 0.8rem;
+  font-weight: 300; color: var(--text2);
+}
+.phrase-card.flipped .phrase-en { display: none; }
+.phrase-card.flipped .phrase-ja { color: var(--accent2); font-size: 0.875rem; }
+
+/* Test badge */
+.test-badge {
+  font-family: 'JetBrains Mono', monospace; font-size: 10px;
+  letter-spacing: 0.08em; padding: 2px 6px;
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 3px; color: var(--text3);
+  display: inline-block; margin-bottom: 12px;
+}
+
+/* Model paragraphs */
+.para-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 2rem; margin-bottom: 2rem;
+}
+.para-en {
+  font-size: 0.95rem; line-height: 1.85; color: var(--text);
+  margin-bottom: 1.5rem; border-left: 3px solid var(--accent);
+  padding-left: 1rem;
+}
+.para-jp {
+  font-family: 'Noto Serif JP', serif; font-size: 0.875rem;
+  font-weight: 300; line-height: 2; color: var(--text2);
+  border-left: 3px solid var(--accent2); padding-left: 1rem;
+}
+.keyword {
+  color: var(--accent2); font-weight: 600;
+}
+
+/* Beyond CPE table */
+.phrase-table {
+  width: 100%; border-collapse: collapse; margin-bottom: 2rem;
+  font-size: 0.875rem;
+}
+.phrase-table th {
+  font-family: 'JetBrains Mono', monospace; font-size: 10px;
+  letter-spacing: 0.08em; padding: 10px 14px;
+  background: var(--bg3); border-bottom: 1px solid var(--border);
+  color: var(--text2); text-align: left;
+}
+.phrase-table td {
+  padding: 10px 14px; border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+.phrase-table tr:hover td { background: var(--bg3); }
+.phrase-table td:first-child {
+  font-family: 'Noto Serif JP', serif; font-size: 0.8rem;
+  font-weight: 300; color: var(--text2); width: 40%;
+}
+.phrase-table td:last-child { color: var(--text); font-weight: 500; }
+
+/* Grammar notes */
+.grammar-list { list-style: none; }
+.grammar-item {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 14px 16px; margin-bottom: 10px;
+  font-size: 0.875rem; line-height: 1.7;
+  border-left: 3px solid var(--bg3);
+  transition: border-left-color 0.2s;
+}
+.grammar-item:hover { border-left-color: var(--accent); }
+.grammar-item code {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;
+  background: var(--bg3); padding: 1px 5px; border-radius: 3px;
+  color: var(--accent2);
+}
+
+/* Strategy sections */
+.strategy-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; }
+@media (max-width: 600px) { .strategy-grid { grid-template-columns: 1fr; } }
+.strategy-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1.5rem;
+}
+.strategy-card h3 {
+  font-family: 'Cormorant Garamond', serif; font-weight: 600;
+  font-size: 1.1rem; margin-bottom: 0.75rem; color: var(--accent2);
+}
+.strategy-card ul { list-style: none; }
+.strategy-card li {
+  font-size: 0.875rem; color: var(--text2); padding: 4px 0;
+  padding-left: 14px; position: relative;
+}
+.strategy-card li::before {
+  content: '—'; position: absolute; left: 0; color: var(--accent);
+}
+
+/* Level badge */
+.level-badge {
+  display: inline-flex; gap: 8px; margin-bottom: 2rem; flex-wrap: wrap;
+}
+.badge {
+  font-family: 'JetBrains Mono', monospace; font-size: 11px;
+  padding: 4px 12px; border-radius: 20px;
+  border: 1px solid var(--border); color: var(--text2);
+}
+.badge.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+/* Search */
+.search-wrap { position: relative; margin-bottom: 1.5rem; }
+.search-input {
+  width: 100%; padding: 10px 16px 10px 40px;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 8px; color: var(--text); font-family: 'Inter', sans-serif;
+  font-size: 0.875rem; outline: none; transition: border-color 0.2s;
+}
+.search-input:focus { border-color: var(--accent); }
+.search-icon {
+  position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+  color: var(--text3); font-size: 13px;
+}
+.search-count {
+  font-family: 'JetBrains Mono', monospace; font-size: 11px;
+  color: var(--text2); margin-bottom: 1rem;
+}
+
+footer {
+  text-align: center; padding: 3rem 2rem;
+  color: var(--text3); font-size: 0.8rem;
+  border-top: 1px solid var(--border);
+  margin-top: 4rem;
+}
+</style>
+</head>
+<body class="ja">
+<div id="progress-bar"></div>
+
+<nav class="donato-nav">
+  <a href="../index.html" class="wordmark">dona<span>to</span></a>
+  <div class="nav-right">
+    <ul class="nav-links">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="index.html" class="current"><span data-en>Learning</span><span data-ja>英語学習</span></a></li>
+    </ul>
+    <div class="lang-toggle">
+      <button class="lang-btn" onclick="setLang('en')">EN</button>
+      <button class="lang-btn active" onclick="setLang('ja')">JP</button>
+    </div>
+    <button id="theme-btn" onclick="toggleTheme()">☀</button>
+  </div>
+</nav>
+
+<section class="hero">
+  <p class="hero-label">ENGLISH MASTERY</p>
+  <h1>
+    <span data-en>From <em class="gradient-text">Eiken 1st Grade</em><br>to Beyond CPE</span>
+    <span data-ja>英検1級から<em class="gradient-text">Beyond CPE</em>まで</span>
+  </h1>
+  <p class="hero-desc">
+    <span data-en>A personal reference for vocabulary, phrases, model paragraphs, and exam strategy — curated from real study materials.</span>
+    <span data-ja>実際の学習素材から厳選した、語彙・フレーズ・モデルパラグラフ・試験対策のパーソナルリファレンス。</span>
+  </p>
+</section>
+
+<hr class="gradient-line" style="max-width:900px;margin:0 auto 0;">
+
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="switchTab('phrases')">
+    <span data-en>CPE Phrases</span><span data-ja>CPEフレーズ</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('paragraphs')">
+    <span data-en>Model Paragraphs</span><span data-ja>単語凝縮パラ</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('beyond')">
+    <span data-en>Beyond CPE</span><span data-ja>Beyond CPE</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('grammar')">
+    <span data-en>Grammar Notes</span><span data-ja>文法ノート</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('strategy')">
+    <span data-en>Exam Strategy</span><span data-ja>試験対策</span>
+  </button>
+</div>
+
+<main class="main">
+
+  <!-- ==================== CPE PHRASES ==================== -->
+  <div id="tab-phrases" class="tab-panel active">
+    <h2 class="section-h"><span data-en>CPE Listening Phrases</span><span data-ja>CPE Listeningフレーズ集</span></h2>
+    <p class="section-sub">
+      <span data-en>Phrases from CPE Listening Tests 1–4 with Japanese translations. Click a card to flip.</span>
+      <span data-ja>CPE Listening Test 1〜4のフレーズ一覧（日本語訳付き）。カードをクリックすると反転します。</span>
+    </p>
+
+    <div class="search-wrap">
+      <span class="search-icon">⌕</span>
+      <input type="text" class="search-input" id="phrase-search" placeholder="Search phrases..." oninput="filterPhrases(this.value)">
+    </div>
+    <div class="search-count" id="phrase-count"></div>
+
+    <div id="phrase-test1">
+      <span class="test-badge">TEST 1</span>
+      <div class="phrase-grid" id="grid-test1"></div>
+    </div>
+    <div id="phrase-test2">
+      <span class="test-badge">TEST 2</span>
+      <div class="phrase-grid" id="grid-test2"></div>
+    </div>
+    <div id="phrase-test3">
+      <span class="test-badge">TEST 3</span>
+      <div class="phrase-grid" id="grid-test3"></div>
+    </div>
+    <div id="phrase-test4">
+      <span class="test-badge">TEST 4</span>
+      <div class="phrase-grid" id="grid-test4"></div>
+    </div>
+  </div>
+
+  <!-- ==================== MODEL PARAGRAPHS ==================== -->
+  <div id="tab-paragraphs" class="tab-panel">
+    <h2 class="section-h"><span data-en>Model Paragraphs</span><span data-ja>単語凝縮パラグラフ</span></h2>
+    <p class="section-sub">
+      <span data-en>CPE-level vocabulary embedded naturally in connected paragraphs. Study the English, then reveal the Japanese.</span>
+      <span data-ja>CPEレベルの語彙が自然に凝縮されたパラグラフ集。英文を読んでから日本語で確認。</span>
+    </p>
+
+    <div class="para-card">
+      <span class="test-badge">NOVEL EXCERPT · denouement / patriarch / impinge</span>
+      <div class="para-en">In a classic novel's <span class="keyword">denouement</span>, the author explores the <span class="keyword">multiplicity</span> of challenges facing a traditional family. The <span class="keyword">patriarch</span>, who had long been the sole <span class="keyword">bread-winner</span>, began to realise that his strict rules might <span class="keyword">impinge</span> on his children's freedom. When the matriarch <span class="keyword">interceded</span>, the family's narrative shifted — and by extension, so did his <span class="keyword">hubris</span>.</div>
+      <div class="para-jp">
+        <span data-ja>古典小説の大詰め（<span class="keyword">denouement</span>）で、著者は伝統的な家族が直面する多様な（<span class="keyword">multiplicity</span>）課題を掘り下げます。長い間、唯一の稼ぎ手（<span class="keyword">bread-winner</span>）であった家長（<span class="keyword">patriarch</span>）は、自らの厳格なルールが子供たちの自由を侵害して（<span class="keyword">impinge</span>）いるかもしれないと気づき始めます。女家長が仲裁に入り（<span class="keyword">interceded</span>）、家族の物語は転換し、彼の傲慢さ（<span class="keyword">hubris</span>）も変化していきます。</span>
+      </div>
+    </div>
+
+    <div class="para-card">
+      <span class="test-badge">ENTREPRENEUR · Tests 1 &amp; 2 · didn't come up to scratch / take the plunge</span>
+      <div class="para-en">In <span class="keyword">all honesty</span>, my first business venture <span class="keyword">didn't come up to scratch</span>; despite the massive <span class="keyword">hype</span>, the product's quality was substandard. I had to <span class="keyword">shoulder some of the responsibility</span>. Then I made a <span class="keyword">spur-of-the-moment decision</span> to <span class="keyword">take the plunge</span> and <span class="keyword">up sticks</span> to a far-flung place, hoping to <span class="keyword">emulate luxury</span> with a high <span class="keyword">profit margin</span> that could creep up over time.</div>
+      <div class="para-jp">
+        <span data-ja>正直に言って（<span class="keyword">in all honesty</span>）、私の最初のビジネスは及第点に達していませんでした（<span class="keyword">didn't come up to scratch</span>）。あれほど大げさに宣伝された（<span class="keyword">hype</span>）にもかかわらず。私は責任の一端を担わなければ（<span class="keyword">shoulder the responsibility</span>）なりませんでした。その後、その場の思いつきで（<span class="keyword">spur-of-the-moment decision</span>）思い切って（<span class="keyword">take the plunge</span>）住まいを引き払い（<span class="keyword">up sticks</span>）、遠く離れた地へ移りました。</span>
+      </div>
+    </div>
+
+    <div class="para-card">
+      <span class="test-badge">ENTREPRENEUR · Tests 3 &amp; 4 · hit upon / time is of the essence</span>
+      <div class="para-en">Eventually, I <span class="keyword">hit upon</span> a perfect thought to <span class="keyword">strike out on my own</span> again. I realised <span class="keyword">time is of the essence</span>, and I needed to <span class="keyword">capitalise on that small window of opportunity</span>. I decided to take up the challenge of <span class="keyword">slimming down the waste</span>. It <span class="keyword">stands to reason</span> that if you <span class="keyword">get a handle on your numbers game</span>, you can <span class="keyword">make a splash</span>.</div>
+      <div class="para-jp">
+        <span data-ja>やがて、私は再び独立する（<span class="keyword">strike out on my own</span>）ための妙案を思いつきました（<span class="keyword">hit upon</span>）。時間は極めて重要であり（<span class="keyword">time is of the essence</span>）、その小さなチャンスの窓（<span class="keyword">window of opportunity</span>）を最大限に活用する（<span class="keyword">capitalise on</span>）必要がありました。無駄を削ぎ落とす（<span class="keyword">slimming down the waste</span>）という課題に取り組み、数字の論理を把握すれば（<span class="keyword">get a handle on the numbers game</span>）、市場で注目を集められる（<span class="keyword">make a splash</span>）のは理にかなっています（<span class="keyword">stands to reason</span>）。</span>
+      </div>
+    </div>
+
+    <div class="para-card">
+      <span class="test-badge">ENTREPRENEUR · Tests 5 &amp; 6 · fickle / treasure trove / well-thumbed tomes</span>
+      <div class="para-en">My new project <span class="keyword">stood out</span> because it aimed to <span class="keyword">maintain continuity</span> in a <span class="keyword">fickle</span> market. It was a <span class="keyword">tried and tested</span> model. We were no longer <span class="keyword">faint-hearted</span>; we overcame adversity by <span class="keyword">keeping our fingers on the pulse</span> of the industry. <span class="keyword">To be blunt</span>, the daily grind can be bland — but now I am quite <span class="keyword">partial to</span> looking back at those <span class="keyword">well-thumbed tomes</span> in my office. They are a <span class="keyword">treasure trove</span> of lessons.</div>
+      <div class="para-jp">
+        <span data-ja>私の新しいプロジェクトが際立った（<span class="keyword">stood out</span>）理由は、気まぐれな（<span class="keyword">fickle</span>）市場において継続性を維持（<span class="keyword">maintain continuity</span>）することを目指したからです。効果が証明済みのモデル（<span class="keyword">tried and tested</span>）でした。もう臆病（<span class="keyword">faint-hearted</span>）ではなく、業界の最新動向を把握し続ける（<span class="keyword">keeping our fingers on the pulse</span>）ことで逆境を乗り越えました。率直に言えば（<span class="keyword">to be blunt</span>）、毎日の単調な仕事は退屈になりがちです。しかし今では、オフィスの使い込まれた重厚な本（<span class="keyword">well-thumbed tomes</span>）を眺めるのがかなり好きです（<span class="keyword">quite partial to</span>）。それらは情報の宝の山（<span class="keyword">treasure trove</span>）です。</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== BEYOND CPE ==================== -->
+  <div id="tab-beyond" class="tab-panel">
+    <h2 class="section-h"><span data-en>Beyond CPE Discussion Phrases</span><span data-ja>Beyond CPE ディスカッションフレーズ</span></h2>
+    <p class="section-sub">
+      <span data-en>Advanced discourse phrases for structured academic discussion. Memorise the English from the Japanese prompt.</span>
+      <span data-ja>学術的なディスカッション用の高度なフレーズ集。日本語から英語を想起する練習に。</span>
+    </p>
+
+    <h3 class="section-h" style="font-size:1.1rem;">
+      <span data-en>Opening an Argument</span><span data-ja>議論開始・構造化</span>
+    </h3>
+    <table class="phrase-table">
+      <thead><tr><th data-en>Japanese</th><th data-en>English (memorise)</th></tr></thead>
+      <thead><tr><th data-ja>日本語</th><th data-ja>英語（暗唱）</th></tr></thead>
+      <tbody>
+        <tr><td>私の視点では、本当の問題はインセンティブの設計だ。</td><td>From my perspective, the real issue is how incentives are structured.</td></tr>
+        <tr><td>私の見方では、問題は政策より実行にある。</td><td>As I see it, the problem lies in implementation rather than policy.</td></tr>
+        <tr><td>私は、規制はリスクに比例すべきだと考えている。</td><td>I'm of the opinion that regulation should be proportionate to risk.</td></tr>
+        <tr><td>長期的安定のほうが短期的利益より重要だと私は主張したい。</td><td>I would contend that long-term stability matters more than short-term gains.</td></tr>
+        <tr><td>イノベーションは適度なリスクのもとでこそ育つと私は論じたい。</td><td>I would argue that innovation thrives under measured risk.</td></tr>
+        <tr><td>ふと気づいたのですが、人間的側面を見落としているように思います。</td><td>It strikes me that we're overlooking the human element.</td></tr>
+        <tr><td>私としては、このアプローチには戦略的明確さが欠けている。</td><td>To my mind, this approach lacks strategic clarity.</td></tr>
+        <tr><td>透明性こそが信頼を築くと私は確信している。</td><td>I am firmly convinced that transparency builds trust.</td></tr>
+        <tr><td>データはこの見解を支持している可能性が高いと考えている。</td><td>I'm inclined to believe that the data supports this view.</td></tr>
+        <tr><td>気候変動が構造的リスクをもたらすことは広く認識されている。</td><td>It is widely acknowledged that climate change poses systemic risks.</td></tr>
+        <tr><td>一般的な通念では、市場は時間とともに自己修正するとされている。</td><td>Conventional wisdom suggests that markets self-correct over time.</td></tr>
+        <tr><td>リモートワークは定着するという認識が広がっている。</td><td>There's a growing perception that remote work is here to stay.</td></tr>
+        <tr><td>教育が社会的流動性の鍵だとよく主張される。</td><td>It is often maintained that education is the key to social mobility.</td></tr>
+        <tr><td>問題の核心は、説明責任をどう定義するかだ。</td><td>The crux of the matter is how we define accountability.</td></tr>
+        <tr><td>それは利害関係者が妥協する意思があるかどうかにかかっている。</td><td>It hinges on whether stakeholders are willing to compromise.</td></tr>
+        <tr><td>それは誤った二分法だ。状況は白か黒かではない。</td><td>That's a false dichotomy — the situation isn't simply black or white.</td></tr>
+        <tr><td>経済成長と環境影響を切り分ける必要がある。</td><td>We need to disentangle economic growth from environmental impact.</td></tr>
+        <tr><td>利益最大化が効率性を保証するという前提には異議がある。</td><td>I take issue with the assumption that profit maximisation guarantees efficiency.</td></tr>
+        <tr><td>改革は必要だと認めるが、段階的であるべきだ。</td><td>I concede that reform is necessary, but it must be gradual.</td></tr>
+        <tr><td>結局のところ、限られた資源をどう配分するかに尽きる。</td><td>Ultimately, it boils down to how we allocate limited resources.</td></tr>
+        <tr><td>それは多面的な問題であり、微妙な対応が求められる。</td><td>That's a multifaceted issue that requires a nuanced response.</td></tr>
+        <tr><td>それは諸刃の剣だ。機会もあればリスクもある。</td><td>It's a double-edged sword — it creates opportunities but also risks.</td></tr>
+        <tr><td>これには複数の学派があり、それぞれに妥当な議論がある。</td><td>There are several schools of thought on this, each with valid arguments.</td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="section-h" style="font-size:1.1rem; margin-top:2.5rem;">
+      <span data-en>Conversation Bridges</span><span data-ja>自然な会話ブリッジ</span>
+    </h3>
+    <table class="phrase-table">
+      <thead><tr><th data-en>Japanese</th><th data-en>English (memorise)</th></tr></thead>
+      <thead><tr><th data-ja>日本語</th><th data-ja>英語（暗唱）</th></tr></thead>
+      <tbody>
+        <tr><td>それは妥当な指摘だ。</td><td>That's a fair point.</td></tr>
+        <tr><td>それは説得力のある議論だ。</td><td>That's a compelling argument.</td></tr>
+        <tr><td>そこまでは考えていなかった。</td><td>I hadn't considered that.</td></tr>
+        <tr><td>それは面白い視点だ。</td><td>That's an interesting angle.</td></tr>
+        <tr><td>言っていることの筋は通っている。</td><td>I can see the logic in that.</td></tr>
+        <tr><td>それには共感する。</td><td>That resonates with me.</td></tr>
+        <tr><td>それは少ししっくりこない。</td><td>That doesn't sit entirely right with me.</td></tr>
+        <tr><td>それについては正直迷っている。</td><td>I'm torn on that.</td></tr>
+        <tr><td>それには懐疑的だ。</td><td>I'm sceptical about that.</td></tr>
+        <tr><td>それは近視眼的に思える。</td><td>That strikes me as short-sighted.</td></tr>
+        <tr><td>そのやり方には警戒している。</td><td>I'm wary of that approach.</td></tr>
+        <tr><td>それは筋が通っているように聞こえる。</td><td>That sounds plausible.</td></tr>
+        <tr><td>そこからその結論が出るとは思えない。</td><td>I'm not convinced that follows.</td></tr>
+        <tr><td>それは掘り下げる価値がある。</td><td>That's worth unpacking.</td></tr>
+        <tr><td>それはかなり微妙で複雑だ。</td><td>That's nuanced.</td></tr>
+        <tr><td>それは直感に反している。</td><td>That's counterintuitive.</td></tr>
+        <tr><td>それは大胆な主張だ。</td><td>That's a bold claim.</td></tr>
+        <tr><td>その違いをきちんと分けたのは良い。</td><td>I appreciate the distinction.</td></tr>
+        <tr><td>それで話が一段深まった。</td><td>That adds a layer to it.</td></tr>
+        <tr><td>それは問題の見方を変えている。</td><td>That reframes the issue.</td></tr>
+        <tr><td>そこは少し異論がある。</td><td>I'd push back slightly on that.</td></tr>
+        <tr><td>その前提には疑問がある。</td><td>I'd question that premise.</td></tr>
+        <tr><td>それは単純化しすぎている。</td><td>That feels reductive.</td></tr>
+        <tr><td>それは悪い方向に転がりかねない。</td><td>That's a slippery slope.</td></tr>
+        <tr><td>それは少し無理がある。</td><td>That's a bit of a stretch.</td></tr>
+        <tr><td>それはもっともな懸念だ。</td><td>That's a valid concern.</td></tr>
+        <tr><td>それは一般化しすぎだ。</td><td>That's an overgeneralisation.</td></tr>
+        <tr><td>それは筋の通った推論だ。</td><td>That's a reasonable inference.</td></tr>
+        <tr><td>それは全く根拠がないわけではない。</td><td>That's not entirely unfounded.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ==================== GRAMMAR NOTES ==================== -->
+  <div id="tab-grammar" class="tab-panel">
+    <h2 class="section-h"><span data-en>CPE Grammar &amp; Vocabulary Notes</span><span data-ja>CPE 文法・語彙ノート</span></h2>
+    <p class="section-sub">
+      <span data-en>Common pitfalls and fine distinctions for CPE-level accuracy.</span>
+      <span data-ja>CPEレベルの正確さに必要な落とし穴と微妙な区別。</span>
+    </p>
+    <ul class="grammar-list" id="grammar-list"></ul>
+  </div>
+
+  <!-- ==================== EXAM STRATEGY ==================== -->
+  <div id="tab-strategy" class="tab-panel">
+    <h2 class="section-h"><span data-en>Exam Strategy</span><span data-ja>試験対策</span></h2>
+
+    <h3 class="section-h" style="font-size:1.2rem; color: var(--accent2);">
+      <span data-en>Eiken Grade 1</span><span data-ja>英検1級</span>
+    </h3>
+    <div class="strategy-grid">
+      <div class="strategy-card">
+        <h3><span data-en>Reading</span><span data-ja>リーディング</span></h3>
+        <ul>
+          <li><span data-en>Vocabulary section: 25 words from Eiken 1st Grade word list — context clues are key</span><span data-ja>語彙問題：英検1級単語リストから25語。文脈から推測する力が重要</span></li>
+          <li><span data-en>Long reading: focus on paragraph topic sentences first</span><span data-ja>長文読解：最初に各段落のトピックセンテンスを確認</span></li>
+          <li><span data-en>Content questions often test inference, not stated facts</span><span data-ja>内容問題は推論を問うことが多い（直接記述を探すのではなく）</span></li>
+        </ul>
+      </div>
+      <div class="strategy-card">
+        <h3><span data-en>Writing (Essay)</span><span data-ja>ライティング（英作文）</span></h3>
+        <ul>
+          <li><span data-en>400–450 words; 4 required points to address</span><span data-ja>400〜450語；4つの必須論点を必ず取り上げる</span></li>
+          <li><span data-en>Use a clear 3-paragraph structure: intro → 2 body → conclusion</span><span data-ja>明確な3段落構成：序論→本論2段→結論</span></li>
+          <li><span data-en>Embed target vocabulary naturally — don't force it</span><span data-ja>目標語彙を自然に埋め込む（無理に詰め込まない）</span></li>
+          <li><span data-en>Avoid over-hedging; take a clear stance</span><span data-ja>過度な留保を避け、明確なスタンスを取る</span></li>
+        </ul>
+      </div>
+      <div class="strategy-card">
+        <h3><span data-en>Listening</span><span data-ja>リスニング</span></h3>
+        <ul>
+          <li><span data-en>Part 1: short dialogues — listen for speaker attitudes</span><span data-ja>Part 1：短い対話。話者の態度・意図を聴き取る</span></li>
+          <li><span data-en>Part 2: real-world monologues — note key transitions</span><span data-ja>Part 2：実社会のモノローグ。話の転換点をメモ</span></li>
+          <li><span data-en>Part 3: interview — follow the narrative arc</span><span data-ja>Part 3：インタビュー。ナラティブの流れを追う</span></li>
+        </ul>
+      </div>
+      <div class="strategy-card">
+        <h3><span data-en>Speaking</span><span data-ja>スピーキング</span></h3>
+        <ul>
+          <li><span data-en>2-minute speech on chosen topic — structure clearly</span><span data-ja>選んだトピックで2分間スピーチ。明確に構成する</span></li>
+          <li><span data-en>Q&amp;A: engage with examiner, don't just answer minimally</span><span data-ja>Q&amp;A：最低限の回答でなく、試験官と積極的に対話</span></li>
+          <li><span data-en>Use discourse markers: "What's more…", "That said…"</span><span data-ja>接続表現を使う：「What's more」「That said」など</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <hr class="gradient-line">
+
+    <h3 class="section-h" style="font-size:1.2rem; color: var(--accent2);">
+      <span data-en>Cambridge CPE C2</span><span data-ja>Cambridge CPE C2</span>
+    </h3>
+    <div class="strategy-grid">
+      <div class="strategy-card">
+        <h3><span data-en>Reading &amp; Use of English</span><span data-ja>リーディング＆英語使用</span></h3>
+        <ul>
+          <li><span data-en>Parts 1–4: transformation, key word, gapped text</span><span data-ja>Parts 1〜4：変形・キーワード・空所補充</span></li>
+          <li><span data-en>Part 3 (word formation): know prefix/suffix patterns deeply</span><span data-ja>Part 3（語形変化）：接頭辞・接尾辞のパターンを徹底</span></li>
+          <li><span data-en>Part 4 (key word): exact 3-6 word transformation required</span><span data-ja>Part 4（キーワード変換）：3〜6語の正確な変換が必要</span></li>
+          <li><span data-en>Parts 5–7: authentic texts — skim then scan</span><span data-ja>Parts 5〜7：本物のテキスト。概要把握から詳細確認の順で</span></li>
+        </ul>
+      </div>
+      <div class="strategy-card">
+        <h3><span data-en>Writing</span><span data-ja>ライティング</span></h3>
+        <ul>
+          <li><span data-en>Part 1: essay — balanced argument with clear conclusion</span><span data-ja>Part 1：エッセイ。バランスある議論と明確な結論</span></li>
+          <li><span data-en>Part 2: letter, report, or review — match register precisely</span><span data-ja>Part 2：レター・レポート・レビュー。文体を正確に合わせる</span></li>
+          <li><span data-en>Use CPE-level lexis; avoid basic vocabulary</span><span data-ja>CPEレベルの語彙を使用。基本語彙は避ける</span></li>
+          <li><span data-en>Letter template: formal opening, structured body, formal close</span><span data-ja>レターテンプレ：フォーマルな書き出し・構造化本文・締め</span></li>
+        </ul>
+      </div>
+      <div class="strategy-card">
+        <h3><span data-en>Listening</span><span data-ja>リスニング</span></h3>
+        <ul>
+          <li><span data-en>Part 1: extracts — identify speaker, context, attitude</span><span data-ja>Part 1：複数の抜粋。話者・文脈・態度を特定</span></li>
+          <li><span data-en>Part 2: sentence completion — exact words from recording</span><span data-ja>Part 2：文完成。録音の言葉をそのまま書く</span></li>
+          <li><span data-en>Part 3: long interview — follow argument structure</span><span data-ja>Part 3：長いインタビュー。議論の構造を追う</span></li>
+          <li><span data-en>Part 4: multiple matching — distinguish 5 speakers</span><span data-ja>Part 4：複数マッチング。5人の話者を区別する</span></li>
+        </ul>
+      </div>
+      <div class="strategy-card">
+        <h3><span data-en>Speaking</span><span data-ja>スピーキング</span></h3>
+        <ul>
+          <li><span data-en>Parts 1–4 with a partner — interact naturally</span><span data-ja>パートナーとParts 1〜4。自然なインタラクションが重要</span></li>
+          <li><span data-en>Part 2: individual long turn (1 min) + comment (30s)</span><span data-ja>Part 2：個人スピーチ（1分）＋コメント（30秒）</span></li>
+          <li><span data-en>Part 3: collaborative task — use Beyond CPE discourse phrases</span><span data-ja>Part 3：協働タスク。Beyond CPEのディスカッションフレーズを活用</span></li>
+          <li><span data-en>Part 4: discussion — take positions, concede, build on partner</span><span data-ja>Part 4：議論。立場を取り、認め、パートナーの発言を発展させる</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <hr class="gradient-line">
+
+    <h3 class="section-h" style="font-size:1.2rem; color: var(--accent2);">
+      <span data-en>Beyond CPE</span><span data-ja>Beyond CPE</span>
+    </h3>
+    <div class="strategy-grid">
+      <div class="strategy-card">
+        <h3><span data-en>Reading</span><span data-ja>リーディング</span></h3>
+        <ul>
+          <li><span data-en>Read quality press: The Economist, FT, LRB, TLS</span><span data-ja>質の高い媒体を読む：The Economist、FT、LRB、TLS</span></li>
+          <li><span data-en>Focus on argumentation, not just vocabulary</span><span data-ja>語彙だけでなく、論の立て方・議論の構造に注目</span></li>
+          <li><span data-en>Annotate: mark rhetorical devices and discourse moves</span><span data-ja>アノテーション：修辞技法とディスコースの動きに印をつける</span></li>
+        </ul>
+      </div>
+      <div class="strategy-card">
+        <h3><span data-en>Speaking &amp; Discussion</span><span data-ja>スピーキング＆ディスカッション</span></h3>
+        <ul>
+          <li><span data-en>Use structured discourse: "From my perspective…", "I would contend…"</span><span data-ja>構造化されたディスコースを使う：「From my perspective…」「I would contend…」</span></li>
+          <li><span data-en>Master concession: "I concede that… however…"</span><span data-ja>譲歩をマスター：「I concede that… however…」</span></li>
+          <li><span data-en>Push back diplomatically: "I'd push back slightly on that"</span><span data-ja>外交的に反論する：「I'd push back slightly on that」</span></li>
+          <li><span data-en>Engage with complexity: "That's a false dichotomy"</span><span data-ja>複雑さに向き合う：「That's a false dichotomy」</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <p data-en>Personal reference material — updated via Notion integration</p>
+  <p data-ja>個人学習リファレンス — Notion連携で更新</p>
+</footer>
+
+<script>
+// ==================== DATA ====================
+const PHRASES = {
+  "Test 1": [
+    ["in all honesty","正直に言って"],["hype","大げさな宣伝、評判"],["didn't come up to scratch","期待に応えられなかった、及第点に達しなかった"],
+    ["shoulder some of the responsibility","責任の一端を担う"],["part and parcel","不可欠な要素、つきもの"],
+    ["the onset of","〜の始まり、発症"],["arm yourself","（知識・道具で）備える"],
+    ["emulate luxury","贅沢さを模倣する"],["commit any of the budget","予算を割り当てる"],
+    ["there's no business case","採算が合わない"],["spurred","拍車をかけた、刺激した"],
+    ["got off the ground","軌道に乗る、離陸する"],["stalemate","膠着状態"],
+    ["plain sailing","順風満帆"],["maintain continuity","継続性を維持する"],
+    ["we're engrossed in","〜に没頭している"],["it stands to reason","理にかなっている"],
+    ["contrary to popular belief","世間一般の考えとは裏腹に"],["get to know your triggers","誘因を知る"],
+    ["food for thought","思考の糧"],["as we know it","私たちが知っているような"],
+    ["get the more routine stuff out of the way","決まりきった仕事を片付ける"],
+    ["before we know it","いつの間にか"],["keep tabs on","〜を監視する"],
+    ["forefront","最先端"],["slimming down the waste","無駄を削ぎ落とす"],
+    ["profit margin can creep up","粗利が徐々に増える"],["creates divisions in society","社会に分断を生む"],
+    ["has going for it","〜にとって有利な点がある"],["man on the street","一般人"],
+    ["springs to mind","頭に浮かぶ"],["whip up emotions","感情を煽る"],
+    ["put our faith in","〜を信頼する"],["come to grips with","〜に取り組む、理解する"]
+  ],
+  "Test 2": [
+    ["a drop in the ocean","大海の一滴、ごくわずかな量"],["wholesale change","全面的な変化"],
+    ["go a long way","大いに役立つ"],["take the plunge","思い切ってやってみる"],
+    ["spur-of-the-moment decision","その場の思いつきの決断"],["outlay","支出、初期費用"],
+    ["up sticks","住まいなどを引き払って移る"],["labour of love","好きでやる大変な仕事"],
+    ["steer clear of","〜を避ける"],["unwieldy","扱いにくい"],
+    ["something out of the ordinary","並外れたもの"],["progressed in tandem","並行して進んだ"],
+    ["subject to such red tape","煩雑なお役所仕事に縛られる"],["numbers game","数の論理"],
+    ["sit up and listen","真剣に注目して聴く"],["leeway","裁量"],
+    ["there is bad blood between","〜の間に確執がある"],["paying lip service to it","口先だけで調子を合わせる"],
+    ["committed workforce","献身的な従業員"],["no laughing matter","笑い事ではない"],
+    ["break into a cold sweat","急に冷や汗をかく"],["grin and bear them","歯を食いしばって耐える"],
+    ["panic stricken","パニックに陥った"],["let the fear get the better of me","恐怖に屈する"],
+    ["That's what gets me","そこが一番ひっかかる"],["footed the bill","費用を負担した"],
+    ["wound its way back and forth","曲がりくねりながら往復した"],["glued to these images","これらの画像に釘付けになる"]
+  ],
+  "Test 3": [
+    ["treasure trove","宝の山、情報の宝庫"],["have a new lease of life","新たな活力を得ること"],
+    ["ramifications","（予期せぬ）影響、結果"],["Time is of the essence","時間が極めて重要"],
+    ["a small window of opportunity","わずかな機会"],["capitalise on that","それを最大限に活用する"],
+    ["braving the elements","悪天候をものともせず立ち向かう"],["abject misery","惨めさの極み"],
+    ["uphill struggle","苦難の道、困難な戦い"],["hit upon","思いつく、発見する"]
+  ],
+  "Test 4": [
+    ["run the risk of","〜の危険を冒す"],["put my finger on","〜を正確に指摘する"],
+    ["a tried and tested","効果が証明済みの"],["faint-hearted","臆病な"],
+    ["keeping our fingers on the pulse","業界の最新動向を把握し続ける"],
+    ["to be blunt","率直に言えば"],["quite partial to","かなり好きで"],
+    ["well-thumbed tomes","使い込まれた重厚な本"],
+    ["put a much more positive spin on","より肯定的に解釈させる"],
+    ["fickle","気まぐれな、変わりやすい"],["plot device","物語上の仕掛け"],
+    ["overcame adversity","逆境を乗り越えた"],["daily grind","毎日の単調な仕事"],
+    ["in direct proportion to","〜と正比例して"],["a potted version","簡約版"],
+    ["self-same","まさに同一の"],["mourn its passing","終焉を悼む"],
+    ["consist of","〜から成る（ofが必須）"],["run amok","暴走する"],
+    ["distant past","遠い過去"],["Never having been","一度も〜したことがないまま"],
+    ["put ~ on the map","〜を世に知らしめる"],["strike out on my own","再び独立する"],
+    ["hit upon a perfect thought","妙案を思いつく"],["make a splash","世間を騒がせる、注目を集める"]
+  ]
+};
+
+const GRAMMAR = [
+  "文全体や直前の内容を「一言でまとめ直す」ときは <code>it</code> ではなく、<code>this</code> か <code>that</code>",
+  "<code>so that</code> と <code>such that</code> が2語セットで使われる場合、<code>such that</code> の前は be動詞が基本、それ以外は <code>so that</code>",
+  "動名詞に意味上の主語（目的格）をつける必要があるのは、文全体の主語と動作の主人が違う時（同じ時は略可）",
+  "<code>By the time</code> は未来完了とセットで使う",
+  "<code>have yet to 〜</code> = まだしていない",
+  "<code>used to</code> の言い換え：<code>Since + 過去完了進行形</code>（過去ずっと）",
+  "<code>image / memory</code> に合わせるのは <code>conjure up</code>",
+  "<code>run amok</code> = 暴走する",
+  "<code>in direct proportion to</code> = 正比例して",
+  "<code>a potted version</code> = 簡約版（= abridged）",
+  "<code>mourn its passing</code> = 終焉・消滅を悼む",
+  "<code>consist of</code> = 〜から成る（<code>of</code> 必須）≠ <code>comprise</code> = 〜を含む（<code>of</code> なし）",
+  "<code>seek</code> は他動詞 → <code>seek alternatives</code>（not <code>seek for</code>）",
+  "<code>be jailed for 〜</code> = 〜の罪で投獄される（<code>imprisoned</code> 可 / <code>prisoned</code> 不可）",
+  "<code>start up a campaign</code> = キャンペーンを立ち上げる（<code>open up</code> は店・市場向き）",
+  "<code>call for 〜</code> = 〜を要求する（<code>demand</code> は <code>for</code> を取らない）",
+  "<code>laugh off 〜</code> = 〜を笑い飛ばす",
+  "<code>be taken in by 〜</code> = 〜にだまされる",
+  "<code>tell A and B apart</code> = AとBを見分ける",
+  "<code>miss out on 〜</code> = 〜を逃す",
+  "<code>Never having been</code> = 一度も〜したことがないまま（分詞構文）",
+  "<code>conjure up</code> = （記憶・イメージを）呼び起こす",
+  "<code>a drop in the ocean</code> = ごくわずかな量（UK英語。US: <code>a drop in the bucket</code>）",
+  "<code>plain sailing</code> = 順風満帆（UK spelling。US: <code>plane sailing</code>）"
+];
+
+// ==================== RENDER ====================
+function renderPhrases() {
+  const grids = {
+    "Test 1": document.getElementById("grid-test1"),
+    "Test 2": document.getElementById("grid-test2"),
+    "Test 3": document.getElementById("grid-test3"),
+    "Test 4": document.getElementById("grid-test4"),
+  };
+  Object.entries(PHRASES).forEach(([test, items]) => {
+    const grid = grids[test];
+    if (!grid) return;
+    grid.innerHTML = items.map(([en, ja]) =>
+      `<div class="phrase-card" onclick="this.classList.toggle('flipped')">
+        <div class="phrase-en">${en}</div>
+        <div class="phrase-ja">${ja}</div>
+      </div>`
+    ).join('');
+  });
+  updateCount();
+}
+
+function renderGrammar() {
+  const list = document.getElementById('grammar-list');
+  list.innerHTML = GRAMMAR.map(g =>
+    `<li class="grammar-item">${g}</li>`
+  ).join('');
+}
+
+function filterPhrases(q) {
+  const lower = q.toLowerCase();
+  let visible = 0;
+  document.querySelectorAll('.phrase-card').forEach(card => {
+    const en = card.querySelector('.phrase-en').textContent.toLowerCase();
+    const ja = card.querySelector('.phrase-ja').textContent;
+    const match = !q || en.includes(lower) || ja.includes(q);
+    card.style.display = match ? '' : 'none';
+    if (match) visible++;
+  });
+  document.getElementById('phrase-count').textContent = q ? `${visible} phrases found` : '';
+  const total = Object.values(PHRASES).flat().length;
+  if (!q) document.getElementById('phrase-count').textContent = `${total} phrases total`;
+}
+
+function updateCount() {
+  const total = Object.values(PHRASES).flat().length;
+  document.getElementById('phrase-count').textContent = `${total} phrases total`;
+}
+
+// ==================== TABS ====================
+function switchTab(id) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+// ==================== LANG / THEME ====================
+let _lang = 'ja';
+let _theme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+
+function setLang(lang) {
+  _lang = lang;
+  document.body.className = [_lang, _theme === 'light' ? 'light' : ''].filter(Boolean).join(' ');
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent.toLowerCase().startsWith(lang));
+  });
+}
+
+function toggleTheme() {
+  _theme = _theme === 'dark' ? 'light' : 'dark';
+  document.body.className = [_lang, _theme === 'light' ? 'light' : ''].filter(Boolean).join(' ');
+  document.getElementById('theme-btn').textContent = _theme === 'dark' ? '☀' : '☾';
+}
+
+// ==================== PROGRESS BAR ====================
+window.addEventListener('scroll', () => {
+  const doc = document.documentElement;
+  const scrolled = doc.scrollTop / (doc.scrollHeight - doc.clientHeight);
+  document.getElementById('progress-bar').style.width = (scrolled * 100) + '%';
+});
+
+// ==================== INIT ====================
+document.addEventListener('DOMContentLoaded', () => {
+  renderPhrases();
+  renderGrammar();
+  if (_theme === 'light') {
+    document.getElementById('theme-btn').textContent = '☾';
+  }
+});
+</script>
+</body>
+</html>

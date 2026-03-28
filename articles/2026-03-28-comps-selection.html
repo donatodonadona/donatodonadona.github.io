@@ -807,8 +807,8 @@
 
         <div class="insight-box">
           <p>
-            <span class="lang-ja"><strong>理論的インプリケーション：</strong> 成長率が高い企業は、同一業界でも高いマルチプルで取引される。これはPEG ratioの発想と同根であり、comparable選定で成長プロファイルを無視することは「成長プレミアムの誤帰属」を意味する。高成長企業に低成長企業のマルチプルを乗じることは、DCFで成長率をゼロと置くことに等しい。</span>
-            <span class="lang-en"><strong>Theoretical implication:</strong> High-growth companies trade at higher multiples even within the same industry. This shares its roots with the PEG ratio concept — ignoring growth profiles in comparable selection amounts to "misattribution of the growth premium." Applying low-growth company multiples to a high-growth company is equivalent to setting the growth rate to zero in a DCF.</span>
+            <span class="lang-ja"><strong>理論的インプリケーション：</strong> 成長率が高い企業は、同一業界でも高いマルチプルで取引される。これは<strong>PEG ratio（Price/Earnings to Growth）</strong>が示す関係と同根である。PEG ratioはP/E ratioを期待EPS成長率（g）で除した指標であり、「P/Eが高い企業でも、成長率が高ければPEGは低い＝割高ではない」と判断する。この発想を一般化すると、<strong>マルチプルは成長率の関数</strong>であるという命題になる。Gordon Growth Modelから導出すれば、P/E = Payout Ratio / (Ke − g) であり、gが大きいほどP/E（したがってEV/EBITDAも）が高くなるのは理論的帰結である。つまり、comparable選定で成長プロファイルを無視することは「成長プレミアムの誤帰属」を意味する。高成長企業に低成長企業のマルチプルを乗じることは、DCFで成長率をゼロと置くことに等しい。</span>
+            <span class="lang-en"><strong>Theoretical implication:</strong> High-growth companies trade at higher multiples even within the same industry. This is the same relationship demonstrated by the <strong>PEG ratio (Price/Earnings to Growth)</strong>. The PEG ratio divides the P/E ratio by the expected EPS growth rate (g), with the insight that "even if a company's P/E is high, if its growth rate is also high, the PEG is low — meaning it is not overvalued." Generalising this, <strong>a multiple is a function of the growth rate</strong>. Deriving from the Gordon Growth Model: P/E = Payout Ratio / (Ke − g), so a higher g means a higher P/E (and therefore EV/EBITDA) as a theoretical consequence. Ignoring growth profiles in comparable selection therefore amounts to "misattribution of the growth premium." Applying low-growth company multiples to a high-growth company is equivalent to setting the growth rate to zero in a DCF.</span>
           </p>
         </div>
 
@@ -1430,6 +1430,111 @@
 
         <!-- ======================================================== -->
         <h2>
+          <span class="lang-ja">Multipleに使うComps vs Betaに使うComps — 同じ「comparable」でも設計思想が異なる</span>
+          <span class="lang-en">Comps for Multiples vs Comps for Beta — Same Word, Different Design Principles</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">バリュエーション実務では「comparable company」を2つの異なる文脈で使う。①マルチプル算定のためのピアセット（Trading Comps）と、②WACC算定においてβ（Beta）を推定するためのピアセットである。両者は「comparable」という同じ語を使うが、選定基準・求める特性・許容される乖離幅が大きく異なる。この差異を明確に認識しないと、一方のピアセットをそのまま他方に流用し、バリュエーション全体の整合性を損なうリスクがある。</span>
+          <span class="lang-en">In valuation practice, "comparable companies" are used in two distinct contexts: ① peer sets for multiple calculation (Trading Comps), and ② peer sets for estimating β (Beta) in WACC calculation. Both use the same word "comparable," but the selection criteria, desired characteristics, and acceptable divergence ranges differ significantly. Without clearly recognising this difference, there is a risk of directly reusing one peer set for the other, undermining the coherence of the entire valuation.</span>
+        </p>
+
+        <h3>
+          <span class="lang-ja">設計思想の違い</span>
+          <span class="lang-en">DIFFERENCE IN DESIGN PRINCIPLES</span>
+        </h3>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">比較軸</span><span class="lang-en">Dimension</span></th>
+                <th><span class="lang-ja">Multiple用Comps</span><span class="lang-en">Comps for Multiples</span></th>
+                <th><span class="lang-ja">Beta用Comps</span><span class="lang-en">Comps for Beta</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong><span class="lang-ja">目的</span><span class="lang-en">Purpose</span></strong></td>
+                <td><span class="lang-ja">対象企業の「市場が付けるであろうマルチプル水準」を推定する</span><span class="lang-en">Estimate the "multiple level the market would assign" to the target</span></td>
+                <td><span class="lang-ja">対象企業の「事業リスク（systematic risk）」を推定する</span><span class="lang-en">Estimate the target's "business risk (systematic risk)"</span></td>
+              </tr>
+              <tr>
+                <td><strong><span class="lang-ja">何を捉えたいか</span><span class="lang-en">What it captures</span></strong></td>
+                <td><span class="lang-ja">成長プロファイル・マージン構造・FCF転換率を含む「価値の水準」</span><span class="lang-en">"Level of value" including growth profile, margin structure, and FCF conversion</span></td>
+                <td><span class="lang-ja">市場全体（市場ポートフォリオ）に対する感応度＝「リスクの構造」</span><span class="lang-en">Sensitivity to the overall market (market portfolio) = "structure of risk"</span></td>
+              </tr>
+              <tr>
+                <td><strong><span class="lang-ja">重視する類似性</span><span class="lang-en">Key similarity</span></strong></td>
+                <td><span class="lang-ja">ビジネスモデル・規模・成長率・マージン・CapEx intensity</span><span class="lang-en">Business model, scale, growth rate, margins, CapEx intensity</span></td>
+                <td><span class="lang-ja">事業リスクの性質（需要の景気感応度・顧客集中度・固定費比率・規制環境）</span><span class="lang-en">Nature of business risk (demand cyclicality, customer concentration, fixed cost ratio, regulatory environment)</span></td>
+              </tr>
+              <tr>
+                <td><strong><span class="lang-ja">レバレッジの扱い</span><span class="lang-en">Treatment of leverage</span></strong></td>
+                <td><span class="lang-ja">EV/EBITDAはレバレッジ中立だが、ネットデットの差異はEV解釈に影響。P/Eはレバレッジ依存</span><span class="lang-en">EV/EBITDA is leverage-neutral, but net debt differences affect EV interpretation. P/E is leverage-dependent</span></td>
+                <td><span class="lang-ja">Levered βを取得した後、Hamada式等でUnlevered βに変換。レバレッジは<strong>除去して</strong>事業リスクだけを抽出する</span><span class="lang-en">Obtain levered β, then convert to unlevered β using Hamada equation, etc. Leverage is <strong>removed</strong> to extract business risk only</span></td>
+              </tr>
+              <tr>
+                <td><strong><span class="lang-ja">成長率の重要度</span><span class="lang-en">Importance of growth rate</span></strong></td>
+                <td><span class="lang-ja"><strong>極めて高い。</strong> 成長率がマルチプルの最大ドライバーの一つ。成長率の大きな差は直接マルチプル乖離につながる</span><span class="lang-en"><strong>Very high.</strong> Growth rate is one of the largest multiple drivers. Large growth differences directly cause multiple divergence</span></td>
+                <td><span class="lang-ja"><strong>間接的。</strong> 高成長企業と低成長企業でβが異なることはあるが、βの主要ドライバーは需要の景気感応度・オペレーティングレバレッジであり、成長率そのものではない</span><span class="lang-en"><strong>Indirect.</strong> β can differ between high- and low-growth companies, but β's primary drivers are demand cyclicality and operating leverage, not growth rate itself</span></td>
+              </tr>
+              <tr>
+                <td><strong><span class="lang-ja">規模の重要度</span><span class="lang-en">Importance of scale</span></strong></td>
+                <td><span class="lang-ja"><strong>高い。</strong> 規模効率・プライシングパワー・流動性がマルチプルに直接反映される</span><span class="lang-en"><strong>High.</strong> Scale efficiencies, pricing power, and liquidity are directly reflected in multiples</span></td>
+                <td><span class="lang-ja"><strong>中程度。</strong> 小型株プレミアムはβとは別にSize Premiumとして加算するのが一般的（Duff & Phelps等）。βの推計自体では規模の類似性は二次的</span><span class="lang-en"><strong>Moderate.</strong> Small-cap premium is generally added separately as a Size Premium (Duff & Phelps, etc.), not through β. Scale similarity is secondary in β estimation itself</span></td>
+              </tr>
+              <tr>
+                <td><strong><span class="lang-ja">理想的なピアセット規模</span><span class="lang-en">Ideal peer set size</span></strong></td>
+                <td><span class="lang-ja">8〜15社。類似性が高い少数精鋭が望ましい</span><span class="lang-en">8–15 companies. A small, high-similarity set is preferred</span></td>
+                <td><span class="lang-ja">5〜10社以上。β推計の統計的安定性のためサンプルサイズが重要（少なすぎると個社固有のノイズに支配される）</span><span class="lang-en">5–10+ companies. Sample size matters for statistical stability of β estimates (too few and individual company noise dominates)</span></td>
+              </tr>
+              <tr>
+                <td><strong><span class="lang-ja">地理的制約</span><span class="lang-en">Geographic constraints</span></strong></td>
+                <td><span class="lang-ja">同一市場が理想（市場マルチプル水準は国・地域で大きく異なる）</span><span class="lang-en">Same market is ideal (market multiple levels differ significantly by country/region)</span></td>
+                <td><span class="lang-ja">事業リスクが類似していれば国際ピアも積極的に採用可能（βは理論上、市場ポートフォリオに対する感応度であり、マルチプル水準ほど地域差に敏感でない）</span><span class="lang-en">International peers can be actively used if business risk is similar (β is theoretically sensitivity to the market portfolio, and less sensitive to regional differences than multiple levels)</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>
+          <span class="lang-ja">実務上の帰結：ピアセットは必ずしも一致しない</span>
+          <span class="lang-en">PRACTICAL CONSEQUENCE: PEER SETS NEED NOT COINCIDE</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">上記の差異から、Multiple用ピアセットとBeta用ピアセットは重複することが多いが、完全一致である必要はなく、むしろ一致しないことが正当化される場面が多い。</span>
+          <span class="lang-en">Given the above differences, peer sets for multiples and for beta often overlap, but need not be identical — indeed, non-coincidence is frequently justified.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja"><strong>Multiple用セットから外すがBeta用には含めるケース：</strong> 成長率やマージンが対象企業と大きく異なるが、事業リスクの構造（需要の景気感応度・顧客構成・規制環境）は類似する企業。例：同じ半導体サプライチェーン上にあるが、対象企業がファブレス設計（高マージン）で、comparableがファウンドリ（低マージン・高CapEx）の場合。マルチプル水準は大きく異なるが、事業が晒されるsystematic riskは類似する。</span>
+          <span class="lang-en"><strong>Cases excluded from the multiple set but included for beta:</strong> Companies where growth rate or margins differ significantly from the target, but the structure of business risk (demand cyclicality, customer composition, regulatory environment) is similar. Example: both in the semiconductor supply chain, but the target is a fabless designer (high margin) while the comparable is a foundry (low margin, high CapEx). Multiple levels differ significantly, but the systematic risk exposure is similar.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja"><strong>Multiple用には含めるがBeta用からは外すケース：</strong> ビジネスモデル・規模・成長率は類似するが、事業リスクの性質が異なる企業。例：売上規模・成長率が近い同業2社だが、一方は政府向け長期契約（低β）、他方は民間スポット市場依存（高β）の場合。マルチプル水準の参考にはなるが、βは大きく異なる。</span>
+          <span class="lang-en"><strong>Cases included for multiples but excluded from beta:</strong> Companies with similar business model, scale, and growth rate, but different nature of business risk. Example: two companies in the same industry with similar revenue and growth, but one relies on long-term government contracts (low β) while the other depends on private spot markets (high β). They serve as references for multiple levels, but their βs differ significantly.</span>
+        </p>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>実務的規律：</strong> バリュエーションレポートにおいて、Multiple用ピアセットとBeta用ピアセットが異なる場合は、<strong>その差異と理由を明示的に開示</strong>すること。「Multiple用には成長率・マージンの類似性を重視して選定し、Beta用には事業リスクの構造的類似性を重視して選定した」と説明できる状態を保つ。逆に、両セットが完全に一致している場合は、それが意図的な判断なのか無意識の流用なのかを自問する。特に、対象企業が同業内で独自のリスクプロファイルを持つ場合（例：同業他社と比べて規制依存度が高い、顧客集中度が高い、CapExサイクルが異なる等）は、Beta用ピアセットの別途設計が不可欠である。</span>
+            <span class="lang-en"><strong>Practical discipline:</strong> When the peer sets for multiples and for beta differ in a valuation report, <strong>explicitly disclose the difference and the reasons</strong>. Maintain the ability to explain: "The multiple peer set was selected prioritising growth rate and margin similarity, while the beta peer set prioritised structural similarity of business risk." Conversely, when both sets are identical, question whether this is an intentional judgement or unconscious reuse. In particular, when the target has a unique risk profile within its industry (e.g., higher regulatory dependence, greater customer concentration, or different CapEx cycles compared to peers), separate design of the beta peer set is essential.</span>
+          </p>
+        </div>
+
+        <div class="trap-box">
+          <div class="trap-label"><span class="lang-ja">Beta用ピアセット選定で特に注意すべき点</span><span class="lang-en">SPECIAL CONSIDERATIONS FOR BETA PEER SET SELECTION</span></div>
+          <p>
+            <span class="lang-ja">① <strong>オペレーティングレバレッジの類似性：</strong> 固定費比率が高い企業（製造業・インフラ）は、同一業種でも変動費比率が高い企業（商社・サービス業）よりβが高くなる傾向がある。Beta用ピアセットでは、売上やマージンの水準よりも、<strong>コスト構造の固変分解</strong>の類似性を重視する。<br>② <strong>需要の景気感応度：</strong> 同一業種内でも、ディフェンシブな需要構造（医療・生活必需品向け）と景気循環的な需要構造（設備投資関連・消費財向け）でβが大きく異なる。<br>③ <strong>β推計期間の統一：</strong> ピアセット各社のβを比較する際、推計期間（2年 vs 5年）・データ頻度（日次 vs 週次 vs 月次）・ベンチマーク指数を統一することが不可欠。異なる推計条件で算出されたβを平均することは、加重なき混合推計であり統計的に不適切（#003 Beta・Hamada方程式参照）。</span>
+            <span class="lang-en">① <strong>Operating leverage similarity:</strong> Companies with high fixed cost ratios (manufacturing, infrastructure) tend to have higher β than those with high variable cost ratios (trading companies, services) even within the same industry. For the beta peer set, prioritise similarity in <strong>fixed/variable cost structure decomposition</strong> over revenue or margin levels.<br>② <strong>Demand cyclicality:</strong> Even within the same industry, defensive demand structures (medical, consumer staples) and cyclical demand structures (capex-related, consumer discretionary) yield significantly different βs.<br>③ <strong>Unifying β estimation parameters:</strong> When comparing β across peer companies, it is essential to unify the estimation period (2-year vs 5-year), data frequency (daily vs weekly vs monthly), and benchmark index. Averaging βs calculated under different estimation conditions is an unweighted mixture estimation and statistically inappropriate (see #003 Beta and the Hamada Equation).</span>
+          </p>
+        </div>
+
+        <!-- ======================================================== -->
+        <h2>
           <span class="lang-ja">よくある失敗パターンと対処法</span>
           <span class="lang-en">Common Failure Patterns and Counter-measures</span>
         </h2>
@@ -1581,6 +1686,10 @@
             <li class="highlight-item">
               <span class="hl-num">05</span>
               <span class="hl-text"><span class="lang-ja">完全なcomparableは存在しない。重要なのは差異の認識と調整</span><span class="lang-en">Perfect comps don't exist; what matters is recognising and adjusting for differences</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">06</span>
+              <span class="hl-text"><span class="lang-ja">Multiple用Comps ≠ Beta用Comps。目的が違えばピアセットも違う</span><span class="lang-en">Comps for Multiples ≠ Comps for Beta. Different purpose, different peer set</span></span>
             </li>
           </ul>
         </div>

@@ -1533,6 +1533,46 @@
           </p>
         </div>
 
+        <h3>
+          <span class="lang-ja">Size PremiumとBeta用ピアセットの規模制約 — ダブルカウントにならないか？</span>
+          <span class="lang-en">SIZE PREMIUM AND SCALE CONSTRAINTS ON BETA PEER SETS — IS THERE DOUBLE-COUNTING?</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">Beta用ピアセットの規模について、よく出る疑問がある。「Beta推定に小型株ピアを使い、さらにSize Premium（Duff & Phelps / Kroll等）を別途加算したら、規模リスクを二重にカウントしているのではないか？」という問いだ。</span>
+          <span class="lang-en">A frequently raised question regarding the scale of beta peer sets: "If we use small-cap peers for beta estimation AND separately add a Size Premium (Duff & Phelps / Kroll, etc.), aren't we double-counting size risk?"</span>
+        </p>
+
+        <p>
+          <span class="lang-ja"><strong>結論：正しく構築されたSize Premiumを使う限り、理論的にはダブルカウントにならない。</strong>その理由はSize Premiumの定義にある。</span>
+          <span class="lang-en"><strong>Conclusion: As long as a properly constructed Size Premium is used, theoretically there is no double-counting.</strong> The reason lies in how the Size Premium is defined.</span>
+        </p>
+
+        <div class="formula">
+          <span class="lang-ja">Duff & Phelps Size Premium の定義：<br>Size Premium = 規模デシルの実際の歴史的リターン − CAPMが予測するリターン<br>            = 実際リターン − (Rf + β<sub>decile</sub> × ERP)<br><br>→ つまり「βで説明しきれなかった残差」として定義されている</span>
+          <span class="lang-en">Duff & Phelps Size Premium definition:<br>Size Premium = Actual historical return of size decile − CAPM-predicted return<br>            = Actual return − (Rf + β<sub>decile</sub> × ERP)<br><br>→ i.e. defined as "the residual that β could not explain"</span>
+        </div>
+
+        <p>
+          <span class="lang-ja">Size Premiumはβを差し引いた後の残差として設計されているため、どのようなβを用いたとしても、Size Premiumはそのβがカバーしきれなかった部分だけを補完する構造になっている。したがって、小型株ピアからβを推定し、かつSize Premiumを加算しても、理論的にはダブルカウントにはならない。</span>
+          <span class="lang-en">Because the Size Premium is designed as a residual after subtracting β, regardless of what β is used, the Size Premium only supplements the portion that β could not cover. Therefore, estimating β from small-cap peers and adding a Size Premium does not theoretically result in double-counting.</span>
+        </p>
+
+        <div class="trap-box">
+          <div class="trap-label"><span class="lang-ja">ただし実務的な罠がある</span><span class="lang-en">HOWEVER, THERE ARE PRACTICAL TRAPS</span></div>
+          <p>
+            <span class="lang-ja">① <strong>小型株ピアのβは下方バイアスを持ちやすい：</strong> 小型株は取引が薄い（thin trading）ため、観測されるβが実態より低くなる傾向がある。Scholes-Williams補正やDimson補正をかけないまま使うと、βが過小→Keが過小→バリュエーションが過大、というエラーが発生する。Size Premiumとのダブルカウントではなく、<strong>βの過小推計</strong>が本質的な問題になる。<br><br>② <strong>規模を過度に制約するとサンプルが劣化する：</strong> 「対象企業と同規模でなければBeta用ピアに入れない」とすると、候補企業数が激減し、βの統計的安定性が大きく損なわれる。個社固有のノイズに支配された不安定なβが算出されるリスクが高まる。<br><br>③ <strong>「小型株ピアを使えばSize Premiumは不要」は誤り：</strong> βが捉えるのはsystematic risk（市場ポートフォリオへの感応度）であり、「小さいこと自体のリスク」（流動性の低さ、情報の非対称性、経営資源の脆弱性等）をβは定義上完全にはカバーしない。だからこそ、修正CAPMではSize Premiumが別途加算される。</span>
+            <span class="lang-en">① <strong>Small-cap peer β tends to have downward bias:</strong> Small-cap stocks are thinly traded, causing observed β to be lower than reality. Without Scholes-Williams or Dimson adjustments, β is understated → Ke is understated → valuation is overstated. The real problem is <strong>β underestimation</strong>, not double-counting with the Size Premium.<br><br>② <strong>Over-constraining by scale degrades the sample:</strong> If "only companies of similar scale to the target can be included as beta peers," the candidate pool shrinks dramatically, severely undermining the statistical stability of β. The risk of producing an unstable β dominated by individual company noise increases significantly.<br><br>③ <strong>"Using small-cap peers makes Size Premium unnecessary" is incorrect:</strong> β captures systematic risk (sensitivity to the market portfolio), and by definition does not fully cover "the risk of being small itself" (low liquidity, information asymmetry, fragility of management resources, etc.). This is precisely why the Size Premium is added separately in modified CAPM.</span>
+          </p>
+        </div>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>実務的ベストプラクティス：</strong> Beta用ピアセットでは<strong>規模で過度にフィルタリングせず</strong>、事業リスクの構造的類似性を優先して幅広いピアを採用する。規模に起因するリスクは、修正CAPMのSize Premium（およびCompany-Specific Risk Premium）で別途調整する。これが「βの質を最大化しつつ規模リスクも漏れなく捉える」ための最も整合的なアプローチである。</span>
+            <span class="lang-en"><strong>Practical best practice:</strong> In the beta peer set, <strong>do not over-filter by scale</strong> — prioritise structural similarity of business risk and adopt a broad peer set. Risks attributable to scale are adjusted separately through the modified CAPM Size Premium (and Company-Specific Risk Premium). This is the most coherent approach for "maximising β quality while comprehensively capturing size risk."</span>
+          </p>
+        </div>
+
         <!-- ======================================================== -->
         <h2>
           <span class="lang-ja">よくある失敗パターンと対処法</span>

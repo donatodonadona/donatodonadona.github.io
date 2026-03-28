@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Damodaranが説く投資哲学の見つけ方。アクティブ vs パッシブ、投資 vs トレーディングの分岐点を整理し、5ステップで自分だけの投資哲学を構築するフレームワークを解説する。Damodaran Watch #003。">
+  <title>投資の北極星を見つける — 投資哲学の探求 | Damodaran Watch #003 | donato</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+JP:wght@300;400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../brand.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:           #F8F7F4;
+      --bg-code:      #EEECEA;
+      --bg-quote:     #EEECEA;
+      --bg-highlight: #EBF3FB;
+      --bg-subtle:    #F0EFEB;
+      --bg-card:      #F0EFEB;
+      --bg-header:    #F8F7F4;
+      --text-primary: #111320;
+      --text-body:    #2A2C3E;
+      --text-muted:   #565C70;
+      --text-light:   #888EA0;
+      --accent:       #1A6EB0;
+      --accent-warm:  #D4A010;
+      --accent-damo:  #2D9CDB;
+      --border:       #D4D2CC;
+      --border-quote: #B8B6B0;
+      --border-light: #D4D2CC;
+      --tag-bg:       #E4EFF8;
+      --tag-text:     #1A6EB0;
+      --table-stripe: #F0EFEB;
+    }
+
+    /* ===== PROGRESS BAR ===== */
+    #progress-bar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      width: 0%;
+      background: var(--accent-damo);
+      z-index: 300;
+      transition: width 0.1s linear;
+    }
+
+    body {
+      font-family: 'Noto Serif JP', Georgia, serif;
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--text-primary);
+      background: var(--bg);
+    }
+
+    /* ===== SITE HEADER ===== */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg-header);
+      border-bottom: 2px solid var(--accent-damo);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .site-header-left { display: flex; align-items: center; gap: 12px; }
+    .wordmark {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: lowercase;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+    .wordmark span { color: var(--accent-warm); }
+    .header-sep { color: var(--border-quote); font-size: 13px; }
+    .header-media {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+    }
+    .site-header-right { display: flex; align-items: center; gap: 12px; }
+    .header-back-link {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .header-back-link:hover { color: var(--accent-damo); }
+    .lang-toggle-bar {
+      display: flex;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .art-lang-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      padding: 3px 10px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .art-lang-btn.active { background: #F5C800; color: #111320; }
+    #theme-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      padding: 3px 9px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.15s;
+    }
+    #theme-btn:hover { border-color: var(--accent-damo); color: var(--accent-damo); }
+    .header-date {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-light);
+      letter-spacing: 0.08em;
+    }
+
+    /* ===== STICKY INFO BAR ===== */
+    #sticky-bar {
+      position: sticky;
+      top: 44px;
+      z-index: 200;
+      background: var(--bg-subtle);
+      border-bottom: 1px solid var(--border-light);
+      padding: 7px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .sbar-cat {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--accent-damo);
+      letter-spacing: 0.1em;
+    }
+    .sbar-sep { color: var(--border-quote); font-size: 11px; }
+    .sbar-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+    .sbar-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      padding: 2px 8px;
+    }
+
+    /* ===== LAYOUT ===== */
+    .article-container { max-width: 1240px; margin: 0 auto; padding: 0 20px; }
+    .article-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 24px;
+    }
+    .article-body { grid-column: 2 / 10; max-width: 68ch; }
+    .article-sidebar {
+      grid-column: 10 / 13;
+      position: sticky;
+      top: 78px;
+      align-self: start;
+      max-height: calc(100vh - 90px);
+      overflow-y: auto;
+    }
+    .article-sidebar::-webkit-scrollbar { width: 4px; }
+    .article-sidebar::-webkit-scrollbar-track { background: transparent; }
+    .article-sidebar::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 2px; }
+
+    /* ===== TYPOGRAPHY ===== */
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      color: var(--accent-damo);
+    }
+    .article-headline {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(2rem, 4vw, 2.6rem);
+      font-weight: 600;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+    .article-standfirst {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      font-weight: 400;
+    }
+    .byline {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    h2 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.45rem;
+      font-weight: 600;
+      line-height: 1.25;
+      color: var(--text-primary);
+      margin: 2em 0 0.75em;
+      border-top: 1px solid var(--border);
+      padding-top: 1em;
+    }
+    h3 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin: 1.75em 0 0.5em;
+    }
+    .article-body p { margin-bottom: 1.4em; font-size: 0.97rem; line-height: 1.8; }
+    .article-body ul, .article-body ol { margin: 0 0 1.4em 1.4em; }
+    .article-body li { margin-bottom: 0.4em; font-size: 0.95rem; line-height: 1.7; }
+    strong { color: var(--text-primary); font-weight: 600; }
+
+    /* ===== EXEC SUMMARY ===== */
+    .exec-summary {
+      background: var(--bg-highlight);
+      border: 1px solid var(--border-light);
+      border-left: 4px solid var(--accent-damo);
+      padding: 24px;
+      margin: 0 0 2.5em;
+    }
+    .exec-block { margin-bottom: 20px; }
+    .exec-block:last-child { margin-bottom: 0; }
+    .exec-block + .exec-block { padding-top: 18px; border-top: 1px solid var(--border-light); }
+    .exec-tldr {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.02rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      line-height: 1.55;
+      margin-top: 8px;
+    }
+    .issues-list, .implications-list {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .issue-item { display: flex; gap: 10px; align-items: baseline; }
+    .issue-q {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--accent-damo);
+      flex-shrink: 0;
+      min-width: 20px;
+    }
+    .issue-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: var(--text-body);
+      line-height: 1.55;
+    }
+    .implication-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: var(--text-body);
+      line-height: 1.55;
+      padding-left: 14px;
+      border-left: 2px solid var(--accent-damo);
+    }
+    .read-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
+    .read-col-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.66rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 6px;
+    }
+    .read-label-yes { color: var(--accent-damo); }
+    .read-label-no { color: var(--text-muted); }
+    .read-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-body);
+      line-height: 1.45;
+      padding-left: 10px;
+      border-left: 2px solid var(--accent-damo);
+      margin-bottom: 5px;
+    }
+    .skip-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+      padding-left: 10px;
+      border-left: 2px solid var(--border-light);
+      margin-bottom: 5px;
+    }
+
+    /* ===== FORMULA / CALC ===== */
+    .formula {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.93em;
+      background: var(--bg-code);
+      border-left: 3px solid var(--accent-damo);
+      padding: 14px 20px;
+      margin: 20px 0;
+      color: var(--text-primary);
+      overflow-x: auto;
+      line-height: 1.7;
+    }
+    .calc-block {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      padding: 20px 24px;
+      margin: 24px 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+      line-height: 1.8;
+    }
+    .calc-block .calc-row { display: flex; justify-content: space-between; max-width: 480px; }
+    .calc-block .calc-total {
+      border-top: 1px solid var(--border);
+      margin-top: 6px;
+      padding-top: 6px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .calc-block .calc-highlight { color: var(--accent-damo); font-weight: 700; }
+    .calc-block .calc-warn { color: var(--accent-warm); font-weight: 700; }
+
+    /* ===== INSIGHT / TRAP BOX ===== */
+    .insight-box {
+      background: var(--bg-highlight);
+      border-left: 4px solid var(--accent-damo);
+      padding: 18px 22px;
+      margin: 28px 0;
+    }
+    .insight-box p {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: var(--text-primary);
+    }
+    .insight-box strong { color: var(--accent-damo); }
+    .trap-box {
+      background: #FEF9EC;
+      border-left: 4px solid var(--accent-warm);
+      padding: 18px 22px;
+      margin: 24px 0;
+    }
+    .trap-box p {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      line-height: 1.65;
+      color: var(--text-body);
+    }
+    .trap-box .trap-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      color: var(--accent-warm);
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+
+    /* ===== DATA TABLE ===== */
+    .data-table-wrap { overflow-x: auto; margin: 1.5em 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      background: var(--bg-subtle);
+      padding: 8px 12px;
+      text-align: left;
+      border-bottom: 2px solid var(--border);
+    }
+    td {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border-light);
+      color: var(--text-body);
+      font-family: 'Inter', sans-serif;
+    }
+    tr:nth-child(even) td { background: var(--table-stripe); }
+    .td-accent { color: var(--accent-damo); font-weight: 600; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
+    .td-warn   { color: var(--accent-warm); font-weight: 600; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
+
+    /* ===== PULL QUOTE ===== */
+    .pull-quote {
+      border-left: 4px solid var(--accent-damo);
+      margin: 2em 0;
+      padding: 1em 20px;
+      background: var(--bg-card);
+    }
+    .pull-quote p {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.2rem;
+      font-style: italic;
+      color: var(--text-primary);
+      line-height: 1.5;
+      margin-bottom: 6px !important;
+    }
+    .pull-quote footer {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* ===== NUMBERED LIST ===== */
+    .numbered-list { list-style: none; padding: 0; margin: 20px 0; }
+    .numbered-list li {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 16px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.92rem;
+      line-height: 1.65;
+      color: var(--text-body);
+    }
+    .numbered-list li .num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: white;
+      background: var(--accent-damo);
+      min-width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    /* ===== SECTION SEP ===== */
+    .section-sep {
+      text-align: center;
+      color: var(--text-light);
+      font-size: 1.2rem;
+      letter-spacing: 0.5em;
+      margin: 48px 0;
+      user-select: none;
+    }
+
+    /* ===== SOURCE LIST ===== */
+    .source-list { list-style: none; padding: 0; }
+    .source-list li { margin-bottom: 6px; }
+    .source-list a {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--accent-damo);
+      text-decoration: none;
+      line-height: 1.5;
+    }
+    .source-list a:hover { text-decoration: underline; }
+    .source-tag { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--text-muted); margin-left: 4px; }
+
+    /* ===== NEXT ARTICLE CTA ===== */
+    .next-article {
+      background: var(--text-primary);
+      color: #E4E2DC;
+      padding: 28px 32px;
+      margin-top: 56px;
+    }
+    .next-article .next-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      color: var(--accent-warm);
+      margin-bottom: 8px;
+    }
+    .next-article .next-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+    .next-article .next-desc {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.82rem;
+      color: #9299A8;
+      margin-top: 8px;
+    }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .keyfacts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+    .fact-card { background: var(--bg-highlight); padding: 10px 8px; }
+    .fact-card.highlight { background: #FDF8EC; border: 1px solid #E8D88A; }
+    .fact-value { font-family: 'JetBrains Mono', monospace; font-size: 1rem; font-weight: 500; color: var(--accent-damo); line-height: 1.2; }
+    .fact-card.highlight .fact-value { color: #8A6A00; }
+    .fact-desc { font-family: 'Inter', sans-serif; font-size: 0.64rem; color: var(--text-muted); margin-top: 3px; line-height: 1.35; }
+    .fact-card.highlight .fact-desc { color: #7A6020; }
+    .highlights-list { list-style: none; padding: 0; margin-top: 12px; }
+    .highlight-item { padding: 9px 0; border-bottom: 1px solid var(--border-light); display: flex; gap: 10px; align-items: baseline; }
+    .highlight-item:last-child { border-bottom: none; }
+    .hl-num { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--accent-damo); flex-shrink: 0; min-width: 18px; }
+    .hl-text { font-family: 'Inter', sans-serif; font-size: 0.76rem; color: var(--text-body); line-height: 1.45; }
+
+    /* ===== LANG TOGGLE ===== */
+    .lang-en { display: none; }
+
+    /* ===== FOOTER ===== */
+    .site-footer {
+      border-top: 1px solid var(--border-light);
+      margin-top: 4em;
+      padding: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* ===== PRINT ===== */
+    @media print {
+      body { background: white; font-size: 11pt; }
+      .site-header, #sticky-bar, #progress-bar { display: none; }
+      .article-sidebar { position: static; max-height: none; overflow: visible; }
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+    @page { size: A4; margin: 20mm 15mm; }
+
+    /* ===== MOBILE ===== */
+    @media (max-width: 900px) {
+      .article-body { grid-column: 1 / -1; }
+      .article-sidebar { position: static; max-height: none; overflow: visible; grid-column: 1 / -1; }
+      .article-grid { display: block; }
+      .read-grid { grid-template-columns: 1fr; }
+      #sticky-bar { flex-wrap: wrap; gap: 6px; }
+    }
+
+    body.dark {
+      --bg:           #0D1117;
+      --bg-code:      #161B22;
+      --bg-quote:     #161B22;
+      --bg-highlight: #0E1A2B;
+      --bg-subtle:    #161B22;
+      --bg-card:      #161B22;
+      --bg-header:    #0D1117;
+      --text-primary: #E4E2DC;
+      --text-body:    #C4C2BC;
+      --text-muted:   #8B93A8;
+      --text-light:   #575E70;
+      --accent:       #3A8FD0;
+      --accent-warm:  #F5C800;
+      --accent-damo:  #4AB0E8;
+      --border:       #21253A;
+      --border-quote: #2A2D3E;
+      --border-light: #21253A;
+      --tag-bg:       #0E1A2B;
+      --tag-text:     #3A8FD0;
+      --table-stripe: #161B22;
+    }
+    body.dark .trap-box { background: #1C1800; }
+    body.dark .fact-card.highlight { background: #1A1600; border-color: #3A2D00; }
+    body.dark .fact-card.highlight .fact-value { color: #C4900E; }
+    body.dark .fact-card.highlight .fact-desc { color: #A07828; }
+    body.dark .next-article { background: #111320; }
+  </style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<!-- 1. Site Header -->
+<header class="site-header">
+  <div class="site-header-left">
+    <a class="wordmark" href="../index.html">dona<span>to</span></a>
+    <span class="header-sep">&mdash;</span>
+    <a class="header-back-link" href="./index.html"><span class="lang-ja">記事一覧</span><span class="lang-en">Articles</span></a>
+    <span class="header-sep">&mdash;</span>
+    <span class="header-media">Damodaran Watch</span>
+  </div>
+  <div class="site-header-right">
+    <div class="lang-toggle-bar">
+      <button class="art-lang-btn active" data-lang="ja" onclick="setLang('ja')">JP</button>
+      <button class="art-lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+    </div>
+    <button id="theme-btn" onclick="toggleTheme()" title="Toggle light/dark">&#9788;</button>
+    <time class="header-date">2026-03-28</time>
+  </div>
+</header>
+
+<!-- 2. Sticky Info Bar -->
+<div id="sticky-bar">
+  <span class="sbar-cat">Damodaran Watch</span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-text"><span class="lang-ja">#003 &middot; 投資哲学 &middot; アクティブ vs パッシブ</span><span class="lang-en">#003 &middot; Investment Philosophy &middot; Active vs Passive</span></span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-text">2026-03-28</span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-badge" id="reading-time-badge"><span class="lang-ja">計算中</span><span class="lang-en">...</span></span>
+</div>
+
+<main style="padding: 0 0 3em;">
+  <div class="article-container">
+    <div class="article-grid">
+
+      <!-- 3. Article Body -->
+      <article class="article-body">
+
+        <!-- Article Header -->
+        <div style="padding: 36px 0 24px;">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+            <div class="section-label">Damodaran Watch &nbsp;#003</div>
+            <span class="sbar-badge" id="reading-time-badge2"><span class="lang-ja">計算中</span><span class="lang-en">...</span></span>
+          </div>
+          <h1 class="article-headline">
+            <span class="lang-ja">投資の北極星を見つける — 投資哲学の探求</span>
+            <span class="lang-en">Finding Your Investing Lodestar — In Search of an Investment Philosophy</span>
+          </h1>
+          <p class="article-standfirst">
+            <span class="lang-ja">市場が不確実性に揺れるとき、投資家は判断の軸を失いやすい。Damodaranは「万人に最適な投資哲学は存在しない」と断言し、自らの信念・性格・資本に合った哲学を5つのステップで構築するフレームワークを提示する。</span>
+            <span class="lang-en">When uncertainty rocks markets, investors lose their bearings and make decisions they later regret. Damodaran argues there is no single best investment philosophy and presents a five-step framework for building one that fits your beliefs, personality, and capital.</span>
+          </p>
+          <div style="display:flex; gap:16px; align-items:center; border-top:1px solid var(--border-light); border-bottom:1px solid var(--border-light); padding:10px 0;">
+            <span class="byline">By <strong>Donato Valuation Notes</strong></span>
+            <span style="color:var(--border);">|</span>
+            <time class="byline" datetime="2026-03-28"><span class="lang-ja">2026年3月28日</span><span class="lang-en">28 March 2026</span></time>
+            <span style="color:var(--border);">|</span>
+            <span class="byline"><span class="lang-ja">投資哲学 &middot; バリュー投資 &middot; パッシブ運用</span><span class="lang-en">Investment Philosophy &middot; Value Investing &middot; Passive Management</span></span>
+          </div>
+        </div>
+
+        <!-- Executive Summary -->
+        <section class="exec-summary">
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">概要</span><span class="lang-en">Summary</span></div>
+            <p class="exec-tldr">
+              <span class="lang-ja">Damodaranは、投資哲学とは「市場がどのようにミスをし、いつ修正されるか」についての一貫した信念体系であると定義する。アクティブ vs パッシブ、投資 vs トレーディング、バリュー vs グロースといった分岐点を整理し、自分に合った哲学を見つけるための5ステップ・プロセスを提示。最終目標は最大リターンではなく「投資の平穏（investment serenity）」であると結論づけている。</span>
+              <span class="lang-en">Damodaran defines an investment philosophy as a coherent set of beliefs about how markets make mistakes and when those mistakes get corrected. He maps out the key decision forks &mdash; active vs passive, investing vs trading, value vs growth &mdash; and presents a five-step process for finding a philosophy that fits. The ultimate goal, he argues, is not maximum returns but "investment serenity."</span>
+            </p>
+          </div>
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">本稿の論点</span><span class="lang-en">Key Questions</span></div>
+            <ul class="issues-list">
+              <li class="issue-item">
+                <span class="issue-q">Q1</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>投資哲学とは何か</strong> &mdash; スローガンや戦略との違いは何か、なぜ「哲学なき投資」は危険なのか</span>
+                  <span class="lang-en"><strong>What is an investment philosophy?</strong> &mdash; How does it differ from a slogan or a strategy, and why is investing without one dangerous?</span>
+                </span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">Q2</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>投資プロセスの分岐構造</strong> &mdash; パッシブ/アクティブ、投資/トレーディング、バリュー/グロースの各分岐はどう連なるか</span>
+                  <span class="lang-en"><strong>How is the investment process structured?</strong> &mdash; How do the forks of passive/active, investing/trading, and value/growth connect?</span>
+                </span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">Q3</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>5ステップ・フレームワーク</strong> &mdash; 市場観の確認からフィードバック・ループまで、自分の哲学を見つける具体手順は何か</span>
+                  <span class="lang-en"><strong>The five-step framework</strong> &mdash; From examining market views to maintaining a feedback loop, what are the concrete steps?</span>
+                </span>
+              </li>
+            </ul>
+          </div>
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">Damodaran Watch 実務家への含意</span><span class="lang-en">Implications for Practitioners</span></div>
+            <ul class="implications-list">
+              <li class="implication-item">
+                <span class="lang-ja"><strong>哲学なき投資家は、直近の勝者を追い回してポートフォリオ回転率とコストを増大させ、詐欺にも脆弱になる。</strong>自分の市場観を言語化し、それに合致する戦略だけを選ぶことが先決。</span>
+                <span class="lang-en"><strong>Investors without a philosophy chase recent winners, inflate turnover and costs, and are vulnerable to scams.</strong> Articulating your market view and selecting only strategies that align with it is the first priority.</span>
+              </li>
+              <li class="implication-item">
+                <span class="lang-ja"><strong>戦略の有効性はバックテストだけでは不十分</strong> &mdash; 取引コスト、税金、統計的有意性を差し引いた「ネットリターン」で検証すべき。</span>
+                <span class="lang-en"><strong>Backtesting alone is insufficient</strong> &mdash; strategies must be validated against net returns after transaction costs, taxes, and statistical significance.</span>
+              </li>
+              <li class="implication-item">
+                <span class="lang-ja"><strong>「自分に合うか」のフィットテストが最重要。</strong>資本量・時間軸・リスク許容度・性格が戦略と合わなければ、理論上優れた哲学でも途中で放棄することになる。</span>
+                <span class="lang-en"><strong>The personal fit test is paramount.</strong> If capital, time horizon, risk tolerance, and personality do not match the strategy, even a theoretically sound philosophy will be abandoned mid-course.</span>
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- ===== Section 1: Why Philosophy Matters ===== -->
+        <h2><span class="lang-ja">なぜ投資哲学が必要なのか</span><span class="lang-en">Why You Need an Investment Philosophy</span></h2>
+
+        <p>
+          <span class="lang-ja">Damodaranは、投資哲学を「市場の仕組みとミスについての一貫した信念体系」と定義する。「安く買って高く売る」のようなスローガンは実行可能な指針を提供しない。また、PER15倍以下の銘柄をスクリーニングするような具体的手法は「戦略」であり「哲学」ではない。哲学とは、戦略の根底にある「なぜそれが機能するのか」の信念である。</span>
+          <span class="lang-en">Damodaran defines an investment philosophy as "a coherent set of beliefs about how markets work and where they make mistakes." Slogans like "buy low, sell high" provide no actionable guidance. And screening for stocks with PE ratios below 15 is a strategy, not a philosophy. A philosophy is the underlying belief about why a strategy works.</span>
+        </p>
+
+        <div class="trap-box">
+          <div class="trap-label"><span class="lang-ja">哲学なき投資家の3つの帰結</span><span class="lang-en">Three consequences of investing without a philosophy</span></div>
+          <p>
+            <span class="lang-ja"><strong>1. 勝者追従</strong> &mdash; 直近のリターンが良い戦略に飛びつき、ポートフォリオ回転率と取引コストが増大する。<strong>2. 詐欺脆弱性</strong> &mdash; 信念の軸がないため「低リスク・高リターン」の詐欺に引き込まれやすい。<strong>3. 代替策の欠如</strong> &mdash; 採用中の戦略が機能しなくなったとき、新しい戦略を見つける基盤がない。</span>
+            <span class="lang-en"><strong>1. Chasing winners</strong> &mdash; jumping to whatever strategy had the best recent returns, inflating turnover and transaction costs. <strong>2. Scam vulnerability</strong> &mdash; without a constraining philosophy, investors are easy marks for "high return, low risk" promises. <strong>3. Empty cupboard</strong> &mdash; when a strategy stops working, there is no foundation for finding an alternative.</span>
+          </p>
+        </div>
+
+        <!-- ===== Section 2: Investment Process Map ===== -->
+        <h2><span class="lang-ja">投資プロセスの分岐構造</span><span class="lang-en">The Investment Process Map</span></h2>
+
+        <p>
+          <span class="lang-ja">Damodaranは投資プロセスを樹形図として整理し、各分岐点で投資家が直面する選択を明確にしている。</span>
+          <span class="lang-en">Damodaran maps the investment process as a decision tree, clarifying the choices investors face at each fork.</span>
+        </p>
+
+        <h3><span class="lang-ja">第一の分岐：アクティブ vs パッシブ</span><span class="lang-en">First fork: Active vs Passive</span></h3>
+
+        <p>
+          <span class="lang-ja">アクティブ投資の最大の障壁は、ほとんどの運用者が市場平均を上回れないという事実にある。インデックスファンドはコストを抑えつつ平均リターンを自動的に達成する。アクティブ運用を選ぶ投資家は「平均を超える」だけでなく「リサーチコストと取引コストを差し引いてもなお超える」必要がある。</span>
+          <span class="lang-en">The biggest barrier to active investing is that very few active managers consistently beat the market. Index funds achieve average returns automatically and cheaply. Active investors must not only beat the average but do so after research and transaction costs.</span>
+        </p>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>Damodaranの4つの前提認識：</strong> (1) アクティブ投資家の大半は市場に負ける (2) 運と実力の分離は極めて困難 (3) 成功した投資家の手法は驚くほど多様（Buffett、Simons、Soros） (4) 成功者の模倣はほぼ機能しない</span>
+            <span class="lang-en"><strong>Damodaran's four baseline observations:</strong> (1) Most active investors lose to the market (2) Separating luck from skill is extremely difficult (3) Successful investors use wildly different approaches (Buffett, Simons, Soros) (4) Imitating successful investors rarely works</span>
+          </p>
+        </div>
+
+        <h3><span class="lang-ja">第二の分岐：投資 vs トレーディング</span><span class="lang-en">Second fork: Investing vs Trading</span></h3>
+
+        <p>
+          <span class="lang-ja">アクティブ運用を選んだ場合、次の分岐は「投資」か「トレーディング」かである。投資家は本源的価値（intrinsic value）を算出し、価格がそれを下回れば買い、上回れば売り、市場の修正を待つ。一方、トレーダーは市場のムードとモメンタムを読み、価格変動そのものから利益を得る。</span>
+          <span class="lang-en">Having chosen active management, the next fork is investing versus trading. Investors assess intrinsic value, buy below it, sell above it, and wait for correction. Traders gauge market mood and momentum, profiting from price movements themselves.</span>
+        </p>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">区分</span><span class="lang-en">Category</span></th>
+                <th><span class="lang-ja">手法</span><span class="lang-en">Approach</span></th>
+                <th><span class="lang-ja">判断基準</span><span class="lang-en">Decision Basis</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="td-accent"><span class="lang-ja">トレーディング</span><span class="lang-en">Trading</span></td>
+                <td><span class="lang-ja">プライストレーダー</span><span class="lang-en">Price traders</span></td>
+                <td><span class="lang-ja">価格・出来高データ、テクニカル指標</span><span class="lang-en">Price/volume data, technical indicators</span></td>
+              </tr>
+              <tr>
+                <td class="td-accent"><span class="lang-ja">トレーディング</span><span class="lang-en">Trading</span></td>
+                <td><span class="lang-ja">情報トレーダー</span><span class="lang-en">Information traders</span></td>
+                <td><span class="lang-ja">決算発表・ニュースリリース前後の価格変動</span><span class="lang-en">Price movements around earnings and news</span></td>
+              </tr>
+              <tr>
+                <td class="td-accent"><span class="lang-ja">トレーディング</span><span class="lang-en">Trading</span></td>
+                <td><span class="lang-ja">アービトラージャー</span><span class="lang-en">Arbitrageurs</span></td>
+                <td><span class="lang-ja">関連資産間のミスプライシング</span><span class="lang-en">Mispricing across related assets</span></td>
+              </tr>
+              <tr>
+                <td class="td-accent"><span class="lang-ja">投資</span><span class="lang-en">Investing</span></td>
+                <td><span class="lang-ja">バリュー投資</span><span class="lang-en">Value investing</span></td>
+                <td><span class="lang-ja">既存資産（assets-in-place）の過小評価</span><span class="lang-en">Undervaluation of assets-in-place</span></td>
+              </tr>
+              <tr>
+                <td class="td-accent"><span class="lang-ja">投資</span><span class="lang-en">Investing</span></td>
+                <td><span class="lang-ja">グロース投資</span><span class="lang-en">Growth investing</span></td>
+                <td><span class="lang-ja">将来の成長資産の過小評価</span><span class="lang-en">Undervaluation of future growth assets</span></td>
+              </tr>
+              <tr>
+                <td class="td-accent"><span class="lang-ja">投資</span><span class="lang-en">Investing</span></td>
+                <td><span class="lang-ja">ベンチャーキャピタル</span><span class="lang-en">Venture capital</span></td>
+                <td><span class="lang-ja">若い成長企業への能動的関与</span><span class="lang-en">Active role in young growth companies</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3><span class="lang-ja">第三の分岐：マーケットタイミング vs 銘柄選択</span><span class="lang-en">Third fork: Market Timing vs Stock Picking</span></h3>
+
+        <p>
+          <span class="lang-ja">最後の分岐は、資産クラス全体の配分を動かす「マーケットタイミング」と、個別銘柄を選ぶ「ストックピッキング」の選択である。Damodaran自身は後述の通りマーケットタイミングを「自分の弱点」として明確に避けている。</span>
+          <span class="lang-en">The final fork is between market timing &mdash; shifting allocations across asset classes &mdash; and stock picking &mdash; selecting individual investments. As discussed below, Damodaran himself explicitly avoids market timing as a personal weakness.</span>
+        </p>
+
+        <!-- ===== Section 3: Five Steps ===== -->
+        <div class="section-sep">&bull; &bull; &bull;</div>
+
+        <h2><span class="lang-ja">投資哲学を見つける5つのステップ</span><span class="lang-en">Five Steps to Finding Your Philosophy</span></h2>
+
+        <ul class="numbered-list">
+          <li>
+            <span class="num">1</span>
+            <span>
+              <span class="lang-ja"><strong>市場のミスに関する見解を確認する</strong> &mdash; 市場はランダムにミスをするのか（効率的市場派）、それとも体系的なパターンがあるのか（アクティブ派）。市場の学習速度が遅いと考えるなら逆張り、モメンタムが支配的と考えるならテクニカル分析が整合する。</span>
+              <span class="lang-en"><strong>Examine your views on market mistakes</strong> &mdash; Do markets make random mistakes (efficient market view) or systematic ones (active investor view)? If you believe markets learn slowly, contrarian approaches fit; if momentum dominates, technical analysis aligns.</span>
+            </span>
+          </li>
+          <li>
+            <span class="num">2</span>
+            <span>
+              <span class="lang-ja"><strong>市場観に合った哲学を選ぶ</strong> &mdash; ステップ1の信念と合致する投資哲学を選択する。市場が過剰反応すると考えるなら逆張り（トレーディングまたは投資）、成長が過小評価されると考えるならグロース投資、という具合に。</span>
+              <span class="lang-en"><strong>Pick a philosophy that reflects your market views</strong> &mdash; Match the philosophy to your beliefs. If you think markets overreact, adopt contrarian approaches; if growth is underpriced, choose growth investing.</span>
+            </span>
+          </li>
+          <li>
+            <span class="num">3</span>
+            <span>
+              <span class="lang-ja"><strong>戦略の有効性を検証する</strong> &mdash; 取引コスト（手数料・ビッド・アスク・プライスインパクト）、税金（配当課税 vs キャピタルゲイン課税、売買頻度の影響）、統計的有意性を差し引いたネットリターンで評価する。バックテスト上のグロスリターンは信頼できない。</span>
+              <span class="lang-en"><strong>Check for viable strategies</strong> &mdash; Evaluate net returns after transaction costs (commissions, bid-ask spreads, price impact), taxes (dividend vs capital gains treatment, trading frequency), and statistical significance. Gross backtest returns are unreliable.</span>
+            </span>
+          </li>
+          <li>
+            <span class="num">4</span>
+            <span>
+              <span class="lang-ja"><strong>個人適合性テスト</strong> &mdash; 戦略と自分の（a）資本量、（b）時間軸、（c）リスク許容度、（d）性格（忍耐力・同調圧力への耐性・特殊スキル）が合致するかを検証する。ミスマッチがあると戦略を途中放棄する原因になる。Damodaranはこれを「スリープテスト」と呼ぶ &mdash; ポートフォリオの変動で眠れなくなるなら、その戦略は自分に合っていない。</span>
+              <span class="lang-en"><strong>Check personal fit</strong> &mdash; Verify that the strategy matches your (a) capital, (b) time horizon, (c) risk tolerance, and (d) personality (patience, peer pressure susceptibility, special skills). A mismatch causes premature abandonment. Damodaran calls this the "sleep test" &mdash; if portfolio swings keep you awake, the strategy does not fit.</span>
+            </span>
+          </li>
+          <li>
+            <span class="num">5</span>
+            <span>
+              <span class="lang-ja"><strong>フィードバック・ループを維持する</strong> &mdash; 経済環境の変化、市場危機からの教訓、取引インフラの進化、そして自分自身の変化（年齢・資本・健康・忍耐力）に応じて、哲学を継続的に再検証する。</span>
+              <span class="lang-en"><strong>Keep the feedback loop open</strong> &mdash; Continuously reassess as economic settings shift, market crises teach new lessons, trading infrastructure evolves, and personal circumstances change (age, capital, health, patience).</span>
+            </span>
+          </li>
+        </ul>
+
+        <!-- ===== Section 4: Damodaran's Own Philosophy ===== -->
+        <h2><span class="lang-ja">Damodaran自身の投資哲学</span><span class="lang-en">Damodaran's Own Investment Philosophy</span></h2>
+
+        <p>
+          <span class="lang-ja">Damodaranは自身の哲学を3つの原則で構成している。</span>
+          <span class="lang-en">Damodaran structures his own philosophy around three principles.</span>
+        </p>
+
+        <h3><span class="lang-ja">原則1：本源的価値（intrinsic value）は存在する</span><span class="lang-en">Principle 1: Intrinsic value exists</span></h3>
+
+        <p>
+          <span class="lang-ja">すべての資産にはキャッシュフローに基づく本源的価値が計算可能であり、PERやEV/EBITDAのようなプライシング指標とは本質的に異なるとDamodaranは主張する。</span>
+          <span class="lang-en">Every asset has a calculable intrinsic value based on its cash flows, Damodaran argues, and this is fundamentally different from pricing metrics like PE ratios or EV/EBITDA.</span>
+        </p>
+
+        <h3><span class="lang-ja">原則2：市場は大体正しいが、ミスもする</span><span class="lang-en">Principle 2: Markets are mostly right, but make mistakes</span></h3>
+
+        <p>
+          <span class="lang-ja">市場は多様な見方を集約する「群衆の知恵の原泉」として機能するが、不確実性が高まる局面 &mdash; 産業の破壊的変化、企業のライフサイクル転換点、マクロ危機 &mdash; では群衆が暴走し、体系的なミスが生じるとDamodaranは考える。</span>
+          <span class="lang-en">Markets function as "the original fount for crowd wisdom," aggregating diverse views effectively. But during periods of heightened uncertainty &mdash; industry disruption, corporate life-cycle transitions, macro crises &mdash; crowd madness emerges and systematic mistakes arise.</span>
+        </p>
+
+        <h3><span class="lang-ja">原則3：Do No Harm（害を与えない）</span><span class="lang-en">Principle 3: Do No Harm</span></h3>
+
+        <p>
+          <span class="lang-ja">Damodaranは自身の過剰行動の反省から、以下の行動規律を設けている。</span>
+          <span class="lang-en">Drawing from his own lessons about overreach, Damodaran follows these behavioural disciplines.</span>
+        </p>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">行動規律</span><span class="lang-en">Discipline</span></th>
+                <th><span class="lang-ja">具体的ルール</span><span class="lang-en">Specific Rule</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="lang-ja">分散投資</span><span class="lang-en">Spread bets</span></td>
+                <td><span class="lang-ja">ポートフォリオ約36銘柄、1銘柄最大15%</span><span class="lang-en">Portfolio of ~36 stocks, 15% maximum single position</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">行動頻度の抑制</span><span class="lang-en">Act rarely</span></td>
+                <td><span class="lang-ja">最小限のトレーディング、慎重な意思決定</span><span class="lang-en">Minimal trading, measured decision-making</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">弱点の回避</span><span class="lang-en">Avoid weaknesses</span></td>
+                <td><span class="lang-ja">マーケットタイミングとセクターベットは行わない</span><span class="lang-en">No market timing or sector bets</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">盲点の管理</span><span class="lang-en">Manage blind spots</span></td>
+                <td><span class="lang-ja">税金回避バイアスとナラティブへの引力バイアスを自覚</span><span class="lang-en">Aware of tax aversion and narrative attraction biases</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ===== Section 5: Investment Serenity ===== -->
+        <h2><span class="lang-ja">最終目標：投資の平穏（Investment Serenity）</span><span class="lang-en">The Ultimate Goal: Investment Serenity</span></h2>
+
+        <div class="pull-quote">
+          <p>
+            <span class="lang-ja">"投資の成功とは、可能な限り高いリターンを実現しつつ、自分にはコントロールできない力が結果を左右するという事実を受け入れることである。より良い最終目標は「投資の平穏」だろう &mdash; 自分が納得できる投資の道を見つけ、その結果が良くても悪くても受け入れること。"</span>
+            <span class="lang-en">"Investment success balances delivering the highest possible returns with acceptance that uncontrollable forces prevent guaranteed outcomes. A better end-goal is investment serenity &mdash; where you end up with an investment path that you are comfortable with, and accept the results that emerge, good or bad."</span>
+          </p>
+          <footer>Aswath Damodaran</footer>
+        </div>
+
+        <p>
+          <span class="lang-ja">Damodaranは、最大リターンの追求よりも「自分に合った投資の道を歩み、その結果を受け入れること」を最終目標に据えている。不確実な市場において、哲学は投資家が判断の軸を失わないための北極星（lodestar）として機能する。完璧な戦略を追い求めるのではなく、自分の信念・資本・性格に整合した哲学を見つけ、それを継続的にアップデートし続けることが、投資家としての持続可能な成長を支えると論じている。</span>
+          <span class="lang-en">Damodaran places "finding an investment path you are comfortable with and accepting its outcomes" above the pursuit of maximum returns. In uncertain markets, a philosophy serves as the investor's lodestar &mdash; the fixed star that prevents loss of bearing. Rather than chasing the perfect strategy, finding a philosophy aligned with one's beliefs, capital, and personality, and continuously updating it, underpins sustainable growth as an investor.</span>
+        </p>
+
+        <div class="section-sep">&bull; &bull; &bull;</div>
+
+        <p style="font-size:0.85rem; color:var(--text-muted);">
+          <span class="lang-ja">本稿はDamodaranのブログ投稿「Finding your investing lodestar: In Search of an Investment Philosophy」（2026年3月24日）の要約・解説記事です。原文の引用・データはすべて原著に帰属します。</span>
+          <span class="lang-en">This article summarises and discusses Damodaran's blog post "Finding your investing lodestar: In Search of an Investment Philosophy" (24 March 2026). All quoted material and data belong to the original author.</span>
+        </p>
+
+        <!-- Next Article CTA -->
+        <div class="next-article">
+          <div class="next-label"><span class="lang-ja">前回の記事</span><span class="lang-en">Previous</span></div>
+          <div class="next-title"><a href="./2026-03-23-damodaran-erp-monologue.html" style="color:inherit;text-decoration:none;"><span class="lang-ja">Damodaran Watch #002 &mdash; リスクの価格：エクイティ・リスク・プレミアム独白</span><span class="lang-en">Damodaran Watch #002 &mdash; The Price of Risk: An Equity Risk Premium Monologue</span></a></div>
+          <div class="next-desc"><span class="lang-ja">インプライドERPこそが市場評価の唯一の正確な物差しである理由</span><span class="lang-en">Why the implied ERP is the only reliable yardstick for market valuation</span></div>
+        </div>
+
+      </article>
+
+      <!-- 4. Sidebar -->
+      <aside class="article-sidebar">
+
+        <!-- Key Facts -->
+        <div class="sidebar-card">
+          <div class="section-label">Key Facts</div>
+          <div class="keyfacts-grid">
+            <div class="fact-card">
+              <div class="fact-value">~36</div>
+              <div class="fact-desc"><span class="lang-ja">Damodaranのポートフォリオ銘柄数</span><span class="lang-en">Stocks in Damodaran's portfolio</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">15%</div>
+              <div class="fact-desc"><span class="lang-ja">1銘柄あたり最大ウェイト</span><span class="lang-en">Max single-position weight</span></div>
+            </div>
+            <div class="fact-card highlight">
+              <div class="fact-value">5 Steps</div>
+              <div class="fact-desc"><span class="lang-ja">投資哲学構築フレームワーク</span><span class="lang-en">Philosophy-building framework</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">3</div>
+              <div class="fact-desc"><span class="lang-ja">Damodaranの個人哲学の原則数</span><span class="lang-en">Principles in Damodaran's own philosophy</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Highlights -->
+        <div class="sidebar-card">
+          <div class="section-label"><span class="lang-ja">重要ポイント</span><span class="lang-en">Highlights</span></div>
+          <ul class="highlights-list">
+            <li class="highlight-item">
+              <span class="hl-num">01</span>
+              <span class="hl-text"><span class="lang-ja">万人に最適な投資哲学は存在しない</span><span class="lang-en">No single best philosophy for all investors</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">02</span>
+              <span class="hl-text"><span class="lang-ja">成功者の模倣はほぼ機能しない</span><span class="lang-en">Imitating successful investors rarely works</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">03</span>
+              <span class="hl-text"><span class="lang-ja">「スリープテスト」で個人適合性を検証する</span><span class="lang-en">The "sleep test" verifies personal fit</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">04</span>
+              <span class="hl-text"><span class="lang-ja">最終目標は最大リターンではなく「投資の平穏」</span><span class="lang-en">The goal is "investment serenity," not max returns</span></span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Series Index -->
+        <div class="sidebar-card">
+          <div class="section-label">Damodaran Watch</div>
+          <ol class="highlights-list" style="list-style:none;padding:0;">
+            <li class="highlight-item">
+              <span class="hl-num">01</span>
+              <span class="hl-text"><a href="./2026-03-22-damodaran-ai-scenarios.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">AIシナリオ：ドゥームズデイから無害なボットまで</span><span class="lang-en">AI Scenarios: From Doomsday to Do-Nothing Bots</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">02</span>
+              <span class="hl-text"><a href="./2026-03-23-damodaran-erp-monologue.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">リスクの価格：ERP独白</span><span class="lang-en">The Price of Risk: ERP Monologue</span></a></span>
+            </li>
+            <li class="highlight-item" style="border-bottom:none;">
+              <span class="hl-num" style="color:var(--accent-warm);">03</span>
+              <span class="hl-text" style="font-weight:600;"><span class="lang-ja">投資の北極星を見つける（本稿）</span><span class="lang-en">Finding Your Investing Lodestar (this article)</span></span>
+            </li>
+          </ol>
+        </div>
+
+        <!-- Key References -->
+        <div class="sidebar-card">
+          <div class="section-label">Key References</div>
+          <ul class="source-list" style="margin-top:10px;">
+            <li><a href="https://aswathdamodaran.blogspot.com/2026/03/finding-your-investing-lodestar-in.html" target="_blank" rel="noopener">Damodaran Blog: Finding your investing lodestar</a> <span class="source-tag">Original</span></li>
+            <li><a href="https://pages.stern.nyu.edu/~adamodar/" target="_blank" rel="noopener">Damodaran Online (NYU Stern)</a> <span class="source-tag">Data</span></li>
+          </ul>
+        </div>
+
+      </aside>
+
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <span>Damodaran Watch #003 | donato Valuation Notes | 2026-03-28</span>
+  <span>
+    <span class="lang-ja">本稿は情報提供を目的とした解説記事であり、特定の投資行動を推奨するものではありません。投資判断はご自身の責任でお願いいたします。</span>
+    <span class="lang-en">This article is for informational purposes only and does not constitute investment advice. Investment decisions are the reader's own responsibility.</span>
+  </span>
+</footer>
+
+<script>
+  // Progress bar
+  window.addEventListener('scroll', function() {
+    var h = document.documentElement;
+    var pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    document.getElementById('progress-bar').style.width = Math.min(pct, 100) + '%';
+  });
+
+  // Reading time (500 chars/min)
+  (function() {
+    var text = document.querySelector('.article-body') ? document.querySelector('.article-body').textContent : '';
+    var chars = text.length;
+    var minutes = Math.ceil(chars / 500);
+    var el1 = document.getElementById('reading-time-badge');
+    var el2 = document.getElementById('reading-time-badge2');
+    if (el1) el1.querySelector('.lang-ja').textContent = '約' + minutes + '分';
+    if (el2) el2.querySelector('.lang-ja').textContent = '約' + minutes + '分';
+    if (el1) el1.querySelector('.lang-en').textContent = '~' + minutes + ' min read';
+    if (el2) el2.querySelector('.lang-en').textContent = '~' + minutes + ' min read';
+  })();
+
+  // Lang toggle
+  let currentLang = localStorage.getItem('hp-lang') || 'ja';
+  let currentTheme = localStorage.getItem('hp-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('hp-lang', lang);
+    document.querySelectorAll('.lang-ja').forEach(el => el.style.display = lang === 'ja' ? 'inline' : 'none');
+    document.querySelectorAll('.lang-en').forEach(el => el.style.display = lang === 'en' ? 'inline' : 'none');
+    document.querySelectorAll('.art-lang-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+    document.documentElement.lang = lang === 'ja' ? 'ja' : 'en';
+  }
+  function toggleTheme() {
+    currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+    localStorage.setItem('hp-theme', currentTheme);
+    document.body.classList.toggle('dark', currentTheme === 'dark');
+    document.getElementById('theme-btn').textContent = currentTheme === 'light' ? '\u2606' : '\u263E';
+  }
+  document.addEventListener('DOMContentLoaded', () => {
+    setLang(currentLang);
+    if (currentTheme === 'dark') {
+      document.body.classList.add('dark');
+      document.getElementById('theme-btn').textContent = '\u263E';
+    }
+  });
+</script>
+
+</body>
+</html>

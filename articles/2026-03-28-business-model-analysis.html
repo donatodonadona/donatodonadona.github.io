@@ -795,6 +795,49 @@
           </p>
         </div>
 
+        <h3><span class="lang-ja">7アーキタイプでは足りない — 収益モデルの下位分類</span><span class="lang-en">Seven archetypes are not enough — revenue model sub-classification</span></h3>
+
+        <p>
+          <span class="lang-ja">上記7類型はComps選定の「第一フィルター」にすぎない。同じ「サブスクリプション」でも、<strong>契約形態・課金方式・請求サイクル</strong>の3軸で下位分類しなければ、真に比較可能な企業は特定できない。</span>
+          <span class="lang-en">The seven types above are merely a "first filter" for Comps selection. Within the same "subscription" category, without sub-classifying on three axes — <strong>contract type, pricing model, and billing cycle</strong> — truly comparable companies cannot be identified.</span>
+        </p>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">分類軸</span><span class="lang-en">Axis</span></th>
+                <th><span class="lang-ja">選択肢</span><span class="lang-en">Options</span></th>
+                <th><span class="lang-ja">バリュエーションへの影響</span><span class="lang-en">Valuation Impact</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong><span class="lang-ja">契約形態</span><span class="lang-en">Contract Type</span></strong></td>
+                <td><span class="lang-ja">契約型（年間契約・自動更新）vs. 非契約型（月次解約自由）</span><span class="lang-en">Contractual (annual, auto-renewal) vs. non-contractual (monthly, cancel anytime)</span></td>
+                <td><span class="lang-ja">契約型はチャーン率が構造的に低く、収益予測精度が高い。Salesforce（契約型）とNetflix（非契約型）では同じサブスクでもNRRの意味が異なる</span><span class="lang-en">Contractual has structurally lower churn and higher revenue predictability. NRR means different things for Salesforce (contractual) vs. Netflix (non-contractual)</span></td>
+              </tr>
+              <tr>
+                <td><strong><span class="lang-ja">課金方式</span><span class="lang-en">Pricing Model</span></strong></td>
+                <td><span class="lang-ja">定額制 vs. 席数ベース vs. 使用量ベース（consumption-based）</span><span class="lang-en">Flat-rate vs. seat-based vs. usage-based (consumption)</span></td>
+                <td><span class="lang-ja">使用量ベースはARR予測のボラティリティが高い（Snowflake型）。席数ベースは顧客の組織規模に連動しNRRが安定（Zoom型）</span><span class="lang-en">Usage-based has higher ARR forecast volatility (Snowflake type). Seat-based ties to organisation size with stable NRR (Zoom type)</span></td>
+              </tr>
+              <tr>
+                <td><strong><span class="lang-ja">請求サイクル</span><span class="lang-en">Billing Cycle</span></strong></td>
+                <td><span class="lang-ja">月次 vs. 年次 vs. 複数年</span><span class="lang-en">Monthly vs. annual vs. multi-year</span></td>
+                <td><span class="lang-ja">年次・複数年前払いはキャッシュフローの前倒し取得が可能。繰延収益（deferred revenue）の規模がキャッシュ・コンバージョン・サイクルに影響</span><span class="lang-en">Annual/multi-year prepayment enables upfront cash collection. Deferred revenue scale affects the cash conversion cycle</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>Comps precision rule:</strong> 「サブスクリプション企業」で括ったピアセットは粗すぎる。Salesforce（契約型・席数ベース・年次）のCompsはWorkday・ServiceNowであり、Netflix（非契約型・定額制・月次）のCompsはSpotify・Disney+である。同じ「サブスクリプション」でも、下位分類が異なれば比較可能性は大幅に低下する。</span>
+            <span class="lang-en"><strong>Comps precision rule:</strong> A peer set labelled "subscription companies" is too coarse. Salesforce (contractual, seat-based, annual) should be compared with Workday and ServiceNow. Netflix (non-contractual, flat-rate, monthly) should be compared with Spotify and Disney+. Within the same "subscription", different sub-classifications substantially reduce comparability.</span>
+          </p>
+        </div>
+
         <div class="section-sep">···</div>
 
         <!-- Section 3: Unit Economics -->
@@ -858,6 +901,150 @@ LTV/CAC ≥ 3x and CAC Payback ≤ 18 months → Rule of thumb for "healthy grow
           <p>
             <span class="lang-ja"><strong>Valuation implication:</strong> ユニットエコノミクスが健全な企業は、成長投資（S&M費用の増加）が将来のFCFに高い確度で変換される。これは成長率に対するマルチプルプレミアム（PEGレシオの正当化）の理論的根拠となる。逆にLTV/CACが1x近辺の企業は、成長率が高くてもマルチプルプレミアムに値しない。</span>
             <span class="lang-en"><strong>Valuation implication:</strong> Companies with healthy unit economics convert growth investment (increased S&M expense) into future FCF with high confidence. This provides the theoretical basis for a multiple premium to growth rate (PEG ratio justification). Conversely, companies with LTV/CAC near 1x do not warrant a multiple premium regardless of growth rate.</span>
+          </p>
+        </div>
+
+        <h3><span class="lang-ja">3-A. 顧客セグメント軸 — 「誰に売るか」がマルチプルを変える</span><span class="lang-en">3-A. Customer segment axis — "who you sell to" changes multiples</span></h3>
+
+        <p>
+          <span class="lang-ja">同じサブスクリプションSaaSでも、顧客セグメントが異なれば販売効率・チャーン特性・拡大余地がまったく異なる。顧客セグメントはComps選定において収益モデルと同等の重要性を持つ分類軸である。</span>
+          <span class="lang-en">Even within subscription SaaS, different customer segments mean entirely different sales efficiency, churn characteristics, and expansion potential. Customer segment is a classification axis of equal importance to revenue model in Comps selection.</span>
+        </p>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">顧客セグメント</span><span class="lang-en">Customer Segment</span></th>
+                <th><span class="lang-ja">ACV水準</span><span class="lang-en">ACV Level</span></th>
+                <th><span class="lang-ja">GTMモーション</span><span class="lang-en">GTM Motion</span></th>
+                <th><span class="lang-ja">チャーン特性</span><span class="lang-en">Churn Profile</span></th>
+                <th><span class="lang-ja">代表企業</span><span class="lang-en">Examples</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong><span class="lang-ja">エンタープライズ</span><span class="lang-en">Enterprise</span></strong></td>
+                <td class="td-accent">$100K+</td>
+                <td><span class="lang-ja">フィールドセールス主導・長期商談</span><span class="lang-en">Field sales-led, long sales cycles</span></td>
+                <td><span class="lang-ja">低チャーン（年5%未満）、高NRR（130%+可能）</span><span class="lang-en">Low churn (<5% annual), high NRR (130%+ possible)</span></td>
+                <td>Salesforce, ServiceNow, Workday</td>
+              </tr>
+              <tr>
+                <td><strong><span class="lang-ja">ミッドマーケット</span><span class="lang-en">Mid-Market</span></strong></td>
+                <td class="td-accent">$10K–$100K</td>
+                <td><span class="lang-ja">インサイドセールス＋セルフサーブ混合</span><span class="lang-en">Inside sales + self-serve hybrid</span></td>
+                <td><span class="lang-ja">中程度のチャーン（年10–15%）</span><span class="lang-en">Moderate churn (10–15% annual)</span></td>
+                <td>HubSpot, Zendesk, Monday.com</td>
+              </tr>
+              <tr>
+                <td><strong>SMB</strong></td>
+                <td class="td-accent">&lt;$10K</td>
+                <td><span class="lang-ja">プロダクト主導成長（PLG）</span><span class="lang-en">Product-led growth (PLG)</span></td>
+                <td><span class="lang-ja">高チャーン（年20–30%+）、LTVが短い</span><span class="lang-en">High churn (20–30%+ annual), shorter LTV</span></td>
+                <td>Shopify, Wix, Squarespace</td>
+              </tr>
+              <tr>
+                <td><strong><span class="lang-ja">コンシューマー（B2C）</span><span class="lang-en">Consumer (B2C)</span></strong></td>
+                <td class="td-accent">&lt;$500</td>
+                <td><span class="lang-ja">マーケティング・バイラル</span><span class="lang-en">Marketing / viral</span></td>
+                <td><span class="lang-ja">極めて高いチャーン（月次5–10%）、規模で補填</span><span class="lang-en">Very high churn (5–10% monthly), offset by scale</span></td>
+                <td>Netflix, Spotify, Peloton</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="trap-box">
+          <div class="trap-label"><span class="lang-ja">よくある誤り</span><span class="lang-en">Common Trap</span></div>
+          <p>
+            <span class="lang-ja">ServiceNow（エンタープライズ・フィールドセールス・ACV $500K+）とShopify（SMB・PLG・ACV $2K）を「同じSaaS」としてCompsに入れるのは誤り。GTMモーション・チャーン率・NRRの構造が根本的に異なり、同じ成長率でも正当化されるマルチプルは大きく乖離する。</span>
+            <span class="lang-en">Including ServiceNow (enterprise, field sales, ACV $500K+) and Shopify (SMB, PLG, ACV $2K) in the same "SaaS Comps" is an error. GTM motion, churn rate, and NRR structures are fundamentally different — the same growth rate justifies materially different multiples.</span>
+          </p>
+        </div>
+
+        <h3><span class="lang-ja">3-B. マージン構造分析 — コスト構成がスケーラビリティを決める</span><span class="lang-en">3-B. Margin architecture — cost structure determines scalability</span></h3>
+
+        <p>
+          <span class="lang-ja">ビジネスモデルの比較可能性を判断するうえで、「利益率が近い」だけでは不十分である。利益率の<strong>構造</strong>——固定費と変動費の比率、コストの性質（R&D集約型 vs. S&M集約型）、粗利率の水準——がComps選定の独立した判断軸になる。</span>
+          <span class="lang-en">For judging business model comparability, "similar margins" alone is insufficient. The <strong>structure</strong> of margins — the ratio of fixed to variable costs, the nature of costs (R&D-intensive vs. S&M-intensive), and gross margin levels — serves as an independent criterion for Comps selection.</span>
+        </p>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">分類軸</span><span class="lang-en">Axis</span></th>
+                <th><span class="lang-ja">バンド</span><span class="lang-en">Bands</span></th>
+                <th><span class="lang-ja">バリュエーション含意</span><span class="lang-en">Valuation Implication</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong><span class="lang-ja">粗利率バンド</span><span class="lang-en">Gross Margin Band</span></strong></td>
+                <td class="td-accent">&gt;70% / 50–70% / 30–50% / &lt;30%</td>
+                <td><span class="lang-ja">粗利率はビジネスモデルの「品質」を端的に示す。SaaS（75%+）と製造業（30%）は同じEV/Revenueで比較不可。粗利率バンドが2段階以上異なる企業はComps不適格</span><span class="lang-en">Gross margin most directly indicates business model "quality". SaaS (75%+) and manufacturing (30%) cannot be compared on the same EV/Revenue. Companies differing by 2+ margin bands are ineligible as Comps</span></td>
+              </tr>
+              <tr>
+                <td><strong><span class="lang-ja">コスト集約性</span><span class="lang-en">Cost Intensity</span></strong></td>
+                <td class="td-accent"><span class="lang-ja">R&D集約型 vs. S&M集約型 vs. COGS集約型</span><span class="lang-en">R&D-heavy vs. S&M-heavy vs. COGS-heavy</span></td>
+                <td><span class="lang-ja">R&D集約型（Palantir: R&D/Rev 25%+）はイノベーション駆動。S&M集約型（DoorDash: S&M/Rev 40%+）は顧客獲得駆動。オペレーティング・レバレッジの効き方がまったく異なる</span><span class="lang-en">R&D-heavy (Palantir: R&D/Rev 25%+) is innovation-driven. S&M-heavy (DoorDash: S&M/Rev 40%+) is acquisition-driven. Operating leverage characteristics differ entirely</span></td>
+              </tr>
+              <tr>
+                <td><strong><span class="lang-ja">資本集約度</span><span class="lang-en">Capital Intensity</span></strong></td>
+                <td class="td-accent"><span class="lang-ja">Capex/Revenue: &lt;5% / 5–15% / 15–30% / &gt;30%</span><span class="lang-en">Capex/Revenue: &lt;5% / 5–15% / 15–30% / &gt;30%</span></td>
+                <td><span class="lang-ja">同じ成長率でも、Capex/Revenue 5%（SaaS）と30%（通信）では再投資率が異なりFCF創出力に大差。アセットライト vs. アセットヘビーの境界をCapex/Revenue 15%に置くのが実務的目安</span><span class="lang-en">Same growth rate, but Capex/Revenue of 5% (SaaS) vs. 30% (telecoms) means different reinvestment rates and vastly different FCF generation. The practical boundary between asset-light and asset-heavy is ~15% Capex/Revenue</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3><span class="lang-ja">3-C. 成長メカニズムの分類 — 「どう成長するか」が持続性を決める</span><span class="lang-en">3-C. Growth mechanism taxonomy — "how you grow" determines sustainability</span></h3>
+
+        <p>
+          <span class="lang-ja">成長率が同じ20%でも、その成長がオーガニックか、M&A主導か、地理的拡大か、プロダクト拡大かによって、成長の持続性と資本効率は根本的に異なる。成長メカニズムはComps選定において見落とされやすいが、マルチプルに直結する分類軸である。</span>
+          <span class="lang-en">Even at the same 20% growth rate, whether that growth is organic, M&A-driven, geographic expansion, or product expansion means fundamentally different growth sustainability and capital efficiency. Growth mechanism is an easily overlooked but multiple-critical classification axis for Comps.</span>
+        </p>
+
+        <div class="dim-grid">
+          <div class="dim-card">
+            <div class="dim-num"><span class="lang-ja">オーガニック成長</span><span class="lang-en">Organic Growth</span></div>
+            <div class="dim-title"><span class="lang-ja">高マルチプル正当化</span><span class="lang-en">Higher Multiple Justified</span></div>
+            <div class="dim-desc">
+              <span class="lang-ja">既存プロダクトの市場浸透・アップセル・新規顧客獲得。内部資本で達成されるためROIC効率が高い。NRR 120%+のSaaS企業はオーガニック成長の典型</span>
+              <span class="lang-en">Market penetration, upsell, and new customer acquisition with existing products. Achieved with internal capital, so ROIC-efficient. SaaS companies with NRR 120%+ are typical organic growers</span>
+            </div>
+          </div>
+          <div class="dim-card">
+            <div class="dim-num"><span class="lang-ja">M&A主導成長</span><span class="lang-en">M&A-Driven Growth</span></div>
+            <div class="dim-title"><span class="lang-ja">マルチプルディスカウント</span><span class="lang-en">Multiple Discount</span></div>
+            <div class="dim-desc">
+              <span class="lang-ja">買収による売上積み上げ。統合リスク・のれんの減損リスクを伴う。「成長率20%」でもM&A寄与が大半なら、オーガニック成長20%の企業とは比較不可。Constellation Software型の「連続的小規模買収」は例外的に評価される</span>
+              <span class="lang-en">Revenue growth through acquisitions. Carries integration risk and goodwill impairment risk. "20% growth" driven mainly by M&A is not comparable to 20% organic growth. Constellation Software-style "serial small acquisitions" are exceptionally valued</span>
+            </div>
+          </div>
+          <div class="dim-card">
+            <div class="dim-num"><span class="lang-ja">地理的拡大</span><span class="lang-en">Geographic Expansion</span></div>
+            <div class="dim-title"><span class="lang-ja">実行リスクが鍵</span><span class="lang-en">Execution Risk Is Key</span></div>
+            <div class="dim-desc">
+              <span class="lang-ja">既存プロダクトを新市場（国・地域）に展開。TAMは拡大するが、ローカライゼーション・規制対応・競合環境のリスクを伴う。成功確率は市場による</span>
+              <span class="lang-en">Deploying existing products to new markets (countries/regions). TAM expands but with localisation, regulatory, and competitive risks. Success probability varies by market</span>
+            </div>
+          </div>
+          <div class="dim-card">
+            <div class="dim-num"><span class="lang-ja">プロダクト拡大</span><span class="lang-en">Product Expansion</span></div>
+            <div class="dim-title"><span class="lang-ja">Land-and-Expand</span><span class="lang-en">Land-and-Expand</span></div>
+            <div class="dim-desc">
+              <span class="lang-ja">既存顧客基盤に新プロダクトを追加販売。クロスセルによるARPU向上がNRR 130%+を実現するメカニズム。Datadog・CrowdStrikeが典型。既存顧客からの信頼がCAC効率を劇的に改善する</span>
+              <span class="lang-en">Selling new products to the existing customer base. Cross-sell drives ARPU expansion, achieving NRR 130%+. Datadog and CrowdStrike are typical examples. Trust from existing customers dramatically improves CAC efficiency</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>Comps selection rule:</strong> Compsピアセット内の企業は、成長メカニズムが同一である必要はないが、<strong>オーガニック成長率</strong>で揃えるべきである。Total Revenue Growth Rateではなく、M&A寄与を除いたオーガニック成長率で比較することで、ビジネスモデル固有の成長力を正確に反映できる。</span>
+            <span class="lang-en"><strong>Comps selection rule:</strong> Companies in a Comps peer set need not share the same growth mechanism, but should be aligned on <strong>organic growth rate</strong>. Comparing organic growth rate (excluding M&A contribution) rather than total revenue growth rate accurately reflects business model-specific growth power.</span>
           </p>
         </div>
 
@@ -939,6 +1126,66 @@ LTV/CAC ≥ 3x and CAC Payback ≤ 18 months → Rule of thumb for "healthy grow
             <span><span class="lang-ja">CAP長 → ターミナルバリュー比率：</span><span class="lang-en">Longer CAP → Terminal Value %:</span></span>
             <span><span class="lang-ja">60–80% → 80–90%+</span><span class="lang-en">60–80% → 80–90%+</span></span>
           </div>
+        </div>
+
+        <h3><span class="lang-ja">Moat源泉の定量化 — 「ある/ない」では不十分</span><span class="lang-en">Quantifying Moat sources — "present/absent" is insufficient</span></h3>
+
+        <p>
+          <span class="lang-ja">「ネットワーク効果がある」という定性的評価だけでは、Comps選定の精度に貢献しない。各Moat源泉を下位分類し、強度を定量的に評価する枠組みが必要である。</span>
+          <span class="lang-en">A qualitative assessment of "network effects exist" does not contribute to Comps selection precision. A framework for sub-classifying each moat source and quantitatively evaluating its strength is required.</span>
+        </p>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">Moat源泉</span><span class="lang-en">Moat Source</span></th>
+                <th><span class="lang-ja">下位分類</span><span class="lang-en">Sub-classification</span></th>
+                <th><span class="lang-ja">定量評価の指標</span><span class="lang-en">Quantitative Indicators</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td rowspan="3"><strong><span class="lang-ja">ネットワーク効果</span><span class="lang-en">Network Effects</span></strong></td>
+                <td><span class="lang-ja">同サイド（Direct）: ユーザー同士の価値増幅</span><span class="lang-en">Same-side (Direct): users amplify value for each other</span></td>
+                <td class="td-accent"><span class="lang-ja">DAU/MAU比率、エンゲージメント頻度の推移</span><span class="lang-en">DAU/MAU ratio, engagement frequency trends</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">クロスサイド（Indirect）: 供給と需要の相互増幅</span><span class="lang-en">Cross-side (Indirect): supply-demand mutual amplification</span></td>
+                <td class="td-accent"><span class="lang-ja">供給側と需要側の成長率相関、マッチング効率の推移</span><span class="lang-en">Correlation between supply/demand growth, matching efficiency trends</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">ローカル vs. グローバル: 地理的範囲</span><span class="lang-en">Local vs. Global: geographic scope</span></td>
+                <td class="td-accent"><span class="lang-ja">市場密度（都市別浸透率）、Winner-take-all度合い</span><span class="lang-en">Market density (city-level penetration), winner-take-all intensity</span></td>
+              </tr>
+              <tr>
+                <td rowspan="2"><strong><span class="lang-ja">スイッチングコスト</span><span class="lang-en">Switching Costs</span></strong></td>
+                <td><span class="lang-ja">金銭的コスト: 移行費用・再構築費用</span><span class="lang-en">Financial cost: migration and rebuild expenses</span></td>
+                <td class="td-accent"><span class="lang-ja">推定移行コスト / 年間契約額の比率（2x+で強固）</span><span class="lang-en">Estimated migration cost / annual contract value ratio (2x+ = strong)</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">習慣的・制度的ロックイン: ワークフロー組込み・規制要件</span><span class="lang-en">Habitual/institutional lock-in: workflow embedding, regulatory requirements</span></td>
+                <td class="td-accent"><span class="lang-ja">平均契約期間、ロゴ（顧客）チャーン率の長期推移</span><span class="lang-en">Average contract duration, long-term logo (customer) churn rate trends</span></td>
+              </tr>
+              <tr>
+                <td><strong><span class="lang-ja">無形資産</span><span class="lang-en">Intangible Assets</span></strong></td>
+                <td><span class="lang-ja">ブランド（価格プレミアム）/ 特許（残存期間）/ 規制ライセンス（参入制限の法的強度）</span><span class="lang-en">Brand (pricing premium) / Patents (remaining life) / Regulatory licences (legal strength of entry restriction)</span></td>
+                <td class="td-accent"><span class="lang-ja">価格プレミアム率、特許ポートフォリオ残存年数の加重平均、ライセンス取得に要する期間・費用</span><span class="lang-en">Price premium %, weighted average remaining patent life, time/cost to obtain licence</span></td>
+              </tr>
+              <tr>
+                <td><strong><span class="lang-ja">コスト優位</span><span class="lang-en">Cost Advantage</span></strong></td>
+                <td><span class="lang-ja">規模の経済 / プロセス革新 / 立地・資源優位</span><span class="lang-en">Scale economies / Process innovation / Location-resource advantage</span></td>
+                <td class="td-accent"><span class="lang-ja">業界平均とのコスト差率（%）、規模拡大に伴うコスト逓減カーブの傾き</span><span class="lang-en">Cost gap vs. industry average (%), slope of cost decline curve with scale</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>Comps selection rule:</strong> Moatの「種類」と「強度」が類似する企業をCompsに選ぶ。Visa（グローバルなクロスサイド・ネットワーク効果）とUber（ローカルなクロスサイド・ネットワーク効果）は、同じ「ネットワーク効果」でもスケール特性が異なり、CAPの推定が変わる。Moat源泉の下位分類まで一致する企業を優先すること。</span>
+            <span class="lang-en"><strong>Comps selection rule:</strong> Select Comps with similar moat "type" and "strength". Visa (global cross-side network effects) and Uber (local cross-side network effects) have the same "network effects" but different scale characteristics, changing CAP estimation. Prioritise companies matching at the moat sub-classification level.</span>
+          </p>
         </div>
 
         <div class="section-sep">···</div>
@@ -1075,43 +1322,76 @@ LTV/CAC ≥ 3x and CAC Payback ≤ 18 months → Rule of thumb for "healthy grow
           <span class="lang-en">Combining the industry analysis from the previous article (#011) with this article's business model analysis dramatically improves Comps selection accuracy. Below we present a Comps selection checklist integrating both analyses.</span>
         </p>
 
-        <ul class="numbered-list">
-          <li>
-            <span class="num">01</span>
-            <div>
-              <span class="lang-ja"><strong>業界構造の一致</strong> — 同じ競争構造（Five Forces）、同じライフサイクル段階、同じバリューチェーン層の企業か？</span>
-              <span class="lang-en"><strong>Industry structure match</strong> — Same competitive structure (Five Forces), same life cycle stage, same value chain layer?</span>
-            </div>
-          </li>
-          <li>
-            <span class="num">02</span>
-            <div>
-              <span class="lang-ja"><strong>収益モデルの一致</strong> — 同じ収益モデル類型（サブスクリプション/取引型/プラットフォーム等）か？収益の「質」（予測可能性・反復性）は同等か？</span>
-              <span class="lang-en"><strong>Revenue model match</strong> — Same revenue model type (subscription/transactional/platform, etc.)? Is revenue "quality" (predictability, recurrence) comparable?</span>
-            </div>
-          </li>
-          <li>
-            <span class="num">03</span>
-            <div>
-              <span class="lang-ja"><strong>ユニットエコノミクスの類似性</strong> — LTV/CAC、粗利率、資本効率（ROIC）は同等の範囲か？ユニットエコノミクスが大きく異なる企業は、同じ成長率でもマルチプルが乖離して当然</span>
-              <span class="lang-en"><strong>Unit economics similarity</strong> — Are LTV/CAC, gross margin, and capital efficiency (ROIC) in a comparable range? Companies with materially different unit economics naturally warrant different multiples even at the same growth rate</span>
-            </div>
-          </li>
-          <li>
-            <span class="num">04</span>
-            <div>
-              <span class="lang-ja"><strong>Moatの同等性</strong> — 競争優位の源泉（ネットワーク効果/スイッチングコスト/無形資産/コスト優位）は類似しているか？Moatが異なればCAPが異なり、ターミナルバリューの構造が変わる</span>
-              <span class="lang-en"><strong>Moat equivalence</strong> — Are the sources of competitive advantage (network effects/switching costs/intangible assets/cost advantage) similar? Different moats mean different CAPs, changing terminal value structure</span>
-            </div>
-          </li>
-          <li>
-            <span class="num">05</span>
-            <div>
-              <span class="lang-ja"><strong>適切なKPIの選択</strong> — 上記の分析結果に基づき、そのビジネスモデルのバリュードライバーを最も直接的に反映するマルチプルとKPIを選択する</span>
-              <span class="lang-en"><strong>Appropriate KPI selection</strong> — Based on the above analysis, select multiples and KPIs that most directly reflect the value drivers of that business model</span>
-            </div>
-          </li>
-        </ul>
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th><span class="lang-ja">分類軸</span><span class="lang-en">Classification Axis</span></th>
+                <th><span class="lang-ja">チェック項目</span><span class="lang-en">Check Items</span></th>
+                <th><span class="lang-ja">不一致時の対処</span><span class="lang-en">When Mismatched</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="td-accent">01</td>
+                <td><strong><span class="lang-ja">業界構造</span><span class="lang-en">Industry Structure</span></strong></td>
+                <td><span class="lang-ja">Five Forces一致・ライフサイクル段階一致・バリューチェーン層一致（#011参照）</span><span class="lang-en">Five Forces match, life cycle stage match, value chain layer match (see #011)</span></td>
+                <td><span class="lang-ja">不一致 → Comps不適格</span><span class="lang-en">Mismatch → ineligible as Comps</span></td>
+              </tr>
+              <tr>
+                <td class="td-accent">02</td>
+                <td><strong><span class="lang-ja">収益モデル（上位）</span><span class="lang-en">Revenue Model (top-level)</span></strong></td>
+                <td><span class="lang-ja">7アーキタイプのどれに該当するか</span><span class="lang-en">Which of the 7 archetypes applies</span></td>
+                <td><span class="lang-ja">類型不一致 → Comps不適格</span><span class="lang-en">Type mismatch → ineligible</span></td>
+              </tr>
+              <tr>
+                <td class="td-accent">03</td>
+                <td><strong><span class="lang-ja">収益モデル（下位）</span><span class="lang-en">Revenue Model (sub-level)</span></strong></td>
+                <td><span class="lang-ja">契約形態（契約型/非契約型）・課金方式（定額/席数/使用量）・請求サイクル（月次/年次）</span><span class="lang-en">Contract type (contractual/non-contractual), pricing (flat/seat/usage), billing (monthly/annual)</span></td>
+                <td><span class="lang-ja">2軸以上不一致 → Tier 2に格下げ</span><span class="lang-en">2+ axes mismatch → downgrade to Tier 2</span></td>
+              </tr>
+              <tr>
+                <td class="td-accent">04</td>
+                <td><strong><span class="lang-ja">顧客セグメント</span><span class="lang-en">Customer Segment</span></strong></td>
+                <td><span class="lang-ja">エンタープライズ/ミッドマーケット/SMB/コンシューマーのどれか。GTMモーション（セールス主導/PLG）</span><span class="lang-en">Enterprise/mid-market/SMB/consumer. GTM motion (sales-led/PLG)</span></td>
+                <td><span class="lang-ja">セグメント不一致 → チャーン構造が異なるためComps精度低下</span><span class="lang-en">Segment mismatch → churn structure differs, Comps precision drops</span></td>
+              </tr>
+              <tr>
+                <td class="td-accent">05</td>
+                <td><strong><span class="lang-ja">マージン構造</span><span class="lang-en">Margin Structure</span></strong></td>
+                <td><span class="lang-ja">粗利率バンド一致、コスト集約性（R&D/S&M/COGS）の類似、Capex/Revenue帯</span><span class="lang-en">Gross margin band match, cost intensity type (R&D/S&M/COGS) similarity, Capex/Revenue band</span></td>
+                <td><span class="lang-ja">粗利率バンドが2段階以上乖離 → Comps不適格</span><span class="lang-en">Gross margin band 2+ levels apart → ineligible</span></td>
+              </tr>
+              <tr>
+                <td class="td-accent">06</td>
+                <td><strong><span class="lang-ja">成長メカニズム</span><span class="lang-en">Growth Mechanism</span></strong></td>
+                <td><span class="lang-ja">オーガニック成長率で比較（Total Growth Rateではなく）。M&A寄与率を分離</span><span class="lang-en">Compare on organic growth rate (not total). Separate M&A contribution</span></td>
+                <td><span class="lang-ja">オーガニック vs. M&A主導で成長構成が異なる場合は補正が必要</span><span class="lang-en">Different organic vs. M&A mix requires adjustment</span></td>
+              </tr>
+              <tr>
+                <td class="td-accent">07</td>
+                <td><strong><span class="lang-ja">Moat（種類＋強度）</span><span class="lang-en">Moat (Type + Strength)</span></strong></td>
+                <td><span class="lang-ja">Moat源泉の下位分類が一致するか。ネットワーク効果なら同サイド/クロスサイド/ローカル/グローバルまで判定</span><span class="lang-en">Moat source sub-classification match. For network effects, determine same-side/cross-side/local/global</span></td>
+                <td><span class="lang-ja">Moat種類不一致 → CAPの推定根拠が異なるため、ターミナルバリュー構造が変わる</span><span class="lang-en">Moat type mismatch → CAP basis differs, terminal value structure changes</span></td>
+              </tr>
+              <tr>
+                <td class="td-accent">08</td>
+                <td><strong><span class="lang-ja">KPI選択</span><span class="lang-en">KPI Selection</span></strong></td>
+                <td><span class="lang-ja">上記7軸の分析結果に基づき、ビジネスモデルのバリュードライバーを最も直接的に反映する指標を選択</span><span class="lang-en">Based on the 7 axes above, select metrics most directly reflecting the business model's value drivers</span></td>
+                <td><span class="lang-ja">汎用指標（EV/EBITDA）が最適とは限らない。業界×ビジネスモデル固有のKPIを優先</span><span class="lang-en">Universal metrics (EV/EBITDA) are not always optimal. Prioritise industry × business model-specific KPIs</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="trap-box">
+          <div class="trap-label"><span class="lang-ja">精度の保証について</span><span class="lang-en">On precision guarantees</span></div>
+          <p>
+            <span class="lang-ja">上記8軸のすべてで高い一致度を持つ企業群をピアセットとして選定できれば、Compsとしての比較可能性は実務上十分な水準に達する。ただし「完全なComps」は理論上の理想であり、現実には全軸での完全一致は稀である。重要なのは、<strong>どの軸で乖離があり、その乖離がマルチプルにどう影響するかを明示的に認識・文書化すること</strong>である。Comps選定は「正解を見つける行為」ではなく、「前提の妥当性を論証する行為」である。</span>
+            <span class="lang-en">If a peer set can be selected with high alignment across all 8 axes, comparability reaches a practically sufficient level for Comps. However, a "perfect Comp" is a theoretical ideal — in practice, complete alignment across all axes is rare. What matters is <strong>explicitly recognising and documenting which axes diverge and how that divergence affects multiples</strong>. Comps selection is not "finding the right answer" but "arguing the validity of assumptions".</span>
+          </p>
+        </div>
 
         <div class="pull-quote">
           <p>
@@ -1163,17 +1443,24 @@ LTV/CAC ≥ 3x and CAC Payback ≤ 18 months → Rule of thumb for "healthy grow
           <div class="section-label">Key Frameworks</div>
           <div class="keyfacts-grid">
             <div class="fact-card highlight">
-              <div class="fact-value">7</div>
+              <div class="fact-value">8</div>
               <div class="fact-desc">
-                <span class="lang-ja">収益モデル類型</span>
-                <span class="lang-en">Revenue Model Types</span>
+                <span class="lang-ja">Comps選定チェック軸</span>
+                <span class="lang-en">Comps Selection Axes</span>
+              </div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">7+3</div>
+              <div class="fact-desc">
+                <span class="lang-ja">収益モデル類型＋下位分類軸</span>
+                <span class="lang-en">Revenue Types + Sub-axes</span>
               </div>
             </div>
             <div class="fact-card">
               <div class="fact-value">4</div>
               <div class="fact-desc">
-                <span class="lang-ja">Moat源泉</span>
-                <span class="lang-en">Moat Sources</span>
+                <span class="lang-ja">顧客セグメント</span>
+                <span class="lang-en">Customer Segments</span>
               </div>
             </div>
             <div class="fact-card">
@@ -1181,13 +1468,6 @@ LTV/CAC ≥ 3x and CAC Payback ≤ 18 months → Rule of thumb for "healthy grow
               <div class="fact-desc">
                 <span class="lang-ja">事例研究</span>
                 <span class="lang-en">Case Studies</span>
-              </div>
-            </div>
-            <div class="fact-card">
-              <div class="fact-value">5</div>
-              <div class="fact-desc">
-                <span class="lang-ja">統合チェックリスト項目</span>
-                <span class="lang-en">Integration Checklist Items</span>
               </div>
             </div>
           </div>
@@ -1199,36 +1479,43 @@ LTV/CAC ≥ 3x and CAC Payback ≤ 18 months → Rule of thumb for "healthy grow
             <li class="highlight-item">
               <span class="hl-num">01</span>
               <span class="hl-text">
-                <span class="lang-ja">収益モデル7類型</span>
-                <span class="lang-en">7 Revenue Model Types</span>
+                <span class="lang-ja">収益モデル7類型＋下位3軸</span>
+                <span class="lang-en">7 Revenue Types + 3 Sub-axes</span>
               </span>
             </li>
             <li class="highlight-item">
               <span class="hl-num">02</span>
               <span class="hl-text">
-                <span class="lang-ja">LTV/CAC ≧ 3x ルール</span>
-                <span class="lang-en">LTV/CAC ≥ 3x Rule</span>
+                <span class="lang-ja">顧客セグメント×GTMモーション</span>
+                <span class="lang-en">Customer Segment × GTM Motion</span>
               </span>
             </li>
             <li class="highlight-item">
               <span class="hl-num">03</span>
               <span class="hl-text">
-                <span class="lang-ja">Economic Moat 4源泉</span>
-                <span class="lang-en">4 Economic Moat Sources</span>
+                <span class="lang-ja">マージン構造3分類軸</span>
+                <span class="lang-en">3 Margin Structure Axes</span>
               </span>
             </li>
             <li class="highlight-item">
               <span class="hl-num">04</span>
               <span class="hl-text">
-                <span class="lang-ja">CAP推定フレームワーク</span>
-                <span class="lang-en">CAP Estimation Framework</span>
+                <span class="lang-ja">成長メカニズム4類型</span>
+                <span class="lang-en">4 Growth Mechanism Types</span>
               </span>
             </li>
             <li class="highlight-item">
               <span class="hl-num">05</span>
               <span class="hl-text">
-                <span class="lang-ja">Comps選定5項目チェックリスト</span>
-                <span class="lang-en">5-Item Comps Selection Checklist</span>
+                <span class="lang-ja">Moat定量化フレームワーク</span>
+                <span class="lang-en">Moat Quantification Framework</span>
+              </span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">06</span>
+              <span class="hl-text">
+                <span class="lang-ja">8軸統合チェックリスト</span>
+                <span class="lang-en">8-Axis Integration Checklist</span>
               </span>
             </li>
           </ul>

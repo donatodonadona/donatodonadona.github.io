@@ -217,6 +217,43 @@ body.light .donato-nav { background: rgba(246,245,240,0.92); }
 }
 .phrase-table td:last-child { color: var(--text); font-weight: 500; }
 
+/* Vocab list */
+.vocab-filters { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 1.5rem; align-items: center; }
+.vocab-filter-group { display: flex; flex-wrap: wrap; gap: 6px; }
+.vf-btn {
+  font-family: 'JetBrains Mono', monospace; font-size: 10px;
+  letter-spacing: 0.08em; padding: 4px 10px; border-radius: 20px;
+  border: 1px solid var(--border); background: transparent;
+  color: var(--text2); cursor: pointer; transition: all 0.2s;
+}
+.vf-btn:hover { border-color: var(--accent); color: var(--text); }
+.vf-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.vf-btn[data-vf-level="Beyond"].active { background: var(--accent2); color: #0A0B10; border-color: var(--accent2); }
+.vocab-count { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text2); margin-bottom: 1rem; }
+.vocab-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+.vocab-table th {
+  font-family: 'JetBrains Mono', monospace; font-size: 10px;
+  letter-spacing: 0.08em; padding: 10px 12px;
+  background: var(--bg3); border-bottom: 1px solid var(--border);
+  color: var(--text2); text-align: left;
+}
+.vocab-table td { padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.vocab-table tr:hover td { background: var(--bg3); }
+.vt-word { font-weight: 600; color: var(--text); }
+.vt-ja { font-family: 'Noto Serif JP', serif; font-size: 0.8rem; font-weight: 300; color: var(--text2); }
+.vt-note { font-size: 0.78rem; color: var(--text3); font-style: italic; }
+.lbadge {
+  font-family: 'JetBrains Mono', monospace; font-size: 9px;
+  letter-spacing: 0.08em; padding: 2px 6px; border-radius: 3px; white-space: nowrap;
+}
+.lbadge-cpe { background: rgba(26,110,176,0.15); color: var(--accent); border: 1px solid rgba(26,110,176,0.3); }
+.lbadge-beyond { background: rgba(245,200,0,0.12); color: var(--accent2); border: 1px solid rgba(245,200,0,0.3); }
+.cbadge {
+  font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.06em;
+  padding: 1px 5px; border-radius: 2px;
+  background: var(--bg3); color: var(--text3); border: 1px solid var(--border);
+}
+
 /* Grammar notes */
 .grammar-list { list-style: none; }
 .grammar-item {
@@ -334,6 +371,9 @@ footer {
   </button>
   <button class="tab-btn" onclick="switchTab('grammar')">
     <span data-en>Grammar Notes</span><span data-ja>文法ノート</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('vocab')">
+    <span data-en>Vocab List</span><span data-ja>単語リスト</span>
   </button>
   <button class="tab-btn" onclick="switchTab('strategy')">
     <span data-en>Exam Strategy</span><span data-ja>試験対策</span>
@@ -504,6 +544,45 @@ footer {
       <span data-ja>CPEレベルの正確さに必要な落とし穴と微妙な区別。</span>
     </p>
     <ul class="grammar-list" id="grammar-list"></ul>
+  </div>
+
+  <!-- ==================== VOCAB LIST ==================== -->
+  <div id="tab-vocab" class="tab-panel">
+    <h2 class="section-h"><span data-en>Vocabulary List</span><span data-ja>単語リスト</span></h2>
+    <p class="section-sub">
+      <span data-en>CPE and Beyond CPE vocabulary organised by level and category. Filter to focus your study.</span>
+      <span data-ja>CPE・Beyond CPEレベルの語彙をレベル・カテゴリ別に整理。フィルターで学習範囲を絞る。</span>
+    </p>
+    <div class="vocab-filters">
+      <div class="vocab-filter-group" id="vf-level">
+        <button class="vf-btn active" data-vf-level="all" onclick="filterVocab()">All</button>
+        <button class="vf-btn" data-vf-level="CPE" onclick="filterVocab()">CPE</button>
+        <button class="vf-btn" data-vf-level="Beyond" onclick="filterVocab()">Beyond CPE</button>
+      </div>
+      <div style="width:1px;background:var(--border);margin:0 2px;"></div>
+      <div class="vocab-filter-group" id="vf-cat">
+        <button class="vf-btn active" data-vf-cat="all" onclick="filterVocab()"><span data-en>All</span><span data-ja>全て</span></button>
+        <button class="vf-btn" data-vf-cat="V" onclick="filterVocab()"><span data-en>Verb</span><span data-ja>動詞</span></button>
+        <button class="vf-btn" data-vf-cat="Adj" onclick="filterVocab()"><span data-en>Adj</span><span data-ja>形容詞</span></button>
+        <button class="vf-btn" data-vf-cat="N" onclick="filterVocab()"><span data-en>Noun</span><span data-ja>名詞</span></button>
+        <button class="vf-btn" data-vf-cat="Col" onclick="filterVocab()"><span data-en>Colloc</span><span data-ja>コロケ</span></button>
+        <button class="vf-btn" data-vf-cat="Ph" onclick="filterVocab()"><span data-en>Phrase</span><span data-ja>フレーズ</span></button>
+        <button class="vf-btn" data-vf-cat="Ac" onclick="filterVocab()"><span data-en>Academic</span><span data-ja>学術語</span></button>
+        <button class="vf-btn" data-vf-cat="Pol" onclick="filterVocab()"><span data-en>Policy</span><span data-ja>ポリシー</span></button>
+      </div>
+    </div>
+    <div class="vocab-count" id="vocab-count"></div>
+    <table class="vocab-table">
+      <thead>
+        <tr data-en>
+          <th>Word / Expression</th><th>Level</th><th>Category</th><th>Meaning</th><th>Usage note</th>
+        </tr>
+        <tr data-ja>
+          <th>単語・表現</th><th>レベル</th><th>カテゴリ</th><th>意味</th><th>使用例・コロケーション</th>
+        </tr>
+      </thead>
+      <tbody id="vocab-tbody"></tbody>
+    </table>
   </div>
 
   <!-- ==================== EXAM STRATEGY ==================== -->
@@ -716,6 +795,116 @@ const GRAMMAR = [
   "<code>plain sailing</code> = 順風満帆（UK spelling。US: <code>plane sailing</code>）"
 ];
 
+const VOCAB = [
+  // [word, ja, level, cat, note]
+  // level: "CPE" | "Beyond"   cat: "V"|"Adj"|"N"|"Col"|"Ph"|"Ac"|"Pol"
+
+  // ─── CPE · Verbs ───
+  ["elucidate","明確にする・解明する","CPE","V","~ a point / ~ the mechanism"],
+  ["substantiate","裏付ける・実証する","CPE","V","~ a claim / ~ the argument"],
+  ["corroborate","確証する・裏付ける","CPE","V","~ evidence / ~ a statement"],
+  ["delineate","明確に描く・輪郭を示す","CPE","V","~ the scope / ~ boundaries"],
+  ["exacerbate","悪化させる","CPE","V","~ tensions / ~ the problem"],
+  ["ameliorate","改善する・和らげる","CPE","V","~ conditions / ~ the situation"],
+  ["underpin","根拠となる・支える","CPE","V","~ an argument / ~ the theory"],
+  ["engender","生む・引き起こす","CPE","V","~ trust / ~ resentment"],
+  ["impede","妨げる・阻害する","CPE","V","~ progress / ~ development"],
+  ["proliferate","急増する・広まる","CPE","V","technology ~s / ~ rapidly"],
+  ["mitigate","軽減する・緩和する","CPE","V","~ risks / ~ the impact"],
+  ["precipitate","引き起こす・加速させる","CPE","V","~ a crisis / ~ change"],
+  ["galvanise","活性化させる・奮起させる","CPE","V","~ support / ~ public opinion"],
+  ["circumvent","回避する・迂回する","CPE","V","~ regulations / ~ the issue"],
+  ["permeate","浸透する・行き渡る","CPE","V","~ society / ~ the culture"],
+
+  // ─── CPE · Adjectives ───
+  ["ubiquitous","至る所にある・遍在する","CPE","Adj","~ technology / become ~"],
+  ["ephemeral","一時的な・束の間の","CPE","Adj","~ trend / ~ nature of"],
+  ["tenuous","根拠が薄い・希薄な","CPE","Adj","~ connection / ~ link"],
+  ["ostensible","表向きの・見せかけの","CPE","Adj","~ reason / ~ purpose"],
+  ["nascent","生まれつつある・黎明期の","CPE","Adj","~ industry / ~ democracy"],
+  ["contentious","論争を招く・異論のある","CPE","Adj","~ issue / ~ claim"],
+  ["unequivocal","明確な・明白な","CPE","Adj","~ support / ~ statement"],
+  ["palpable","明白な・肌で感じられる","CPE","Adj","~ tension / ~ relief"],
+  ["untenable","支持できない・維持できない","CPE","Adj","~ position / ~ argument"],
+  ["commensurate","釣り合った・相応の","CPE","Adj","~ with effort / ~ salary"],
+  ["prescient","先見の明がある","CPE","Adj","~ observation / ~ analysis"],
+  ["convoluted","複雑に入り組んだ","CPE","Adj","~ argument / ~ explanation"],
+
+  // ─── CPE · Nouns ───
+  ["predilection","嗜好・好み","CPE","N","a ~ for + noun"],
+  ["trajectory","軌跡・方向性","CPE","N","growth ~ / career ~"],
+  ["ramification","影響・波及効果","CPE","N","the ~s of the decision"],
+  ["conjecture","推測・憶測","CPE","N","mere ~ / ~ and speculation"],
+  ["discrepancy","不一致・相違","CPE","N","a ~ between X and Y"],
+  ["impediment","障害・妨げ","CPE","N","an ~ to progress"],
+  ["prerogative","特権","CPE","N","management ~ / sole ~"],
+  ["scrutiny","精査・監視","CPE","N","come under ~ / withstand ~"],
+  ["propensity","傾向・性向","CPE","N","a ~ to V / ~ for risk"],
+  ["ambivalence","両価性・曖昧な態度","CPE","N","~ towards change"],
+  ["proliferation","急増・拡散","CPE","N","~ of options / nuclear ~"],
+  ["equanimity","平静さ・落ち着き","CPE","N","with great ~ / maintain ~"],
+  ["sagacity","賢明さ・洞察力","CPE","N","remarkable ~ / a man of ~"],
+  ["exigency","緊急の必要性","CPE","N","in times of ~ / the exigencies of"],
+
+  // ─── CPE · Collocations ───
+  ["come under scrutiny","精査される・吟味される","CPE","Col","the plan came under ~"],
+  ["give rise to","引き起こす・生じさせる","CPE","Col","~ concerns / ~ questions"],
+  ["lend credence to","信憑性を与える","CPE","Col","~ a claim / ~ the theory"],
+  ["call into question","疑問視する・問い直す","CPE","Col","~ the assumption / ~ the findings"],
+  ["run counter to","～に反する・相容れない","CPE","Col","~ expectations / ~ logic"],
+  ["fall short of","～に達しない・及ばない","CPE","Col","~ the target / ~ expectations"],
+  ["strike a balance","バランスを取る・折り合いをつける","CPE","Col","~ between X and Y"],
+  ["warrant attention","注目に値する","CPE","Col","this issue ~s serious attention"],
+  ["bear witness to","証言する・証明する","CPE","Col","~ the scale of change"],
+  ["defy easy categorisation","容易に分類できない","CPE","Col","the phenomenon defies easy ~"],
+
+  // ─── Beyond CPE · Verbs ───
+  ["presuppose","前提とする・予め仮定する","Beyond","V","this ~s that... / ~ agreement"],
+  ["conflate","混同する・混ぜ合わせる","Beyond","V","~ two distinct issues"],
+  ["obfuscate","曖昧にする・難解にする","Beyond","V","~ the truth / ~ the issue"],
+  ["problematise","問題化する・批判的に問い直す","Beyond","V","~ the assumption"],
+  ["foreground","前景化する・強調する","Beyond","V","~ the key tension"],
+  ["reify","実体化する・具体化する","Beyond","V","~ an abstract concept"],
+  ["interrogate","批判的に検討する","Beyond","V","~ the data / ~ assumptions"],
+  ["operationalise","操作的に定義する・実用化する","Beyond","V","~ the concept / ~ the theory"],
+
+  // ─── Beyond CPE · Academic Terms ───
+  ["heuristic","発見的手法・経験則","Beyond","Ac","a useful ~ / ~ approach"],
+  ["hegemony","覇権・支配的な影響力","Beyond","Ac","cultural ~ / ~ of capital"],
+  ["zeitgeist","時代精神","Beyond","Ac","capture the ~ / reflect the ~"],
+  ["normative","規範的な","Beyond","Ac","~ framework / ~ assumption"],
+  ["ontological","存在論的な","Beyond","Ac","~ question / ~ assumption"],
+  ["epistemological","認識論的な","Beyond","Ac","~ challenge / ~ stance"],
+  ["dialectic","弁証法・相互作用","Beyond","Ac","~ tension / ~ relationship"],
+  ["praxis","実践・実行","Beyond","Ac","theory and ~ / informed by ~"],
+  ["teleological","目的論的な","Beyond","Ac","~ argument / ~ view"],
+  ["positivist","実証主義的な","Beyond","Ac","~ approach / ~ framework"],
+
+  // ─── Beyond CPE · Phrases / Structures ───
+  ["insofar as","～の限りにおいて","Beyond","Ph","~ this is true, we must..."],
+  ["predicated on","～を前提として・基づいて","Beyond","Ph","a view ~ the assumption that"],
+  ["notwithstanding","～にもかかわらず","Beyond","Ph","~ the difficulties, progress was made"],
+  ["contingent on","～次第で・～に依存する","Beyond","Ph","success is ~ cooperation"],
+  ["by no means","決して～ではない","Beyond","Ph","~ a simple problem"],
+  ["far from","～どころか・決して～でない","Beyond","Ph","~ resolved / ~ ideal"],
+  ["by virtue of","～の力で・おかげで","Beyond","Ph","~ its position / ~ experience"],
+  ["in the wake of","～の後に・を受けて","Beyond","Ph","~ the financial crisis"],
+  ["at the expense of","～を犠牲にして","Beyond","Ph","growth at the ~ of equity"],
+  ["on the premise that","～という前提で","Beyond","Ph","proceed ~ this is true"],
+  ["to the extent that","～という点では","Beyond","Ph","~ this matters, we should..."],
+  ["in the absence of","～がない状況では","Beyond","Ph","~ clear evidence, caution is warranted"],
+
+  // ─── Beyond CPE · Policy / Register ───
+  ["policy landscape","政策の全体像・政策環境","Beyond","Pol","the current ~ / navigate the ~"],
+  ["systemic risk","システミックリスク・構造的リスク","Beyond","Pol","pose ~ / address ~"],
+  ["structural reform","構造改革","Beyond","Pol","~ is overdue / ~ agenda"],
+  ["evidence-based","エビデンスに基づく","Beyond","Pol","~ policy / ~ decision-making"],
+  ["cross-cutting","横断的な・複数分野にまたがる","Beyond","Pol","~ issue / ~ agenda"],
+  ["implementation gap","実施のギャップ・理念と実践の乖離","Beyond","Pol","address the ~"],
+  ["stakeholder engagement","ステークホルダー参画","Beyond","Pol","meaningful ~ / improve ~"],
+  ["paradigm shift","パラダイムシフト・根本的な変化","Beyond","Pol","represent a ~ / trigger a ~"]
+];
+
 // ==================== RENDER ====================
 function renderPhrases() {
   const grids = {
@@ -742,6 +931,46 @@ function renderGrammar() {
   list.innerHTML = GRAMMAR.map(g =>
     `<li class="grammar-item">${g}</li>`
   ).join('');
+}
+
+const CAT_LABELS = { V:"動詞", Adj:"形容詞", N:"名詞", Col:"コロケーション", Ph:"フレーズ", Ac:"学術語", Pol:"ポリシー" };
+const CAT_EN = { V:"Verb", Adj:"Adj", N:"Noun", Col:"Colloc", Ph:"Phrase", Ac:"Academic", Pol:"Policy" };
+
+function renderVocab() {
+  const tbody = document.getElementById('vocab-tbody');
+  tbody.innerHTML = VOCAB.map(([w, ja, lv, cat, note]) => {
+    const lvClass = lv === 'CPE' ? 'lbadge-cpe' : 'lbadge-beyond';
+    const catLabelJa = CAT_LABELS[cat] || cat;
+    const catLabelEn = CAT_EN[cat] || cat;
+    return `<tr data-lv="${lv}" data-cat="${cat}">
+      <td class="vt-word">${w}</td>
+      <td><span class="lbadge ${lvClass}">${lv === 'CPE' ? 'CPE' : 'Beyond'}</span></td>
+      <td><span class="cbadge"><span data-en>${catLabelEn}</span><span data-ja>${catLabelJa}</span></span></td>
+      <td class="vt-ja">${ja}</td>
+      <td class="vt-note">${note}</td>
+    </tr>`;
+  }).join('');
+  setLang(_lang);
+  document.getElementById('vocab-count').textContent = VOCAB.length + ' items';
+}
+
+function filterVocab() {
+  const clickedBtn = event.currentTarget;
+  const isLevel = clickedBtn.hasAttribute('data-vf-level');
+  const groupId = isLevel ? 'vf-level' : 'vf-cat';
+  document.querySelectorAll('#' + groupId + ' .vf-btn').forEach(b => b.classList.remove('active'));
+  clickedBtn.classList.add('active');
+  const activeLv = document.querySelector('#vf-level .vf-btn.active').dataset.vfLevel;
+  const activeCat = document.querySelector('#vf-cat .vf-btn.active').dataset.vfCat;
+  let count = 0;
+  document.querySelectorAll('#vocab-tbody tr').forEach(row => {
+    const lvMatch = activeLv === 'all' || row.dataset.lv === activeLv;
+    const catMatch = activeCat === 'all' || row.dataset.cat === activeCat;
+    const show = lvMatch && catMatch;
+    row.style.display = show ? '' : 'none';
+    if (show) count++;
+  });
+  document.getElementById('vocab-count').textContent = count + ' items';
 }
 
 function filterPhrases(q) {
@@ -801,6 +1030,7 @@ window.addEventListener('scroll', () => {
 document.addEventListener('DOMContentLoaded', () => {
   renderPhrases();
   renderGrammar();
+  renderVocab();
   if (_theme === 'light') {
     document.getElementById('theme-btn').textContent = '☾';
   }

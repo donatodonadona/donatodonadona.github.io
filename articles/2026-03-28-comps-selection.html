@@ -1,0 +1,1727 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Comparable Company Analysisにおける類似企業選定の理論と実務。比較可能性の5次元、標準的な5ステップ選定プロセス、データソース、完全なcomparableが存在しない場合の対処法、実践例4ケースを徹底解説。Valuation Theory Lab #010。">
+  <title>Comps選定の理論と実務 — 類似企業をどう見極めるか | Valuation Theory Lab #010 | donato</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+JP:wght@300;400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../brand.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:           #F8F7F4;
+      --bg-code:      #EEECEA;
+      --bg-quote:     #EEECEA;
+      --bg-highlight: #EBF3FB;
+      --bg-subtle:    #F0EFEB;
+      --bg-card:      #F0EFEB;
+      --bg-header:    #F8F7F4;
+      --text-primary: #111320;
+      --text-body:    #2A2C3E;
+      --text-muted:   #565C70;
+      --text-light:   #888EA0;
+      --accent:       #1A6EB0;
+      --accent-warm:  #D4A010;
+      --border:       #D4D2CC;
+      --border-quote: #B8B6B0;
+      --border-light: #D4D2CC;
+      --tag-bg:       #E4EFF8;
+      --tag-text:     #1A6EB0;
+      --table-stripe: #F0EFEB;
+    }
+
+    /* ===== PROGRESS BAR ===== */
+    #progress-bar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      width: 0%;
+      background: var(--accent);
+      z-index: 300;
+      transition: width 0.1s linear;
+    }
+
+    body {
+      font-family: 'Noto Serif JP', Georgia, serif;
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--text-primary);
+      background: var(--bg);
+    }
+
+    /* ===== SITE HEADER ===== */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg-header);
+      border-bottom: 2px solid var(--accent);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .site-header-left { display: flex; align-items: center; gap: 12px; }
+    .wordmark {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: lowercase;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+    .wordmark span { color: var(--accent-warm); }
+    .header-sep { color: var(--border-quote); font-size: 13px; }
+    .header-media {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+    }
+    .site-header-right { display: flex; align-items: center; gap: 12px; }
+    .header-back-link {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .header-back-link:hover { color: var(--accent); }
+    .lang-toggle-bar {
+      display: flex;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .art-lang-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      padding: 3px 10px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .art-lang-btn.active { background: #F5C800; color: #111320; }
+    #theme-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      padding: 3px 9px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.15s;
+    }
+    #theme-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .header-date {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-light);
+      letter-spacing: 0.08em;
+    }
+
+    /* ===== STICKY INFO BAR ===== */
+    #sticky-bar {
+      position: sticky;
+      top: 44px;
+      z-index: 200;
+      background: var(--bg-subtle);
+      border-bottom: 1px solid var(--border-light);
+      padding: 7px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .sbar-cat {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+    }
+    .sbar-sep { color: var(--border-quote); font-size: 11px; }
+    .sbar-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+    .sbar-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      padding: 2px 8px;
+    }
+
+    /* ===== LAYOUT ===== */
+    .article-container { max-width: 1240px; margin: 0 auto; padding: 0 20px; }
+    .article-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 24px;
+    }
+    .article-body { grid-column: 2 / 10; max-width: 68ch; }
+    .article-sidebar {
+      grid-column: 10 / 13;
+      position: sticky;
+      top: 78px;
+      align-self: start;
+      max-height: calc(100vh - 90px);
+      overflow-y: auto;
+    }
+    .article-sidebar::-webkit-scrollbar { width: 4px; }
+    .article-sidebar::-webkit-scrollbar-track { background: transparent; }
+    .article-sidebar::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 2px; }
+
+    /* ===== TYPOGRAPHY ===== */
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+    }
+    .article-headline {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(2rem, 4vw, 2.6rem);
+      font-weight: 600;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+    .article-standfirst {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      font-weight: 400;
+    }
+    .byline {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    h2 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.45rem;
+      font-weight: 600;
+      line-height: 1.25;
+      color: var(--text-primary);
+      margin: 2em 0 0.75em;
+      border-top: 1px solid var(--border);
+      padding-top: 1em;
+    }
+    h3 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin: 1.75em 0 0.5em;
+    }
+    .article-body p { margin-bottom: 1.4em; font-size: 0.97rem; line-height: 1.8; }
+    .article-body ul, .article-body ol { margin: 0 0 1.4em 1.4em; }
+    .article-body li { margin-bottom: 0.4em; font-size: 0.95rem; line-height: 1.7; }
+    strong { color: var(--text-primary); font-weight: 600; }
+
+    /* ===== EXEC SUMMARY ===== */
+    .exec-summary {
+      background: var(--bg-highlight);
+      border: 1px solid var(--border-light);
+      border-left: 4px solid var(--accent);
+      padding: 24px;
+      margin: 0 0 2.5em;
+    }
+    .exec-block { margin-bottom: 20px; }
+    .exec-block:last-child { margin-bottom: 0; }
+    .exec-block + .exec-block { padding-top: 18px; border-top: 1px solid var(--border-light); }
+    .exec-tldr {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.02rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      line-height: 1.55;
+      margin-top: 8px;
+    }
+    .issues-list, .implications-list {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .issue-item { display: flex; gap: 10px; align-items: baseline; }
+    .issue-q {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--accent);
+      flex-shrink: 0;
+      min-width: 20px;
+    }
+    .issue-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: var(--text-body);
+      line-height: 1.55;
+    }
+    .implication-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: var(--text-body);
+      line-height: 1.55;
+      padding-left: 14px;
+      border-left: 2px solid var(--accent);
+    }
+
+    /* ===== FORMULA / CALC ===== */
+    .formula {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.93em;
+      background: var(--bg-code);
+      border-left: 3px solid var(--accent);
+      padding: 14px 20px;
+      margin: 20px 0;
+      color: var(--text-primary);
+      overflow-x: auto;
+      line-height: 1.7;
+    }
+    .calc-block {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      padding: 20px 24px;
+      margin: 24px 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+      line-height: 1.8;
+    }
+    .calc-block .calc-row { display: flex; justify-content: space-between; max-width: 560px; }
+    .calc-block .calc-total {
+      border-top: 1px solid var(--border);
+      margin-top: 6px;
+      padding-top: 6px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .calc-block .calc-highlight { color: var(--accent); font-weight: 700; }
+    .calc-block .calc-warn { color: var(--accent-warm); font-weight: 700; }
+
+    /* ===== INSIGHT / TRAP BOX ===== */
+    .insight-box {
+      background: var(--bg-highlight);
+      border-left: 4px solid var(--accent);
+      padding: 18px 22px;
+      margin: 28px 0;
+    }
+    .insight-box p {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: var(--text-primary);
+    }
+    .insight-box strong { color: var(--accent); }
+    .trap-box {
+      background: #FEF9EC;
+      border-left: 4px solid var(--accent-warm);
+      padding: 18px 22px;
+      margin: 24px 0;
+    }
+    .trap-box p {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      line-height: 1.65;
+      color: var(--text-body);
+    }
+    .trap-box .trap-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      color: var(--accent-warm);
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+
+    /* ===== DATA TABLE ===== */
+    .data-table-wrap { overflow-x: auto; margin: 1.5em 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      background: var(--bg-subtle);
+      padding: 8px 12px;
+      text-align: left;
+      border-bottom: 2px solid var(--border);
+    }
+    td {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border-light);
+      color: var(--text-body);
+      font-family: 'Inter', sans-serif;
+    }
+    tr:nth-child(even) td { background: var(--table-stripe); }
+    .td-accent { color: var(--accent); font-weight: 600; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
+    .td-warn   { color: var(--accent-warm); font-weight: 600; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
+    .td-dim    { color: var(--text-muted); font-style: italic; }
+
+    /* ===== PULL QUOTE ===== */
+    .pull-quote {
+      border-left: 4px solid var(--accent);
+      margin: 2em 0;
+      padding: 1em 20px;
+      background: var(--bg-card);
+    }
+    .pull-quote p {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.2rem;
+      font-style: italic;
+      color: var(--text-primary);
+      line-height: 1.5;
+      margin-bottom: 6px !important;
+    }
+    .pull-quote footer {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* ===== NUMBERED LIST ===== */
+    .numbered-list { list-style: none; padding: 0; margin: 20px 0; }
+    .numbered-list li {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 16px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.92rem;
+      line-height: 1.65;
+      color: var(--text-body);
+    }
+    .numbered-list li .num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: white;
+      background: var(--accent);
+      min-width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    /* ===== CASE STUDY BOX ===== */
+    .case-box {
+      border: 1px solid var(--border);
+      padding: 24px 28px;
+      margin: 32px 0;
+      background: var(--bg-card);
+    }
+    .case-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+    .case-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+    }
+    .case-body {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.88rem;
+      color: var(--text-body);
+      line-height: 1.7;
+    }
+    .case-body p { margin-bottom: 0.9em; }
+    .case-body p:last-child { margin-bottom: 0; }
+    .case-verdict {
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border-light);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--accent);
+    }
+
+    /* ===== DIMENSION GRID ===== */
+    .dim-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 20px 0;
+    }
+    .dim-card {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      padding: 14px 16px;
+    }
+    .dim-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      margin-bottom: 5px;
+    }
+    .dim-title {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.83rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+    .dim-desc {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.76rem;
+      color: var(--text-body);
+      line-height: 1.5;
+    }
+
+    /* ===== SECTION SEP ===== */
+    .section-sep {
+      text-align: center;
+      color: var(--text-light);
+      font-size: 1.2rem;
+      letter-spacing: 0.5em;
+      margin: 48px 0;
+      user-select: none;
+    }
+
+    /* ===== SOURCE LIST ===== */
+    .source-list { list-style: none; padding: 0; }
+    .source-list li { margin-bottom: 6px; }
+    .source-list a {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--accent);
+      text-decoration: none;
+      line-height: 1.5;
+    }
+    .source-list a:hover { text-decoration: underline; }
+    .source-tag { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--text-muted); margin-left: 4px; }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .keyfacts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+    .fact-card { background: var(--bg-highlight); padding: 10px 8px; }
+    .fact-card.highlight { background: #FDF8EC; border: 1px solid #E8D88A; }
+    .fact-value { font-family: 'JetBrains Mono', monospace; font-size: 1rem; font-weight: 500; color: var(--accent); line-height: 1.2; }
+    .fact-card.highlight .fact-value { color: #8A6A00; }
+    .fact-desc { font-family: 'Inter', sans-serif; font-size: 0.64rem; color: var(--text-muted); margin-top: 3px; line-height: 1.35; }
+    .fact-card.highlight .fact-desc { color: #7A6020; }
+    .highlights-list { list-style: none; padding: 0; margin-top: 12px; }
+    .highlight-item { padding: 9px 0; border-bottom: 1px solid var(--border-light); display: flex; gap: 10px; align-items: baseline; }
+    .highlight-item:last-child { border-bottom: none; }
+    .hl-num { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--accent); flex-shrink: 0; min-width: 18px; }
+    .hl-text { font-family: 'Inter', sans-serif; font-size: 0.76rem; color: var(--text-body); line-height: 1.45; }
+
+    /* ===== LANG TOGGLE ===== */
+    .lang-en { display: none; }
+
+    /* ===== FOOTER ===== */
+    .site-footer {
+      border-top: 1px solid var(--border-light);
+      margin-top: 4em;
+      padding: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* ===== PRINT ===== */
+    @media print {
+      body { background: white; font-size: 11pt; }
+      .site-header, #sticky-bar, #progress-bar { display: none; }
+      .article-sidebar { position: static; max-height: none; overflow: visible; }
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+    @page { size: A4; margin: 20mm 15mm; }
+
+    /* ===== MOBILE ===== */
+    @media (max-width: 900px) {
+      .article-body { grid-column: 1 / -1; }
+      .article-sidebar { position: static; max-height: none; overflow: visible; grid-column: 1 / -1; }
+      .article-grid { display: block; }
+      #sticky-bar { flex-wrap: wrap; gap: 6px; }
+      .dim-grid { grid-template-columns: 1fr; }
+    }
+
+    body.dark {
+      --bg:           #0D1117;
+      --bg-code:      #161B22;
+      --bg-quote:     #161B22;
+      --bg-highlight: #0E1A2B;
+      --bg-subtle:    #161B22;
+      --bg-card:      #161B22;
+      --bg-header:    #0D1117;
+      --text-primary: #E4E2DC;
+      --text-body:    #C4C2BC;
+      --text-muted:   #8B93A8;
+      --text-light:   #575E70;
+      --accent:       #3A8FD0;
+      --accent-warm:  #F5C800;
+      --border:       #21253A;
+      --border-quote: #2A2D3E;
+      --border-light: #21253A;
+      --tag-bg:       #0E1A2B;
+      --tag-text:     #3A8FD0;
+      --table-stripe: #161B22;
+    }
+    body.dark .trap-box { background: #1C1800; }
+    body.dark .fact-card.highlight { background: #1A1600; border-color: #3A2D00; }
+    body.dark .fact-card.highlight .fact-value { color: #C4900E; }
+    body.dark .fact-card.highlight .fact-desc { color: #A07828; }
+    body.dark .case-box { background: #12141C; }
+  </style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<!-- 1. サイトヘッダー -->
+<header class="site-header">
+  <div class="site-header-left">
+    <a class="wordmark" href="../index.html">dona<span>to</span></a>
+    <span class="header-sep">—</span>
+    <a class="header-back-link" href="./index.html"><span class="lang-ja">記事一覧</span><span class="lang-en">Articles</span></a>
+    <span class="header-sep">—</span>
+    <span class="header-media">Valuation Theory Lab</span>
+  </div>
+  <div class="site-header-right">
+    <div class="lang-toggle-bar">
+      <button class="art-lang-btn active" data-lang="ja" onclick="setLang('ja')">JP</button>
+      <button class="art-lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+    </div>
+    <button id="theme-btn" onclick="toggleTheme()" title="ダーク/ライト切替">☀</button>
+    <time class="header-date">2026-03-28</time>
+  </div>
+</header>
+
+<!-- 2. スティッキー情報バー -->
+<div id="sticky-bar">
+  <span class="sbar-cat">VALUATION THEORY LAB</span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-text"><span class="lang-ja">#010 · Comps選定</span><span class="lang-en">#010 · Comparable Selection</span></span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-text">2026-03-28</span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-badge" id="reading-time-badge"><span class="lang-ja">計算中</span><span class="lang-en">...</span></span>
+</div>
+
+<main style="padding: 0 0 3em;">
+  <div class="article-container">
+    <div class="article-grid">
+
+      <!-- 3. 記事本文 -->
+      <article class="article-body">
+
+        <!-- 記事ヘッダー -->
+        <div style="padding: 36px 0 24px;">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+            <div class="section-label">Valuation Theory Lab &nbsp;#010</div>
+            <span class="sbar-badge" id="reading-time-badge2"><span class="lang-ja">計算中</span><span class="lang-en">...</span></span>
+          </div>
+          <h1 class="article-headline">
+            <span class="lang-ja">Comps選定の理論と実務 — 類似企業をどう見極めるか</span>
+            <span class="lang-en">Comparable Company Selection — Theory, Framework, and Practice</span>
+          </h1>
+          <p class="article-standfirst">
+            <span class="lang-ja">Comparable Company Analysisの精度は、マルチプルの計算よりも類似企業の選定で9割が決まる。「比較可能性」の理論的定義から標準的な5ステップ選定プロセス、使うべきデータソース、完全なcomparableが存在しない場合の実践的フレームワークまで、初回経験者からBig 4 FAS・IB・PEのDirector/Partnerまでが使える水準で整理する。</span>
+            <span class="lang-en">The quality of a Comparable Company Analysis is determined nine-tenths by peer selection, not by the multiples calculation itself. This article covers the theoretical definition of comparability, a standard five-step selection process, key data sources, and practical frameworks for when no perfect comparable exists — at a level useful from first-time practitioners to Big 4 FAS, IB, and PE Directors and Partners.</span>
+          </p>
+          <div style="display:flex; gap:16px; align-items:center; border-top:1px solid var(--border-light); border-bottom:1px solid var(--border-light); padding:10px 0;">
+            <span class="byline">By <strong>Donato Valuation Notes</strong></span>
+            <span style="color:var(--border);">|</span>
+            <time class="byline" datetime="2026-03-28"><span class="lang-ja">2026年3月28日</span><span class="lang-en">28 March 2026</span></time>
+            <span style="color:var(--border);">|</span>
+            <span class="byline"><span class="lang-ja">Relative Valuation · Comps · ピアセット選定</span><span class="lang-en">Relative Valuation · Comps · Peer Set Selection</span></span>
+          </div>
+        </div>
+
+        <!-- 構造化エグゼクティブサマリー -->
+        <section class="exec-summary">
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">概要</span><span class="lang-en">Summary</span></div>
+            <p class="exec-tldr">
+              <span class="lang-ja">Comparable Company Analysis（CCA）における類似企業選定は、「似た企業を探す」という単純作業ではない。比較可能性は多次元的な概念であり、業種コードで機械的に絞り込むことと、本質的なビジネスリスク・成長プロファイル・資本構成の類似性を追求することの間には大きな隔たりがある。本稿は理論的定義から実践的選定フレームワーク、データソース、そして「完璧なcomparableが存在しない」現実への対処法を体系的に論じる。</span>
+              <span class="lang-en">Comparable Company Analysis (CCA) peer selection is not a simple exercise of finding similar companies. Comparability is a multi-dimensional concept, and there is a significant gap between mechanically filtering by industry codes and genuinely pursuing similarity in business risk, growth profile, and capital structure. This article systematically addresses the theoretical definition, practical selection frameworks, data sources, and approaches for the reality where no perfect comparable exists.</span>
+            </p>
+          </div>
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">本稿の論点</span><span class="lang-en">Key Questions</span></div>
+            <ul class="issues-list">
+              <li class="issue-item">
+                <span class="issue-q">Q1</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>比較可能性とは何か</strong> — Damodaranの理論的定義と、実務における翻訳の難しさ</span>
+                  <span class="lang-en"><strong>What is comparability?</strong> — Damodaran's theoretical definition and the challenge of practical translation</span>
+                </span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">Q2</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>標準的な選定プロセス</strong> — ユニバース構築から最終ピアセット決定までの5ステップと判断基準</span>
+                  <span class="lang-en"><strong>Standard selection process</strong> — Five steps from universe construction to final peer set determination and decision criteria</span>
+                </span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">Q3</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>完全なcomparableが存在しない場合</strong> — ニッチ企業・非上場・コングロマリット・プレIPO等への対処フレームワーク</span>
+                  <span class="lang-en"><strong>When perfect comps don't exist</strong> — Frameworks for niche companies, unlisted targets, conglomerates, and pre-IPO situations</span>
+                </span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">Q4</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>実践ケース</strong> — 日本の中堅製造業、B2B SaaS、複合事業会社、成熟業界の新興プレイヤー</span>
+                  <span class="lang-en"><strong>Practical cases</strong> — Japanese mid-cap manufacturer, B2B SaaS, conglomerate, and new entrant in a mature industry</span>
+                </span>
+              </li>
+            </ul>
+          </div>
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">Valuation実務家への含意</span><span class="lang-en">Implications for Valuation Practitioners</span></div>
+            <ul class="implications-list">
+              <li class="implication-item">
+                <span class="lang-ja"><strong>ピアセットは仮説である</strong> — 選定理由を文書化し、セット変更に対する感応度分析を必ず実施する</span>
+                <span class="lang-en"><strong>The peer set is a hypothesis</strong> — Document selection rationale and always conduct sensitivity analysis to peer set changes</span>
+              </li>
+              <li class="implication-item">
+                <span class="lang-ja"><strong>業種コードは出発点にすぎない</strong> — SIC/GICSは初期スクリーンであり、最終判断は事業実態の深読みによる</span>
+                <span class="lang-en"><strong>Industry codes are a starting point only</strong> — SIC/GICS is an initial screen; final judgement requires deep reading of business substance</span>
+              </li>
+              <li class="implication-item">
+                <span class="lang-ja"><strong>「comparableがいない」はむしろ情報量が高い</strong> — なぜ存在しないかを掘り下げることで、対象企業の独自性・リスクの本質が見えてくる</span>
+                <span class="lang-en"><strong>"No comparables" is itself informative</strong> — Understanding why none exist reveals the target's unique characteristics and the nature of its risks</span>
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- ======================================================== -->
+        <!-- PART I: 理論 -->
+        <!-- ======================================================== -->
+
+        <div class="section-sep" aria-hidden="true">— I —</div>
+
+        <h2>
+          <span class="lang-ja">比較可能性の理論的定義</span>
+          <span class="lang-en">The Theoretical Definition of Comparability</span>
+        </h2>
+
+        <h3>
+          <span class="lang-ja">なぜComps分析が成立するのか：Law of One Priceの前提</span>
+          <span class="lang-en">WHY CCA WORKS: THE LAW OF ONE PRICE ASSUMPTION</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">Comparable Company Analysis（以下CCA、またはTrading Comps）は、「類似した資産は類似した価格で取引される」というLaw of One Priceを暗黙の前提として成立している。市場が機能的であれば、同一の将来キャッシュフロー・リスク・成長プロファイルを持つ2つの企業は、同一のマルチプルで取引されるはずである。</span>
+          <span class="lang-en">Comparable Company Analysis (CCA, or Trading Comps) is built on the implicit premise of the Law of One Price: similar assets trade at similar prices. If markets are functional, two companies with identical future cash flows, risk, and growth profiles should trade at identical multiples.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">この前提から逆算すると、CCAが意味を持つのは「対象企業と類似企業の間で、キャッシュフローのパターン・リスクの構造・成長の軌道が本質的に等しいとき」に限られる。逆に言えば、これら3要素のいずれかに重大な乖離がある企業を「comparable」として採用することは、Law of One Priceの適用範囲外にある比較を行っていることになる。</span>
+          <span class="lang-en">Working backwards from this premise, CCA is meaningful only when the target company and its comparables are substantively equal in cash flow patterns, risk structure, and growth trajectory. Conversely, selecting a company as a comparable when there is a significant divergence in any of these three elements means conducting a comparison that falls outside the scope of the Law of One Price.</span>
+        </p>
+
+        <div class="pull-quote">
+          <p>
+            <span class="lang-ja">「A comparable firm is one with similar cash flows, growth potential, and risk.」</span>
+            <span class="lang-en">"A comparable firm is one with similar cash flows, growth potential, and risk."</span>
+          </p>
+          <footer>— Aswath Damodaran, <em>Investment Valuation</em></footer>
+        </div>
+
+        <h3>
+          <span class="lang-ja">3要素の分解：何を「似ている」と判断するか</span>
+          <span class="lang-en">DECOMPOSING THE THREE ELEMENTS: WHAT COUNTS AS "SIMILAR"</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">Damodaranの定義を実務に落とし込むと、比較可能性は以下の3次元に分解できる。</span>
+          <span class="lang-en">Translating Damodaran's definition into practice, comparability can be decomposed into three dimensions.</span>
+        </p>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">理論的要素</span><span class="lang-en">Theoretical Element</span></th>
+                <th><span class="lang-ja">実務的な意味</span><span class="lang-en">Practical Meaning</span></th>
+                <th><span class="lang-ja">検証方法</span><span class="lang-en">How to Verify</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong><span class="lang-ja">キャッシュフロー</span><span class="lang-en">Cash Flows</span></strong></td>
+                <td><span class="lang-ja">FCF変換率・マージン構造・CapEx intensity・運転資本サイクルの類似性</span><span class="lang-en">FCF conversion, margin structure, CapEx intensity, working capital cycle similarity</span></td>
+                <td><span class="lang-ja">EBITDA margin比較、FCF/EBITDA比率、CapEx/Revenue</span><span class="lang-en">EBITDA margin comparison, FCF/EBITDA ratio, CapEx/Revenue</span></td>
+              </tr>
+              <tr>
+                <td><strong><span class="lang-ja">リスク</span><span class="lang-en">Risk</span></strong></td>
+                <td><span class="lang-ja">事業リスク（業界・競合・規制）＋財務リスク（レバレッジ）の総体</span><span class="lang-en">Business risk (industry, competition, regulation) + financial risk (leverage) in aggregate</span></td>
+                <td><span class="lang-ja">Beta（非レバード）比較、ネット有利子負債/EBITDA、事業集中度</span><span class="lang-en">Unlevered beta comparison, net debt/EBITDA, business concentration</span></td>
+              </tr>
+              <tr>
+                <td><strong><span class="lang-ja">成長</span><span class="lang-en">Growth</span></strong></td>
+                <td><span class="lang-ja">売上成長率だけでなく、reinvestment rate・ROIC・TAMの飽和度を含む成長の「質」</span><span class="lang-en">Not just revenue growth, but the "quality" of growth including reinvestment rate, ROIC, and TAM saturation</span></td>
+                <td><span class="lang-ja">3-5年CAGR、ROIC比較、コンセンサス成長率</span><span class="lang-en">3-5 year CAGR, ROIC comparison, consensus growth estimates</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>理論的インプリケーション：</strong> 成長率が高い企業は、同一業界でも高いマルチプルで取引される。これはPEG ratioの発想と同根であり、comparable選定で成長プロファイルを無視することは「成長プレミアムの誤帰属」を意味する。高成長企業に低成長企業のマルチプルを乗じることは、DCFで成長率をゼロと置くことに等しい。</span>
+            <span class="lang-en"><strong>Theoretical implication:</strong> High-growth companies trade at higher multiples even within the same industry. This shares its roots with the PEG ratio concept — ignoring growth profiles in comparable selection amounts to "misattribution of the growth premium." Applying low-growth company multiples to a high-growth company is equivalent to setting the growth rate to zero in a DCF.</span>
+          </p>
+        </div>
+
+        <h3>
+          <span class="lang-ja">完全なcomparableは存在しない：現実の受け入れ方</span>
+          <span class="lang-en">PERFECT COMPARABLES DO NOT EXIST: ACCEPTING REALITY</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">理論的に厳密な「完全なcomparable」は現実には存在しない。すべての企業はある程度ユニークである。したがってCCAにおける実務的な問いは「このピアセットは理論的に完璧か」ではなく、「このピアセットは対象企業と十分な構造的類似性を持っているか、かつ差異は適切に認識・調整されているか」である。</span>
+          <span class="lang-en">A theoretically perfect comparable does not exist in reality. Every company is unique to some degree. The practical question in CCA is therefore not "Is this peer set theoretically perfect?" but rather "Does this peer set have sufficient structural similarity to the target, and are the differences appropriately recognised and adjusted for?"</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">この認識は、ピアセット選定の文書化とレンジの提示という実務的な要請につながる。単一の「代表的マルチプル」ではなく、ピアセット全体の25th–75th percentileレンジで評価レンジを示すのは、この不完全性への誠実な対応である。</span>
+          <span class="lang-en">This recognition leads to the practical requirement of documenting peer set selection rationale and presenting ranges. Showing a valuation range using the 25th–75th percentile of the full peer set, rather than a single "representative multiple," is an honest response to this imperfection.</span>
+        </p>
+
+        <!-- ======================================================== -->
+        <h2>
+          <span class="lang-ja">比較可能性の5次元</span>
+          <span class="lang-en">The Five Dimensions of Comparability</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">Damodaranの3要素（キャッシュフロー・リスク・成長）を実務的なスクリーニング基準に落とし込むと、以下の5次元に展開される。ピアセット選定においては、これら5次元のそれぞれについて「どの程度の乖離まで許容するか」という判断が必要になる。</span>
+          <span class="lang-en">Translating Damodaran's three elements (cash flows, risk, growth) into practical screening criteria yields the following five dimensions. Peer selection requires judgement on "how much divergence is acceptable" for each of these five dimensions.</span>
+        </p>
+
+        <div class="dim-grid">
+          <div class="dim-card">
+            <div class="dim-num">DIM 01</div>
+            <div class="dim-title"><span class="lang-ja">ビジネスモデルの類似性</span><span class="lang-en">Business Model Similarity</span></div>
+            <div class="dim-desc"><span class="lang-ja">製品・サービスの性質、収益モデル（定期/一時）、バリューチェーン上の位置（製造業・流通・サービス）、顧客セグメント・販売チャネルの重複度</span><span class="lang-en">Nature of products/services, revenue model (recurring/transactional), position in value chain (manufacturing/distribution/services), degree of customer segment and channel overlap</span></div>
+          </div>
+          <div class="dim-card">
+            <div class="dim-num">DIM 02</div>
+            <div class="dim-title"><span class="lang-ja">地理的エクスポージャー</span><span class="lang-en">Geographic Exposure</span></div>
+            <div class="dim-desc"><span class="lang-ja">主要市場・カントリーリスク・通貨エクスポージャー・規制環境の類似性。国内専業企業とグローバル企業では、同一業種でもリスク構造が大きく異なる</span><span class="lang-en">Primary markets, country risk, currency exposure, and regulatory environment similarity. Domestic-only and global companies in the same industry can have fundamentally different risk structures</span></div>
+          </div>
+          <div class="dim-card">
+            <div class="dim-num">DIM 03</div>
+            <div class="dim-title"><span class="lang-ja">規模・スケール</span><span class="lang-en">Size and Scale</span></div>
+            <div class="dim-desc"><span class="lang-ja">売上・EBITDA規模の類似性。規模効率・プライシングパワー・アクセス可能な資金調達市場が規模によって異なる。一般に、小型株ほど規模ディスカウントが大きい</span><span class="lang-en">Revenue and EBITDA scale similarity. Scale efficiencies, pricing power, and accessible capital markets differ by size. Smaller companies generally command a higher size discount</span></div>
+          </div>
+          <div class="dim-card">
+            <div class="dim-num">DIM 04</div>
+            <div class="dim-title"><span class="lang-ja">成長プロファイル</span><span class="lang-en">Growth Profile</span></div>
+            <div class="dim-desc"><span class="lang-ja">売上成長率・EBITDA成長率だけでなく、成長の「質」（ROIC、reinvestment rate、TAM飽和度、成長の有機/M&A依存度）を含む。成長の持続可能性も重要</span><span class="lang-en">Not only revenue/EBITDA growth rates, but the "quality" of growth (ROIC, reinvestment rate, TAM saturation, organic vs. M&A-driven growth). Sustainability of growth matters too</span></div>
+          </div>
+          <div class="dim-card" style="grid-column: 1 / -1;">
+            <div class="dim-num">DIM 05</div>
+            <div class="dim-title"><span class="lang-ja">財務プロファイル（資本構成・収益性・CapEx）</span><span class="lang-en">Financial Profile (Capital Structure, Profitability, CapEx)</span></div>
+            <div class="dim-desc"><span class="lang-ja">レバレッジ水準（Net Debt/EBITDA）・マージン構造（EBITDAマージン）・CapEx intensity（CapEx/Revenue）・運転資本効率（Cash Conversion Cycle）の類似性。EV/EBITDAは資本構成中立だが、レバレッジの大きな差はEV全体の解釈に影響する。また、CapEx intensityはFCF転換率に直結するため無視できない。</span><span class="lang-en">Similarity in leverage (Net Debt/EBITDA), margin structure (EBITDA margin), CapEx intensity (CapEx/Revenue), and working capital efficiency (Cash Conversion Cycle). EV/EBITDA is capital structure neutral, but large differences in leverage affect interpretation of EV as a whole. CapEx intensity also directly affects FCF conversion and cannot be ignored.</span></div>
+          </div>
+        </div>
+
+        <div class="trap-box">
+          <div class="trap-label"><span class="lang-ja">よくある誤り</span><span class="lang-en">COMMON MISTAKE</span></div>
+          <p>
+            <span class="lang-ja">「同じSICコード・GICSセクターにあるから comparable」という機械的な判断は危険である。例えばSIC 3559（Special Industry Machinery）には、半導体製造装置メーカーから食品加工機械メーカーまで含まれる。GICSの「情報技術」セクターには、ハードウェア・ソフトウェア・IT Services・半導体がすべて含まれる。業種コードは初期ユニバース構築のためのツールであり、それ自体が比較可能性の証明にはならない。</span>
+            <span class="lang-en">"Both in the same SIC code / GICS sector, therefore comparable" is a dangerous mechanical judgement. For instance, SIC 3559 (Special Industry Machinery) includes everything from semiconductor equipment manufacturers to food processing machinery makers. The GICS "Information Technology" sector encompasses hardware, software, IT Services, and semiconductors. Industry codes are tools for building an initial universe, not proof of comparability in themselves.</span>
+          </p>
+        </div>
+
+        <!-- ======================================================== -->
+        <h2>
+          <span class="lang-ja">標準的な5ステップ選定プロセス</span>
+          <span class="lang-en">The Standard Five-Step Selection Process</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">CCAのピアセット選定には、再現性のある標準的なプロセスがある。以下の5ステップは、IBD・FAS・PEを問わず広く採用されている基本フレームワークである。</span>
+          <span class="lang-en">CCA peer selection follows a reproducible standard process. The following five steps represent a basic framework widely adopted across IBD, FAS, and PE.</span>
+        </p>
+
+        <h3>
+          <span class="lang-ja">Step 1：対象企業の事業定義</span>
+          <span class="lang-en">STEP 1: DEFINE THE TARGET COMPANY'S BUSINESS</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">ピアセットを探す前に、対象企業自身を正確に定義する。これは自明に聞こえるが、複合事業会社・垂直統合企業・急速に事業転換中の企業では難易度が高い。</span>
+          <span class="lang-en">Before searching for peers, precisely define the target company itself. This sounds obvious, but is challenging for conglomerates, vertically integrated companies, and companies undergoing rapid business transformation.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">定義すべき要素：①主要収益源（セグメント別Revenue・EBITDAの構成比）、②バリューチェーン上の位置、③顧客セグメント・販売チャネル、④地理的エクスポージャー（国別売上比率）、⑤成長ドライバー（有機成長 vs M&A依存）、⑥CapEx・R&D intensity（資本配分の特徴）。</span>
+          <span class="lang-en">Elements to define: ① Primary revenue sources (segment revenue/EBITDA mix), ② position in value chain, ③ customer segments and sales channels, ④ geographic exposure (revenue by country), ⑤ growth drivers (organic vs. M&A-driven), ⑥ CapEx and R&D intensity (capital allocation characteristics).</span>
+        </p>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>実務的ポイント：</strong> 上場対象の場合はIRデッキ・有価証券報告書・業績説明会Q&Aを読み込む。非上場対象の場合は同社のウェブサイト・取引先情報・業界紙からの情報収集が必要。「会社が自分をどう語っているか」と「会社が実際に何をしているか」の両方を把握する。</span>
+            <span class="lang-en"><strong>Practical note:</strong> For public targets, read IR decks, annual reports, and earnings call Q&A transcripts. For private targets, information must be gathered from the company website, supplier/customer information, and trade publications. Understand both "how the company describes itself" and "what the company actually does."</span>
+          </p>
+        </div>
+
+        <h3>
+          <span class="lang-ja">Step 2：初期ユニバース構築（業種・地域・上場基準）</span>
+          <span class="lang-en">STEP 2: BUILD THE INITIAL UNIVERSE (INDUSTRY, GEOGRAPHY, LISTING CRITERIA)</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">Step 1で定義した事業像をもとに、候補企業のユニバースを構築する。データソースとしては後述のCapital IQ・Bloomberg等のスクリーニング機能を使い、以下の条件を組み合わせる。</span>
+          <span class="lang-en">Based on the business definition from Step 1, build a universe of candidate companies. Use screening functions in Capital IQ, Bloomberg, and other data sources discussed later, combining the following criteria.</span>
+        </p>
+
+        <div class="calc-block">
+          <div style="margin-bottom: 10px; font-weight: 600; color: var(--text-primary);"><span class="lang-ja">初期スクリーン：典型的な設定条件</span><span class="lang-en">Initial Screen: Typical Criteria</span></div>
+          <div class="calc-row"><span><span class="lang-ja">業種コード</span><span class="lang-en">Industry Code</span></span><span class="calc-highlight"><span class="lang-ja">GICS サブインダストリー（対象+隣接2-3カテゴリ）</span><span class="lang-en">GICS Sub-Industry (target + 2-3 adjacent categories)</span></span></div>
+          <div class="calc-row"><span><span class="lang-ja">地理</span><span class="lang-en">Geography</span></span><span><span class="lang-ja">対象企業の主要市場国 ± グローバルピア（規模次第）</span><span class="lang-en">Target's primary market country ± global peers (depending on scale)</span></span></div>
+          <div class="calc-row"><span><span class="lang-ja">上場ステータス</span><span class="lang-en">Listing Status</span></span><span><span class="lang-ja">上場企業（取引所問わず）、十分な流動性</span><span class="lang-en">Listed companies (any exchange), sufficient liquidity</span></span></div>
+          <div class="calc-row"><span><span class="lang-ja">規模（初期）</span><span class="lang-en">Scale (initial)</span></span><span><span class="lang-ja">対象企業の売上高の0.25×〜4×程度</span><span class="lang-en">Approx. 0.25× to 4× target's revenue</span></span></div>
+          <div class="calc-row"><span><span class="lang-ja">除外</span><span class="lang-en">Exclusions</span></span><span class="calc-warn"><span class="lang-ja">純粋持株会社・SPAC・上場廃止手続き中</span><span class="lang-en">Pure holding companies, SPACs, companies in delisting proceedings</span></span></div>
+          <div class="calc-total"><span><span class="lang-ja">初期ユニバース規模</span><span class="lang-en">Initial Universe Size</span></span><span class="calc-highlight"><span class="lang-ja">通常 20〜60社</span><span class="lang-en">Typically 20–60 companies</span></span></div>
+        </div>
+
+        <h3>
+          <span class="lang-ja">Step 3：財務スクリーン（定量基準による絞り込み）</span>
+          <span class="lang-en">STEP 3: FINANCIAL SCREEN (QUANTITATIVE FILTERING)</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">初期ユニバースに対して財務指標でスクリーニングをかけ、10〜20社程度に絞り込む。主な基準は以下のとおりだが、閾値は業種・案件性質によって大きく異なる。</span>
+          <span class="lang-en">Apply financial metric screening to the initial universe to narrow down to approximately 10–20 companies. The main criteria are as follows, but thresholds vary significantly by industry and deal type.</span>
+        </p>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">指標</span><span class="lang-en">Metric</span></th>
+                <th><span class="lang-ja">目的</span><span class="lang-en">Purpose</span></th>
+                <th><span class="lang-ja">典型的な許容レンジ</span><span class="lang-en">Typical Tolerance Range</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="lang-ja">売上高（Revenue）</span><span class="lang-en">Revenue</span></td>
+                <td><span class="lang-ja">規模類似性</span><span class="lang-en">Scale similarity</span></td>
+                <td><span class="lang-ja">対象の0.3×〜3×（広く取る）</span><span class="lang-en">0.3× to 3× target (broad)</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">EBITDAマージン</span><span class="lang-en">EBITDA Margin</span></td>
+                <td><span class="lang-ja">収益性・FCF転換率の代理変数</span><span class="lang-en">Proxy for profitability and FCF conversion</span></td>
+                <td><span class="lang-ja">対象の±10〜15ptが目安（業種依存）</span><span class="lang-en">±10–15pp of target as guide (industry-dependent)</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">売上成長率（過去・予想）</span><span class="lang-en">Revenue Growth (historical and projected)</span></td>
+                <td><span class="lang-ja">成長プロファイルの類似性</span><span class="lang-en">Growth profile similarity</span></td>
+                <td><span class="lang-ja">対象の±5〜10pp（成長格差が大きければ後で調整）</span><span class="lang-en">±5–10pp of target (large gaps addressed in adjustments)</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">Net Debt / EBITDA</span><span class="lang-en">Net Debt / EBITDA</span></td>
+                <td><span class="lang-ja">財務リスクの類似性</span><span class="lang-en">Financial risk similarity</span></td>
+                <td><span class="lang-ja">同ターン数程度（±2×以内が望ましい）</span><span class="lang-en">Similar turns (within ±2× preferred)</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">CapEx / Revenue</span><span class="lang-en">CapEx / Revenue</span></td>
+                <td><span class="lang-ja">資本集約度・FCF転換率</span><span class="lang-en">Capital intensity and FCF conversion</span></td>
+                <td><span class="lang-ja">業種平均から大きく外れないこと</span><span class="lang-en">Not significantly diverging from industry average</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="trap-box">
+          <div class="trap-label"><span class="lang-ja">注意点</span><span class="lang-en">IMPORTANT NOTE</span></div>
+          <p>
+            <span class="lang-ja">財務スクリーンは「類似企業を選ぶ」ためではなく「明らかに異質な企業を除外する」ためのツールと理解すること。閾値を厳しくしすぎると、ピアセットが極小化されてサンプルサイズ問題（統計的信頼性の低下）が発生する。特に日本市場では業種内の企業数が少ないため、財務スクリーンを緩めに設定し、Step 4の定性判断で調整するアプローチが有効なことが多い。</span>
+            <span class="lang-en">Understand financial screening as a tool for "excluding clearly outlier companies," not "selecting similar companies." Setting thresholds too strictly leads to a minimal peer set and sample size problems (reduced statistical reliability). In the Japanese market particularly, where there are fewer companies within an industry, it is often more effective to set financial screens loosely and make adjustments through qualitative judgement in Step 4.</span>
+          </p>
+        </div>
+
+        <h3>
+          <span class="lang-ja">Step 4：定性的深掘り（事業実態の読み込み）</span>
+          <span class="lang-en">STEP 4: QUALITATIVE DEEP DIVE (READING BUSINESS SUBSTANCE)</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">財務スクリーンを通過した候補企業について、Annual Report・IRデッキ・業績説明会資料を実際に読み込んで定性的に評価する。このステップが最も時間を要するが、同時にcomps選定の「質」を決定づけるステップでもある。</span>
+          <span class="lang-en">For candidate companies that pass the financial screen, actually read Annual Reports, IR decks, and earnings presentation materials for qualitative evaluation. This step is the most time-consuming, but it is also the step that determines the "quality" of comparable selection.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">確認すべき定性的要素：①ビジネスモデルの詳細（収益モデル・顧客契約形態・価格決定メカニズム）、②競合ダイナミクス（誰と競合し、競争優位の源泉は何か）、③成長戦略（有機成長の見通し・M&Aの役割）、④リスクファクター（規制リスク・技術変化・顧客集中度）、⑤経営陣の質・資本配分の哲学。</span>
+          <span class="lang-en">Qualitative factors to assess: ① Business model details (revenue model, customer contract structure, pricing mechanism), ② competitive dynamics (who they compete with and what is the source of competitive advantage), ③ growth strategy (organic growth prospects and role of M&A), ④ risk factors (regulatory risk, technology change, customer concentration), ⑤ management quality and capital allocation philosophy.</span>
+        </p>
+
+        <h3>
+          <span class="lang-ja">Step 5：最終ピアセット決定と階層化</span>
+          <span class="lang-en">STEP 5: FINAL PEER SET DETERMINATION AND TIERING</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">Step 4の結果をもとに最終ピアセットを決定する。理想的な規模は<strong>8〜15社</strong>だが、業種の特性によって3〜20社程度の幅がある。最終ピアセットは、比較可能性の高さに応じて以下のように「階層化（tiering）」することが多い。</span>
+          <span class="lang-en">Based on Step 4 results, determine the final peer set. The ideal size is <strong>8–15 companies</strong>, though the range is approximately 3–20 depending on industry characteristics. The final peer set is often "tiered" according to degree of comparability as follows.</span>
+        </p>
+
+        <div class="calc-block">
+          <div style="margin-bottom: 10px; font-weight: 600; color: var(--text-primary);"><span class="lang-ja">ピアセットの階層化</span><span class="lang-en">Peer Set Tiering</span></div>
+          <div class="calc-row"><span class="calc-highlight"><span class="lang-ja">Tier 1（Core Peers）</span><span class="lang-en">Tier 1 (Core Peers)</span></span><span><span class="lang-ja">最も類似性が高く、主たる参照マルチプルを提供する企業群（3〜6社）</span><span class="lang-en">Highest similarity; primary reference multiples (3–6 companies)</span></span></div>
+          <div class="calc-row"><span><span class="lang-ja">Tier 2（Broader Peers）</span><span class="lang-en">Tier 2 (Broader Peers)</span></span><span><span class="lang-ja">ある次元では類似するが他の次元で乖離がある企業群。レンジ幅の確認に使う（5〜10社）</span><span class="lang-en">Similar in some dimensions but divergent in others; used for range checks (5–10 companies)</span></span></div>
+          <div class="calc-row" style="margin-top: 8px;"><span class="calc-warn"><span class="lang-ja">除外リスト</span><span class="lang-en">Exclusion List</span></span><span><span class="lang-ja">検討したが除外した企業と除外理由を記録（除外バイアスの防止）</span><span class="lang-en">Document companies considered but excluded with reasons (prevents exclusion bias)</span></span></div>
+        </div>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>重要：</strong> 「除外リスト」の文書化はFAS実務・DD・オピニオン取得の場面で特に重要。弁護士・監査人・依頼者から「なぜXX社を含まなかったのか」という問いに答えられる状態を保つことが、defensibleな意見形成の基盤となる。</span>
+            <span class="lang-en"><strong>Important:</strong> Documenting the "exclusion list" is particularly critical in FAS practice, due diligence, and opinion work. Being able to answer "why was Company XX not included?" from lawyers, auditors, and clients is the foundation of a defensible opinion.</span>
+          </p>
+        </div>
+
+        <!-- ======================================================== -->
+        <h2>
+          <span class="lang-ja">使うべきデータソース</span>
+          <span class="lang-en">Key Data Sources</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">Comps選定と関連するデータ収集において、依拠すべき情報ソースを用途別に整理する。</span>
+          <span class="lang-en">Organising the information sources that should be relied upon for comparable selection and related data collection by use case.</span>
+        </p>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">データソース</span><span class="lang-en">Data Source</span></th>
+                <th><span class="lang-ja">主な用途</span><span class="lang-en">Primary Use</span></th>
+                <th><span class="lang-ja">強みと注意点</span><span class="lang-en">Strengths and Caveats</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Capital IQ (S&P Global)</strong></td>
+                <td><span class="lang-ja">ユニバース構築・財務スクリーン・標準化財務データ</span><span class="lang-en">Universe construction, financial screening, standardised financial data</span></td>
+                <td><span class="lang-ja">M&AおよびComps実務の世界標準。財務データの標準化が最も充実。コンセンサス予想も参照可能</span><span class="lang-en">Global standard for M&A and comps. Most comprehensive financial data standardisation. Consensus estimates also available</span></td>
+              </tr>
+              <tr>
+                <td><strong>Bloomberg Terminal</strong></td>
+                <td><span class="lang-ja">リアルタイム時価・マルチプル計算・債券・FX</span><span class="lang-en">Real-time prices, multiple calculations, bonds, FX</span></td>
+                <td><span class="lang-ja">マーケットデータの精度が最高。EV/EBITDA等のマルチプルを直接出力できるが、分子・分母の定義確認が必要</span><span class="lang-en">Best market data accuracy. Can output multiples like EV/EBITDA directly, but numerator/denominator definitions must be verified</span></td>
+              </tr>
+              <tr>
+                <td><strong>Refinitiv Eikon / LSEG</strong></td>
+                <td><span class="lang-ja">欧州・アジア企業・ESGデータ・M&Aデータ</span><span class="lang-en">European/Asian companies, ESG data, M&A data</span></td>
+                <td><span class="lang-ja">欧州・アジア（特に日本）企業のカバレッジが相対的に充実。CapIQとの併用推奨</span><span class="lang-en">Relatively comprehensive coverage of European and Asian (especially Japanese) companies. Recommended to use alongside Cap IQ</span></td>
+              </tr>
+              <tr>
+                <td><strong><span class="lang-ja">有価証券報告書 / Annual Report</span><span class="lang-en">Annual Reports / Securities Filings</span></strong></td>
+                <td><span class="lang-ja">定性情報・セグメント詳細・リスクファクター</span><span class="lang-en">Qualitative information, segment details, risk factors</span></td>
+                <td><span class="lang-ja">Step 4の定性深掘りの主要ソース。特に日本語有報のセグメント注記はDB取得データより詳細</span><span class="lang-en">Primary source for Step 4 qualitative deep dive. Japanese securities report segment disclosures are often more detailed than database data</span></td>
+              </tr>
+              <tr>
+                <td><strong>FactSet / Visible Alpha</strong></td>
+                <td><span class="lang-ja">コンセンサス予想・KPI詳細</span><span class="lang-en">Consensus estimates, detailed KPIs</span></td>
+                <td><span class="lang-ja">アナリストコンセンサスの充実度が高い。Visible AlphaはKPI粒度での比較に優れる</span><span class="lang-en">Rich analyst consensus data. Visible Alpha excels at KPI-level comparisons</span></td>
+              </tr>
+              <tr>
+                <td><strong><span class="lang-ja">業界レポート（IBISWorld・Euromonitor等）</span><span class="lang-en">Industry Reports (IBISWorld, Euromonitor, etc.)</span></strong></td>
+                <td><span class="lang-ja">業界プレイヤー特定・市場構造理解</span><span class="lang-en">Identifying industry players, understanding market structure</span></td>
+                <td><span class="lang-ja">金融DBに登録されていない中小企業・非上場企業の存在把握に有効</span><span class="lang-en">Useful for identifying small and unlisted companies not in financial databases</span></td>
+              </tr>
+              <tr>
+                <td><strong>Merger Market / Dealogic</strong></td>
+                <td><span class="lang-ja">Transaction Comps構築</span><span class="lang-en">Transaction comparable construction</span></td>
+                <td><span class="lang-ja">Trading CompsのみでなくTransaction Compsを並走させる際の主要ソース</span><span class="lang-en">Primary source for running transaction comps alongside trading comps</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="trap-box">
+          <div class="trap-label"><span class="lang-ja">データ品質に関する重要な注意</span><span class="lang-en">IMPORTANT NOTE ON DATA QUALITY</span></div>
+          <p>
+            <span class="lang-ja">データベースの財務データは<strong>「標準化された近似値」</strong>であり、原典（有価証券報告書・開示資料）ではない。特に日本企業では、IFRS採用企業と日本基準企業の混在・のれん償却方法の違い・IFRS16リース処理の差異などが、データベース上の数値に反映されていないことがある（詳細はValuation Theory Lab #006「マルチプルの比較可能性」参照）。重要なcomparableについては必ず一次資料での確認を行うこと。</span>
+            <span class="lang-en">Database financial data is <strong>"standardised approximations"</strong>, not primary sources (securities filings and disclosure documents). For Japanese companies particularly, the mix of IFRS and Japanese GAAP adopters, differences in goodwill amortisation treatment, and IFRS 16 lease accounting differences may not be reflected in database figures (see Valuation Theory Lab #006 "Multiples Comparability" for details). Always verify against primary sources for important comparables.</span>
+          </p>
+        </div>
+
+        <!-- ======================================================== -->
+        <h2>
+          <span class="lang-ja">完全なcomparableが存在しない場合のフレームワーク</span>
+          <span class="lang-en">Frameworks When No Perfect Comparable Exists</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">Comps選定において最も高度な判断が求められるのが、「ばっちりcomparableな上場企業が存在しない」ケースである。このような状況は実務で頻繁に発生し、対処方法の引き出しの多さがバリュエーション実務家の価値を決定づける。</span>
+          <span class="lang-en">The most sophisticated judgement in comparable selection is required when "there are no listed companies that are a perfect comparable." This situation arises frequently in practice, and the breadth of approaches available defines the value of a valuation practitioner.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">以下に5つの主要アプローチを示す。実際の案件ではこれらを組み合わせることが多く、単一のアプローチに依拠することは通常推奨されない。</span>
+          <span class="lang-en">The following presents five major approaches. In actual engagements, these are often combined, and relying on a single approach is generally not recommended.</span>
+        </p>
+
+        <h3>
+          <span class="lang-ja">アプローチ1：事業セグメント分解（Sum-of-the-Parts Comps）</span>
+          <span class="lang-en">APPROACH 1: BUSINESS SEGMENT DECOMPOSITION (SUM-OF-THE-PARTS COMPS)</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">複合事業会社（コングロマリット）や複数の異なる事業を持つ企業では、全社を一体として評価するよりも、事業セグメントを分解してそれぞれに適切なcomparableを当てはめ、合計する「Sum-of-the-Parts（SOTP）」アプローチが有効である。</span>
+          <span class="lang-en">For conglomerates and companies with multiple distinct businesses, the "Sum-of-the-Parts (SOTP)" approach is effective — decompose the business into segments, apply appropriate comparables to each, and sum the results — rather than evaluating the whole entity as a single unit.</span>
+        </p>
+
+        <div class="formula">
+          <span class="lang-ja">全社価値 = Σ（セグメントEBITDA × セグメント別comparable median multiple）<br>           − 本社コスト × ホールディングマルチプル<br>           − 純有利子負債<br>           ± コングロマリットディスカウント（通常 10〜20%）</span>
+          <span class="lang-en">Total Enterprise Value = Σ (Segment EBITDA × Segment-specific comparable median multiple)<br>                       − Head Office Costs × Holding Multiple<br>                       − Net Debt<br>                       ± Conglomerate Discount (typically 10–20%)</span>
+        </div>
+
+        <p>
+          <span class="lang-ja">重要なのは、コングロマリットディスカウントの適用判断である。複合事業の管理コスト・内部資本配分の非効率・流動性プレミアムの欠如などを考慮し、経験的に10〜20%程度のディスカウントが観察されるが、シナジーが大きい場合や各事業間に高い相補性がある場合は縮小・消失する。</span>
+          <span class="lang-en">The key judgement is whether to apply a conglomerate discount. Considering management costs of diverse businesses, internal capital allocation inefficiencies, and lack of liquidity premium, empirically a discount of approximately 10–20% is observed, but this shrinks or disappears when synergies are large or there is high complementarity between businesses.</span>
+        </p>
+
+        <h3>
+          <span class="lang-ja">アプローチ2：クロスボーダー類似企業（国際比較）</span>
+          <span class="lang-en">APPROACH 2: CROSS-BORDER COMPARABLES (INTERNATIONAL PEERS)</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">日本市場では業種内の上場企業数が少なく、適切なcomparableが国内に存在しないケースが多い。この場合、米国・欧州・アジア（香港・シンガポール等）の上場企業を国際comparableとして採用することが有効だが、以下の調整が必要になる。</span>
+          <span class="lang-en">In the Japanese market, the number of listed companies within an industry is often small, and there are frequently cases where no appropriate comparable exists domestically. In such cases, listed companies in the US, Europe, and Asia (Hong Kong, Singapore, etc.) can be used as international comparables, but the following adjustments become necessary.</span>
+        </p>
+
+        <ul>
+          <li><span class="lang-ja"><strong>カントリーリスクプレミアム調整：</strong> 異なる市場リスクを反映するため、マルチプルレベルで補正するか、別途カントリーリスクプレミアムをDiscountとして適用する</span><span class="lang-en"><strong>Country risk premium adjustment:</strong> To reflect different market risks, either correct at the multiple level or apply a separate country risk premium as a discount</span></li>
+          <li><span class="lang-ja"><strong>成長率格差調整：</strong> 新興国企業は成長プレミアムが高いため、成長調整後マルチプル（EV/EBITDA to Growth等）で比較する</span><span class="lang-en"><strong>Growth differential adjustment:</strong> Emerging market companies carry a higher growth premium, so compare using growth-adjusted multiples (EV/EBITDA to Growth, etc.)</span></li>
+          <li><span class="lang-ja"><strong>会計基準差異調整：</strong> IFRS・US GAAP・J-GAAPの差異（#006参照）を調整したうえで比較する</span><span class="lang-en"><strong>Accounting standard adjustment:</strong> Adjust for differences between IFRS, US GAAP, and J-GAAP (see #006) before comparison</span></li>
+        </ul>
+
+        <h3>
+          <span class="lang-ja">アプローチ3：隣接業界アナロジー（Adjacent Industry Analogues）</span>
+          <span class="lang-en">APPROACH 3: ADJACENT INDUSTRY ANALOGUES</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">対象企業と同一業種のcomparableが不十分な場合、「ビジネスモデルが構造的に類似した隣接業界」から類似企業を選ぶアプローチがある。このアプローチの核心は「業種ラベルではなく経済的特性で類似性を判断する」ことである。</span>
+          <span class="lang-en">When comparables in the same industry as the target are insufficient, there is an approach of selecting companies from "adjacent industries with structurally similar business models." The essence of this approach is to "judge similarity by economic characteristics rather than industry labels."</span>
+        </p>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">対象企業の経済的特性</span><span class="lang-en">Target's Economic Characteristics</span></th>
+                <th><span class="lang-ja">類似した経済構造を持つ隣接業界例</span><span class="lang-en">Adjacent Industries with Similar Economic Structure</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="lang-ja">高い固定費・低い変動費・高マージン・定期収益</span><span class="lang-en">High fixed costs, low variable costs, high margins, recurring revenue</span></td>
+                <td><span class="lang-ja">SaaS、有料道路・空港インフラ、ケーブルTV、データセンター</span><span class="lang-en">SaaS, toll roads/airport infrastructure, cable TV, data centres</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">高いCapEx・長期資産・規制環境下での安定需要</span><span class="lang-en">High CapEx, long-lived assets, stable demand under regulatory environment</span></td>
+                <td><span class="lang-ja">公益事業（電力・ガス・水道）、鉄道インフラ、衛星通信</span><span class="lang-en">Utilities (power, gas, water), railway infrastructure, satellite communications</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">在庫リスク・短サイクル・B2Bプロセス製造</span><span class="lang-en">Inventory risk, short cycle, B2B process manufacturing</span></td>
+                <td><span class="lang-ja">特定化学品・食品原料・包装材料などのspecialty materials</span><span class="lang-en">Specialty chemicals, food ingredients, packaging materials</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">知的財産・ライセンス収益・低いCapEx</span><span class="lang-en">Intellectual property, licensing revenue, low CapEx</span></td>
+                <td><span class="lang-ja">半導体設計（fabless）、出版・コンテンツ、フランチャイズ</span><span class="lang-en">Fabless semiconductor design, publishing/content, franchises</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>実務的洞察：</strong> 隣接業界アナロジーは「業界の壁を越えて本質的な比較を行う」という高度な判断だが、その選定理由を開示書類や意見書に明確に説明できないと、むしろ信頼性を損なう。「なぜそのアナロジーが成立するか」の論理（ビジネスモデル・キャッシュフロー構造・リスクプロファイルの具体的な対応関係）を説明できる状態で採用すること。</span>
+            <span class="lang-en"><strong>Practical insight:</strong> The adjacent industry analogy is a sophisticated judgement that "crosses industry boundaries for substantive comparison," but unless the selection rationale can be clearly explained in disclosure documents or opinion letters, it actually undermines credibility. Only adopt this when you can explain the logic for why the analogy holds (specific correspondence in business model, cash flow structure, and risk profile).</span>
+          </p>
+        </div>
+
+        <h3>
+          <span class="lang-ja">アプローチ4：マルチプル回帰分析（Regression-based Approach）</span>
+          <span class="lang-en">APPROACH 4: MULTIPLE REGRESSION APPROACH (REGRESSION-BASED)</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">業界全体の上場企業について、マルチプルをEBITDAマージン・成長率・CapEx intensityなどに回帰させ、対象企業の財務特性に対応する「理論的なマルチプル」を推定する方法である。これはピアセットの「サンプルサイズ問題」を軽減するとともに、成長率・マージンの差を構造的に調整する効果がある。</span>
+          <span class="lang-en">This method regresses multiples against EBITDA margin, growth rate, CapEx intensity, and other metrics for all listed companies in an industry, then estimates a "theoretical multiple" corresponding to the target company's financial characteristics. This both mitigates the "sample size problem" in peer sets and has the effect of structurally adjusting for growth rate and margin differences.</span>
+        </p>
+
+        <div class="formula">
+          <span class="lang-ja">EV/EBITDA = α + β₁ × (EBITDA Margin) + β₂ × (Revenue Growth) + β₃ × (CapEx/Revenue) + ε</span>
+          <span class="lang-en">EV/EBITDA = α + β₁ × (EBITDA Margin) + β₂ × (Revenue Growth) + β₃ × (CapEx/Revenue) + ε</span>
+        </div>
+
+        <p>
+          <span class="lang-ja">回帰アプローチは理論的に整合的だが、実務上の制約がある：①サンプル企業数が少ない業種では回帰が不安定になる、②マルチコリニアリティの問題、③異常値（outlier）の影響を受けやすい。そのため、このアプローチは通常、メインのCCAに対するサニティチェック的役割として使われることが多く、単独での採用は慎重に行うべきである。</span>
+          <span class="lang-en">The regression approach is theoretically coherent, but has practical limitations: ① regressions become unstable for industries with few sample companies, ② multicollinearity issues, ③ susceptibility to outlier influence. As a result, this approach is commonly used as a sanity check against the main CCA rather than adopted independently, and standalone adoption should be approached cautiously.</span>
+        </p>
+
+        <h3>
+          <span class="lang-ja">アプローチ5：Transaction Compsとの並走・歴史的マルチプルの活用</span>
+          <span class="lang-en">APPROACH 5: RUNNING TRANSACTION COMPS IN PARALLEL AND USING HISTORICAL MULTIPLES</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">Trading Compsに適切なcomparableが存在しない場合の補完として、類似企業のM&Aトランザクションデータ（Transaction Comps）を並走させることが有効である。Transaction Compsは①コントロールプレミアムが織り込まれる（通常30〜40%高い水準）、②守秘義務の関係で財務データの詳細が限られるという制約があるが、Trading Compsを補完する証拠として機能する。</span>
+          <span class="lang-en">As a complement when no appropriate comparables exist for Trading Comps, running similar company M&A transaction data (Transaction Comps) in parallel is effective. Transaction Comps have the limitations that ① control premiums are embedded (typically 30–40% higher), and ② financial data details are limited due to confidentiality, but they function as corroborating evidence supplementing Trading Comps.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">また、対象企業自身の歴史的マルチプル（Historical Trading Multiple）を参照することも有効である。対象企業が上場企業であれば、過去3〜5年のEV/EBITDA推移を確認し、「現在のマルチプルが過去の自社レンジに対してどこに位置しているか」を把握する。これは特にIPO・非公開化・特定のコーポレートアクションの場面でベースラインとして機能する。</span>
+          <span class="lang-en">Referencing the target company's own historical trading multiples is also effective. For listed targets, reviewing the EV/EBITDA trend over the past 3–5 years and understanding "where the current multiple sits relative to the company's own historical range" provides a baseline — particularly useful in IPO, privatisation, and specific corporate action contexts.</span>
+        </p>
+
+        <!-- ======================================================== -->
+        <div class="section-sep" aria-hidden="true">— II —</div>
+
+        <h2>
+          <span class="lang-ja">実践ケース</span>
+          <span class="lang-en">Practical Cases</span>
+        </h2>
+
+        <!-- Case 1 -->
+        <div class="case-box">
+          <div class="case-label"><span class="lang-ja">ケース 01</span><span class="lang-en">Case 01</span></div>
+          <div class="case-title">
+            <span class="lang-ja">日本の中堅精密機器メーカー（売上高 300億円・非上場、医療向け80%・産業向け20%）</span>
+            <span class="lang-en">Japanese Mid-Cap Precision Instruments Manufacturer (Revenue ¥30B, unlisted; 80% medical, 20% industrial)</span>
+          </div>
+          <div class="case-body">
+            <p>
+              <span class="lang-ja"><strong>課題：</strong> 国内に「医療向け精密機器に特化した中堅規模の非上場企業」と完全に類似する上場企業は存在しない。SIC 3841（Surgical & Medical Instruments）やGICS 351010（Health Care Equipment）でスクリーニングすると、ニプロ・テルモ・オリンパスなどが出てくるが、いずれも売上高が1,000億円超であり、また産業機器・消費者向け機器なども手掛ける複合企業である。</span>
+              <span class="lang-en"><strong>Challenge:</strong> No listed Japanese company is a perfect comparable to a mid-cap, unlisted, medical-focused precision instruments manufacturer. Screening GICS 351010 (Health Care Equipment) yields Nipro, Terumo, and Olympus, but all have revenues above ¥100B and are diversified companies with industrial and consumer instrument businesses.</span>
+            </p>
+            <p>
+              <span class="lang-ja"><strong>選定アプローチ：</strong></span>
+              <span class="lang-en"><strong>Selection approach:</strong></span>
+            </p>
+            <p>
+              <span class="lang-ja">① <strong>Tier 1（Core）:</strong> 国内中堅医療機器メーカー（Nihon Kohden、日機装、フクダ電子等）をニッチ類似企業として採用。規模は大きいが事業特性が近い。</span>
+              <span class="lang-en">① <strong>Tier 1 (Core):</strong> Domestic mid-tier medical device makers (Nihon Kohden, Nikkiso, Fukuda Denshi, etc.) adopted as niche peers. Larger in scale but similar business characteristics.</span>
+            </p>
+            <p>
+              <span class="lang-ja">② <strong>Tier 2（Broader）:</strong> 米国のmedical device pure-playメーカー（Integra LifeSciences、ICU Medical等）を国際comparableとして採用。成長率差（米国の方が高い）を考慮してEV/EBITDA to Growth比較を並走。</span>
+              <span class="lang-en">② <strong>Tier 2 (Broader):</strong> US medical device pure-plays (Integra LifeSciences, ICU Medical, etc.) as international comparables. Run EV/EBITDA to Growth comparison in parallel, accounting for growth differential (US companies typically higher growth).</span>
+            </p>
+            <p>
+              <span class="lang-ja">③ <strong>Transaction Comps補完：</strong> 過去5年の国内・海外の医療機器M&Aを抽出し（Merger Market等）、類似規模・類似収益性のEV/EBITDA取引マルチプルを参照。対象企業のコントロールプレミアムへの含意として使用。</span>
+              <span class="lang-en">③ <strong>Transaction Comps complement:</strong> Extract domestic and international medical device M&A over the past five years (via Merger Market, etc.), and reference EV/EBITDA transaction multiples for similar scale and profitability. Used for implications regarding the target's control premium.</span>
+            </p>
+            <p>
+              <span class="lang-ja">④ <strong>規模ディスカウントの明示的認識：</strong> Tier 1企業との規模差（売上高で3〜5倍）に対して、小型株流動性ディスカウントとして5〜15%の調整を加えた評価レンジを示す。</span>
+              <span class="lang-en">④ <strong>Explicit recognition of size discount:</strong> Present a valuation range with a 5–15% adjustment for small-cap liquidity discount relative to the scale difference (3–5× revenue) with Tier 1 companies.</span>
+            </p>
+            <div class="case-verdict">
+              <span class="lang-ja">→ 結論：単一のcomparableセットではなく、Tier 1・Tier 2・Transaction Compsの三層構造で評価レンジを示す。各層に対する感応度分析が防御力を高める。</span>
+              <span class="lang-en">→ Conclusion: Present valuation range using a three-tier structure (Tier 1, Tier 2, Transaction Comps) rather than a single comparable set. Sensitivity analysis across tiers strengthens defensibility.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Case 2 -->
+        <div class="case-box">
+          <div class="case-label"><span class="lang-ja">ケース 02</span><span class="lang-en">Case 02</span></div>
+          <div class="case-title">
+            <span class="lang-ja">ニッチB2B SaaS企業（売上高 50億円・ARR成長率 40%・国内特定業界向け特化）</span>
+            <span class="lang-en">Niche B2B SaaS Company (Revenue ¥5B, ARR Growth 40%, specialised for a specific domestic industry vertical)</span>
+          </div>
+          <div class="case-body">
+            <p>
+              <span class="lang-ja"><strong>課題：</strong> 同一業界向けSaaSの上場企業が国内に存在しない。国内SaaS企業（freee、マネーフォワード等）は汎用性が高く、対象会社のニッチ性・顧客集中度・高い解約コスト（switching cost）の特性を共有しない。米国のvertical SaaSとの比較が候補になるが、成長率・マージンプロファイルの解釈が重要になる。</span>
+              <span class="lang-en"><strong>Challenge:</strong> No listed domestic SaaS company serving the same industry vertical exists. Domestic SaaS companies (freee, Money Forward, etc.) are horizontal and do not share the target's niche characteristics, customer concentration, or high switching costs. US vertical SaaS companies are candidate comparables, but interpretation of growth rate and margin profile becomes critical.</span>
+            </p>
+            <p>
+              <span class="lang-ja"><strong>選定アプローチ：</strong></span>
+              <span class="lang-en"><strong>Selection approach:</strong></span>
+            </p>
+            <p>
+              <span class="lang-ja">① <strong>Rule of 40フレームワークの活用：</strong> SaaS業界では「Rule of 40（ARR成長率 + FCFマージン ≥ 40）」が健全性指標として機能し、Rule of 40スコアが類似したグローバルSaaSをpeerとして選定する方法が有効。具体的には、①ARR成長率 35〜50%、②Net Revenue Retention（NRR）110〜125%、③ARR規模 50〜200億円相当、の条件でフィルタリング。</span>
+              <span class="lang-en">① <strong>Using the Rule of 40 framework:</strong> In SaaS, "Rule of 40 (ARR growth rate + FCF margin ≥ 40)" functions as a health indicator, making it effective to select global SaaS peers with similar Rule of 40 scores. Specifically, filter on: ① ARR growth rate 35–50%, ② Net Revenue Retention (NRR) 110–125%, ③ ARR scale ¥5–20B equivalent.</span>
+            </p>
+            <p>
+              <span class="lang-ja">② <strong>Vertical SaaS特化での米国比較：</strong> Veeva Systems（製薬向け）、Guidewire（保険向け）、Toast（飲食向け）のような特定業界vertical SaaSとの比較が構造的に近い。これらはARR水準はより大きいが、NRR・Gross Margin・CAC payback periodといったSaaS KPIで比較可能。</span>
+              <span class="lang-en">② <strong>US comparison focused on vertical SaaS:</strong> Comparison with specific industry vertical SaaS companies like Veeva Systems (pharma), Guidewire (insurance), and Toast (restaurant) is structurally closer. These have higher ARR levels, but are comparable on SaaS KPIs like NRR, Gross Margin, and CAC payback period.</span>
+            </p>
+            <p>
+              <span class="lang-ja">③ <strong>EV/Revenue vs EV/ARRの使い分け：</strong> 高成長SaaSでは利益が赤字または薄いため、EV/RevenueまたはEV/ARRが主要マルチプルになる。成長率とマージン改善軌道を考慮した「EV/NTM Revenue to Growth」も採用する。</span>
+              <span class="lang-en">③ <strong>Choosing between EV/Revenue and EV/ARR:</strong> For high-growth SaaS where profits are negative or thin, EV/Revenue or EV/ARR become the primary multiples. Also adopt "EV/NTM Revenue to Growth" which accounts for growth rate and margin improvement trajectory.</span>
+            </p>
+            <div class="case-verdict">
+              <span class="lang-ja">→ 結論：「同じ業界のSaaS」ではなく「同じビジネスモデル特性のSaaS」でpeerを選定する。Rule of 40スコア・NRR・CAC paybackがcomparable判断の軸になる。</span>
+              <span class="lang-en">→ Conclusion: Select peers based on "SaaS with the same business model characteristics," not "SaaS in the same industry." Rule of 40 score, NRR, and CAC payback become the axes for comparable judgement.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Case 3 -->
+        <div class="case-box">
+          <div class="case-label"><span class="lang-ja">ケース 03</span><span class="lang-en">Case 03</span></div>
+          <div class="case-title">
+            <span class="lang-ja">複合事業会社（素材・物流・不動産の3セグメント、各セグメントのEBITDA比率が異なる）</span>
+            <span class="lang-en">Conglomerate with Three Segments (Materials, Logistics, Real Estate) with Differing EBITDA Contributions</span>
+          </div>
+          <div class="case-body">
+            <p>
+              <span class="lang-ja"><strong>課題：</strong> 全社を単一のcomparableセットで評価すると、セグメント間のマルチプル差異が平均化されてしまう。例えば、素材（低マルチプル）・物流（中マルチプル）・不動産（高マルチプル）を持つ企業に素材セクターのcomparableを当てると、不動産セグメントの価値が大きく過小評価される。</span>
+              <span class="lang-en"><strong>Challenge:</strong> Evaluating the whole company with a single comparable set averages out the multiple differences between segments. For example, applying materials sector comparables to a company with materials (low multiple), logistics (medium multiple), and real estate (high multiple) segments would significantly undervalue the real estate segment.</span>
+            </p>
+            <p>
+              <span class="lang-ja"><strong>選定アプローチ：Sum-of-the-Parts Compsの適用</strong></span>
+              <span class="lang-en"><strong>Selection approach: Applying Sum-of-the-Parts Comps</strong></span>
+            </p>
+            <div class="data-table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th><span class="lang-ja">セグメント</span><span class="lang-en">Segment</span></th>
+                    <th><span class="lang-ja">EBITDA（億円）</span><span class="lang-en">EBITDA (¥B)</span></th>
+                    <th><span class="lang-ja">comparable企業例</span><span class="lang-en">Comparable Examples</span></th>
+                    <th><span class="lang-ja">採用マルチプル</span><span class="lang-en">Applied Multiple</span></th>
+                    <th><span class="lang-ja">セグメントEV</span><span class="lang-en">Segment EV</span></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="lang-ja">素材</span><span class="lang-en">Materials</span></td>
+                    <td class="td-accent">80</td>
+                    <td><span class="lang-ja">同種素材メーカー5社</span><span class="lang-en">5 peer materials makers</span></td>
+                    <td class="td-accent">6.0×</td>
+                    <td class="td-accent">480</td>
+                  </tr>
+                  <tr>
+                    <td><span class="lang-ja">物流</span><span class="lang-en">Logistics</span></td>
+                    <td class="td-accent">50</td>
+                    <td><span class="lang-ja">3PL・物流企業5社</span><span class="lang-en">5 peer 3PL/logistics companies</span></td>
+                    <td class="td-accent">8.5×</td>
+                    <td class="td-accent">425</td>
+                  </tr>
+                  <tr>
+                    <td><span class="lang-ja">不動産</span><span class="lang-en">Real Estate</span></td>
+                    <td class="td-accent">60</td>
+                    <td><span class="lang-ja">商業不動産・REIT3社</span><span class="lang-en">3 commercial RE / REIT peers</span></td>
+                    <td class="td-accent">14.0×</td>
+                    <td class="td-accent">840</td>
+                  </tr>
+                  <tr>
+                    <td><span class="lang-ja">本社コスト控除</span><span class="lang-en">Head office costs deduction</span></td>
+                    <td class="td-warn">(30)</td>
+                    <td><span class="lang-ja">ホールディングマルチプル</span><span class="lang-en">Holding multiple</span></td>
+                    <td class="td-warn">6.0×</td>
+                    <td class="td-warn">(180)</td>
+                  </tr>
+                  <tr style="background: var(--bg-highlight);">
+                    <td><strong><span class="lang-ja">合計（コングロマリットディスカウント前）</span><span class="lang-en">Total (before conglomerate discount)</span></strong></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="td-accent"><strong>1,565</strong></td>
+                  </tr>
+                  <tr>
+                    <td><span class="lang-ja">コングロマリットディスカウント (15%)</span><span class="lang-en">Conglomerate discount (15%)</span></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="td-warn">(235)</td>
+                  </tr>
+                  <tr style="background: var(--bg-highlight);">
+                    <td><strong><span class="lang-ja">推定企業価値（EV）</span><span class="lang-en">Estimated Enterprise Value</span></strong></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="td-accent"><strong>1,330</strong></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="case-verdict">
+              <span class="lang-ja">→ 結論：SOTPではセグメント別comparable選定 × セグメント間のシナジー有無 × コングロマリットディスカウントの適用判断が価値結論に大きく影響する。コングロマリットディスカウントの大きさはセグメント間の独立性・経営資源の共有度によって個別判断が必要。</span>
+              <span class="lang-en">→ Conclusion: In SOTP, segment-specific comparable selection × presence/absence of inter-segment synergies × conglomerate discount application judgement all significantly affect the value conclusion. The size of the conglomerate discount requires individual judgement based on segment independence and degree of shared management resources.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Case 4 -->
+        <div class="case-box">
+          <div class="case-label"><span class="lang-ja">ケース 04</span><span class="lang-en">Case 04</span></div>
+          <div class="case-title">
+            <span class="lang-ja">成熟業界への新興プレイヤー（従来型石油販売市場への電動モビリティサービス参入、プレIPO）</span>
+            <span class="lang-en">New Entrant into Mature Industry (EV Mobility Service Entering Traditional Petroleum Distribution Market, Pre-IPO)</span>
+          </div>
+          <div class="case-body">
+            <p>
+              <span class="lang-ja"><strong>課題：</strong> 「電動モビリティサービス×エネルギー小売×サブスクリプション」という複合ビジネスモデルは、既存のどの業種カテゴリにも収まらない。既存の石油販売業者（低マルチプル）を当てれば過小評価、テック系EV企業（高マルチプル）を当てれば過大評価になりやすい。</span>
+              <span class="lang-en"><strong>Challenge:</strong> A composite business model of "EV mobility services × energy retail × subscription" does not fit neatly into any existing industry category. Applying traditional petroleum distributors (low multiples) likely undervalues; applying tech EV companies (high multiples) likely overvalues.</span>
+            </p>
+            <p>
+              <span class="lang-ja"><strong>選定アプローチ：ビジネスモデル分解 + 段階的収束</strong></span>
+              <span class="lang-en"><strong>Selection approach: Business model decomposition + staged convergence</strong></span>
+            </p>
+            <p>
+              <span class="lang-ja">① <strong>収益モデル別の分解：</strong> ①サブスクリプション収益（定期・高マージン部分）をSaaS/サービスcomparableで評価し、②変動収益（エネルギー小売部分）を公益・小売エネルギー事業のcomparableで評価するハイブリッドアプローチ。</span>
+              <span class="lang-en">① <strong>Decomposition by revenue model:</strong> Hybrid approach evaluating ① subscription revenue (recurring, high-margin component) with SaaS/services comparables, and ② variable revenue (energy retail component) with utility/retail energy comparables.</span>
+            </p>
+            <p>
+              <span class="lang-ja">② <strong>成熟段階を織り込んだマルチプル補正：</strong> EV業界のpeerは概ねHyper-growth段階であり、対象企業がまだ初期段階であることを踏まえ、EV/NTM Revenueを成長率で除した「EV/Revenue to Growth」を主要比較指標とし、成長速度の差を調整する。</span>
+              <span class="lang-en">② <strong>Multiple adjustment reflecting maturity stage:</strong> EV industry peers are generally in the hyper-growth stage. Given the target is still in an early stage, use "EV/Revenue to Growth" (EV/NTM Revenue divided by growth rate) as the primary comparison metric to adjust for growth speed differences.</span>
+            </p>
+            <p>
+              <span class="lang-ja">③ <strong>DCFとの二軸評価：</strong> 既存業種の成熟したcomparableが存在しないケースでは、CCAの参照価値が相対的に低くなる。DCF（複数成長シナリオ）を主、CCAを副として位置づけ、CCAはバリュエーションの「範囲外チェック」として機能させる。</span>
+              <span class="lang-en">③ <strong>Two-axis evaluation with DCF:</strong> When no mature comparable exists in the existing industry, the reference value of CCA is relatively lower. Position DCF (multiple growth scenarios) as primary and CCA as secondary, with CCA functioning as an "out-of-range check" for the valuation.</span>
+            </p>
+            <div class="case-verdict">
+              <span class="lang-ja">→ 結論：業種横断的なビジネスモデルに対してはCCA単独での評価を避け、DCFとの組み合わせで使う。CCAの役割は「主要評価手法」から「範囲確認ツール」に格下げされる場面がある。これを明示的に認識・開示することが意見の誠実さを支える。</span>
+              <span class="lang-en">→ Conclusion: Avoid standalone CCA evaluation for cross-industry business models; use it in combination with DCF. There are situations where CCA's role is downgraded from "primary valuation method" to "range confirmation tool." Explicitly recognising and disclosing this supports the integrity of the opinion.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ======================================================== -->
+        <h2>
+          <span class="lang-ja">よくある失敗パターンと対処法</span>
+          <span class="lang-en">Common Failure Patterns and Counter-measures</span>
+        </h2>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">失敗パターン</span><span class="lang-en">Failure Pattern</span></th>
+                <th><span class="lang-ja">問題の本質</span><span class="lang-en">Core Problem</span></th>
+                <th><span class="lang-ja">対処法</span><span class="lang-en">Counter-measure</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong><span class="lang-ja">SICコード頼み</span><span class="lang-en">Relying solely on SIC codes</span></strong></td>
+                <td><span class="lang-ja">業種コードは事業の行政分類であり、経済的類似性の証明ではない</span><span class="lang-en">Industry codes are administrative classifications, not proof of economic similarity</span></td>
+                <td><span class="lang-ja">コードは初期フィルタ。必ずビジネス実態の深読みを行う</span><span class="lang-en">Use codes as initial filter only; always conduct deep reading of business substance</span></td>
+              </tr>
+              <tr>
+                <td><strong><span class="lang-ja">成長率差異の無視</span><span class="lang-en">Ignoring growth differentials</span></strong></td>
+                <td><span class="lang-ja">成長率20%の企業に成長率5%の企業のマルチプルを乗じると過小評価になる</span><span class="lang-en">Applying a 5% growth company's multiple to a 20% growth company leads to undervaluation</span></td>
+                <td><span class="lang-ja">EV/EBITDA to Growth等の成長調整マルチプルを補足使用する</span><span class="lang-en">Supplement with growth-adjusted multiples like EV/EBITDA to Growth</span></td>
+              </tr>
+              <tr>
+                <td><strong><span class="lang-ja">規模ディスカウントの未考慮</span><span class="lang-en">Not accounting for size discount</span></strong></td>
+                <td><span class="lang-ja">大型株と中小型株はリスクプレミアム・流動性で構造的差異がある</span><span class="lang-en">Large and small/mid-cap stocks have structural differences in risk premium and liquidity</span></td>
+                <td><span class="lang-ja">規模差が大きい場合はDLOM・流動性ディスカウントを明示的に適用</span><span class="lang-en">Explicitly apply DLOM/liquidity discounts when scale differences are large</span></td>
+              </tr>
+              <tr>
+                <td><strong><span class="lang-ja">Availability Bias</span><span class="lang-en">Availability Bias</span></strong></td>
+                <td><span class="lang-ja">「知っている会社」「DBで出やすい会社」を無意識に好む偏り</span><span class="lang-en">Unconscious preference for "companies you know" or "companies that appear easily in databases"</span></td>
+                <td><span class="lang-ja">業界レポート・競合分析資料を起点にユニバースを構築する</span><span class="lang-en">Build universe starting from industry reports and competitor analyses</span></td>
+              </tr>
+              <tr>
+                <td><strong><span class="lang-ja">サンプルサイズ問題</span><span class="lang-en">Sample size problem</span></strong></td>
+                <td><span class="lang-ja">3社以下のピアセットは1社の外れ値に引っ張られやすい</span><span class="lang-en">Peer sets of 3 or fewer are easily pulled by a single outlier</span></td>
+                <td><span class="lang-ja">最低5社を目指す。下回る場合はTier 2やTransaction Compsで補完</span><span class="lang-en">Aim for at least 5 companies. If below, supplement with Tier 2 or Transaction Comps</span></td>
+              </tr>
+              <tr>
+                <td><strong><span class="lang-ja">結論先決めによるcherry-picking</span><span class="lang-en">Cherry-picking to support predetermined conclusion</span></strong></td>
+                <td><span class="lang-ja">評価結論に都合の良いcomparableだけを選ぶと意見の独立性が失われる</span><span class="lang-en">Selecting only comparables that support the desired valuation conclusion loses opinion independence</span></td>
+                <td><span class="lang-ja">除外理由を文書化し、除外企業を含めた感応度を示す</span><span class="lang-en">Document exclusion reasons and present sensitivity including excluded companies</span></td>
+              </tr>
+              <tr>
+                <td><strong><span class="lang-ja">非経常項目・会計差異の未調整</span><span class="lang-en">Unadjusted non-recurring items and accounting differences</span></strong></td>
+                <td><span class="lang-ja">EBITDA/EBITの定義差・IFRS16・のれん償却差異がマルチプルの歪みを生む</span><span class="lang-en">Differences in EBITDA/EBIT definitions, IFRS 16, and goodwill amortisation create multiple distortions</span></td>
+                <td><span class="lang-ja">Adjusted EBITDA（LTM・NTM）を一次資料から自ら計算する</span><span class="lang-en">Calculate Adjusted EBITDA (LTM/NTM) independently from primary sources</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ======================================================== -->
+        <h2>
+          <span class="lang-ja">まとめ：実践的チェックリスト</span>
+          <span class="lang-en">Summary: Practical Checklist</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">Comps選定の品質を最終確認するためのチェックリストを示す。これはIBD・FAS・PEのどのコンテキストでも適用可能である。</span>
+          <span class="lang-en">A checklist for final quality assurance of comparable selection. This applies in IBD, FAS, and PE contexts alike.</span>
+        </p>
+
+        <ul class="numbered-list">
+          <li>
+            <span class="num">01</span>
+            <div>
+              <span class="lang-ja"><strong>対象企業の事業定義を明文化したか：</strong> セグメント別収益・マージン・バリューチェーン位置・地理エクスポージャーを整理し、ピアセット選定の「設計図」として使っているか</span>
+              <span class="lang-en"><strong>Have you documented the target company's business definition?</strong> Have you organised segment-level revenue/margins, value chain position, and geographic exposure, and used this as the "blueprint" for peer selection?</span>
+            </div>
+          </li>
+          <li>
+            <span class="num">02</span>
+            <div>
+              <span class="lang-ja"><strong>初期ユニバースに十分な幅があるか：</strong> 20社以上の候補企業を起点に検討を始めているか。初期スクリーンを絞りすぎていないか</span>
+              <span class="lang-en"><strong>Is the initial universe sufficiently broad?</strong> Are you starting with 20+ candidate companies? Are you not narrowing the initial screen too tightly?</span>
+            </div>
+          </li>
+          <li>
+            <span class="num">03</span>
+            <div>
+              <span class="lang-ja"><strong>各comparableのAnnual Reportを実際に読んだか：</strong> ビジネス実態の把握はDB上のデータだけでは不十分。少なくともKey Peers全社について一次資料を確認しているか</span>
+              <span class="lang-en"><strong>Have you actually read each comparable's Annual Report?</strong> Understanding business substance is insufficient from database data alone. Have you reviewed primary sources for at least all Key Peers?</span>
+            </div>
+          </li>
+          <li>
+            <span class="num">04</span>
+            <div>
+              <span class="lang-ja"><strong>除外リストを作成したか：</strong> 検討したが除外した企業と、その具体的な除外理由を記録しているか</span>
+              <span class="lang-en"><strong>Have you created an exclusion list?</strong> Have you documented companies that were considered but excluded, along with specific reasons for exclusion?</span>
+            </div>
+          </li>
+          <li>
+            <span class="num">05</span>
+            <div>
+              <span class="lang-ja"><strong>ピアセット変更に対する感応度分析を実施したか：</strong> Tier 1のみ・全Tier・Tier 2を除いた場合等で評価レンジがどう変わるかを確認しているか</span>
+              <span class="lang-en"><strong>Have you conducted sensitivity analysis for peer set changes?</strong> Have you confirmed how the valuation range changes with Tier 1 only, all Tiers, excluding Tier 2, etc.?</span>
+            </div>
+          </li>
+          <li>
+            <span class="num">06</span>
+            <div>
+              <span class="lang-ja"><strong>財務データの標準化を行ったか：</strong> LTM/NTM EBITDAを自ら計算し、非経常項目・会計差異（IFRS16・のれん等）を調整しているか</span>
+              <span class="lang-en"><strong>Have you standardised financial data?</strong> Have you calculated LTM/NTM EBITDA independently and adjusted for non-recurring items and accounting differences (IFRS 16, goodwill, etc.)?</span>
+            </div>
+          </li>
+          <li>
+            <span class="num">07</span>
+            <div>
+              <span class="lang-ja"><strong>成長・規模の差異を明示的に認識しているか：</strong> ピアセット内の成長率・規模の分散が大きい場合、EV/EBITDA to Growthや規模調整を並走させているか</span>
+              <span class="lang-en"><strong>Have you explicitly recognised growth and scale differences?</strong> When there is high dispersion of growth rate and scale within the peer set, are you running EV/EBITDA to Growth and scale adjustments in parallel?</span>
+            </div>
+          </li>
+        </ul>
+
+        <div class="pull-quote">
+          <p>
+            <span class="lang-ja">comparableの選定は、バリュエーション意見の「仮定」の最たるものである。その仮定の根拠を常に問い続け、defensibleな形で文書化すること——これが実務家としての誠実さを示す最も重要な行為の一つである。</span>
+            <span class="lang-en">Comparable selection is the quintessential "assumption" in a valuation opinion. Continuously questioning the basis of that assumption and documenting it in a defensible form — this is one of the most important acts that demonstrates integrity as a practitioner.</span>
+          </p>
+          <footer>— Donato Valuation Notes</footer>
+        </div>
+
+      </article>
+
+      <!-- 4. サイドバー -->
+      <aside class="article-sidebar">
+
+        <div class="sidebar-card">
+          <div class="section-label">KEY CONCEPTS</div>
+          <ul class="highlights-list" style="margin-top: 12px;">
+            <li class="highlight-item">
+              <span class="hl-num">01</span>
+              <span class="hl-text"><span class="lang-ja">比較可能性 = CF類似 + リスク類似 + 成長類似</span><span class="lang-en">Comparability = CF + Risk + Growth similarity</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">02</span>
+              <span class="hl-text"><span class="lang-ja">業種コードは初期フィルタにすぎない</span><span class="lang-en">Industry codes are initial filters only</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">03</span>
+              <span class="hl-text"><span class="lang-ja">ピアセットはTier 1 / Tier 2で階層化する</span><span class="lang-en">Tier the peer set into Tier 1 / Tier 2</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">04</span>
+              <span class="hl-text"><span class="lang-ja">除外リストの文書化が防御力を作る</span><span class="lang-en">Documenting exclusion list builds defensibility</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">05</span>
+              <span class="hl-text"><span class="lang-ja">完全なcomparableは存在しない。重要なのは差異の認識と調整</span><span class="lang-en">Perfect comps don't exist; what matters is recognising and adjusting for differences</span></span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="sidebar-card">
+          <div class="section-label"><span class="lang-ja">comparableなし時の5アプローチ</span><span class="lang-en">5 Approaches When No Comps Exist</span></div>
+          <ul class="highlights-list" style="margin-top: 12px;">
+            <li class="highlight-item">
+              <span class="hl-num">A1</span>
+              <span class="hl-text"><span class="lang-ja">Sum-of-the-Parts（セグメント分解）</span><span class="lang-en">Sum-of-the-Parts (segment decomposition)</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">A2</span>
+              <span class="hl-text"><span class="lang-ja">クロスボーダー（国際comparable）</span><span class="lang-en">Cross-border (international comparables)</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">A3</span>
+              <span class="hl-text"><span class="lang-ja">隣接業界アナロジー</span><span class="lang-en">Adjacent industry analogues</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">A4</span>
+              <span class="hl-text"><span class="lang-ja">マルチプル回帰分析</span><span class="lang-en">Multiple regression approach</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">A5</span>
+              <span class="hl-text"><span class="lang-ja">Transaction Comps + 歴史的マルチプル</span><span class="lang-en">Transaction Comps + historical multiples</span></span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="sidebar-card">
+          <div class="section-label">VALUATION THEORY LAB</div>
+          <ol class="highlights-list" style="list-style:none;padding:0;margin-top:12px;">
+            <li class="highlight-item">
+              <span class="hl-num">01</span>
+              <span class="hl-text"><a href="./2026-03-20-valuation.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">DCFとマルチプルの統一理論</span><span class="lang-en">Unified Theory: DCF and Multiples</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">04</span>
+              <span class="hl-text"><a href="./2026-03-21-wacc.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">WACCの理論と実務</span><span class="lang-en">WACC: Theory and Practice</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">05</span>
+              <span class="hl-text"><a href="./2026-03-21-beta-hamada.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">Beta・Hamada方程式</span><span class="lang-en">Beta and the Hamada Equation</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">06</span>
+              <span class="hl-text"><a href="./2026-03-22-multiples-comparability.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">マルチプルの比較可能性（会計調整）</span><span class="lang-en">Multiples Comparability (Accounting Adjustments)</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">07</span>
+              <span class="hl-text"><a href="./2026-03-22-cyclical.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">Cyclical企業のバリュエーション</span><span class="lang-en">Valuing Cyclical Companies</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">08</span>
+              <span class="hl-text"><a href="./2026-03-23-control-premium.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">コントロールプレミアム理論</span><span class="lang-en">Control Premium Theory</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">09</span>
+              <span class="hl-text"><a href="./2026-03-23-lbo-valuation.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">LBOバリュエーション</span><span class="lang-en">LBO Valuation</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num" style="color:var(--accent-warm);">10</span>
+              <span class="hl-text" style="color:var(--accent);">Comps選定の理論と実務</span>
+            </li>
+          </ol>
+        </div>
+
+        <div class="sidebar-card">
+          <div class="section-label">KEY REFERENCES</div>
+          <ul class="source-list" style="margin-top:10px;">
+            <li><span style="font-family:'Inter',sans-serif;font-size:0.78rem;color:var(--text-body);">Damodaran, A. <em>Investment Valuation</em> (3rd ed.)</span></li>
+            <li><span style="font-family:'Inter',sans-serif;font-size:0.78rem;color:var(--text-body);">Rosenbaum & Pearl, <em>Investment Banking</em> (4th ed.)</span></li>
+            <li><span style="font-family:'Inter',sans-serif;font-size:0.78rem;color:var(--text-body);">Koller, Goedhart & Wessels, <em>Valuation</em> (7th ed.)</span></li>
+            <li><span style="font-family:'Inter',sans-serif;font-size:0.78rem;color:var(--text-body);">Pratt & Niculita, <em>Valuing a Business</em> (5th ed.)</span></li>
+            <li><span style="font-family:'Inter',sans-serif;font-size:0.78rem;color:var(--text-body);">IVSC, <em>IVS 105: Valuation Approaches and Methods</em></span></li>
+          </ul>
+        </div>
+
+      </aside>
+
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <span>Valuation Theory Lab #010 | donato Valuation Notes | 2026-03-28</span>
+  <span>
+    <span class="lang-ja">本稿は理論解説を目的としており、特定の投資・M&A意思決定に対する助言ではありません。個別案件のバリュエーションには専門家の判断を要します。</span>
+    <span class="lang-en">This article is for theoretical educational purposes and does not constitute advice for specific investment or M&A decisions. Individual valuation engagements require professional judgement.</span>
+  </span>
+</footer>
+
+<script>
+  // Progress bar
+  window.addEventListener('scroll', function() {
+    var h = document.documentElement;
+    var pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    document.getElementById('progress-bar').style.width = Math.min(pct, 100) + '%';
+  });
+
+  // Reading time (500字/分)
+  (function() {
+    var text = document.querySelector('.article-body') ? document.querySelector('.article-body').textContent : '';
+    var chars = text.length;
+    var minutes = Math.ceil(chars / 500);
+    var el1 = document.getElementById('reading-time-badge');
+    var el2 = document.getElementById('reading-time-badge2');
+    if (el1) el1.querySelector('.lang-ja').textContent = '約' + minutes + '分';
+    if (el2) el2.querySelector('.lang-ja').textContent = '約' + minutes + '分';
+    if (el1) el1.querySelector('.lang-en').textContent = '~' + minutes + ' min read';
+    if (el2) el2.querySelector('.lang-en').textContent = '~' + minutes + ' min read';
+  })();
+
+  // Lang toggle
+  let currentLang = localStorage.getItem('hp-lang') || 'ja';
+  let currentTheme = localStorage.getItem('hp-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('hp-lang', lang);
+    document.querySelectorAll('.lang-ja').forEach(el => el.style.display = lang === 'ja' ? 'inline' : 'none');
+    document.querySelectorAll('.lang-en').forEach(el => el.style.display = lang === 'en' ? 'inline' : 'none');
+    document.querySelectorAll('.art-lang-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+    document.documentElement.lang = lang === 'ja' ? 'ja' : 'en';
+  }
+  function toggleTheme() {
+    currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+    localStorage.setItem('hp-theme', currentTheme);
+    document.body.classList.toggle('dark', currentTheme === 'dark');
+    document.getElementById('theme-btn').textContent = currentTheme === 'light' ? '☀' : '☾';
+  }
+  document.addEventListener('DOMContentLoaded', () => {
+    setLang(currentLang);
+    if (currentTheme === 'dark') {
+      document.body.classList.add('dark');
+      document.getElementById('theme-btn').textContent = '☾';
+    }
+  });
+</script>
+
+</body>
+</html>

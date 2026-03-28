@@ -170,9 +170,17 @@
       padding: 1.25rem 2rem;
       display: flex;
       gap: 0.5rem;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
+      overflow-x: auto;
       border-bottom: 1px solid var(--border);
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+      -webkit-overflow-scrolling: touch;
     }
+    .cat-nav::-webkit-scrollbar { height: 4px; }
+    .cat-nav::-webkit-scrollbar-track { background: transparent; }
+    .cat-nav::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+    .cat-btn { flex-shrink: 0; }
     .cat-btn {
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.7rem;
@@ -368,6 +376,7 @@
   <div class="cat-nav">
     <a href="#" class="cat-btn all active" onclick="filterArticles('all', event); return false;">All</a>
     <a href="#" class="cat-btn" onclick="filterArticles('ai', event); return false;">AI Models</a>
+    <a href="#" class="cat-btn" onclick="filterArticles('damodaran', event); return false;">Damodaran Watch</a>
     <a href="#" class="cat-btn" onclick="filterArticles('claude-code', event); return false;">Claude Code</a>
     <a href="#" class="cat-btn" onclick="filterArticles('accounting', event); return false;"><span data-en>Accounting</span><span data-ja>会計基準</span></a>
     <a href="#" class="cat-btn" onclick="filterArticles('tax', event); return false;"><span data-en>Tax</span><span data-ja>税法</span></a>
@@ -381,7 +390,7 @@
   <section class="announcements" id="announcements">
     <div class="announce-header"><span data-en>Updates</span><span data-ja>お知らせ</span></div>
     <ul class="announce-list" id="announce-list">
-      <li class="announce-item">
+      <li class="announce-item" data-category="damodaran">
         <span class="announce-date">2026-03-28</span>
         <span class="genre-badge badge-damodaran">Damodaran Watch</span>
         <span class="announce-text">
@@ -389,7 +398,7 @@
           <span data-ja>新着記事: <a href="./2026-03-28-damodaran-investment-philosophy.html">Damodaran Watch #003 — 投資の北極星を見つける：投資哲学の探求</a> を公開しました</span>
         </span>
       </li>
-      <li class="announce-item">
+      <li class="announce-item" data-category="valuation">
         <span class="announce-date">2026-03-28</span>
         <span class="genre-badge badge-valuation">Valuation</span>
         <span class="announce-text">
@@ -397,7 +406,7 @@
           <span data-ja>新着記事: <a href="./2026-03-28-business-model-analysis.html">Valuation Theory Lab #012 — ビジネスモデル分析：収益構造が決めるバリュエーション</a> を公開しました</span>
         </span>
       </li>
-      <li class="announce-item">
+      <li class="announce-item" data-category="valuation">
         <span class="announce-date">2026-03-28</span>
         <span class="genre-badge badge-valuation">Valuation</span>
         <span class="announce-text">
@@ -405,7 +414,7 @@
           <span data-ja>新着記事: <a href="./2026-03-28-industry-analysis.html">Valuation Theory Lab #011 — 業界分析の本質：Compsの前提としての産業理解</a> を公開しました</span>
         </span>
       </li>
-      <li class="announce-item">
+      <li class="announce-item" data-category="valuation">
         <span class="announce-date">2026-03-28</span>
         <span class="genre-badge badge-valuation">Valuation</span>
         <span class="announce-text">
@@ -413,7 +422,7 @@
           <span data-ja>新着記事: <a href="./2026-03-28-comps-selection.html">Valuation Theory Lab #010 — Comps選定の理論と実務：類似企業をどう見極めるか</a> を公開しました</span>
         </span>
       </li>
-      <li class="announce-item">
+      <li class="announce-item" data-category="damodaran">
         <span class="announce-date">2026-03-23</span>
         <span class="genre-badge badge-damodaran">Damodaran Watch</span>
         <span class="announce-text">
@@ -421,7 +430,7 @@
           <span data-ja>新記事: <a href="./2026-03-23-damodaran-erp-monologue.html">Damodaran Watch #002 — リスクの価格：エクイティ・リスク・プレミアム独白</a> を公開しました</span>
         </span>
       </li>
-      <li class="announce-item">
+      <li class="announce-item" data-category="career">
         <span class="announce-date">2026-03-23</span>
         <span class="genre-badge badge-career">Career</span>
         <span class="announce-text">
@@ -429,7 +438,7 @@
           <span data-ja>新着記事: <a href="./2026-03-23-career-job-market.html">AI時代のFinance転職市場 — 採用側が求めるものが変わった</a> を公開しました</span>
         </span>
       </li>
-      <li class="announce-item">
+      <li class="announce-item" data-category="damodaran">
         <span class="announce-date">2026-03-22</span>
         <span class="genre-badge badge-damodaran">Damodaran Watch</span>
         <span class="announce-text">
@@ -437,7 +446,7 @@
           <span data-ja>新連載開始: <a href="./2026-03-22-damodaran-ai-scenarios.html">Damodaran Watch #001 — AIシナリオ：ドゥームズデイから無害なボットまで</a> を公開しました</span>
         </span>
       </li>
-      <li class="announce-item">
+      <li class="announce-item" data-category="ai">
         <span class="announce-date">2026-03-22</span>
         <span class="genre-badge badge-ai">AI</span>
         <span class="announce-text">
@@ -445,7 +454,7 @@
           <span data-ja>新着記事: <a href="./2026-03-22-ai-prompt.html">Context Engineeringの実務 — Finance Professionalが知るべきAI出力品質の設計術</a> を公開しました</span>
         </span>
       </li>
-      <li class="announce-item">
+      <li class="announce-item" data-category="ma">
         <span class="announce-date">2026-03-22</span>
         <span class="genre-badge badge-ma"><span data-en>M&amp;A</span><span data-ja>M&amp;A</span></span>
         <span class="announce-text">
@@ -453,7 +462,7 @@
           <span data-ja>新連載開始: <a href="./2026-03-22-ma-process.html">M&Aプロセス × AI実務 #001 — DDからクロージングまでAIを武器にする</a> を公開しました</span>
         </span>
       </li>
-      <li class="announce-item">
+      <li class="announce-item" data-category="law">
         <span class="announce-date">2026-03-22</span>
         <span class="genre-badge badge-law"><span data-en>Corp. Law</span><span data-ja>企業法・金商法</span></span>
         <span class="announce-text">
@@ -461,7 +470,7 @@
           <span data-ja>新着記事: <a href="./2026-03-22-securities-law.html">企業法・金商法 × AI実務 — 開示規制・インサイダー取引をAIで読み解く</a> を公開しました</span>
         </span>
       </li>
-      <li class="announce-item">
+      <li class="announce-item" data-category="claude-code">
         <span class="announce-date">2026-03-22</span>
         <span class="genre-badge badge-claude-code">Claude Code</span>
         <span class="announce-text">
@@ -469,7 +478,7 @@
           <span data-ja>新連載開始: <a href="./2026-03-22-claude-code-001.html">Claude Code 実践ガイド #001 — ブラウザから卒業する日</a> を公開しました</span>
         </span>
       </li>
-      <li class="announce-item">
+      <li class="announce-item" data-category="claude-code">
         <span class="announce-date">2026-03-22</span>
         <span class="genre-badge badge-claude-code">Claude Code</span>
         <span class="announce-text">
@@ -477,7 +486,7 @@
           <span data-ja><a href="./2026-03-22-claude-code-002.html">Claude Code 実践ガイド #002 — 生産性10倍の使い方</a> を公開しました</span>
         </span>
       </li>
-      <li class="announce-item">
+      <li class="announce-item" data-category="tax">
         <span class="announce-date">2026-03-22</span>
         <span class="genre-badge badge-tax"><span data-en>Tax</span><span data-ja>税法</span></span>
         <span class="announce-text">
@@ -485,7 +494,7 @@
           <span data-ja>新着記事: <a href="./2026-03-22-pillar2.html">Pillar 2グローバルミニマム税 — 日本企業の実務対応チェックリスト2026</a> を公開しました</span>
         </span>
       </li>
-      <li class="announce-item">
+      <li class="announce-item" data-category="valuation">
         <span class="announce-date">2026-03-23</span>
         <span class="genre-badge badge-valuation">Valuation</span>
         <span class="announce-text">
@@ -493,7 +502,7 @@
           <span data-ja>新着記事: <a href="./2026-03-23-lbo-valuation.html">Valuation Theory Lab #009 — LBO Valuation：レバレッジが価値を変えるメカニズム</a> を公開しました</span>
         </span>
       </li>
-      <li class="announce-item">
+      <li class="announce-item" data-category="valuation">
         <span class="announce-date">2026-03-23</span>
         <span class="genre-badge badge-valuation">Valuation</span>
         <span class="announce-text">
@@ -501,7 +510,7 @@
           <span data-ja>新着記事: <a href="./2026-03-23-control-premium.html">Valuation Theory Lab #008 — Control Premium &amp; Synergy Valuation：M&amp;A価格の理論的根拠</a> を公開しました</span>
         </span>
       </li>
-      <li class="announce-item">
+      <li class="announce-item" data-category="valuation">
         <span class="announce-date">2026-03-23</span>
         <span class="genre-badge badge-valuation">Valuation</span>
         <span class="announce-text">
@@ -509,7 +518,7 @@
           <span data-ja>新着記事: <a href="./2026-03-23-normalised-ebitda.html">Valuation Theory Lab #007 — Normalised EBITDA：マルチプル分母の正規化技術</a> を公開しました</span>
         </span>
       </li>
-      <li class="announce-item">
+      <li class="announce-item" data-category="valuation">
         <span class="announce-date">2026-03-22</span>
         <span class="genre-badge badge-valuation">Valuation</span>
         <span class="announce-text">
@@ -517,7 +526,7 @@
           <span data-ja>新着記事: <a href="./2026-03-22-multiples-comparability.html">Valuation Theory Lab #006 — マルチプルの比較可能性：会計基準の差異調整</a> を公開しました</span>
         </span>
       </li>
-      <li class="announce-item">
+      <li class="announce-item" data-category="valuation">
         <span class="announce-date">2026-03-22</span>
         <span class="genre-badge badge-valuation">Valuation</span>
         <span class="announce-text">
@@ -525,7 +534,7 @@
           <span data-ja>新着記事: <a href="./2026-03-22-dloc-dlom.html">Valuation Theory Lab #005 — DLOC・DLOMの理論と実務</a> を公開しました</span>
         </span>
       </li>
-      <li class="announce-item">
+      <li class="announce-item" data-category="valuation">
         <span class="announce-date">2026-03-22</span>
         <span class="genre-badge badge-valuation">Valuation</span>
         <span class="announce-text">
@@ -533,7 +542,7 @@
           <span data-ja>新着記事: <a href="./2026-03-22-cyclical.html">Valuation Theory Lab #004 — シクリカル企業のLTMが罠である理由</a> を公開しました</span>
         </span>
       </li>
-      <li class="announce-item">
+      <li class="announce-item" data-category="career">
         <span class="announce-date">2026-03-21</span>
         <span class="genre-badge badge-career">Career</span>
         <span class="announce-text">
@@ -541,7 +550,7 @@
           <span data-ja>新着記事: <a href="./2026-03-21-career.html">AI時代のFinanceキャリア戦略 — 生き残る人材と消える仕事の分岐点</a> を公開しました</span>
         </span>
       </li>
-      <li class="announce-item">
+      <li class="announce-item" data-category="accounting">
         <span class="announce-date">2026-03-21</span>
         <span class="genre-badge badge-accounting"><span data-en>Accounting</span><span data-ja>会計</span></span>
         <span class="announce-text">
@@ -549,7 +558,7 @@
           <span data-ja>新着記事: <a href="./2026-03-21-ifrs18.html">IFRS 18 完全解説 — 損益計算書の3区分化と経営者業績指標の開示義務</a> を公開しました</span>
         </span>
       </li>
-      <li class="announce-item">
+      <li class="announce-item" data-category="valuation">
         <span class="announce-date">2026-03-21</span>
         <span class="genre-badge badge-valuation">Valuation</span>
         <span class="announce-text">
@@ -557,7 +566,7 @@
           <span data-ja>新着記事: <a href="./2026-03-21-beta-hamada.html">Valuation Theory Lab #003 — Betaを信じる前に考えること</a> を公開しました</span>
         </span>
       </li>
-      <li class="announce-item">
+      <li class="announce-item" data-category="valuation">
         <span class="announce-date">2026-03-21</span>
         <span class="genre-badge badge-valuation">Valuation</span>
         <span class="announce-text">
@@ -565,7 +574,7 @@
           <span data-ja>新着記事: <a href="./2026-03-21-wacc.html">Valuation Theory Lab #002 — WACCは本当に計算できるのか</a> を公開しました</span>
         </span>
       </li>
-      <li class="announce-item">
+      <li class="announce-item" data-category="valuation">
         <span class="announce-date">2026-03-20</span>
         <span class="genre-badge badge-valuation">Valuation</span>
         <span class="announce-text">
@@ -573,7 +582,7 @@
           <span data-ja>新連載開始: <a href="./2026-03-20-valuation.html">Valuation Theory Lab #1 — Terminal ValueはなぜDCFの70-80%を占めるのか</a> を公開しました</span>
         </span>
       </li>
-      <li class="announce-item">
+      <li class="announce-item" data-category="ai">
         <span class="announce-date">2026-03-20</span>
         <span class="genre-badge badge-ai">AI</span>
         <span class="announce-text">
@@ -1097,6 +1106,13 @@
       document.querySelectorAll('.article-card[data-category]').forEach(card => {
         card.style.display = (category === 'all' || card.dataset.category === category) ? 'block' : 'none';
       });
+      var hasVisible = false;
+      document.querySelectorAll('.announce-item[data-category]').forEach(item => {
+        var show = category === 'all' || item.dataset.category === category;
+        item.style.display = show ? 'grid' : 'none';
+        if (show) hasVisible = true;
+      });
+      document.getElementById('announcements').style.display = hasVisible ? 'block' : 'none';
     }
   </script>
 

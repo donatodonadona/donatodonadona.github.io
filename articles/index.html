@@ -171,15 +171,8 @@
       display: flex;
       gap: 0.5rem;
       flex-wrap: wrap;
-      max-height: 5.5rem;
-      overflow-y: auto;
       border-bottom: 1px solid var(--border);
-      scrollbar-width: thin;
-      scrollbar-color: var(--border) transparent;
     }
-    .cat-nav::-webkit-scrollbar { width: 4px; }
-    .cat-nav::-webkit-scrollbar-track { background: transparent; }
-    .cat-nav::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
     .cat-btn {
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.7rem;
@@ -204,6 +197,15 @@
       padding: 1rem 2rem;
       border-bottom: 1px solid var(--border);
     }
+    .announce-list {
+      max-height: 10rem;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+    .announce-list::-webkit-scrollbar { width: 4px; }
+    .announce-list::-webkit-scrollbar-track { background: transparent; }
+    .announce-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
     .announce-header {
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.65rem;

@@ -456,6 +456,17 @@
       font-weight: 500;
     }
 
+    /* ===== BUSINESS MODEL FLOW DIAGRAM ===== */
+    .bm-diagram { margin: 24px 0 8px; }
+    .bm-diagram svg { width: 100%; height: auto; display: block; }
+    .bm-diagram .bm-label { font-family: 'JetBrains Mono', monospace; }
+    .bm-diagram .bm-title { font-family: 'Inter', sans-serif; }
+    .bm-diagram .bm-detail { font-family: 'Inter', sans-serif; }
+    .bm-diagram .lang-en { display: none; }
+    @media (max-width: 900px) {
+      .bm-diagram svg { min-height: 320px; }
+    }
+
     .section-sep {
       text-align: center;
       color: var(--text-light);
@@ -1263,6 +1274,188 @@ LTV/CAC ≥ 3x and CAC Payback ≤ 18 months → Rule of thumb for "healthy grow
           </div>
         </div>
 
+        <!-- Diagram: Case #01 Uber vs. Taxi -->
+        <figure class="bm-diagram" role="figure">
+          <svg viewBox="0 0 660 420" xmlns="http://www.w3.org/2000/svg">
+            <!-- Industry banner -->
+            <rect x="0" y="0" width="660" height="32" rx="0" fill="var(--bg-highlight)" stroke="var(--border-light)"/>
+            <text x="330" y="21" text-anchor="middle" class="bm-label" font-size="10" letter-spacing="0.1em" fill="var(--accent)">
+              <tspan class="lang-ja">旅客輸送業界</tspan><tspan class="lang-en">Passenger Transport Industry</tspan>
+            </text>
+            <!-- Divider -->
+            <line x1="330" y1="44" x2="330" y2="380" stroke="var(--border-light)" stroke-dasharray="4,4"/>
+
+            <!-- ===== LEFT: Uber (Platform) ===== -->
+            <text x="165" y="56" text-anchor="middle" class="bm-label" font-size="9" letter-spacing="0.08em" fill="var(--accent)">
+              <tspan class="lang-ja">プラットフォームモデル</tspan><tspan class="lang-en">Platform Model</tspan>
+            </text>
+            <text x="165" y="74" text-anchor="middle" class="bm-title" font-size="14" font-weight="600" fill="var(--text-primary)">Uber</text>
+
+            <!-- Supply: Drivers -->
+            <rect x="55" y="90" width="220" height="48" rx="4" fill="var(--bg-card)" stroke="var(--border)"/>
+            <text x="72" y="107" class="bm-label" font-size="8" letter-spacing="0.1em" fill="var(--text-muted)">
+              <tspan class="lang-ja">供給側</tspan><tspan class="lang-en">Supply</tspan>
+            </text>
+            <text x="72" y="127" class="bm-title" font-size="11" font-weight="500" fill="var(--text-primary)">
+              <tspan class="lang-ja">個人ドライバー（自家用車）</tspan><tspan class="lang-en">Independent drivers (own cars)</tspan>
+            </text>
+
+            <!-- Arrow: supply → platform -->
+            <line x1="165" y1="138" x2="165" y2="162" stroke="var(--accent)" stroke-width="1.5" marker-end="url(#arrowBlue)"/>
+            <text x="175" y="155" class="bm-detail" font-size="8" fill="var(--text-muted)">
+              <tspan class="lang-ja">運転サービス提供</tspan><tspan class="lang-en">Driving service</tspan>
+            </text>
+
+            <!-- Value creation: Platform -->
+            <rect x="55" y="164" width="220" height="48" rx="4" fill="var(--bg-highlight)" stroke="var(--accent)" stroke-width="1.5"/>
+            <text x="72" y="181" class="bm-label" font-size="8" letter-spacing="0.1em" fill="var(--accent)">
+              <tspan class="lang-ja">価値創造</tspan><tspan class="lang-en">Value Creation</tspan>
+            </text>
+            <text x="72" y="201" class="bm-title" font-size="11" font-weight="500" fill="var(--text-primary)">
+              <tspan class="lang-ja">マッチング・アルゴリズム</tspan><tspan class="lang-en">Matching algorithm</tspan>
+            </text>
+
+            <!-- Arrow: platform → passenger -->
+            <line x1="165" y1="212" x2="165" y2="236" stroke="var(--accent)" stroke-width="1.5" marker-end="url(#arrowBlue)"/>
+            <text x="175" y="229" class="bm-detail" font-size="8" fill="var(--text-muted)">
+              <tspan class="lang-ja">配車</tspan><tspan class="lang-en">Ride</tspan>
+            </text>
+
+            <!-- Demand: Passengers (shared concept) -->
+            <rect x="55" y="238" width="220" height="40" rx="4" fill="var(--bg-card)" stroke="var(--border)"/>
+            <text x="72" y="254" class="bm-label" font-size="8" letter-spacing="0.1em" fill="var(--text-muted)">
+              <tspan class="lang-ja">需要側</tspan><tspan class="lang-en">Demand</tspan>
+            </text>
+            <text x="72" y="270" class="bm-title" font-size="11" font-weight="500" fill="var(--text-primary)">
+              <tspan class="lang-ja">乗客</tspan><tspan class="lang-en">Passengers</tspan>
+            </text>
+
+            <!-- Money flow (gold, upward) -->
+            <line x1="55" y1="258" x2="35" y2="258" stroke="var(--accent-warm)" stroke-width="1.5" stroke-dasharray="4,3"/>
+            <line x1="35" y1="258" x2="35" y2="188" stroke="var(--accent-warm)" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowGold)"/>
+            <text x="10" y="223" class="bm-label" font-size="8" fill="var(--accent-warm)" transform="rotate(-90, 10, 223)">
+              <tspan class="lang-ja">運賃支払い</tspan><tspan class="lang-en">Fare paid</tspan>
+            </text>
+
+            <!-- Revenue box -->
+            <rect x="55" y="290" width="220" height="42" rx="4" fill="none" stroke="var(--accent-warm)" stroke-dasharray="4,3"/>
+            <text x="72" y="305" class="bm-label" font-size="8" letter-spacing="0.1em" fill="var(--accent-warm)">
+              <tspan class="lang-ja">収益構造</tspan><tspan class="lang-en">Revenue</tspan>
+            </text>
+            <text x="72" y="322" class="bm-title" font-size="11" font-weight="600" fill="var(--accent-warm)">Take Rate ~25%</text>
+
+            <!-- Sustainability loop -->
+            <rect x="55" y="342" width="220" height="38" rx="4" fill="var(--bg-subtle)" stroke="var(--border-light)"/>
+            <text x="72" y="357" class="bm-label" font-size="8" letter-spacing="0.1em" fill="var(--accent)">
+              <tspan class="lang-ja">持続性メカニズム</tspan><tspan class="lang-en">Sustainability</tspan>
+            </text>
+            <text x="72" y="373" class="bm-detail" font-size="9" fill="var(--text-body)">
+              <tspan class="lang-ja">クロスサイド・ネットワーク効果（ローカル）</tspan><tspan class="lang-en">Cross-side network effects (local)</tspan>
+            </text>
+
+            <!-- ===== RIGHT: Taxi Company (Pipeline) ===== -->
+            <text x="495" y="56" text-anchor="middle" class="bm-label" font-size="9" letter-spacing="0.08em" fill="var(--text-muted)">
+              <tspan class="lang-ja">パイプラインモデル</tspan><tspan class="lang-en">Pipeline Model</tspan>
+            </text>
+            <text x="495" y="74" text-anchor="middle" class="bm-title" font-size="14" font-weight="600" fill="var(--text-primary)">
+              <tspan class="lang-ja">伝統的タクシー会社</tspan><tspan class="lang-en">Traditional Taxi Co.</tspan>
+            </text>
+
+            <!-- Supply: Vehicles + Drivers -->
+            <rect x="385" y="90" width="220" height="48" rx="4" fill="var(--bg-card)" stroke="var(--border)"/>
+            <text x="402" y="107" class="bm-label" font-size="8" letter-spacing="0.1em" fill="var(--text-muted)">
+              <tspan class="lang-ja">供給側</tspan><tspan class="lang-en">Supply</tspan>
+            </text>
+            <text x="402" y="127" class="bm-title" font-size="11" font-weight="500" fill="var(--text-primary)">
+              <tspan class="lang-ja">自社車両＋雇用ドライバー</tspan><tspan class="lang-en">Owned fleet + employed drivers</tspan>
+            </text>
+
+            <!-- Arrow: supply → company -->
+            <line x1="495" y1="138" x2="495" y2="162" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arrowGray)"/>
+            <text x="505" y="155" class="bm-detail" font-size="8" fill="var(--text-muted)">
+              <tspan class="lang-ja">車両購入・人件費</tspan><tspan class="lang-en">Fleet cost + wages</tspan>
+            </text>
+
+            <!-- Value creation: Dispatch -->
+            <rect x="385" y="164" width="220" height="48" rx="4" fill="var(--bg-card)" stroke="var(--border)"/>
+            <text x="402" y="181" class="bm-label" font-size="8" letter-spacing="0.1em" fill="var(--text-muted)">
+              <tspan class="lang-ja">価値創造</tspan><tspan class="lang-en">Value Creation</tspan>
+            </text>
+            <text x="402" y="201" class="bm-title" font-size="11" font-weight="500" fill="var(--text-primary)">
+              <tspan class="lang-ja">配車・運転サービス（自社運営）</tspan><tspan class="lang-en">Dispatch + driving (in-house)</tspan>
+            </text>
+
+            <!-- Arrow: company → passenger -->
+            <line x1="495" y1="212" x2="495" y2="236" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arrowGray)"/>
+            <text x="505" y="229" class="bm-detail" font-size="8" fill="var(--text-muted)">
+              <tspan class="lang-ja">配車</tspan><tspan class="lang-en">Ride</tspan>
+            </text>
+
+            <!-- Demand: Passengers -->
+            <rect x="385" y="238" width="220" height="40" rx="4" fill="var(--bg-card)" stroke="var(--border)"/>
+            <text x="402" y="254" class="bm-label" font-size="8" letter-spacing="0.1em" fill="var(--text-muted)">
+              <tspan class="lang-ja">需要側</tspan><tspan class="lang-en">Demand</tspan>
+            </text>
+            <text x="402" y="270" class="bm-title" font-size="11" font-weight="500" fill="var(--text-primary)">
+              <tspan class="lang-ja">乗客（同じ顧客）</tspan><tspan class="lang-en">Passengers (same customer)</tspan>
+            </text>
+
+            <!-- Money flow (gold, upward) -->
+            <line x1="605" y1="258" x2="625" y2="258" stroke="var(--accent-warm)" stroke-width="1.5" stroke-dasharray="4,3"/>
+            <line x1="625" y1="258" x2="625" y2="188" stroke="var(--accent-warm)" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowGold)"/>
+            <text x="650" y="223" class="bm-label" font-size="8" fill="var(--accent-warm)" transform="rotate(90, 650, 223)">
+              <tspan class="lang-ja">運賃支払い</tspan><tspan class="lang-en">Fare paid</tspan>
+            </text>
+
+            <!-- Revenue box -->
+            <rect x="385" y="290" width="220" height="42" rx="4" fill="none" stroke="var(--text-muted)" stroke-dasharray="4,3"/>
+            <text x="402" y="305" class="bm-label" font-size="8" letter-spacing="0.1em" fill="var(--text-muted)">
+              <tspan class="lang-ja">収益構造</tspan><tspan class="lang-en">Revenue</tspan>
+            </text>
+            <text x="402" y="322" class="bm-detail" font-size="10" fill="var(--text-body)">
+              <tspan class="lang-ja">運賃100% - 車両費 - 人件費 - 燃料 = 営業利益率 ~5%</tspan><tspan class="lang-en">100% fare - fleet - wages - fuel = OPM ~5%</tspan>
+            </text>
+
+            <!-- Sustainability -->
+            <rect x="385" y="342" width="220" height="38" rx="4" fill="var(--bg-subtle)" stroke="var(--border-light)"/>
+            <text x="402" y="357" class="bm-label" font-size="8" letter-spacing="0.1em" fill="var(--text-muted)">
+              <tspan class="lang-ja">持続性メカニズム</tspan><tspan class="lang-en">Sustainability</tspan>
+            </text>
+            <text x="402" y="373" class="bm-detail" font-size="9" fill="var(--text-body)">
+              <tspan class="lang-ja">規制ライセンス（無形資産）</tspan><tspan class="lang-en">Regulatory licence (intangible asset)</tspan>
+            </text>
+
+            <!-- "Same customer" bridge -->
+            <line x1="275" y1="258" x2="385" y2="258" stroke="var(--accent)" stroke-width="1" stroke-dasharray="2,3"/>
+            <text x="330" y="250" text-anchor="middle" class="bm-label" font-size="7" fill="var(--accent)">
+              <tspan class="lang-ja">同じ顧客ニーズ</tspan><tspan class="lang-en">Same customer need</tspan>
+            </text>
+
+            <!-- Legend -->
+            <line x1="20" y1="405" x2="40" y2="405" stroke="var(--accent)" stroke-width="1.5"/>
+            <text x="45" y="408" class="bm-detail" font-size="8" fill="var(--text-muted)">
+              <tspan class="lang-ja">価値の流れ</tspan><tspan class="lang-en">Value flow</tspan>
+            </text>
+            <line x1="130" y1="405" x2="150" y2="405" stroke="var(--accent-warm)" stroke-width="1.5" stroke-dasharray="4,3"/>
+            <text x="155" y="408" class="bm-detail" font-size="8" fill="var(--text-muted)">
+              <tspan class="lang-ja">カネの流れ</tspan><tspan class="lang-en">Money flow</tspan>
+            </text>
+
+            <!-- Arrow markers -->
+            <defs>
+              <marker id="arrowBlue" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+                <path d="M0,0 L8,3 L0,6" fill="var(--accent)"/>
+              </marker>
+              <marker id="arrowGold" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+                <path d="M0,0 L8,3 L0,6" fill="var(--accent-warm)"/>
+              </marker>
+              <marker id="arrowGray" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+                <path d="M0,0 L8,3 L0,6" fill="var(--text-muted)"/>
+              </marker>
+            </defs>
+          </svg>
+        </figure>
+
         <!-- Case 2: Netflix vs. Cinema -->
         <div class="case-box">
           <div class="case-label">Case #02</div>
@@ -1286,6 +1479,157 @@ LTV/CAC ≥ 3x and CAC Payback ≤ 18 months → Rule of thumb for "healthy grow
           </div>
         </div>
 
+        <!-- Diagram: Case #02 Netflix vs. Cinema -->
+        <figure class="bm-diagram" role="figure">
+          <svg viewBox="0 0 660 420" xmlns="http://www.w3.org/2000/svg">
+            <rect x="0" y="0" width="660" height="32" rx="0" fill="var(--bg-highlight)" stroke="var(--border-light)"/>
+            <text x="330" y="21" text-anchor="middle" class="bm-label" font-size="10" letter-spacing="0.1em" fill="var(--accent)">
+              <tspan class="lang-ja">映像エンターテインメント業界</tspan><tspan class="lang-en">Visual Entertainment Industry</tspan>
+            </text>
+            <line x1="330" y1="44" x2="330" y2="380" stroke="var(--border-light)" stroke-dasharray="4,4"/>
+
+            <!-- LEFT: Netflix (Subscription) -->
+            <text x="165" y="56" text-anchor="middle" class="bm-label" font-size="9" letter-spacing="0.08em" fill="var(--accent)">
+              <tspan class="lang-ja">サブスクリプションモデル</tspan><tspan class="lang-en">Subscription Model</tspan>
+            </text>
+            <text x="165" y="74" text-anchor="middle" class="bm-title" font-size="14" font-weight="600" fill="var(--text-primary)">Netflix</text>
+
+            <rect x="55" y="90" width="220" height="48" rx="4" fill="var(--bg-card)" stroke="var(--border)"/>
+            <text x="72" y="107" class="bm-label" font-size="8" letter-spacing="0.1em" fill="var(--text-muted)">
+              <tspan class="lang-ja">供給側</tspan><tspan class="lang-en">Supply</tspan>
+            </text>
+            <text x="72" y="127" class="bm-title" font-size="11" font-weight="500" fill="var(--text-primary)">
+              <tspan class="lang-ja">自社制作 + スタジオ（ライセンス）</tspan><tspan class="lang-en">Own production + studio licences</tspan>
+            </text>
+
+            <line x1="165" y1="138" x2="165" y2="162" stroke="var(--accent)" stroke-width="1.5" marker-end="url(#arrowBlue)"/>
+            <text x="175" y="155" class="bm-detail" font-size="8" fill="var(--text-muted)">
+              <tspan class="lang-ja">コンテンツ（償却資産）</tspan><tspan class="lang-en">Content (amortised asset)</tspan>
+            </text>
+
+            <rect x="55" y="164" width="220" height="48" rx="4" fill="var(--bg-highlight)" stroke="var(--accent)" stroke-width="1.5"/>
+            <text x="72" y="181" class="bm-label" font-size="8" letter-spacing="0.1em" fill="var(--accent)">
+              <tspan class="lang-ja">価値創造</tspan><tspan class="lang-en">Value Creation</tspan>
+            </text>
+            <text x="72" y="201" class="bm-title" font-size="11" font-weight="500" fill="var(--text-primary)">
+              <tspan class="lang-ja">グローバル配信（限界費用 ≈ 0）</tspan><tspan class="lang-en">Global streaming (marginal cost ≈ 0)</tspan>
+            </text>
+
+            <line x1="165" y1="212" x2="165" y2="236" stroke="var(--accent)" stroke-width="1.5" marker-end="url(#arrowBlue)"/>
+            <text x="175" y="229" class="bm-detail" font-size="8" fill="var(--text-muted)">
+              <tspan class="lang-ja">無制限視聴</tspan><tspan class="lang-en">Unlimited viewing</tspan>
+            </text>
+
+            <rect x="55" y="238" width="220" height="40" rx="4" fill="var(--bg-card)" stroke="var(--border)"/>
+            <text x="72" y="254" class="bm-label" font-size="8" letter-spacing="0.1em" fill="var(--text-muted)">
+              <tspan class="lang-ja">需要側</tspan><tspan class="lang-en">Demand</tspan>
+            </text>
+            <text x="72" y="270" class="bm-title" font-size="11" font-weight="500" fill="var(--text-primary)">
+              <tspan class="lang-ja">2億+有料会員</tspan><tspan class="lang-en">200M+ paid members</tspan>
+            </text>
+
+            <line x1="55" y1="258" x2="35" y2="258" stroke="var(--accent-warm)" stroke-width="1.5" stroke-dasharray="4,3"/>
+            <line x1="35" y1="258" x2="35" y2="188" stroke="var(--accent-warm)" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowGold)"/>
+
+            <rect x="55" y="290" width="220" height="42" rx="4" fill="none" stroke="var(--accent-warm)" stroke-dasharray="4,3"/>
+            <text x="72" y="305" class="bm-label" font-size="8" letter-spacing="0.1em" fill="var(--accent-warm)">
+              <tspan class="lang-ja">収益構造</tspan><tspan class="lang-en">Revenue</tspan>
+            </text>
+            <text x="72" y="322" class="bm-title" font-size="10" font-weight="600" fill="var(--accent-warm)">
+              <tspan class="lang-ja">月額固定 × 2億人（非契約型）</tspan><tspan class="lang-en">Monthly fixed × 200M (non-contractual)</tspan>
+            </text>
+
+            <rect x="55" y="342" width="220" height="38" rx="4" fill="var(--bg-subtle)" stroke="var(--border-light)"/>
+            <text x="72" y="357" class="bm-label" font-size="8" letter-spacing="0.1em" fill="var(--accent)">
+              <tspan class="lang-ja">持続性メカニズム</tspan><tspan class="lang-en">Sustainability</tspan>
+            </text>
+            <text x="72" y="373" class="bm-detail" font-size="9" fill="var(--text-body)">
+              <tspan class="lang-ja">コンテンツライブラリ + レコメンド + 規模の経済</tspan><tspan class="lang-en">Content library + recommendation + scale</tspan>
+            </text>
+
+            <!-- RIGHT: Cinema (Transactional) -->
+            <text x="495" y="56" text-anchor="middle" class="bm-label" font-size="9" letter-spacing="0.08em" fill="var(--text-muted)">
+              <tspan class="lang-ja">取引型モデル</tspan><tspan class="lang-en">Transactional Model</tspan>
+            </text>
+            <text x="495" y="74" text-anchor="middle" class="bm-title" font-size="14" font-weight="600" fill="var(--text-primary)">
+              <tspan class="lang-ja">映画館チェーン（AMC）</tspan><tspan class="lang-en">Cinema Chain (AMC)</tspan>
+            </text>
+
+            <rect x="385" y="90" width="220" height="48" rx="4" fill="var(--bg-card)" stroke="var(--border)"/>
+            <text x="402" y="107" class="bm-label" font-size="8" letter-spacing="0.1em" fill="var(--text-muted)">
+              <tspan class="lang-ja">供給側</tspan><tspan class="lang-en">Supply</tspan>
+            </text>
+            <text x="402" y="127" class="bm-title" font-size="11" font-weight="500" fill="var(--text-primary)">
+              <tspan class="lang-ja">スタジオ（上映ごとライセンス料）</tspan><tspan class="lang-en">Studios (per-screening licence fee)</tspan>
+            </text>
+
+            <line x1="495" y1="138" x2="495" y2="162" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arrowGray)"/>
+            <text x="505" y="155" class="bm-detail" font-size="8" fill="var(--text-muted)">
+              <tspan class="lang-ja">配給権料（都度）</tspan><tspan class="lang-en">Distribution fee (per showing)</tspan>
+            </text>
+
+            <rect x="385" y="164" width="220" height="48" rx="4" fill="var(--bg-card)" stroke="var(--border)"/>
+            <text x="402" y="181" class="bm-label" font-size="8" letter-spacing="0.1em" fill="var(--text-muted)">
+              <tspan class="lang-ja">価値創造</tspan><tspan class="lang-en">Value Creation</tspan>
+            </text>
+            <text x="402" y="201" class="bm-title" font-size="11" font-weight="500" fill="var(--text-primary)">
+              <tspan class="lang-ja">物理スクリーン上映（座席数制約）</tspan><tspan class="lang-en">Physical screening (seat-limited)</tspan>
+            </text>
+
+            <line x1="495" y1="212" x2="495" y2="236" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arrowGray)"/>
+            <text x="505" y="229" class="bm-detail" font-size="8" fill="var(--text-muted)">
+              <tspan class="lang-ja">1回の鑑賞体験</tspan><tspan class="lang-en">Single viewing</tspan>
+            </text>
+
+            <rect x="385" y="238" width="220" height="40" rx="4" fill="var(--bg-card)" stroke="var(--border)"/>
+            <text x="402" y="254" class="bm-label" font-size="8" letter-spacing="0.1em" fill="var(--text-muted)">
+              <tspan class="lang-ja">需要側</tspan><tspan class="lang-en">Demand</tspan>
+            </text>
+            <text x="402" y="270" class="bm-title" font-size="11" font-weight="500" fill="var(--text-primary)">
+              <tspan class="lang-ja">映画鑑賞者（同じ顧客）</tspan><tspan class="lang-en">Moviegoers (same customer)</tspan>
+            </text>
+
+            <line x1="605" y1="258" x2="625" y2="258" stroke="var(--accent-warm)" stroke-width="1.5" stroke-dasharray="4,3"/>
+            <line x1="625" y1="258" x2="625" y2="188" stroke="var(--accent-warm)" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowGold)"/>
+
+            <rect x="385" y="290" width="220" height="42" rx="4" fill="none" stroke="var(--text-muted)" stroke-dasharray="4,3"/>
+            <text x="402" y="305" class="bm-label" font-size="8" letter-spacing="0.1em" fill="var(--text-muted)">
+              <tspan class="lang-ja">収益構造</tspan><tspan class="lang-en">Revenue</tspan>
+            </text>
+            <text x="402" y="322" class="bm-detail" font-size="10" fill="var(--text-body)">
+              <tspan class="lang-ja">チケット（~50%配給分配）+ コンセッション</tspan><tspan class="lang-en">Tickets (~50% to studio) + concessions</tspan>
+            </text>
+
+            <rect x="385" y="342" width="220" height="38" rx="4" fill="var(--bg-subtle)" stroke="var(--border-light)"/>
+            <text x="402" y="357" class="bm-label" font-size="8" letter-spacing="0.1em" fill="var(--text-muted)">
+              <tspan class="lang-ja">持続性メカニズム</tspan><tspan class="lang-en">Sustainability</tspan>
+            </text>
+            <text x="402" y="373" class="bm-detail" font-size="9" fill="var(--text-body)">
+              <tspan class="lang-ja">立地独占（弱い・縮小中）</tspan><tspan class="lang-en">Location monopoly (weak, eroding)</tspan>
+            </text>
+
+            <line x1="275" y1="258" x2="385" y2="258" stroke="var(--accent)" stroke-width="1" stroke-dasharray="2,3"/>
+            <text x="330" y="250" text-anchor="middle" class="bm-label" font-size="7" fill="var(--accent)">
+              <tspan class="lang-ja">同じ顧客ニーズ</tspan><tspan class="lang-en">Same customer need</tspan>
+            </text>
+
+            <line x1="20" y1="405" x2="40" y2="405" stroke="var(--accent)" stroke-width="1.5"/>
+            <text x="45" y="408" class="bm-detail" font-size="8" fill="var(--text-muted)">
+              <tspan class="lang-ja">価値の流れ</tspan><tspan class="lang-en">Value flow</tspan>
+            </text>
+            <line x1="130" y1="405" x2="150" y2="405" stroke="var(--accent-warm)" stroke-width="1.5" stroke-dasharray="4,3"/>
+            <text x="155" y="408" class="bm-detail" font-size="8" fill="var(--text-muted)">
+              <tspan class="lang-ja">カネの流れ</tspan><tspan class="lang-en">Money flow</tspan>
+            </text>
+
+            <defs>
+              <marker id="arrowBlue2" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="var(--accent)"/></marker>
+              <marker id="arrowGold2" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="var(--accent-warm)"/></marker>
+              <marker id="arrowGray2" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="var(--text-muted)"/></marker>
+            </defs>
+          </svg>
+        </figure>
+
         <!-- Case 3: Shopify vs. Department Store -->
         <div class="case-box">
           <div class="case-label">Case #03</div>
@@ -1308,6 +1652,157 @@ LTV/CAC ≥ 3x and CAC Payback ≤ 18 months → Rule of thumb for "healthy grow
             <span class="lang-en">Lesson: A Comps set grouping Shopify with department stores under "retail-related" is invalid. Shopify's Comps are e-commerce infrastructure firms like BigCommerce and WooCommerce (Automattic)</span>
           </div>
         </div>
+
+        <!-- Diagram: Case #03 Shopify vs. Department Store -->
+        <figure class="bm-diagram" role="figure">
+          <svg viewBox="0 0 660 420" xmlns="http://www.w3.org/2000/svg">
+            <rect x="0" y="0" width="660" height="32" rx="0" fill="var(--bg-highlight)" stroke="var(--border-light)"/>
+            <text x="330" y="21" text-anchor="middle" class="bm-label" font-size="10" letter-spacing="0.1em" fill="var(--accent)">
+              <tspan class="lang-ja">小売インフラ業界</tspan><tspan class="lang-en">Retail Infrastructure Industry</tspan>
+            </text>
+            <line x1="330" y1="44" x2="330" y2="380" stroke="var(--border-light)" stroke-dasharray="4,4"/>
+
+            <!-- LEFT: Shopify (Enabler) -->
+            <text x="165" y="56" text-anchor="middle" class="bm-label" font-size="9" letter-spacing="0.08em" fill="var(--accent)">
+              <tspan class="lang-ja">Enablerモデル</tspan><tspan class="lang-en">Enabler Model</tspan>
+            </text>
+            <text x="165" y="74" text-anchor="middle" class="bm-title" font-size="14" font-weight="600" fill="var(--text-primary)">Shopify</text>
+
+            <rect x="55" y="90" width="220" height="48" rx="4" fill="var(--bg-card)" stroke="var(--border)"/>
+            <text x="72" y="107" class="bm-label" font-size="8" letter-spacing="0.1em" fill="var(--text-muted)">
+              <tspan class="lang-ja">供給側</tspan><tspan class="lang-en">Supply</tspan>
+            </text>
+            <text x="72" y="127" class="bm-title" font-size="11" font-weight="500" fill="var(--text-primary)">
+              <tspan class="lang-ja">マーチャント（自ら商品を持つ）</tspan><tspan class="lang-en">Merchants (bring own products)</tspan>
+            </text>
+
+            <line x1="165" y1="138" x2="165" y2="162" stroke="var(--accent)" stroke-width="1.5" marker-end="url(#arrowBlue)"/>
+            <text x="175" y="155" class="bm-detail" font-size="8" fill="var(--text-muted)">
+              <tspan class="lang-ja">在庫リスクなし</tspan><tspan class="lang-en">Zero inventory risk</tspan>
+            </text>
+
+            <rect x="55" y="164" width="220" height="48" rx="4" fill="var(--bg-highlight)" stroke="var(--accent)" stroke-width="1.5"/>
+            <text x="72" y="181" class="bm-label" font-size="8" letter-spacing="0.1em" fill="var(--accent)">
+              <tspan class="lang-ja">価値創造</tspan><tspan class="lang-en">Value Creation</tspan>
+            </text>
+            <text x="72" y="201" class="bm-title" font-size="11" font-weight="500" fill="var(--text-primary)">
+              <tspan class="lang-ja">ECプラットフォーム + 決済 + 物流</tspan><tspan class="lang-en">E-commerce platform + payments + logistics</tspan>
+            </text>
+
+            <line x1="165" y1="212" x2="165" y2="236" stroke="var(--accent)" stroke-width="1.5" marker-end="url(#arrowBlue)"/>
+            <text x="175" y="229" class="bm-detail" font-size="8" fill="var(--text-muted)">
+              <tspan class="lang-ja">オンライン店舗</tspan><tspan class="lang-en">Online store</tspan>
+            </text>
+
+            <rect x="55" y="238" width="220" height="40" rx="4" fill="var(--bg-card)" stroke="var(--border)"/>
+            <text x="72" y="254" class="bm-label" font-size="8" letter-spacing="0.1em" fill="var(--text-muted)">
+              <tspan class="lang-ja">需要側</tspan><tspan class="lang-en">Demand</tspan>
+            </text>
+            <text x="72" y="270" class="bm-title" font-size="11" font-weight="500" fill="var(--text-primary)">
+              <tspan class="lang-ja">消費者</tspan><tspan class="lang-en">Consumers</tspan>
+            </text>
+
+            <line x1="55" y1="258" x2="35" y2="258" stroke="var(--accent-warm)" stroke-width="1.5" stroke-dasharray="4,3"/>
+            <line x1="35" y1="258" x2="35" y2="188" stroke="var(--accent-warm)" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowGold)"/>
+
+            <rect x="55" y="290" width="220" height="42" rx="4" fill="none" stroke="var(--accent-warm)" stroke-dasharray="4,3"/>
+            <text x="72" y="305" class="bm-label" font-size="8" letter-spacing="0.1em" fill="var(--accent-warm)">
+              <tspan class="lang-ja">収益構造</tspan><tspan class="lang-en">Revenue</tspan>
+            </text>
+            <text x="72" y="322" class="bm-title" font-size="10" font-weight="600" fill="var(--accent-warm)">
+              <tspan class="lang-ja">月額サブスク + 決済手数料（粗利50%+）</tspan><tspan class="lang-en">Monthly sub + payment fees (GM 50%+)</tspan>
+            </text>
+
+            <rect x="55" y="342" width="220" height="38" rx="4" fill="var(--bg-subtle)" stroke="var(--border-light)"/>
+            <text x="72" y="357" class="bm-label" font-size="8" letter-spacing="0.1em" fill="var(--accent)">
+              <tspan class="lang-ja">持続性メカニズム</tspan><tspan class="lang-en">Sustainability</tspan>
+            </text>
+            <text x="72" y="373" class="bm-detail" font-size="9" fill="var(--text-body)">
+              <tspan class="lang-ja">スイッチングコスト（店舗全体がShopify上）</tspan><tspan class="lang-en">Switching costs (entire store on Shopify)</tspan>
+            </text>
+
+            <!-- RIGHT: Department Store (Inventory Risk) -->
+            <text x="495" y="56" text-anchor="middle" class="bm-label" font-size="9" letter-spacing="0.08em" fill="var(--text-muted)">
+              <tspan class="lang-ja">在庫リスクモデル</tspan><tspan class="lang-en">Inventory Risk Model</tspan>
+            </text>
+            <text x="495" y="74" text-anchor="middle" class="bm-title" font-size="14" font-weight="600" fill="var(--text-primary)">
+              <tspan class="lang-ja">百貨店</tspan><tspan class="lang-en">Department Store</tspan>
+            </text>
+
+            <rect x="385" y="90" width="220" height="48" rx="4" fill="var(--bg-card)" stroke="var(--border)"/>
+            <text x="402" y="107" class="bm-label" font-size="8" letter-spacing="0.1em" fill="var(--text-muted)">
+              <tspan class="lang-ja">供給側</tspan><tspan class="lang-en">Supply</tspan>
+            </text>
+            <text x="402" y="127" class="bm-title" font-size="11" font-weight="500" fill="var(--text-primary)">
+              <tspan class="lang-ja">ブランド/卸売業者 → 在庫仕入れ</tspan><tspan class="lang-en">Brands / wholesalers → inventory purchase</tspan>
+            </text>
+
+            <line x1="495" y1="138" x2="495" y2="162" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arrowGray)"/>
+            <text x="505" y="155" class="bm-detail" font-size="8" fill="var(--text-muted)">
+              <tspan class="lang-ja">在庫リスク負担</tspan><tspan class="lang-en">Inventory risk borne</tspan>
+            </text>
+
+            <rect x="385" y="164" width="220" height="48" rx="4" fill="var(--bg-card)" stroke="var(--border)"/>
+            <text x="402" y="181" class="bm-label" font-size="8" letter-spacing="0.1em" fill="var(--text-muted)">
+              <tspan class="lang-ja">価値創造</tspan><tspan class="lang-en">Value Creation</tspan>
+            </text>
+            <text x="402" y="201" class="bm-title" font-size="11" font-weight="500" fill="var(--text-primary)">
+              <tspan class="lang-ja">物理店舗（不動産 + 人件費 + 在庫管理）</tspan><tspan class="lang-en">Physical store (real estate + labour + stock)</tspan>
+            </text>
+
+            <line x1="495" y1="212" x2="495" y2="236" stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arrowGray)"/>
+            <text x="505" y="229" class="bm-detail" font-size="8" fill="var(--text-muted)">
+              <tspan class="lang-ja">店舗ごとに固定費追加</tspan><tspan class="lang-en">Fixed cost per new location</tspan>
+            </text>
+
+            <rect x="385" y="238" width="220" height="40" rx="4" fill="var(--bg-card)" stroke="var(--border)"/>
+            <text x="402" y="254" class="bm-label" font-size="8" letter-spacing="0.1em" fill="var(--text-muted)">
+              <tspan class="lang-ja">需要側</tspan><tspan class="lang-en">Demand</tspan>
+            </text>
+            <text x="402" y="270" class="bm-title" font-size="11" font-weight="500" fill="var(--text-primary)">
+              <tspan class="lang-ja">消費者（同じ顧客）</tspan><tspan class="lang-en">Consumers (same customer)</tspan>
+            </text>
+
+            <line x1="605" y1="258" x2="625" y2="258" stroke="var(--accent-warm)" stroke-width="1.5" stroke-dasharray="4,3"/>
+            <line x1="625" y1="258" x2="625" y2="188" stroke="var(--accent-warm)" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowGold)"/>
+
+            <rect x="385" y="290" width="220" height="42" rx="4" fill="none" stroke="var(--text-muted)" stroke-dasharray="4,3"/>
+            <text x="402" y="305" class="bm-label" font-size="8" letter-spacing="0.1em" fill="var(--text-muted)">
+              <tspan class="lang-ja">収益構造</tspan><tspan class="lang-en">Revenue</tspan>
+            </text>
+            <text x="402" y="322" class="bm-detail" font-size="10" fill="var(--text-body)">
+              <tspan class="lang-ja">小売マージン（粗利30-40%、営業利益率 &lt;5%）</tspan><tspan class="lang-en">Retail margin (GM 30-40%, OPM &lt;5%)</tspan>
+            </text>
+
+            <rect x="385" y="342" width="220" height="38" rx="4" fill="var(--bg-subtle)" stroke="var(--border-light)"/>
+            <text x="402" y="357" class="bm-label" font-size="8" letter-spacing="0.1em" fill="var(--text-muted)">
+              <tspan class="lang-ja">持続性メカニズム</tspan><tspan class="lang-en">Sustainability</tspan>
+            </text>
+            <text x="402" y="373" class="bm-detail" font-size="9" fill="var(--text-body)">
+              <tspan class="lang-ja">立地 + ブランド（縮小中）</tspan><tspan class="lang-en">Location + brand (eroding)</tspan>
+            </text>
+
+            <line x1="275" y1="258" x2="385" y2="258" stroke="var(--accent)" stroke-width="1" stroke-dasharray="2,3"/>
+            <text x="330" y="250" text-anchor="middle" class="bm-label" font-size="7" fill="var(--accent)">
+              <tspan class="lang-ja">同じ顧客ニーズ</tspan><tspan class="lang-en">Same customer need</tspan>
+            </text>
+
+            <line x1="20" y1="405" x2="40" y2="405" stroke="var(--accent)" stroke-width="1.5"/>
+            <text x="45" y="408" class="bm-detail" font-size="8" fill="var(--text-muted)">
+              <tspan class="lang-ja">価値の流れ</tspan><tspan class="lang-en">Value flow</tspan>
+            </text>
+            <line x1="130" y1="405" x2="150" y2="405" stroke="var(--accent-warm)" stroke-width="1.5" stroke-dasharray="4,3"/>
+            <text x="155" y="408" class="bm-detail" font-size="8" fill="var(--text-muted)">
+              <tspan class="lang-ja">カネの流れ</tspan><tspan class="lang-en">Money flow</tspan>
+            </text>
+
+            <defs>
+              <marker id="arrowBlue3" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="var(--accent)"/></marker>
+              <marker id="arrowGold3" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="var(--accent-warm)"/></marker>
+              <marker id="arrowGray3" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="var(--text-muted)"/></marker>
+            </defs>
+          </svg>
+        </figure>
 
         <div class="section-sep">···</div>
 

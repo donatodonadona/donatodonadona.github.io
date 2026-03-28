@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="同じ業界でもビジネスモデルが異なれば10倍のマルチプル差が生じる。サブスクリプション・プラットフォーム・アセットライトの3類型を軸に、ユニットエコノミクス、競争優位（Economic Moat）の源泉、ビジネスモデルがバリュエーション指標の選択を根本的に変えるメカニズムを体系化。Valuation Theory Lab #012。">
+  <title>ビジネスモデル分析 — 収益構造が決めるバリュエーション | Valuation Theory Lab #012 | donato</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+JP:wght@300;400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../brand.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:           #F8F7F4;
+      --bg-code:      #EEECEA;
+      --bg-quote:     #EEECEA;
+      --bg-highlight: #EBF3FB;
+      --bg-subtle:    #F0EFEB;
+      --bg-card:      #F0EFEB;
+      --bg-header:    #F8F7F4;
+      --text-primary: #111320;
+      --text-body:    #2A2C3E;
+      --text-muted:   #565C70;
+      --text-light:   #888EA0;
+      --accent:       #1A6EB0;
+      --accent-warm:  #D4A010;
+      --border:       #D4D2CC;
+      --border-quote: #B8B6B0;
+      --border-light: #D4D2CC;
+      --tag-bg:       #E4EFF8;
+      --tag-text:     #1A6EB0;
+      --table-stripe: #F0EFEB;
+    }
+
+    #progress-bar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      width: 0%;
+      background: var(--accent);
+      z-index: 300;
+      transition: width 0.1s linear;
+    }
+
+    body {
+      font-family: 'Noto Serif JP', Georgia, serif;
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--text-primary);
+      background: var(--bg);
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg-header);
+      border-bottom: 2px solid var(--accent);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .site-header-left { display: flex; align-items: center; gap: 12px; }
+    .wordmark {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: lowercase;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+    .wordmark span { color: var(--accent-warm); }
+    .header-sep { color: var(--border-quote); font-size: 13px; }
+    .header-media {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+    }
+    .site-header-right { display: flex; align-items: center; gap: 12px; }
+    .header-back-link {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .header-back-link:hover { color: var(--accent); }
+    .lang-toggle-bar {
+      display: flex;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .art-lang-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      padding: 3px 10px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .art-lang-btn.active { background: #F5C800; color: #111320; }
+    #theme-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      padding: 3px 9px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.15s;
+    }
+    #theme-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .header-date {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-light);
+      letter-spacing: 0.08em;
+    }
+
+    #sticky-bar {
+      position: sticky;
+      top: 44px;
+      z-index: 200;
+      background: var(--bg-subtle);
+      border-bottom: 1px solid var(--border-light);
+      padding: 7px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .sbar-cat {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+    }
+    .sbar-sep { color: var(--border-quote); font-size: 11px; }
+    .sbar-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+    .sbar-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      padding: 2px 8px;
+    }
+
+    .article-container { max-width: 1240px; margin: 0 auto; padding: 0 20px; }
+    .article-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 24px;
+    }
+    .article-body { grid-column: 2 / 10; max-width: 68ch; }
+    .article-sidebar {
+      grid-column: 10 / 13;
+      position: sticky;
+      top: 78px;
+      align-self: start;
+      max-height: calc(100vh - 90px);
+      overflow-y: auto;
+    }
+    .article-sidebar::-webkit-scrollbar { width: 4px; }
+    .article-sidebar::-webkit-scrollbar-track { background: transparent; }
+    .article-sidebar::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 2px; }
+
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+    }
+    .article-headline {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(2rem, 4vw, 2.6rem);
+      font-weight: 600;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+    .article-standfirst {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      font-weight: 400;
+    }
+    .byline {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    h2 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.45rem;
+      font-weight: 600;
+      line-height: 1.25;
+      color: var(--text-primary);
+      margin: 2em 0 0.75em;
+      border-top: 1px solid var(--border);
+      padding-top: 1em;
+    }
+    h3 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin: 1.75em 0 0.5em;
+    }
+    .article-body p { margin-bottom: 1.4em; font-size: 0.97rem; line-height: 1.8; }
+    .article-body ul, .article-body ol { margin: 0 0 1.4em 1.4em; }
+    .article-body li { margin-bottom: 0.4em; font-size: 0.95rem; line-height: 1.7; }
+    strong { color: var(--text-primary); font-weight: 600; }
+
+    .exec-summary {
+      background: var(--bg-highlight);
+      border: 1px solid var(--border-light);
+      border-left: 4px solid var(--accent);
+      padding: 24px;
+      margin: 0 0 2.5em;
+    }
+    .exec-block { margin-bottom: 20px; }
+    .exec-block:last-child { margin-bottom: 0; }
+    .exec-block + .exec-block { padding-top: 18px; border-top: 1px solid var(--border-light); }
+    .exec-tldr {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.02rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      line-height: 1.55;
+      margin-top: 8px;
+    }
+    .issues-list, .implications-list {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .issue-item { display: flex; gap: 10px; align-items: baseline; }
+    .issue-q {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--accent);
+      flex-shrink: 0;
+      min-width: 20px;
+    }
+    .issue-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: var(--text-body);
+      line-height: 1.55;
+    }
+    .implication-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: var(--text-body);
+      line-height: 1.55;
+      padding-left: 14px;
+      border-left: 2px solid var(--accent);
+    }
+
+    .formula {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.93em;
+      background: var(--bg-code);
+      border-left: 3px solid var(--accent);
+      padding: 14px 20px;
+      margin: 20px 0;
+      color: var(--text-primary);
+      overflow-x: auto;
+      line-height: 1.7;
+    }
+    .calc-block {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      padding: 20px 24px;
+      margin: 24px 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+      line-height: 1.8;
+    }
+    .calc-block .calc-row { display: flex; justify-content: space-between; max-width: 480px; }
+    .calc-block .calc-total {
+      border-top: 1px solid var(--border);
+      margin-top: 6px;
+      padding-top: 6px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .calc-block .calc-highlight { color: var(--accent); font-weight: 700; }
+    .calc-block .calc-warn { color: var(--accent-warm); font-weight: 700; }
+
+    .insight-box {
+      background: var(--bg-highlight);
+      border-left: 4px solid var(--accent);
+      padding: 18px 22px;
+      margin: 28px 0;
+    }
+    .insight-box p {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: var(--text-primary);
+    }
+    .insight-box strong { color: var(--accent); }
+    .trap-box {
+      background: #FEF9EC;
+      border-left: 4px solid var(--accent-warm);
+      padding: 18px 22px;
+      margin: 24px 0;
+    }
+    .trap-box p {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      line-height: 1.65;
+      color: var(--text-body);
+    }
+    .trap-box .trap-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      color: var(--accent-warm);
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+
+    .data-table-wrap { overflow-x: auto; margin: 1.5em 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      background: var(--bg-subtle);
+      padding: 8px 12px;
+      text-align: left;
+      border-bottom: 2px solid var(--border);
+    }
+    td {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border-light);
+      color: var(--text-body);
+      font-family: 'Inter', sans-serif;
+    }
+    tr:nth-child(even) td { background: var(--table-stripe); }
+    .td-accent { color: var(--accent); font-weight: 600; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
+    .td-warn   { color: var(--accent-warm); font-weight: 600; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
+
+    .pull-quote {
+      border-left: 4px solid var(--accent);
+      margin: 2em 0;
+      padding: 1em 20px;
+      background: var(--bg-card);
+    }
+    .pull-quote p {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.2rem;
+      font-style: italic;
+      color: var(--text-primary);
+      line-height: 1.5;
+      margin-bottom: 6px !important;
+    }
+    .pull-quote footer {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .numbered-list { list-style: none; padding: 0; margin: 20px 0; }
+    .numbered-list li {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 16px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.92rem;
+      line-height: 1.65;
+      color: var(--text-body);
+    }
+    .numbered-list li .num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: white;
+      background: var(--accent);
+      min-width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    .dim-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; }
+    .dim-card { background: var(--bg-card); border: 1px solid var(--border-light); padding: 16px; }
+    .dim-num { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--accent); letter-spacing: 0.1em; margin-bottom: 4px; }
+    .dim-title { font-family: 'Inter', sans-serif; font-size: 0.92rem; font-weight: 600; color: var(--text-primary); margin-bottom: 6px; }
+    .dim-desc { font-family: 'Inter', sans-serif; font-size: 0.82rem; color: var(--text-body); line-height: 1.55; }
+
+    .case-box {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 24px;
+      margin: 28px 0;
+    }
+    .case-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+    .case-title {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+    }
+    .case-body { font-family: 'Inter', sans-serif; font-size: 0.9rem; line-height: 1.7; color: var(--text-body); }
+    .case-body p { margin-bottom: 0.8em; font-size: 0.9rem; }
+    .case-verdict {
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border-light);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .section-sep {
+      text-align: center;
+      color: var(--text-light);
+      font-size: 1.2rem;
+      letter-spacing: 0.5em;
+      margin: 48px 0;
+      user-select: none;
+    }
+
+    .source-list { list-style: none; padding: 0; }
+    .source-list li { margin-bottom: 6px; }
+    .source-list a {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--accent);
+      text-decoration: none;
+      line-height: 1.5;
+    }
+    .source-list a:hover { text-decoration: underline; }
+    .source-tag { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--text-muted); margin-left: 4px; }
+
+    .next-article {
+      background: var(--text-primary);
+      color: #E4E2DC;
+      padding: 28px 32px;
+      margin-top: 56px;
+    }
+    .next-article .next-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      color: var(--accent-warm);
+      margin-bottom: 8px;
+    }
+    .next-article .next-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+    .next-article .next-desc {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.82rem;
+      color: #9299A8;
+      margin-top: 8px;
+    }
+
+    .sidebar-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .keyfacts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+    .fact-card { background: var(--bg-highlight); padding: 10px 8px; }
+    .fact-card.highlight { background: #FDF8EC; border: 1px solid #E8D88A; }
+    .fact-value { font-family: 'JetBrains Mono', monospace; font-size: 1rem; font-weight: 500; color: var(--accent); line-height: 1.2; }
+    .fact-card.highlight .fact-value { color: #8A6A00; }
+    .fact-desc { font-family: 'Inter', sans-serif; font-size: 0.64rem; color: var(--text-muted); margin-top: 3px; line-height: 1.35; }
+    .fact-card.highlight .fact-desc { color: #7A6020; }
+    .highlights-list { list-style: none; padding: 0; margin-top: 12px; }
+    .highlight-item { padding: 9px 0; border-bottom: 1px solid var(--border-light); display: flex; gap: 10px; align-items: baseline; }
+    .highlight-item:last-child { border-bottom: none; }
+    .hl-num { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--accent); flex-shrink: 0; min-width: 18px; }
+    .hl-text { font-family: 'Inter', sans-serif; font-size: 0.76rem; color: var(--text-body); line-height: 1.45; }
+
+    .lang-en { display: none; }
+
+    .site-footer {
+      border-top: 1px solid var(--border-light);
+      margin-top: 4em;
+      padding: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    @media print {
+      body { background: white; font-size: 11pt; }
+      .site-header, #sticky-bar, #progress-bar { display: none; }
+      .article-sidebar { position: static; max-height: none; overflow: visible; }
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+    @page { size: A4; margin: 20mm 15mm; }
+
+    @media (max-width: 900px) {
+      .article-body { grid-column: 1 / -1; }
+      .article-sidebar { position: static; max-height: none; overflow: visible; grid-column: 1 / -1; }
+      .article-grid { display: block; }
+      .dim-grid { grid-template-columns: 1fr; }
+      #sticky-bar { flex-wrap: wrap; gap: 6px; }
+    }
+
+    body.dark {
+      --bg:           #0D1117;
+      --bg-code:      #161B22;
+      --bg-quote:     #161B22;
+      --bg-highlight: #0E1A2B;
+      --bg-subtle:    #161B22;
+      --bg-card:      #161B22;
+      --bg-header:    #0D1117;
+      --text-primary: #E4E2DC;
+      --text-body:    #C4C2BC;
+      --text-muted:   #8B93A8;
+      --text-light:   #575E70;
+      --accent:       #3A8FD0;
+      --accent-warm:  #F5C800;
+      --border:       #21253A;
+      --border-quote: #2A2D3E;
+      --border-light: #21253A;
+      --tag-bg:       #0E1A2B;
+      --tag-text:     #3A8FD0;
+      --table-stripe: #161B22;
+    }
+    body.dark .trap-box { background: #1C1800; }
+    body.dark .fact-card.highlight { background: #1A1600; border-color: #3A2D00; }
+    body.dark .fact-card.highlight .fact-value { color: #C4900E; }
+    body.dark .fact-card.highlight .fact-desc { color: #A07828; }
+    body.dark .next-article { background: #111320; }
+  </style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<header class="site-header">
+  <div class="site-header-left">
+    <a class="wordmark" href="../index.html">dona<span>to</span></a>
+    <span class="header-sep">—</span>
+    <a class="header-back-link" href="./index.html"><span class="lang-ja">記事一覧</span><span class="lang-en">Articles</span></a>
+    <span class="header-sep">—</span>
+    <span class="header-media">Valuation Theory Lab</span>
+  </div>
+  <div class="site-header-right">
+    <div class="lang-toggle-bar">
+      <button class="art-lang-btn active" data-lang="ja" onclick="setLang('ja')">JP</button>
+      <button class="art-lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+    </div>
+    <button id="theme-btn" onclick="toggleTheme()" title="ダーク/ライト切替">☀</button>
+    <time class="header-date">2026-03-28</time>
+  </div>
+</header>
+
+<div id="sticky-bar">
+  <span class="sbar-cat">VALUATION THEORY LAB</span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-text"><span class="lang-ja">#012 · ビジネスモデル分析</span><span class="lang-en">#012 · Business Model Analysis</span></span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-text">2026-03-28</span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-badge" id="reading-time-badge"><span class="lang-ja">計算中</span><span class="lang-en">...</span></span>
+</div>
+
+<main style="padding: 0 0 3em;">
+  <div class="article-container">
+    <div class="article-grid">
+
+      <article class="article-body">
+
+        <div style="padding: 36px 0 24px;">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+            <div class="section-label">Valuation Theory Lab &nbsp;#012</div>
+            <span class="sbar-badge" id="reading-time-badge2"><span class="lang-ja">計算中</span><span class="lang-en">...</span></span>
+          </div>
+          <h1 class="article-headline">
+            <span class="lang-ja">ビジネスモデル分析 — 収益構造が決めるバリュエーション</span>
+            <span class="lang-en">Business Model Analysis — How Revenue Structure Determines Valuation</span>
+          </h1>
+          <p class="article-standfirst">
+            <span class="lang-ja">同じ業界に属する2社のEV/EBITDAが10倍以上乖離する。その原因は業績ではなくビジネスモデルにある。サブスクリプション・プラットフォーム・アセットライトの3類型を軸に、ユニットエコノミクスの構造、Economic Moatの源泉、そしてビジネスモデルの違いがバリュエーション指標の選択を根本的に変えるメカニズムを解説する。</span>
+            <span class="lang-en">Two companies in the same industry trade at EV/EBITDA multiples differing by more than 10x. The cause is not performance but business model. Centred on three archetypes — subscription, platform, and asset-light — this article explains the structure of unit economics, the sources of Economic Moats, and the mechanism by which business model differences fundamentally alter the choice of valuation metrics.</span>
+          </p>
+          <div style="display:flex; gap:16px; align-items:center; border-top:1px solid var(--border-light); border-bottom:1px solid var(--border-light); padding:10px 0;">
+            <span class="byline">By <strong>Donato Valuation Notes</strong></span>
+            <span style="color:var(--border);">|</span>
+            <time class="byline" datetime="2026-03-28"><span class="lang-ja">2026年3月28日</span><span class="lang-en">28 March 2026</span></time>
+            <span style="color:var(--border);">|</span>
+            <span class="byline"><span class="lang-ja">ビジネスモデル · ユニットエコノミクス · Economic Moat · Comps</span><span class="lang-en">Business Model · Unit Economics · Economic Moat · Comps</span></span>
+          </div>
+        </div>
+
+        <!-- Executive Summary -->
+        <section class="exec-summary">
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">概要</span><span class="lang-en">Summary</span></div>
+            <p class="exec-tldr">
+              <span class="lang-ja">前稿（#011）で業界構造の分析フレームワークを整理した。本稿ではその「次の層」——同じ業界内でも企業間のバリュエーションを決定的に分ける<strong>ビジネスモデル</strong>に焦点を当てる。ビジネスモデルとは「企業がどのように価値を創造し、提供し、獲得するか」の構造であり、これが収益の質（予測可能性・持続性）、資本効率、スケーラビリティを規定する。収益モデル類型論、ユニットエコノミクス、Economic Moatの3視点から分析し、Uber vs. 伝統的タクシー、Netflix vs. 映画館、Shopify vs. 百貨店の3事例でビジネスモデルがマルチプルを変えるメカニズムを実証する。</span>
+              <span class="lang-en">The previous article (#011) systematised frameworks for industry structure analysis. This article focuses on the "next layer" — the <strong>business model</strong> that decisively separates valuations even within the same industry. A business model is the structure of how a company creates, delivers, and captures value, and it determines revenue quality (predictability, sustainability), capital efficiency, and scalability. We analyse from three perspectives — revenue model taxonomy, unit economics, and Economic Moat — and demonstrate how business models change multiples through three cases: Uber vs. traditional taxis, Netflix vs. cinemas, and Shopify vs. department stores.</span>
+            </p>
+          </div>
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">本稿の論点</span><span class="lang-en">Key Questions</span></div>
+            <ul class="issues-list">
+              <li class="issue-item">
+                <span class="issue-q">Q1</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>ビジネスモデルはバリュエーションにどう反映されるか</strong> — 収益の「質」が異なるとき、同じ売上・利益でもなぜマルチプルが大きく乖離するのか</span>
+                  <span class="lang-en"><strong>How do business models translate to valuation?</strong> — When revenue "quality" differs, why do multiples diverge significantly even for the same revenue and earnings?</span>
+                </span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">Q2</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>ユニットエコノミクスの何を見るべきか</strong> — LTV/CAC、Take Rate、粗利率……指標は無数にあるが、ビジネスモデルの持続性を最も端的に示す指標は何か</span>
+                  <span class="lang-en"><strong>What to look for in unit economics?</strong> — LTV/CAC, take rate, gross margin… metrics are endless, but which most directly indicates business model sustainability?</span>
+                </span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">Q3</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>Economic Moatをどう定量評価するか</strong> — Morningstarのmoat概念をバリュエーション実務に接続する方法。moatの「幅」と「深さ」をCAPとROICスプレッドで捉える</span>
+                  <span class="lang-en"><strong>How to quantitatively assess Economic Moat?</strong> — Connecting Morningstar's moat concept to valuation practice. Capturing moat "width" and "depth" through CAP and ROIC spread</span>
+                </span>
+              </li>
+            </ul>
+          </div>
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">Valuation実務家への含意</span><span class="lang-en">Implications for Practitioners</span></div>
+            <ul class="implications-list">
+              <li class="implication-item">
+                <span class="lang-ja"><strong>ビジネスモデルが収益の「質」を決める</strong> — 定期収益（サブスクリプション）は一回性収益（取引型）より予測可能性が高く、同じ売上でも高いマルチプルが正当化される。Comps選定では収益モデルの類型一致を優先すべき</span>
+                <span class="lang-en"><strong>Business models determine revenue "quality"</strong> — Recurring revenue (subscription) has higher predictability than one-time revenue (transactional), justifying higher multiples for the same revenue. Comps selection should prioritise revenue model type matching</span>
+              </li>
+              <li class="implication-item">
+                <span class="lang-ja"><strong>ユニットエコノミクスは成長の持続可能性を測る</strong> — LTV/CAC > 3x かつ CAC Payback < 18ヶ月が「健全な成長」の経験則。この基準を満たさない高成長はマルチプルプレミアムに値しない</span>
+                <span class="lang-en"><strong>Unit economics measure growth sustainability</strong> — LTV/CAC > 3x with CAC Payback < 18 months is the rule of thumb for "healthy growth". High growth that fails these thresholds does not warrant a multiple premium</span>
+              </li>
+              <li class="implication-item">
+                <span class="lang-ja"><strong>Economic Moatの源泉がCAPを決定する</strong> — ネットワーク効果・スイッチングコスト・無形資産・コスト優位の4つのmoat源泉を特定し、その耐久性からCompetitive Advantage Period（CAP）を推定する。CAPが長いほどターミナルバリューの比重が大きくなる</span>
+                <span class="lang-en"><strong>Moat sources determine CAP</strong> — Identify the four moat sources — network effects, switching costs, intangible assets, cost advantage — and estimate Competitive Advantage Period (CAP) from their durability. Longer CAP means greater terminal value weight</span>
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- Section 1 -->
+        <h2>
+          <span class="lang-ja">1. ビジネスモデルとは何か — 「戦略」との違い</span>
+          <span class="lang-en">1. What Is a Business Model — Distinguishing It from "Strategy"</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">Osterwalder & Pigneur（<em>Business Model Generation</em>, 2010）の定義によれば、ビジネスモデルとは「組織がどのように価値を創造し、提供し、獲得するかの論理的根拠」である。これは「競争にどう勝つか」を問う戦略（strategy）とは異なる概念だ。戦略は市場における選択肢の中から最適なポジションを選ぶことであり、ビジネスモデルはそのポジションでどのように収益を生み出す構造を設計するかに関わる。</span>
+          <span class="lang-en">According to Osterwalder & Pigneur (<em>Business Model Generation</em>, 2010), a business model is "the rationale of how an organisation creates, delivers, and captures value". This differs from strategy, which asks "how to win in competition". Strategy is about choosing the optimal position among market options; a business model concerns how to design the revenue-generating structure at that position.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">バリュエーション実務においてこの区別が重要な理由は、<strong>同じ戦略的ポジション（例：「オンライン小売」）でもビジネスモデルが異なれば、財務特性がまったく変わる</strong>からである。Amazonのマーケットプレイス（プラットフォーム型・手数料収入）とAmazonの直販（パイプライン型・在庫リスクあり）は、同じ企業内でも異なるビジネスモデルであり、それぞれ異なるマルチプル基準で評価すべきである。</span>
+          <span class="lang-en">This distinction matters for valuation because <strong>even from the same strategic position (e.g. "online retail"), different business models yield entirely different financial characteristics</strong>. Amazon's marketplace (platform model, commission revenue) and Amazon's direct sales (pipeline model, inventory risk) are different business models within the same company, and should each be valued on different multiple bases.</span>
+        </p>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>Core principle:</strong> ビジネスモデルの本質は「収益の獲得メカニズム」にある。同じ顧客ニーズを満たしていても、収益獲得の構造が異なれば、成長性・予測可能性・リスクプロファイルは根本的に異なる。これがマルチプルの乖離を説明する。</span>
+            <span class="lang-en"><strong>Core principle:</strong> The essence of a business model lies in its "revenue capture mechanism". Even when serving the same customer need, different revenue capture structures mean fundamentally different growth profiles, predictability, and risk. This explains multiple disparities.</span>
+          </p>
+        </div>
+
+        <div class="section-sep">···</div>
+
+        <!-- Section 2: Revenue Model Taxonomy -->
+        <h2>
+          <span class="lang-ja">2. 収益モデルの類型論 — 7つのアーキタイプ</span>
+          <span class="lang-en">2. Revenue Model Taxonomy — Seven Archetypes</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">収益モデルは、企業が「どのような形で対価を受け取るか」を定義する。同じ業界でも収益モデルが異なれば、財務指標の構造が根本的に変わる。以下に主要な7つのアーキタイプを整理する。</span>
+          <span class="lang-en">A revenue model defines "in what form the company receives payment". Even within the same industry, different revenue models fundamentally alter the financial metric structure. Below we categorise seven major archetypes.</span>
+        </p>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">類型</span><span class="lang-en">Type</span></th>
+                <th><span class="lang-ja">収益の性質</span><span class="lang-en">Revenue Nature</span></th>
+                <th><span class="lang-ja">代表例</span><span class="lang-en">Examples</span></th>
+                <th><span class="lang-ja">主要マルチプル</span><span class="lang-en">Primary Multiples</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong><span class="lang-ja">サブスクリプション</span><span class="lang-en">Subscription</span></strong></td>
+                <td><span class="lang-ja">定期・反復・高予測性</span><span class="lang-en">Recurring, repetitive, highly predictable</span></td>
+                <td>Salesforce, Netflix, Adobe</td>
+                <td class="td-accent">EV/ARR, EV/NTM Revenue</td>
+              </tr>
+              <tr>
+                <td><strong><span class="lang-ja">取引型</span><span class="lang-en">Transactional</span></strong></td>
+                <td><span class="lang-ja">一回性・変動性・需要連動</span><span class="lang-en">One-time, variable, demand-driven</span></td>
+                <td><span class="lang-ja">小売、レストラン、航空</span><span class="lang-en">Retail, restaurants, airlines</span></td>
+                <td class="td-accent">EV/EBITDA, P/E</td>
+              </tr>
+              <tr>
+                <td><strong><span class="lang-ja">プラットフォーム</span><span class="lang-en">Platform</span></strong></td>
+                <td><span class="lang-ja">手数料・マッチング・ネットワーク効果</span><span class="lang-en">Commission, matching, network effects</span></td>
+                <td>Uber, Airbnb, Visa</td>
+                <td class="td-accent">EV/GMV, EV/Take Rate Revenue</td>
+              </tr>
+              <tr>
+                <td><strong><span class="lang-ja">ライセンシング</span><span class="lang-en">Licensing</span></strong></td>
+                <td><span class="lang-ja">知的財産の使用許諾料</span><span class="lang-en">Intellectual property usage fees</span></td>
+                <td>ARM, Qualcomm (royalty), Disney (IP)</td>
+                <td class="td-accent">EV/Revenue, P/E</td>
+              </tr>
+              <tr>
+                <td><strong><span class="lang-ja">フリーミアム</span><span class="lang-en">Freemium</span></strong></td>
+                <td><span class="lang-ja">無料→有料転換・段階的課金</span><span class="lang-en">Free-to-paid conversion, tiered pricing</span></td>
+                <td>Spotify, Dropbox, Slack</td>
+                <td class="td-accent">EV/Paid Users, Conversion Rate</td>
+              </tr>
+              <tr>
+                <td><strong><span class="lang-ja">広告型</span><span class="lang-en">Advertising</span></strong></td>
+                <td><span class="lang-ja">注意経済・インプレッション課金</span><span class="lang-en">Attention economy, impression billing</span></td>
+                <td>Google, Meta, TikTok</td>
+                <td class="td-accent">EV/Revenue, ARPU</td>
+              </tr>
+              <tr>
+                <td><strong><span class="lang-ja">消耗品モデル</span><span class="lang-en">Razor-Blade</span></strong></td>
+                <td><span class="lang-ja">本体低価格＋消耗品で回収</span><span class="lang-en">Low-price hardware + consumable recovery</span></td>
+                <td><span class="lang-ja">Gillette、プリンター、Nespresso</span><span class="lang-en">Gillette, printers, Nespresso</span></td>
+                <td class="td-accent">Installed Base, Consumable Revenue/Unit</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="trap-box">
+          <div class="trap-label"><span class="lang-ja">よくある誤り</span><span class="lang-en">Common Trap</span></div>
+          <p>
+            <span class="lang-ja">「売上高1,000億円の企業」と言うとき、その1,000億円がサブスクリプション収益（90%以上が来年も繰り返される）なのか、取引型収益（毎年ゼロからの積み上げ）なのかで、企業価値は2〜5倍変わりうる。「売上」の中身を分解せずにCompsを組むのは、異なる通貨を換算なしで比較するのと同じ過ちである。</span>
+            <span class="lang-en">When we say "a company with JPY 100 billion in revenue", whether that JPY 100 billion is subscription revenue (90%+ repeats next year) or transactional revenue (built from zero each year) can change enterprise value by 2–5x. Constructing Comps without decomposing what "revenue" actually consists of is the same error as comparing different currencies without conversion.</span>
+          </p>
+        </div>
+
+        <div class="section-sep">···</div>
+
+        <!-- Section 3: Unit Economics -->
+        <h2>
+          <span class="lang-ja">3. ユニットエコノミクス — ビジネスモデルの持続性を測る</span>
+          <span class="lang-en">3. Unit Economics — Measuring Business Model Sustainability</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">ビジネスモデルの健全性を判断する最も直接的な方法は、「1単位（1顧客、1取引、1ユーザー）あたりの経済性」を分析することである。これがユニットエコノミクスだ。マクロな財務指標（売上成長率、EBITDAマージン）が良好でも、ユニットエコノミクスが破綻していれば、その成長は持続不可能である。</span>
+          <span class="lang-en">The most direct way to assess business model health is to analyse "economics per unit — per customer, per transaction, per user". This is unit economics. Even when macro financial metrics (revenue growth, EBITDA margin) look healthy, if unit economics are broken, that growth is unsustainable.</span>
+        </p>
+
+        <h3><span class="lang-ja">主要ユニットエコノミクス指標</span><span class="lang-en">Key unit economics metrics</span></h3>
+
+        <div class="dim-grid">
+          <div class="dim-card">
+            <div class="dim-num">LTV / CAC</div>
+            <div class="dim-title"><span class="lang-ja">顧客生涯価値 / 獲得コスト</span><span class="lang-en">Lifetime Value / Acquisition Cost</span></div>
+            <div class="dim-desc">
+              <span class="lang-ja">健全な水準: 3x以上。1x未満は「顧客を獲得するたびに価値を破壊している」状態。SaaS、Eコマース、サブスクリプション型ビジネスの基本指標</span>
+              <span class="lang-en">Healthy level: 3x or above. Below 1x means "destroying value with every customer acquired". Fundamental metric for SaaS, e-commerce, and subscription businesses</span>
+            </div>
+          </div>
+          <div class="dim-card">
+            <div class="dim-num">CAC Payback</div>
+            <div class="dim-title"><span class="lang-ja">顧客獲得コスト回収期間</span><span class="lang-en">Customer Acquisition Cost Payback</span></div>
+            <div class="dim-desc">
+              <span class="lang-ja">健全な水準: 18ヶ月以内。これを超えると成長に必要な運転資本が膨張し、キャッシュバーン率が持続不可能になるリスク</span>
+              <span class="lang-en">Healthy level: within 18 months. Beyond this, working capital required for growth balloons and cash burn rate risks becoming unsustainable</span>
+            </div>
+          </div>
+          <div class="dim-card">
+            <div class="dim-num">NRR</div>
+            <div class="dim-title"><span class="lang-ja">Net Revenue Retention</span><span class="lang-en">Net Revenue Retention</span></div>
+            <div class="dim-desc">
+              <span class="lang-ja">既存顧客からの収益維持率。100%超はアップセル/クロスセルで成長できている証左。SaaS企業では120%+が優良、90%未満は警告サイン</span>
+              <span class="lang-en">Revenue retention from existing customers. Above 100% evidences growth through upsell/cross-sell. For SaaS, 120%+ is excellent; below 90% is a warning sign</span>
+            </div>
+          </div>
+          <div class="dim-card">
+            <div class="dim-num">Take Rate</div>
+            <div class="dim-title"><span class="lang-ja">プラットフォーム手数料率</span><span class="lang-en">Platform Commission Rate</span></div>
+            <div class="dim-desc">
+              <span class="lang-ja">GMV（流通総額）に対するプラットフォーム収益の比率。マーケットプレイスのマネタイズ効率とプライシングパワーを示す。Uber: ~25%, Airbnb: ~14%, eBay: ~12%</span>
+              <span class="lang-en">Platform revenue as a percentage of GMV. Shows marketplace monetisation efficiency and pricing power. Uber: ~25%, Airbnb: ~14%, eBay: ~12%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="formula">
+          <span class="lang-ja">LTV = ARPU × 粗利率 × (1 / 月次チャーン率)<br>
+CAC = (販売費 + マーケティング費) / 新規獲得顧客数<br>
+LTV/CAC ≧ 3x かつ CAC Payback ≦ 18ヶ月 → 「健全な成長」の経験則</span>
+          <span class="lang-en">LTV = ARPU × Gross Margin × (1 / Monthly Churn Rate)<br>
+CAC = (Sales + Marketing Expense) / New Customers Acquired<br>
+LTV/CAC ≥ 3x and CAC Payback ≤ 18 months → Rule of thumb for "healthy growth"</span>
+        </div>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>Valuation implication:</strong> ユニットエコノミクスが健全な企業は、成長投資（S&M費用の増加）が将来のFCFに高い確度で変換される。これは成長率に対するマルチプルプレミアム（PEGレシオの正当化）の理論的根拠となる。逆にLTV/CACが1x近辺の企業は、成長率が高くてもマルチプルプレミアムに値しない。</span>
+            <span class="lang-en"><strong>Valuation implication:</strong> Companies with healthy unit economics convert growth investment (increased S&M expense) into future FCF with high confidence. This provides the theoretical basis for a multiple premium to growth rate (PEG ratio justification). Conversely, companies with LTV/CAC near 1x do not warrant a multiple premium regardless of growth rate.</span>
+          </p>
+        </div>
+
+        <div class="section-sep">···</div>
+
+        <!-- Section 4: Economic Moat -->
+        <h2>
+          <span class="lang-ja">4. Economic Moat — 競争優位の持続性を評価する</span>
+          <span class="lang-en">4. Economic Moat — Assessing the Durability of Competitive Advantage</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">Warren Buffettが提唱し、Morningstarが体系化した「Economic Moat」（経済的堀）の概念は、ビジネスモデルが超過利益（ROIC > WACC）を持続的に生み出せるかどうかの判断基準である。バリュエーション実務では、moatの存在と強度がCompetitive Advantage Period（CAP）の推定に直結する。</span>
+          <span class="lang-en">The concept of "Economic Moat", introduced by Warren Buffett and systematised by Morningstar, provides the criterion for judging whether a business model can sustainably generate excess returns (ROIC > WACC). In valuation practice, the existence and strength of a moat directly informs the estimation of the Competitive Advantage Period (CAP).</span>
+        </p>
+
+        <h3><span class="lang-ja">Moatの4つの源泉</span><span class="lang-en">Four sources of Moat</span></h3>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">Moat源泉</span><span class="lang-en">Moat Source</span></th>
+                <th><span class="lang-ja">メカニズム</span><span class="lang-en">Mechanism</span></th>
+                <th><span class="lang-ja">代表例</span><span class="lang-en">Examples</span></th>
+                <th><span class="lang-ja">CAP影響</span><span class="lang-en">CAP Impact</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong><span class="lang-ja">ネットワーク効果</span><span class="lang-en">Network Effects</span></strong></td>
+                <td><span class="lang-ja">ユーザー増加 → 価値向上 → さらにユーザー増加の好循環</span><span class="lang-en">More users → more value → even more users (virtuous cycle)</span></td>
+                <td>Visa, Meta, Uber</td>
+                <td class="td-accent"><span class="lang-ja">極めて長い</span><span class="lang-en">Very long</span></td>
+              </tr>
+              <tr>
+                <td><strong><span class="lang-ja">スイッチングコスト</span><span class="lang-en">Switching Costs</span></strong></td>
+                <td><span class="lang-ja">乗り換えの金銭的・時間的・心理的コストが顧客を固定化</span><span class="lang-en">Financial, time, and psychological costs of switching lock in customers</span></td>
+                <td>SAP, Bloomberg Terminal, Oracle</td>
+                <td class="td-accent"><span class="lang-ja">長い</span><span class="lang-en">Long</span></td>
+              </tr>
+              <tr>
+                <td><strong><span class="lang-ja">無形資産</span><span class="lang-en">Intangible Assets</span></strong></td>
+                <td><span class="lang-ja">ブランド・特許・規制ライセンスによる参入障壁</span><span class="lang-en">Barriers from brand, patents, or regulatory licences</span></td>
+                <td>LVMH, Pfizer, Moody's</td>
+                <td class="td-accent"><span class="lang-ja">資産による（特許は有限）</span><span class="lang-en">Depends on asset (patents are finite)</span></td>
+              </tr>
+              <tr>
+                <td><strong><span class="lang-ja">コスト優位</span><span class="lang-en">Cost Advantage</span></strong></td>
+                <td><span class="lang-ja">規模の経済・プロセス革新・立地優位による構造的低コスト</span><span class="lang-en">Structural low cost from scale, process innovation, or location</span></td>
+                <td>Walmart, Costco, TSMC</td>
+                <td class="td-accent"><span class="lang-ja">中〜長い</span><span class="lang-en">Medium to long</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3><span class="lang-ja">MoatとCAPの定量的接続</span><span class="lang-en">Quantitative connection between Moat and CAP</span></h3>
+
+        <p>
+          <span class="lang-ja">Koller, Goedhart & Wessels（<em>Valuation</em>, 7th ed.）は、ROICがWACCへ収束するまでの期間をCAP（Competitive Advantage Period）と定義し、これを業界・ビジネスモデルの特性から推定することを提唱している。Moatが強い企業ほどCAPが長く、ターミナルバリューにおいてもWACC超のROICを前提にできる。</span>
+          <span class="lang-en">Koller, Goedhart & Wessels (<em>Valuation</em>, 7th ed.) define CAP (Competitive Advantage Period) as the time for ROIC to converge to WACC, and advocate estimating it from industry and business model characteristics. Companies with stronger moats have longer CAPs, allowing ROIC above WACC to be assumed even in the terminal value.</span>
+        </p>
+
+        <div class="calc-block">
+          <div class="calc-row">
+            <span><span class="lang-ja">Moatなし → CAP:</span><span class="lang-en">No Moat → CAP:</span></span>
+            <span>0–5 years</span>
+          </div>
+          <div class="calc-row">
+            <span><span class="lang-ja">Narrow Moat → CAP:</span><span class="lang-en">Narrow Moat → CAP:</span></span>
+            <span class="calc-highlight">5–10 years</span>
+          </div>
+          <div class="calc-row">
+            <span><span class="lang-ja">Wide Moat → CAP:</span><span class="lang-en">Wide Moat → CAP:</span></span>
+            <span class="calc-highlight">10–20+ years</span>
+          </div>
+          <div class="calc-row calc-total">
+            <span><span class="lang-ja">CAP長 → ターミナルバリュー比率：</span><span class="lang-en">Longer CAP → Terminal Value %:</span></span>
+            <span><span class="lang-ja">60–80% → 80–90%+</span><span class="lang-en">60–80% → 80–90%+</span></span>
+          </div>
+        </div>
+
+        <div class="section-sep">···</div>
+
+        <!-- Section 5: Business Model Archetypes -->
+        <h2>
+          <span class="lang-ja">5. 3つのビジネスモデル・アーキタイプの深堀り</span>
+          <span class="lang-en">5. Deep Dive into Three Business Model Archetypes</span>
+        </h2>
+
+        <h3><span class="lang-ja">A. サブスクリプションモデル</span><span class="lang-en">A. Subscription Model</span></h3>
+
+        <p>
+          <span class="lang-ja">サブスクリプションモデルの本質は「収益の予測可能性」にある。顧客が毎月/毎年自動的に支払うため、来期の売上のベースライン（renewal base）が事前にほぼ確定する。この予測可能性がマルチプルプレミアムの根拠である。</span>
+          <span class="lang-en">The essence of the subscription model is "revenue predictability". Because customers pay automatically each month/year, the baseline revenue for next period (renewal base) is largely predetermined. This predictability is the basis for a multiple premium.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja"><strong>バリュエーション上の特性：</strong>NRR（Net Revenue Retention）が100%を超えていれば、新規顧客獲得ゼロでも売上が成長する。これは取引型モデルでは不可能な構造的優位である。AdobeがCreative Suiteの買い切りモデルからCreative Cloudのサブスクリプションモデルに移行した2013年以降、同社のEV/Revenue倍率は3〜4xから8〜12xへ構造的に上昇した。</span>
+          <span class="lang-en"><strong>Valuation characteristics:</strong> When NRR exceeds 100%, revenue grows even with zero new customer acquisition. This is a structural advantage impossible in transactional models. After Adobe transitioned from the Creative Suite perpetual licence model to the Creative Cloud subscription model in 2013, its EV/Revenue multiple structurally rose from 3–4x to 8–12x.</span>
+        </p>
+
+        <h3><span class="lang-ja">B. プラットフォームモデル</span><span class="lang-en">B. Platform Model</span></h3>
+
+        <p>
+          <span class="lang-ja">プラットフォームモデルの本質は「取引の仲介」であり、Parker, Van Alstyne & Choudary（<em>Platform Revolution</em>, 2016）が体系化したように、従来の「パイプライン」型ビジネス（企業が製品を作って顧客に売る）とは根本的に異なる。プラットフォームは生産者と消費者をマッチングし、取引ごとに手数料（Take Rate）を得る。</span>
+          <span class="lang-en">The essence of the platform model is "transaction intermediation". As Parker, Van Alstyne & Choudary systematised in <em>Platform Revolution</em> (2016), it is fundamentally different from traditional "pipeline" businesses (company makes product, sells to customer). Platforms match producers with consumers and earn a commission (Take Rate) on each transaction.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja"><strong>バリュエーション上の特性：</strong>プラットフォームは在庫リスク・製造リスクを負わないため、資本効率が極めて高い。Airbnbは一室も所有せずに世界最大の宿泊サービスを運営し、Uberは一台も所有せずに世界最大のタクシーサービスを運営している。この「アセットライト」な構造が高いROICと低い限界費用を実現し、ネットワーク効果と相まって強力なmoatを形成する。</span>
+          <span class="lang-en"><strong>Valuation characteristics:</strong> Platforms bear no inventory or manufacturing risk, making capital efficiency extremely high. Airbnb operates the world's largest accommodation service without owning a single room; Uber runs the world's largest taxi service without owning a single car. This "asset-light" structure achieves high ROIC and low marginal costs, combining with network effects to form a powerful moat.</span>
+        </p>
+
+        <h3><span class="lang-ja">C. アセットライトモデル</span><span class="lang-en">C. Asset-Light Model</span></h3>
+
+        <p>
+          <span class="lang-ja">アセットライトモデルとは、有形固定資産への大規模投資なしに事業を拡大できるビジネスモデルの総称である。プラットフォームはその一形態だが、フランチャイズ（McDonald's）、ファブレス半導体（Nvidia）、IPライセンシング（ARM）もアセットライトに含まれる。</span>
+          <span class="lang-en">Asset-light models are business models that can scale without large-scale investment in tangible fixed assets. Platforms are one form, but franchises (McDonald's), fabless semiconductors (Nvidia), and IP licensing (ARM) are also classified as asset-light.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja"><strong>バリュエーション上の特性：</strong>アセットライト企業は、成長に必要な再投資率（reinvestment rate）が低いため、同じ成長率でもFCF創出力がアセットヘビー企業より高い。Damodaranの価値評価公式では、Value = FCF / (WACC - g) であり、同じ売上成長率gでもFCFが大きい（再投資率が低い）ほど企業価値は高くなる。これがアセットライト企業の高マルチプルの理論的根拠である。</span>
+          <span class="lang-en"><strong>Valuation characteristics:</strong> Asset-light companies have lower reinvestment rates required for growth, so FCF generation is higher than asset-heavy companies at the same growth rate. In Damodaran's valuation formula, Value = FCF / (WACC - g), and for the same revenue growth rate g, higher FCF (lower reinvestment rate) means higher enterprise value. This is the theoretical basis for higher multiples on asset-light companies.</span>
+        </p>
+
+        <div class="section-sep">···</div>
+
+        <!-- Section 6: Case Studies -->
+        <h2>
+          <span class="lang-ja">6. 事例研究 — ビジネスモデルがマルチプルを変える3つの実例</span>
+          <span class="lang-en">6. Case Studies — Three Examples Where Business Models Change Multiples</span>
+        </h2>
+
+        <!-- Case 1: Uber vs. Taxi -->
+        <div class="case-box">
+          <div class="case-label">Case #01</div>
+          <div class="case-title">
+            <span class="lang-ja">Uber vs. 伝統的タクシー会社 — プラットフォーム vs. パイプライン</span>
+            <span class="lang-en">Uber vs. Traditional Taxi Companies — Platform vs. Pipeline</span>
+          </div>
+          <div class="case-body">
+            <p>
+              <span class="lang-ja">UberとロンドンのAddison Lee（伝統的ハイヤー会社）は、同じ「旅客輸送」市場で競合するが、ビジネスモデルが根本的に異なる。Uberはドライバーと乗客をマッチングするプラットフォームであり、車両を所有せず、ドライバーを雇用しない。Addison Leeは自社車両・自社ドライバーで運行するパイプラインモデルである。</span>
+              <span class="lang-en">Uber and London's Addison Lee (a traditional hire car company) compete in the same "passenger transport" market but with fundamentally different business models. Uber is a platform matching drivers with passengers, owning no vehicles and employing no drivers. Addison Lee operates a pipeline model with its own fleet and employed drivers.</span>
+            </p>
+            <p>
+              <span class="lang-ja"><strong>財務構造の違い：</strong>Uberは売上のGMV（Gross Merchandise Value）に対するTake Rate（約25%）が収益であり、車両の減価償却・保険・燃料費を負担しない。一方Addison Leeは運賃全額が売上だが、車両コスト・ドライバー人件費・保険が固定費として重くのしかかる。結果として、Uberの限界利益率はAddison Leeを大きく上回り、規模の拡大に伴う利益率改善（オペレーティング・レバレッジ）もはるかに大きい。</span>
+              <span class="lang-en"><strong>Financial structure differences:</strong> Uber's revenue is its Take Rate (~25%) on GMV, and it bears no vehicle depreciation, insurance, or fuel costs. Addison Lee records full fares as revenue but carries vehicle costs, driver wages, and insurance as heavy fixed costs. Consequently, Uber's marginal profit rate far exceeds Addison Lee's, and profit improvement from scaling (operating leverage) is far greater.</span>
+            </p>
+          </div>
+          <div class="case-verdict">
+            <span class="lang-ja">Lesson: 同じ市場でもプラットフォーム vs. パイプラインではCompsとして比較不可。GMVベースの比較が必須</span>
+            <span class="lang-en">Lesson: Platform vs. pipeline in the same market are incomparable as Comps. GMV-based comparison is essential</span>
+          </div>
+        </div>
+
+        <!-- Case 2: Netflix vs. Cinema -->
+        <div class="case-box">
+          <div class="case-label">Case #02</div>
+          <div class="case-title">
+            <span class="lang-ja">Netflix vs. 映画館チェーン — サブスクリプション vs. 取引型</span>
+            <span class="lang-en">Netflix vs. Cinema Chains — Subscription vs. Transactional</span>
+          </div>
+          <div class="case-body">
+            <p>
+              <span class="lang-ja">Netflixと映画館チェーン（AMC Entertainment等）は、「映像エンターテインメントの提供」という同じ顧客ニーズを満たすが、収益モデルが根本的に異なる。Netflixは月額固定のサブスクリプション収益であり、2億以上の有料会員からの収入が高い予測可能性を持つ。映画館は1回のチケット販売（取引型収益）に依存し、ヒット作の有無で売上が大きく変動する。</span>
+              <span class="lang-en">Netflix and cinema chains (AMC Entertainment, etc.) serve the same customer need — "delivering visual entertainment" — but with fundamentally different revenue models. Netflix earns fixed monthly subscription revenue from over 200 million paid members, with high predictability. Cinemas depend on per-ticket sales (transactional revenue), with revenue fluctuating heavily based on blockbuster availability.</span>
+            </p>
+            <p>
+              <span class="lang-ja"><strong>財務構造の違い：</strong>Netflixはコンテンツ投資を償却資産として処理し、一度制作したコンテンツを全世界の会員に追加原価なく配信できる。限界費用はほぼゼロに近い。映画館は物理的な座席数に制約され、上映1回ごとにコスト（施設維持費・人件費・配給権料）が発生する。このスケーラビリティの違いが、Netflixに対してEV/Revenue 5〜8x、AMCに対してEV/Revenue 1x未満という乖離を生んでいる。</span>
+              <span class="lang-en"><strong>Financial structure differences:</strong> Netflix treats content investment as an amortising asset and can distribute content produced once to members worldwide at near-zero marginal cost. Cinemas are constrained by physical seat capacity, with costs (facility maintenance, labour, distribution rights) incurred per screening. This scalability difference produces EV/Revenue of 5–8x for Netflix versus below 1x for AMC.</span>
+            </p>
+          </div>
+          <div class="case-verdict">
+            <span class="lang-ja">Lesson: 同じ「エンタメ」でもサブスクと取引型は別ユニバース。NetflixのCompsはDisney+、Spotifyであり、AMCではない</span>
+            <span class="lang-en">Lesson: "Entertainment" aside, subscription and transactional are different universes. Netflix's Comps are Disney+, Spotify — not AMC</span>
+          </div>
+        </div>
+
+        <!-- Case 3: Shopify vs. Department Store -->
+        <div class="case-box">
+          <div class="case-label">Case #03</div>
+          <div class="case-title">
+            <span class="lang-ja">Shopify vs. 百貨店 — Enablerモデル vs. 在庫リスクモデル</span>
+            <span class="lang-en">Shopify vs. Department Stores — Enabler Model vs. Inventory Risk Model</span>
+          </div>
+          <div class="case-body">
+            <p>
+              <span class="lang-ja">Shopifyと百貨店（三越伊勢丹、Macy's等）は、どちらも「商品を消費者に届ける」小売インフラだが、ビジネスモデルの本質が異なる。Shopifyはマーチャント（出店者）にECプラットフォームを提供し、サブスクリプション料＋決済手数料を得る「Enabler」モデルである。百貨店は自社で在庫を仕入れ（または消化仕入れで）、テナントから賃料を得る伝統的小売モデルである。</span>
+              <span class="lang-en">Shopify and department stores (Isetan Mitsukoshi, Macy's, etc.) are both "retail infrastructure delivering products to consumers", but their business model essence differs. Shopify provides merchants with an e-commerce platform and earns subscription fees plus payment processing fees — an "Enabler" model. Department stores purchase inventory (or operate on consignment) and collect rent from tenants — a traditional retail model.</span>
+            </p>
+            <p>
+              <span class="lang-ja"><strong>財務構造の違い：</strong>Shopifyは在庫リスクを一切負わず、マーチャントの成功に比例して収益が伸びる。粗利率は50%超。百貨店は在庫リスク（売れ残り）、不動産コスト、人件費を負担し、粗利率は30〜40%だが販管費控除後の営業利益率は5%未満になることが多い。Shopifyのマーチャント数が増えるほど規模の経済が効くが、百貨店は新店舗ごとに固定費が追加される。</span>
+              <span class="lang-en"><strong>Financial structure differences:</strong> Shopify bears zero inventory risk and grows revenue in proportion to merchant success. Gross margins exceed 50%. Department stores carry inventory risk (unsold stock), real estate costs, and labour, with gross margins of 30–40% but operating margins often below 5% after SG&A. Shopify's economics improve with scale (more merchants, same platform), while department stores add fixed costs with each new location.</span>
+            </p>
+          </div>
+          <div class="case-verdict">
+            <span class="lang-ja">Lesson: 「小売関連」の括りでShopifyと百貨店を比較するCompsは無効。ShopifyのCompsはBigCommerce、WooCommerce（Automattic）等のECインフラ企業</span>
+            <span class="lang-en">Lesson: A Comps set grouping Shopify with department stores under "retail-related" is invalid. Shopify's Comps are e-commerce infrastructure firms like BigCommerce and WooCommerce (Automattic)</span>
+          </div>
+        </div>
+
+        <div class="section-sep">···</div>
+
+        <!-- Section 7: Integration -->
+        <h2>
+          <span class="lang-ja">7. 統合 — ビジネスモデル分析からComps選定への接続</span>
+          <span class="lang-en">7. Integration — Connecting Business Model Analysis to Comps Selection</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">前稿の業界分析（#011）と本稿のビジネスモデル分析を組み合わせることで、Comps選定の精度は飛躍的に向上する。以下に、業界分析とビジネスモデル分析を統合したComps選定チェックリストを提示する。</span>
+          <span class="lang-en">Combining the industry analysis from the previous article (#011) with this article's business model analysis dramatically improves Comps selection accuracy. Below we present a Comps selection checklist integrating both analyses.</span>
+        </p>
+
+        <ul class="numbered-list">
+          <li>
+            <span class="num">01</span>
+            <div>
+              <span class="lang-ja"><strong>業界構造の一致</strong> — 同じ競争構造（Five Forces）、同じライフサイクル段階、同じバリューチェーン層の企業か？</span>
+              <span class="lang-en"><strong>Industry structure match</strong> — Same competitive structure (Five Forces), same life cycle stage, same value chain layer?</span>
+            </div>
+          </li>
+          <li>
+            <span class="num">02</span>
+            <div>
+              <span class="lang-ja"><strong>収益モデルの一致</strong> — 同じ収益モデル類型（サブスクリプション/取引型/プラットフォーム等）か？収益の「質」（予測可能性・反復性）は同等か？</span>
+              <span class="lang-en"><strong>Revenue model match</strong> — Same revenue model type (subscription/transactional/platform, etc.)? Is revenue "quality" (predictability, recurrence) comparable?</span>
+            </div>
+          </li>
+          <li>
+            <span class="num">03</span>
+            <div>
+              <span class="lang-ja"><strong>ユニットエコノミクスの類似性</strong> — LTV/CAC、粗利率、資本効率（ROIC）は同等の範囲か？ユニットエコノミクスが大きく異なる企業は、同じ成長率でもマルチプルが乖離して当然</span>
+              <span class="lang-en"><strong>Unit economics similarity</strong> — Are LTV/CAC, gross margin, and capital efficiency (ROIC) in a comparable range? Companies with materially different unit economics naturally warrant different multiples even at the same growth rate</span>
+            </div>
+          </li>
+          <li>
+            <span class="num">04</span>
+            <div>
+              <span class="lang-ja"><strong>Moatの同等性</strong> — 競争優位の源泉（ネットワーク効果/スイッチングコスト/無形資産/コスト優位）は類似しているか？Moatが異なればCAPが異なり、ターミナルバリューの構造が変わる</span>
+              <span class="lang-en"><strong>Moat equivalence</strong> — Are the sources of competitive advantage (network effects/switching costs/intangible assets/cost advantage) similar? Different moats mean different CAPs, changing terminal value structure</span>
+            </div>
+          </li>
+          <li>
+            <span class="num">05</span>
+            <div>
+              <span class="lang-ja"><strong>適切なKPIの選択</strong> — 上記の分析結果に基づき、そのビジネスモデルのバリュードライバーを最も直接的に反映するマルチプルとKPIを選択する</span>
+              <span class="lang-en"><strong>Appropriate KPI selection</strong> — Based on the above analysis, select multiples and KPIs that most directly reflect the value drivers of that business model</span>
+            </div>
+          </li>
+        </ul>
+
+        <div class="pull-quote">
+          <p>
+            <span class="lang-ja">ビジネスモデルを理解するとは、その企業の1円の売上が将来どれだけのキャッシュフローに変換されるかの構造を説明できることである</span>
+            <span class="lang-en">To understand a business model is to be able to explain the structure by which each pound of revenue will convert into future cash flow</span>
+          </p>
+        </div>
+
+        <div class="section-sep">···</div>
+
+        <!-- References -->
+        <h2>
+          <span class="lang-ja">出典</span><span class="lang-en">References</span>
+        </h2>
+
+        <ul class="source-list">
+          <li>
+            <span style="font-family:'Inter',sans-serif;font-size:0.82rem;color:var(--text-body);">Osterwalder, A. & Pigneur, Y. (2010) <em>Business Model Generation</em>. Wiley.</span>
+            <span class="source-tag"><span class="lang-ja">[書籍]</span><span class="lang-en">[Book]</span></span>
+          </li>
+          <li>
+            <span style="font-family:'Inter',sans-serif;font-size:0.82rem;color:var(--text-body);">Parker, G., Van Alstyne, M. & Choudary, S. (2016) <em>Platform Revolution</em>. W. W. Norton.</span>
+            <span class="source-tag"><span class="lang-ja">[書籍]</span><span class="lang-en">[Book]</span></span>
+          </li>
+          <li>
+            <span style="font-family:'Inter',sans-serif;font-size:0.82rem;color:var(--text-body);">Damodaran, A. (2012) <em>Investment Valuation: Tools and Techniques for Determining the Value of Any Asset</em> (3rd ed.). Wiley.</span>
+            <span class="source-tag"><span class="lang-ja">[書籍]</span><span class="lang-en">[Book]</span></span>
+          </li>
+          <li>
+            <span style="font-family:'Inter',sans-serif;font-size:0.82rem;color:var(--text-body);">Koller, T., Goedhart, M. & Wessels, D. (2020) <em>Valuation: Measuring and Managing the Value of Companies</em> (7th ed.). Wiley.</span>
+            <span class="source-tag"><span class="lang-ja">[書籍]</span><span class="lang-en">[Book]</span></span>
+          </li>
+          <li>
+            <span style="font-family:'Inter',sans-serif;font-size:0.82rem;color:var(--text-body);">Dorsey, P. (2008) <em>The Little Book That Builds Wealth: The Knockout Formula for Finding Great Investments</em>. Wiley.</span>
+            <span class="source-tag"><span class="lang-ja">[書籍・Morningstar Economic Moat]</span><span class="lang-en">[Book · Morningstar Economic Moat]</span></span>
+          </li>
+          <li>
+            <span style="font-family:'Inter',sans-serif;font-size:0.82rem;color:var(--text-body);">Rosenbaum, J. & Pearl, J. (2022) <em>Investment Banking: Valuation, LBOs, M&A, and IPOs</em> (4th ed.). Wiley.</span>
+            <span class="source-tag"><span class="lang-ja">[書籍]</span><span class="lang-en">[Book]</span></span>
+          </li>
+        </ul>
+
+      </article>
+
+      <!-- Sidebar -->
+      <aside class="article-sidebar">
+
+        <div class="sidebar-card">
+          <div class="section-label">Key Frameworks</div>
+          <div class="keyfacts-grid">
+            <div class="fact-card highlight">
+              <div class="fact-value">7</div>
+              <div class="fact-desc">
+                <span class="lang-ja">収益モデル類型</span>
+                <span class="lang-en">Revenue Model Types</span>
+              </div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">4</div>
+              <div class="fact-desc">
+                <span class="lang-ja">Moat源泉</span>
+                <span class="lang-en">Moat Sources</span>
+              </div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">3</div>
+              <div class="fact-desc">
+                <span class="lang-ja">事例研究</span>
+                <span class="lang-en">Case Studies</span>
+              </div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">5</div>
+              <div class="fact-desc">
+                <span class="lang-ja">統合チェックリスト項目</span>
+                <span class="lang-en">Integration Checklist Items</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-card">
+          <div class="section-label">Key Concepts</div>
+          <ul class="highlights-list" style="margin-top: 12px;">
+            <li class="highlight-item">
+              <span class="hl-num">01</span>
+              <span class="hl-text">
+                <span class="lang-ja">収益モデル7類型</span>
+                <span class="lang-en">7 Revenue Model Types</span>
+              </span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">02</span>
+              <span class="hl-text">
+                <span class="lang-ja">LTV/CAC ≧ 3x ルール</span>
+                <span class="lang-en">LTV/CAC ≥ 3x Rule</span>
+              </span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">03</span>
+              <span class="hl-text">
+                <span class="lang-ja">Economic Moat 4源泉</span>
+                <span class="lang-en">4 Economic Moat Sources</span>
+              </span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">04</span>
+              <span class="hl-text">
+                <span class="lang-ja">CAP推定フレームワーク</span>
+                <span class="lang-en">CAP Estimation Framework</span>
+              </span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">05</span>
+              <span class="hl-text">
+                <span class="lang-ja">Comps選定5項目チェックリスト</span>
+                <span class="lang-en">5-Item Comps Selection Checklist</span>
+              </span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="sidebar-card">
+          <div class="section-label">Valuation Theory Lab</div>
+          <ol class="highlights-list" style="list-style:none;padding:0;margin-top:12px;">
+            <li class="highlight-item">
+              <span class="hl-num">01</span>
+              <span class="hl-text"><a href="./2026-03-20-valuation.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">DCFとマルチプルの統一理論</span><span class="lang-en">Unified Theory: DCF and Multiples</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">04</span>
+              <span class="hl-text"><a href="./2026-03-21-wacc.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">WACCの理論と実務</span><span class="lang-en">WACC: Theory and Practice</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">05</span>
+              <span class="hl-text"><a href="./2026-03-21-beta-hamada.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">Beta・Hamada方程式</span><span class="lang-en">Beta and the Hamada Equation</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">06</span>
+              <span class="hl-text"><a href="./2026-03-22-multiples-comparability.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">マルチプルの比較可能性</span><span class="lang-en">Multiples Comparability</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">07</span>
+              <span class="hl-text"><a href="./2026-03-22-cyclical.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">Cyclical企業のバリュエーション</span><span class="lang-en">Valuing Cyclical Companies</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">08</span>
+              <span class="hl-text"><a href="./2026-03-23-control-premium.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">コントロールプレミアム理論</span><span class="lang-en">Control Premium Theory</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">09</span>
+              <span class="hl-text"><a href="./2026-03-23-lbo-valuation.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">LBOバリュエーション</span><span class="lang-en">LBO Valuation</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">10</span>
+              <span class="hl-text"><a href="./2026-03-28-comps-selection.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">Comps選定の理論と実務</span><span class="lang-en">Comparable Company Selection</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">11</span>
+              <span class="hl-text"><a href="./2026-03-28-industry-analysis.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">業界分析の本質</span><span class="lang-en">Essence of Industry Analysis</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num" style="color:var(--accent-warm);">12</span>
+              <span class="hl-text" style="color:var(--accent);"><span class="lang-ja">ビジネスモデル分析</span><span class="lang-en">Business Model Analysis</span></span>
+            </li>
+          </ol>
+        </div>
+
+        <div class="sidebar-card">
+          <div class="section-label">Key References</div>
+          <ul class="source-list" style="margin-top:10px;">
+            <li><span style="font-family:'Inter',sans-serif;font-size:0.78rem;color:var(--text-body);">Osterwalder & Pigneur <em>Business Model Generation</em></span></li>
+            <li><span style="font-family:'Inter',sans-serif;font-size:0.78rem;color:var(--text-body);">Parker et al. <em>Platform Revolution</em></span></li>
+            <li><span style="font-family:'Inter',sans-serif;font-size:0.78rem;color:var(--text-body);">Damodaran, A. <em>Investment Valuation</em> (3rd ed.)</span></li>
+            <li><span style="font-family:'Inter',sans-serif;font-size:0.78rem;color:var(--text-body);">Dorsey, P. <em>The Little Book That Builds Wealth</em></span></li>
+          </ul>
+        </div>
+
+      </aside>
+
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <span>Valuation Theory Lab #012 | donato Valuation Notes | 2026-03-28</span>
+  <span>
+    <span class="lang-ja">本稿は理論解説を目的としており、特定の投資・M&A意思決定に対する助言ではありません。個別案件のバリュエーションには専門家の判断を要します。</span>
+    <span class="lang-en">This article is for theoretical educational purposes and does not constitute advice for specific investment or M&A decisions. Individual valuation engagements require professional judgement.</span>
+  </span>
+</footer>
+
+<script>
+  // Progress bar
+  window.addEventListener('scroll', function() {
+    var h = document.documentElement;
+    var pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    document.getElementById('progress-bar').style.width = Math.min(pct, 100) + '%';
+  });
+
+  // Reading time (500字/分)
+  (function() {
+    var text = document.querySelector('.article-body') ? document.querySelector('.article-body').textContent : '';
+    var chars = text.length;
+    var minutes = Math.ceil(chars / 500);
+    var el1 = document.getElementById('reading-time-badge');
+    var el2 = document.getElementById('reading-time-badge2');
+    if (el1) el1.querySelector('.lang-ja').textContent = '約' + minutes + '分';
+    if (el2) el2.querySelector('.lang-ja').textContent = '約' + minutes + '分';
+    if (el1) el1.querySelector('.lang-en').textContent = '~' + minutes + ' min read';
+    if (el2) el2.querySelector('.lang-en').textContent = '~' + minutes + ' min read';
+  })();
+
+  // Lang toggle
+  let currentLang = localStorage.getItem('hp-lang') || 'ja';
+  let currentTheme = localStorage.getItem('hp-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('hp-lang', lang);
+    document.querySelectorAll('.lang-ja').forEach(el => el.style.display = lang === 'ja' ? 'inline' : 'none');
+    document.querySelectorAll('.lang-en').forEach(el => el.style.display = lang === 'en' ? 'inline' : 'none');
+    document.querySelectorAll('.art-lang-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+    document.documentElement.lang = lang === 'ja' ? 'ja' : 'en';
+  }
+  function toggleTheme() {
+    currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+    localStorage.setItem('hp-theme', currentTheme);
+    document.body.classList.toggle('dark', currentTheme === 'dark');
+    document.getElementById('theme-btn').textContent = currentTheme === 'light' ? '☀' : '☾';
+  }
+  document.addEventListener('DOMContentLoaded', () => {
+    setLang(currentLang);
+    if (currentTheme === 'dark') {
+      document.body.classList.add('dark');
+      document.getElementById('theme-btn').textContent = '☾';
+    }
+  });
+</script>
+
+</body>
+</html>

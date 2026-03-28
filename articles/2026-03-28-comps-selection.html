@@ -1561,8 +1561,8 @@
         <div class="trap-box">
           <div class="trap-label"><span class="lang-ja">ただし実務的な罠がある</span><span class="lang-en">HOWEVER, THERE ARE PRACTICAL TRAPS</span></div>
           <p>
-            <span class="lang-ja">① <strong>小型株ピアのβは下方バイアスを持ちやすい：</strong> 小型株は取引が薄い（thin trading）ため、観測されるβが実態より低くなる傾向がある。Scholes-Williams補正やDimson補正をかけないまま使うと、βが過小→Keが過小→バリュエーションが過大、というエラーが発生する。Size Premiumとのダブルカウントではなく、<strong>βの過小推計</strong>が本質的な問題になる。<br><br>② <strong>規模を過度に制約するとサンプルが劣化する：</strong> 「対象企業と同規模でなければBeta用ピアに入れない」とすると、候補企業数が激減し、βの統計的安定性が大きく損なわれる。個社固有のノイズに支配された不安定なβが算出されるリスクが高まる。<br><br>③ <strong>「小型株ピアを使えばSize Premiumは不要」は誤り：</strong> βが捉えるのはsystematic risk（市場ポートフォリオへの感応度）であり、「小さいこと自体のリスク」（流動性の低さ、情報の非対称性、経営資源の脆弱性等）をβは定義上完全にはカバーしない。だからこそ、修正CAPMではSize Premiumが別途加算される。</span>
-            <span class="lang-en">① <strong>Small-cap peer β tends to have downward bias:</strong> Small-cap stocks are thinly traded, causing observed β to be lower than reality. Without Scholes-Williams or Dimson adjustments, β is understated → Ke is understated → valuation is overstated. The real problem is <strong>β underestimation</strong>, not double-counting with the Size Premium.<br><br>② <strong>Over-constraining by scale degrades the sample:</strong> If "only companies of similar scale to the target can be included as beta peers," the candidate pool shrinks dramatically, severely undermining the statistical stability of β. The risk of producing an unstable β dominated by individual company noise increases significantly.<br><br>③ <strong>"Using small-cap peers makes Size Premium unnecessary" is incorrect:</strong> β captures systematic risk (sensitivity to the market portfolio), and by definition does not fully cover "the risk of being small itself" (low liquidity, information asymmetry, fragility of management resources, etc.). This is precisely why the Size Premium is added separately in modified CAPM.</span>
+            <span class="lang-ja">① <strong>小型株ピアのβは下方バイアスを持ちやすい（thin trading problem）：</strong> 小型株は取引頻度が低いため、ある日の市場全体の動きに対する株価反応が翌日以降にずれ込む（非同期取引）。標準的なOLS回帰でβを推計すると、この「遅延した反応」を捉えきれず、βが実態より低く算出される。<br><br>この問題に対する補正手法が2つある：<br><br><strong>Scholes-Williams補正（1977年）：</strong> 当日だけでなく前日・翌日の市場リターンに対する回帰も行い、3つのβ推計値（β<sub>-1</sub>, β<sub>0</sub>, β<sub>+1</sub>）を市場リターンの自己相関（ρ）を使って合成する。<br>β<sub>SW</sub> = (β<sub>-1</sub> + β<sub>0</sub> + β<sub>+1</sub>) / (1 + 2ρ)<br>1期前・1期後の「ずれた反応」を明示的に拾い上げることで、真のsystematic riskに近いβを復元する。<br><br><strong>Dimson補正（1979年）：</strong> Scholes-Williamsと発想は同じだが、より一般化されたアプローチをとる。対象株式のリターンを、市場リターンの複数のラグ（t-n, ..., t-1, t, t+1, ..., t+n）に対して同時に回帰し、得られた各係数の合計をβとする。<br>β<sub>Dimson</sub> = Σ β<sub>k</sub> （k = -n から +n）<br>ラグの数（n）を柔軟に設定できるため、流動性が極めて低い銘柄にも対応できる。<br><br>これらの補正をかけないまま小型株ピアのβを使うと、βが過小→Keが過小→バリュエーションが過大、というエラーが発生する。Size Premiumとのダブルカウントではなく、<strong>βの過小推計</strong>が本質的な問題になる。<br><br>② <strong>規模を過度に制約するとサンプルが劣化する：</strong> 「対象企業と同規模でなければBeta用ピアに入れない」とすると、候補企業数が激減し、βの統計的安定性が大きく損なわれる。個社固有のノイズに支配された不安定なβが算出されるリスクが高まる。<br><br>③ <strong>「小型株ピアを使えばSize Premiumは不要」は誤り：</strong> βが捉えるのはsystematic risk（市場ポートフォリオへの感応度）であり、「小さいこと自体のリスク」（流動性の低さ、情報の非対称性、経営資源の脆弱性等）をβは定義上完全にはカバーしない。だからこそ、修正CAPMではSize Premiumが別途加算される。</span>
+            <span class="lang-en">① <strong>Small-cap peer β tends to have downward bias (thin trading problem):</strong> Small-cap stocks trade infrequently, causing their price reaction to overall market movements to spill over into subsequent days (non-synchronous trading). When β is estimated using standard OLS regression, this "delayed reaction" is not fully captured, resulting in β being lower than reality.<br><br>Two correction methods address this:<br><br><strong>Scholes-Williams correction (1977):</strong> Run regressions not only against the current day's market return, but also against the prior and following day's market returns, producing three β estimates (β<sub>-1</sub>, β<sub>0</sub>, β<sub>+1</sub>). These are then combined using the autocorrelation (ρ) of market returns.<br>β<sub>SW</sub> = (β<sub>-1</sub> + β<sub>0</sub> + β<sub>+1</sub>) / (1 + 2ρ)<br>By explicitly capturing the "delayed reaction" one period before and after, it recovers a β closer to the true systematic risk.<br><br><strong>Dimson correction (1979):</strong> The same intuition as Scholes-Williams, but takes a more generalised approach. The target stock's return is regressed simultaneously against multiple lags of market returns (t-n, ..., t-1, t, t+1, ..., t+n), and the sum of all coefficients is taken as β.<br>β<sub>Dimson</sub> = Σ β<sub>k</sub> (k = -n to +n)<br>Because the number of lags (n) can be flexibly set, it can handle even extremely illiquid securities.<br><br>Using small-cap peer βs without these corrections leads to β understatement → Ke understatement → valuation overstatement. The real problem is <strong>β underestimation</strong>, not double-counting with the Size Premium.<br><br>② <strong>Over-constraining by scale degrades the sample:</strong> If "only companies of similar scale to the target can be included as beta peers," the candidate pool shrinks dramatically, severely undermining the statistical stability of β. The risk of producing an unstable β dominated by individual company noise increases significantly.<br><br>③ <strong>"Using small-cap peers makes Size Premium unnecessary" is incorrect:</strong> β captures systematic risk (sensitivity to the market portfolio), and by definition does not fully cover "the risk of being small itself" (low liquidity, information asymmetry, fragility of management resources, etc.). This is precisely why the Size Premium is added separately in modified CAPM.</span>
           </p>
         </div>
 
@@ -1699,6 +1699,23 @@
           <footer>— Donato Valuation Notes</footer>
         </div>
 
+        <div class="next-article">
+          <div class="next-label">
+            <span class="lang-ja">次回 · Valuation Theory Lab #011</span>
+            <span class="lang-en">Next · Valuation Theory Lab #011</span>
+          </div>
+          <div class="next-title">
+            <a href="./2026-03-28-industry-analysis.html" style="color:inherit;text-decoration:none;">
+              <span class="lang-ja">業界分析の本質 — Compsの前提としての産業理解</span>
+              <span class="lang-en">The Essence of Industry Analysis — Understanding Sectors as a Prerequisite for Comps</span>
+            </a>
+          </div>
+          <div class="next-desc">
+            <span class="lang-ja">「同業種」は比較可能性の出発点にすぎない。Porter's Five Forces、業界ライフサイクル、バリューチェーン分析の3つのレンズで、産業理解がバリュエーション結論を根本的に変えるメカニズムを解説。</span>
+            <span class="lang-en">"Same industry" is merely the starting point for comparability. Through three analytical lenses — Porter's Five Forces, industry life cycle, and value chain analysis — we explain how industry understanding fundamentally changes valuation conclusions.</span>
+          </div>
+        </div>
+
       </article>
 
       <!-- 4. サイドバー -->
@@ -1793,7 +1810,15 @@
             </li>
             <li class="highlight-item">
               <span class="hl-num" style="color:var(--accent-warm);">10</span>
-              <span class="hl-text" style="color:var(--accent);">Comps選定の理論と実務</span>
+              <span class="hl-text" style="color:var(--accent);"><span class="lang-ja">Comps選定の理論と実務</span><span class="lang-en">Comparable Company Selection</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">11</span>
+              <span class="hl-text"><a href="./2026-03-28-industry-analysis.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">業界分析の本質</span><span class="lang-en">Essence of Industry Analysis</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">12</span>
+              <span class="hl-text"><a href="./2026-03-28-business-model-analysis.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">ビジネスモデル分析</span><span class="lang-en">Business Model Analysis</span></a></span>
             </li>
           </ol>
         </div>

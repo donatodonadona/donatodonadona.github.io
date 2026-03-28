@@ -247,7 +247,11 @@ body.light .donato-nav { background: rgba(246,245,240,0.92); }
   letter-spacing: 0.08em; padding: 2px 6px; border-radius: 3px; white-space: nowrap;
 }
 .lbadge-cpe { background: rgba(26,110,176,0.15); color: var(--accent); border: 1px solid rgba(26,110,176,0.3); }
+.lbadge-eiken1 { background: rgba(76,175,80,0.15); color: #4CAF50; border: 1px solid rgba(76,175,80,0.3); }
+.lbadge-cae { background: rgba(90,156,190,0.15); color: #5A9CBE; border: 1px solid rgba(90,156,190,0.3); }
 .lbadge-beyond { background: rgba(245,200,0,0.12); color: var(--accent2); border: 1px solid rgba(245,200,0,0.3); }
+.vf-btn[data-vf-level="Eiken1"].active { background: #4CAF50; color: #fff; border-color: #4CAF50; }
+.vf-btn[data-vf-level="CAE"].active { background: #5A9CBE; color: #fff; border-color: #5A9CBE; }
 .cbadge {
   font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.06em;
   padding: 1px 5px; border-radius: 2px;
@@ -550,14 +554,16 @@ footer {
   <div id="tab-vocab" class="tab-panel">
     <h2 class="section-h"><span data-en>Vocabulary List</span><span data-ja>単語リスト</span></h2>
     <p class="section-sub">
-      <span data-en>CPE and Beyond CPE vocabulary organised by level and category. Filter to focus your study.</span>
-      <span data-ja>CPE・Beyond CPEレベルの語彙をレベル・カテゴリ別に整理。フィルターで学習範囲を絞る。</span>
+      <span data-en>Vocabulary from Eiken Grade 1 to Beyond CPE, organised by level and category. Filter to focus your study.</span>
+      <span data-ja>英検1級からBeyond CPEまでの語彙をレベル・カテゴリ別に整理。フィルターで学習範囲を絞る。</span>
     </p>
     <div class="vocab-filters">
       <div class="vocab-filter-group" id="vf-level">
         <button class="vf-btn active" data-vf-level="all" onclick="filterVocab()">All</button>
-        <button class="vf-btn" data-vf-level="CPE" onclick="filterVocab()">CPE</button>
-        <button class="vf-btn" data-vf-level="Beyond" onclick="filterVocab()">Beyond CPE</button>
+        <button class="vf-btn" data-vf-level="Eiken1" onclick="filterVocab()">英検1級</button>
+        <button class="vf-btn" data-vf-level="CAE" onclick="filterVocab()">CAE C1</button>
+        <button class="vf-btn" data-vf-level="CPE" onclick="filterVocab()">CPE C2</button>
+        <button class="vf-btn" data-vf-level="Beyond" onclick="filterVocab()">Beyond</button>
       </div>
       <div style="width:1px;background:var(--border);margin:0 2px;"></div>
       <div class="vocab-filter-group" id="vf-cat">
@@ -797,7 +803,240 @@ const GRAMMAR = [
 
 const VOCAB = [
   // [word, ja, level, cat, note]
-  // level: "CPE" | "Beyond"   cat: "V"|"Adj"|"N"|"Col"|"Ph"|"Ac"|"Pol"
+  // level: "Eiken1" | "CAE" | "CPE" | "Beyond"
+  // cat: "V"|"Adj"|"N"|"Col"|"Ph"|"Ac"|"Pol"
+
+  // ═══════════════════════════════════════
+  //  英検1級 (Eiken Grade 1) — 100 entries
+  // ═══════════════════════════════════════
+
+  // ─── 英検1級 · Verbs ───
+  ["abolish","廃止する","Eiken1","V","~ a law / ~ the death penalty"],
+  ["alleviate","緩和する・軽減する","Eiken1","V","~ poverty / ~ pain"],
+  ["bolster","強化する・支える","Eiken1","V","~ confidence / ~ the economy"],
+  ["coerce","強制する","Eiken1","V","~ sb into doing sth"],
+  ["consolidate","統合する・固める","Eiken1","V","~ power / ~ gains"],
+  ["curb","抑制する","Eiken1","V","~ spending / ~ inflation"],
+  ["deem","～とみなす","Eiken1","V","be ~ed necessary / ~ it appropriate"],
+  ["deplete","枯渇させる・使い果たす","Eiken1","V","~ resources / ~ reserves"],
+  ["deteriorate","悪化する","Eiken1","V","conditions ~ / health ~s"],
+  ["diminish","減少させる・弱める","Eiken1","V","~ the impact / ~ in importance"],
+  ["dispel","払拭する","Eiken1","V","~ doubts / ~ myths"],
+  ["elicit","引き出す","Eiken1","V","~ a response / ~ information"],
+  ["endorse","支持する・承認する","Eiken1","V","~ a candidate / ~ a product"],
+  ["entail","伴う・必要とする","Eiken1","V","~ risks / what does it ~?"],
+  ["expedite","促進する・迅速に処理する","Eiken1","V","~ the process / ~ delivery"],
+  ["fluctuate","変動する","Eiken1","V","prices ~ / ~ between X and Y"],
+  ["hinder","妨げる","Eiken1","V","~ progress / ~ growth"],
+  ["incur","被る・招く","Eiken1","V","~ costs / ~ a penalty"],
+  ["inhibit","阻害する・抑制する","Eiken1","V","~ growth / ~ creativity"],
+  ["jeopardise","危うくする","Eiken1","V","~ safety / ~ the outcome"],
+  ["mandate","命じる・義務付ける","Eiken1","V","~ compliance / ~ reforms"],
+  ["offset","相殺する","Eiken1","V","~ losses / ~ carbon emissions"],
+  ["preclude","排除する・妨げる","Eiken1","V","~ the possibility / ~ further action"],
+  ["supersede","取って代わる","Eiken1","V","~ an older model / ~ existing rules"],
+  ["thwart","阻止する・妨げる","Eiken1","V","~ an attempt / ~ plans"],
+  ["undermine","損なう・弱体化させる","Eiken1","V","~ trust / ~ authority"],
+  ["vindicate","正当性を証明する","Eiken1","V","~ a decision / feel ~d"],
+  ["waive","放棄する・免除する","Eiken1","V","~ a fee / ~ the right to"],
+  ["withhold","差し控える・保留する","Eiken1","V","~ information / ~ payment"],
+  ["relinquish","放棄する・手放す","Eiken1","V","~ control / ~ a claim"],
+
+  // ─── 英検1級 · Adjectives ───
+  ["adverse","不利な・有害な","Eiken1","Adj","~ effects / ~ conditions"],
+  ["arduous","困難な・骨の折れる","Eiken1","Adj","~ task / ~ journey"],
+  ["austere","厳格な・質素な","Eiken1","Adj","~ measures / ~ lifestyle"],
+  ["compelling","説得力のある","Eiken1","Adj","~ evidence / ~ argument"],
+  ["comprehensive","包括的な","Eiken1","Adj","~ report / ~ coverage"],
+  ["conspicuous","目立つ・顕著な","Eiken1","Adj","~ absence / ~ consumption"],
+  ["detrimental","有害な","Eiken1","Adj","~ to health / ~ effect"],
+  ["feasible","実行可能な","Eiken1","Adj","~ plan / technically ~"],
+  ["formidable","手強い・恐るべき","Eiken1","Adj","~ opponent / ~ challenge"],
+  ["imminent","差し迫った","Eiken1","Adj","~ danger / ~ threat"],
+  ["imperative","不可欠な・必須の","Eiken1","Adj","it is ~ that / ~ need"],
+  ["indigenous","土着の・固有の","Eiken1","Adj","~ people / ~ species"],
+  ["inherent","固有の・本来備わった","Eiken1","Adj","~ risk / ~ flaw"],
+  ["legitimate","正当な・合法の","Eiken1","Adj","~ concern / ~ business"],
+  ["lucrative","収益性の高い","Eiken1","Adj","~ deal / ~ market"],
+  ["obsolete","時代遅れの","Eiken1","Adj","become ~ / ~ technology"],
+  ["paramount","最重要の","Eiken1","Adj","of ~ importance / ~ concern"],
+  ["pertinent","関連する・適切な","Eiken1","Adj","~ question / ~ to the issue"],
+  ["plausible","もっともらしい","Eiken1","Adj","~ explanation / ~ scenario"],
+  ["precarious","不安定な・危うい","Eiken1","Adj","~ situation / ~ balance"],
+  ["prevalent","広まっている","Eiken1","Adj","~ in society / increasingly ~"],
+  ["profound","深遠な・重大な","Eiken1","Adj","~ impact / ~ change"],
+  ["rigorous","厳密な・厳格な","Eiken1","Adj","~ analysis / ~ standards"],
+  ["tangible","具体的な・明白な","Eiken1","Adj","~ results / ~ evidence"],
+  ["volatile","不安定な・変わりやすい","Eiken1","Adj","~ market / ~ situation"],
+
+  // ─── 英検1級 · Nouns ───
+  ["adversity","逆境","Eiken1","N","overcome ~ / in the face of ~"],
+  ["allegiance","忠誠","Eiken1","N","pledge ~ / ~ to the state"],
+  ["ambiguity","曖昧さ","Eiken1","N","legal ~ / moral ~"],
+  ["animosity","敵意","Eiken1","N","deep-seated ~ / ~ between groups"],
+  ["compliance","遵守","Eiken1","N","regulatory ~ / in ~ with"],
+  ["consensus","合意・総意","Eiken1","N","reach a ~ / ~ building"],
+  ["deficit","赤字・不足","Eiken1","N","budget ~ / trade ~"],
+  ["disparity","格差・不均衡","Eiken1","N","income ~ / ~ between regions"],
+  ["endeavour","努力・試み","Eiken1","N","a worthwhile ~ / in every ~"],
+  ["grievance","不満・苦情","Eiken1","N","air a ~ / legitimate ~"],
+  ["incentive","動機付け・報奨金","Eiken1","N","financial ~ / tax ~"],
+  ["integrity","誠実さ・完全性","Eiken1","N","personal ~ / data ~"],
+  ["jurisdiction","管轄権","Eiken1","N","under the ~ of / ~ over"],
+  ["morale","士気","Eiken1","N","boost ~ / low ~"],
+  ["precedent","前例","Eiken1","N","set a ~ / without ~"],
+  ["resilience","回復力・弾力性","Eiken1","N","emotional ~ / build ~"],
+  ["turmoil","混乱・動乱","Eiken1","N","political ~ / in ~"],
+  ["vulnerability","脆弱性","Eiken1","N","exploit a ~ / ~ to attack"],
+  ["proximity","近接","Eiken1","N","in ~ to / close ~"],
+  ["stipulation","規定・条件","Eiken1","N","contractual ~ / with the ~ that"],
+
+  // ─── 英検1級 · Collocations ───
+  ["bear in mind","心に留める","Eiken1","Col","please ~ that..."],
+  ["bring about","引き起こす","Eiken1","Col","~ change / ~ a transformation"],
+  ["come to terms with","受け入れる・折り合いをつける","Eiken1","Col","~ the loss / ~ reality"],
+  ["fall prey to","～の餌食になる","Eiken1","Col","~ scams / ~ temptation"],
+  ["on the grounds that","～という根拠で","Eiken1","Col","rejected ~ it was unfair"],
+  ["shed light on","明らかにする","Eiken1","Col","~ the issue / ~ the mystery"],
+  ["take into account","考慮に入れる","Eiken1","Col","~ all factors / ~ the risks"],
+  ["turn a blind eye","見て見ぬふりをする","Eiken1","Col","~ to corruption"],
+  ["take a toll on","～に打撃を与える","Eiken1","Col","~ health / ~ the economy"],
+  ["pave the way for","～の道を開く","Eiken1","Col","~ reform / ~ innovation"],
+  ["stem from","～に由来する","Eiken1","Col","problems ~ poor planning"],
+  ["account for","占める・説明する","Eiken1","Col","~ 40% of / ~ the discrepancy"],
+  ["in the long run","長い目で見ると","Eiken1","Col","beneficial ~ / cost-effective ~"],
+  ["to no avail","無駄に","Eiken1","Col","tried ~ / searched ~"],
+  ["at the outset","最初に・冒頭で","Eiken1","Col","~ of the project / state ~"],
+
+  // ─── 英検1級 · Phrases ───
+  ["for the sake of","～のために","Eiken1","Ph","~ clarity / ~ argument"],
+  ["in the face of","～に直面して","Eiken1","Ph","~ adversity / ~ opposition"],
+  ["with a view to","～を目的として","Eiken1","Ph","~ improving efficiency"],
+  ["on the verge of","～の瀬戸際に","Eiken1","Ph","~ collapse / ~ a breakthrough"],
+  ["in lieu of","～の代わりに","Eiken1","Ph","~ cash payment"],
+  ["irrespective of","～にかかわらず","Eiken1","Ph","~ age or gender"],
+  ["in keeping with","～にふさわしく","Eiken1","Ph","~ tradition / ~ the brand"],
+  ["by and large","概して・全般的に","Eiken1","Ph","~, the results were positive"],
+  ["in accordance with","～に従って","Eiken1","Ph","~ the regulations / ~ policy"],
+  ["on behalf of","～を代表して","Eiken1","Ph","speak ~ the team"],
+
+  // ═══════════════════════════════════════
+  //  CAE C1 — 100 entries
+  // ═══════════════════════════════════════
+
+  // ─── CAE · Verbs ───
+  ["advocate","提唱する・主張する","CAE","V","~ reform / ~ for change"],
+  ["allocate","割り当てる","CAE","V","~ resources / ~ funding"],
+  ["coincide","一致する・同時に起こる","CAE","V","~ with the event / opinions ~"],
+  ["compile","編纂する・まとめる","CAE","V","~ data / ~ a report"],
+  ["compromise","妥協する","CAE","V","~ on standards / willing to ~"],
+  ["depict","描写する","CAE","V","~ life / ~ a scene"],
+  ["derive","引き出す・由来する","CAE","V","~ benefit from / ~d from Latin"],
+  ["disregard","無視する","CAE","V","~ the rules / ~ advice"],
+  ["encompass","包含する","CAE","V","~ a wide range / ~ all aspects"],
+  ["enhance","向上させる","CAE","V","~ performance / ~ the experience"],
+  ["evoke","呼び起こす","CAE","V","~ memories / ~ emotions"],
+  ["implement","実施する","CAE","V","~ a policy / ~ changes"],
+  ["incorporate","組み込む","CAE","V","~ feedback / ~ new features"],
+  ["justify","正当化する","CAE","V","~ the cost / ~ a decision"],
+  ["neglect","怠る・無視する","CAE","V","~ duties / ~ to mention"],
+  ["perceive","知覚する・認識する","CAE","V","~ as a threat / widely ~d"],
+  ["regulate","規制する","CAE","V","~ the industry / ~ emissions"],
+  ["speculate","推測する","CAE","V","~ about the cause / ~ on outcomes"],
+  ["sustain","維持する","CAE","V","~ growth / ~ injuries"],
+  ["acknowledge","認める","CAE","V","~ the problem / ~ receipt"],
+  ["anticipate","予測する","CAE","V","~ demand / ~ difficulties"],
+  ["overlook","見落とす","CAE","V","~ a detail / ~ the obvious"],
+  ["supplement","補足する","CAE","V","~ income / ~ the diet"],
+  ["trigger","引き起こす","CAE","V","~ a reaction / ~ an alarm"],
+  ["withstand","耐える","CAE","V","~ pressure / ~ criticism"],
+
+  // ─── CAE · Adjectives ───
+  ["ambiguous","曖昧な","CAE","Adj","~ wording / deliberately ~"],
+  ["arbitrary","恣意的な","CAE","Adj","~ decision / ~ rule"],
+  ["compatible","互換性のある","CAE","Adj","~ with the system / ~ devices"],
+  ["conclusive","決定的な","CAE","Adj","~ evidence / ~ proof"],
+  ["controversial","物議を醸す","CAE","Adj","~ topic / ~ decision"],
+  ["diverse","多様な","CAE","Adj","~ workforce / culturally ~"],
+  ["explicit","明示的な","CAE","Adj","~ instructions / ~ content"],
+  ["fundamental","根本的な","CAE","Adj","~ change / ~ principle"],
+  ["liable","責任がある・～しがち","CAE","Adj","~ for damages / ~ to fail"],
+  ["marginal","わずかな・周辺の","CAE","Adj","~ improvement / ~ cost"],
+  ["pivotal","極めて重要な","CAE","Adj","~ role / ~ moment"],
+  ["preliminary","予備的な","CAE","Adj","~ results / ~ investigation"],
+  ["reluctant","気が進まない","CAE","Adj","~ to admit / ~ participant"],
+  ["robust","頑健な・堅固な","CAE","Adj","~ framework / ~ growth"],
+  ["simultaneous","同時の","CAE","Adj","~ translation / ~ events"],
+  ["straightforward","簡単な・率直な","CAE","Adj","~ process / ~ answer"],
+  ["subsequent","その後の","CAE","Adj","~ events / ~ analysis"],
+  ["substantial","相当な・実質的な","CAE","Adj","~ evidence / ~ investment"],
+  ["susceptible","影響を受けやすい","CAE","Adj","~ to disease / ~ to pressure"],
+  ["coherent","首尾一貫した","CAE","Adj","~ argument / ~ strategy"],
+  ["acute","深刻な・鋭い","CAE","Adj","~ shortage / ~ awareness"],
+  ["viable","実行可能な","CAE","Adj","~ alternative / commercially ~"],
+  ["implicit","暗黙の","CAE","Adj","~ assumption / ~ bias"],
+  ["erratic","不安定な・予測不能な","CAE","Adj","~ behaviour / ~ performance"],
+  ["innate","生まれつきの","CAE","Adj","~ ability / ~ talent"],
+
+  // ─── CAE · Nouns ───
+  ["allocation","割り当て・配分","CAE","N","resource ~ / budget ~"],
+  ["assumption","前提・仮定","CAE","N","underlying ~ / challenge an ~"],
+  ["constraint","制約","CAE","N","budget ~s / time ~s"],
+  ["controversy","論争","CAE","N","spark ~ / amid ~"],
+  ["correlation","相関関係","CAE","N","~ between X and Y / strong ~"],
+  ["criterion","基準（pl. criteria）","CAE","N","selection ~ / meet the criteria"],
+  ["dimension","次元・側面","CAE","N","add a new ~ / multiple ~s"],
+  ["emphasis","強調","CAE","N","place ~ on / shift the ~"],
+  ["implication","含意・影響","CAE","N","practical ~s / broader ~s"],
+  ["initiative","取り組み・主導権","CAE","N","government ~ / take the ~"],
+  ["intervention","介入","CAE","N","government ~ / medical ~"],
+  ["mechanism","仕組み","CAE","N","defence ~ / coping ~"],
+  ["outcome","結果・成果","CAE","N","desired ~ / learning ~s"],
+  ["perspective","視点","CAE","N","from a different ~ / gain ~"],
+  ["phenomenon","現象","CAE","N","natural ~ / cultural ~"],
+  ["rationale","根拠・論理的根拠","CAE","N","the ~ behind / provide a ~"],
+  ["scope","範囲","CAE","N","beyond the ~ of / ~ for improvement"],
+  ["threshold","閾値・境界","CAE","N","pain ~ / cross the ~"],
+  ["stakeholder","利害関係者","CAE","N","key ~s / ~ consultation"],
+  ["benchmark","基準・指標","CAE","N","industry ~ / set a ~"],
+
+  // ─── CAE · Collocations ───
+  ["draw a distinction","区別を明確にする","CAE","Col","~ between X and Y"],
+  ["gain momentum","勢いを増す","CAE","Col","the movement ~ed ~"],
+  ["pose a challenge","課題を突きつける","CAE","Col","~ to the team"],
+  ["raise awareness","意識を高める","CAE","Col","~ of the issue / ~ about"],
+  ["address concerns","懸念に対処する","CAE","Col","~ raised by stakeholders"],
+  ["bridge the gap","ギャップを埋める","CAE","Col","~ between theory and practice"],
+  ["meet the criteria","基準を満たす","CAE","Col","fail to ~ / ~ for selection"],
+  ["exert influence","影響力を行使する","CAE","Col","~ on policy / ~ over"],
+  ["face scrutiny","精査に直面する","CAE","Col","~ from regulators"],
+  ["reach a consensus","合意に達する","CAE","Col","~ on the issue / struggle to ~"],
+  ["remain to be seen","まだ分からない","CAE","Col","it ~s whether..."],
+  ["stand to gain","利益を得る立場にある","CAE","Col","they ~ from the deal"],
+  ["weigh the pros and cons","長短を比較検討する","CAE","Col","~ before deciding"],
+  ["in light of","～を踏まえて","CAE","Col","~ recent events / ~ the evidence"],
+  ["with regard to","～に関して","CAE","Col","~ this matter / ~ your request"],
+
+  // ─── CAE · Phrases ───
+  ["all things considered","すべてを考慮すると","CAE","Ph","~, it was a success"],
+  ["as a matter of fact","実のところ","CAE","Ph","~, I disagree"],
+  ["by the same token","同様に","CAE","Ph","~, we must also consider..."],
+  ["to a certain extent","ある程度は","CAE","Ph","~ this is true"],
+  ["given that","～ということを考えると","CAE","Ph","~ resources are limited"],
+  ["in the event of","～の場合には","CAE","Ph","~ an emergency / ~ failure"],
+  ["on the whole","概して","CAE","Ph","~, the response was positive"],
+  ["with the exception of","～を除いて","CAE","Ph","~ a few minor issues"],
+  ["subject to","～次第で","CAE","Ph","~ approval / ~ change"],
+  ["provided that","～であれば","CAE","Ph","~ you agree to the terms"],
+  ["for the most part","大部分は","CAE","Ph","~, the plan worked"],
+  ["in terms of","～の観点から","CAE","Ph","~ cost / ~ efficiency"],
+  ["regardless of","～にかかわらず","CAE","Ph","~ the outcome"],
+  ["as opposed to","～とは対照的に","CAE","Ph","~ the previous model"],
+  ["on the contrary","それどころか","CAE","Ph","~, it had the opposite effect"],
+
+  // ═══════════════════════════════════════
+  //  CPE C2 — 110 entries
+  // ═══════════════════════════════════════
 
   // ─── CPE · Verbs ───
   ["elucidate","明確にする・解明する","CPE","V","~ a point / ~ the mechanism"],
@@ -815,6 +1054,21 @@ const VOCAB = [
   ["galvanise","活性化させる・奮起させる","CPE","V","~ support / ~ public opinion"],
   ["circumvent","回避する・迂回する","CPE","V","~ regulations / ~ the issue"],
   ["permeate","浸透する・行き渡る","CPE","V","~ society / ~ the culture"],
+  ["impugn","異議を唱える・攻撃する","CPE","V","~ sb's integrity / ~ the findings"],
+  ["expunge","消去する・抹消する","CPE","V","~ from the record / ~ all traces"],
+  ["supplant","取って代わる","CPE","V","~ the old system / ~ a rival"],
+  ["abrogate","廃止する・破棄する","CPE","V","~ a treaty / ~ responsibility"],
+  ["promulgate","公布する・広める","CPE","V","~ a law / ~ new regulations"],
+  ["attenuate","弱める・薄める","CPE","V","~ the signal / ~ the risk"],
+  ["obviate","取り除く・不要にする","CPE","V","~ the need for / ~ difficulties"],
+  ["vitiate","損なう・無効にする","CPE","V","~ the argument / ~ the contract"],
+  ["gainsay","否定する・反論する","CPE","V","cannot ~ the evidence"],
+  ["militate","不利に働く","CPE","V","~ against success / ~ against reform"],
+  ["forestall","先手を打つ・未然に防ぐ","CPE","V","~ criticism / ~ objections"],
+  ["dissimulate","隠す・偽る","CPE","V","~ one's feelings / ~ the truth"],
+  ["prognosticate","予測する・予言する","CPE","V","~ the outcome / difficult to ~"],
+  ["inveigh","激しく非難する","CPE","V","~ against corruption / ~ against injustice"],
+  ["arrogate","不当に要求する","CPE","V","~ power / ~ authority to oneself"],
 
   // ─── CPE · Adjectives ───
   ["ubiquitous","至る所にある・遍在する","CPE","Adj","~ technology / become ~"],
@@ -829,6 +1083,19 @@ const VOCAB = [
   ["commensurate","釣り合った・相応の","CPE","Adj","~ with effort / ~ salary"],
   ["prescient","先見の明がある","CPE","Adj","~ observation / ~ analysis"],
   ["convoluted","複雑に入り組んだ","CPE","Adj","~ argument / ~ explanation"],
+  ["egregious","甚だしい・ひどい","CPE","Adj","~ error / ~ violation"],
+  ["apposite","適切な・ぴったりの","CPE","Adj","~ remark / ~ quotation"],
+  ["insidious","潜行性の・知らぬ間に進行する","CPE","Adj","~ threat / ~ influence"],
+  ["perspicacious","洞察力のある","CPE","Adj","~ observer / ~ analysis"],
+  ["unconscionable","法外な・良心に反する","CPE","Adj","~ delay / ~ behaviour"],
+  ["inchoate","未発達の・始まったばかりの","CPE","Adj","~ idea / ~ movement"],
+  ["tendentious","偏向的な","CPE","Adj","~ reporting / ~ argument"],
+  ["meretricious","見かけ倒しの","CPE","Adj","~ appeal / ~ argument"],
+  ["redoubtable","手強い・尊敬すべき","CPE","Adj","~ opponent / ~ reputation"],
+  ["recondite","難解な・深遠な","CPE","Adj","~ subject / ~ knowledge"],
+  ["ineluctable","避けられない","CPE","Adj","~ conclusion / ~ fate"],
+  ["nugatory","無価値な・取るに足らない","CPE","Adj","~ effect / render ~"],
+  ["exiguous","極めて少ない","CPE","Adj","~ resources / ~ evidence"],
 
   // ─── CPE · Nouns ───
   ["predilection","嗜好・好み","CPE","N","a ~ for + noun"],
@@ -845,6 +1112,18 @@ const VOCAB = [
   ["equanimity","平静さ・落ち着き","CPE","N","with great ~ / maintain ~"],
   ["sagacity","賢明さ・洞察力","CPE","N","remarkable ~ / a man of ~"],
   ["exigency","緊急の必要性","CPE","N","in times of ~ / the exigencies of"],
+  ["acumen","洞察力・鋭さ","CPE","N","business ~ / financial ~"],
+  ["animus","敵意・悪意","CPE","N","personal ~ / ~ towards"],
+  ["opprobrium","非難・汚名","CPE","N","public ~ / attract ~"],
+  ["verisimilitude","真実味・迫真性","CPE","N","~ of the narrative / achieve ~"],
+  ["lacuna","欠落・空白","CPE","N","fill a ~ / ~ in the research"],
+  ["provenance","出所・来歴","CPE","N","of dubious ~ / establish the ~"],
+  ["sine qua non","不可欠な条件","CPE","N","a ~ for success"],
+  ["parlance","用語・言い回し","CPE","N","in common ~ / legal ~"],
+  ["truism","自明の理","CPE","N","a ~ that / beyond mere ~"],
+  ["surfeit","過剰","CPE","N","a ~ of information / ~ of options"],
+  ["vicissitude","変遷・浮き沈み","CPE","N","the ~s of life / ~s of fortune"],
+  ["probity","誠実さ・高潔さ","CPE","N","~ in public life / a man of ~"],
 
   // ─── CPE · Collocations ───
   ["come under scrutiny","精査される・吟味される","CPE","Col","the plan came under ~"],
@@ -853,12 +1132,37 @@ const VOCAB = [
   ["call into question","疑問視する・問い直す","CPE","Col","~ the assumption / ~ the findings"],
   ["run counter to","～に反する・相容れない","CPE","Col","~ expectations / ~ logic"],
   ["fall short of","～に達しない・及ばない","CPE","Col","~ the target / ~ expectations"],
-  ["strike a balance","バランスを取る・折り合いをつける","CPE","Col","~ between X and Y"],
+  ["strike a balance","バランスを取る","CPE","Col","~ between X and Y"],
   ["warrant attention","注目に値する","CPE","Col","this issue ~s serious attention"],
   ["bear witness to","証言する・証明する","CPE","Col","~ the scale of change"],
   ["defy easy categorisation","容易に分類できない","CPE","Col","the phenomenon defies easy ~"],
+  ["hold sway over","支配する・影響力を持つ","CPE","Col","~ public opinion / ~ the market"],
+  ["fly in the face of","～に真っ向から反する","CPE","Col","~ convention / ~ the evidence"],
+  ["beg the question","論点先取する","CPE","Col","this ~s whether..."],
+  ["brook no argument","異論を許さない","CPE","Col","the policy ~s no ~"],
+  ["cut to the quick","深く傷つける","CPE","Col","the criticism ~ him ~"],
+  ["at loggerheads","対立して","CPE","Col","they are ~ over the issue"],
+  ["leave no stone unturned","あらゆる手を尽くす","CPE","Col","~ in the search for"],
+  ["cut both ways","両刃の剣である","CPE","Col","this argument ~s"],
+  ["turn on its head","逆転させる・覆す","CPE","Col","~ the conventional view"],
+  ["stand one in good stead","後に役立つ","CPE","Col","this will ~ you ~"],
 
-  // ─── Beyond CPE · Verbs ───
+  // ─── CPE · Phrases ───
+  ["be that as it may","それはそうかもしれないが","CPE","Ph","~, the fact remains"],
+  ["to all intents and purposes","事実上","CPE","Ph","~ identical / ~ complete"],
+  ["inasmuch as","～である限り","CPE","Ph","~ this is true, we must..."],
+  ["with the proviso that","～という条件つきで","CPE","Ph","accepted ~ changes could be made"],
+  ["in no small measure","少なからず","CPE","Ph","success due ~ to leadership"],
+  ["not least","とりわけ","CPE","Ph","several issues, ~ funding"],
+  ["in contradistinction to","～とは明確に区別して","CPE","Ph","~ the previous model"],
+  ["vis-à-vis","～に関して・に対して","CPE","Ph","~ the competition / ~ policy"],
+  ["qua","～として・の資格で","CPE","Ph","art ~ art / the role ~ role"],
+
+  // ═══════════════════════════════════════
+  //  Beyond CPE — 90 entries
+  // ═══════════════════════════════════════
+
+  // ─── Beyond · Verbs ───
   ["presuppose","前提とする・予め仮定する","Beyond","V","this ~s that... / ~ agreement"],
   ["conflate","混同する・混ぜ合わせる","Beyond","V","~ two distinct issues"],
   ["obfuscate","曖昧にする・難解にする","Beyond","V","~ the truth / ~ the issue"],
@@ -867,8 +1171,39 @@ const VOCAB = [
   ["reify","実体化する・具体化する","Beyond","V","~ an abstract concept"],
   ["interrogate","批判的に検討する","Beyond","V","~ the data / ~ assumptions"],
   ["operationalise","操作的に定義する・実用化する","Beyond","V","~ the concept / ~ the theory"],
+  ["instantiate","具体化する・例示する","Beyond","V","~ the theory / ~ a concept"],
+  ["undergird","下支えする","Beyond","V","~ the argument / ~ the policy"],
+  ["advert to","言及する","Beyond","V","~ the issue / ~ a prior study"],
+  ["deracinate","根こそぎにする","Beyond","V","~ cultural identity / ~d communities"],
+  ["adumbrate","概略を示す・予示する","Beyond","V","~ a plan / ~ future developments"],
+  ["sublate","止揚する","Beyond","V","~ the contradiction"],
+  ["hypostatise","実体化する","Beyond","V","~ abstract notions / ~ the concept"],
 
-  // ─── Beyond CPE · Academic Terms ───
+  // ─── Beyond · Adjectives ───
+  ["axiomatic","自明の","Beyond","Adj","it is ~ that / ~ truth"],
+  ["sui generis","唯一無二の","Beyond","Adj","a ~ phenomenon / entirely ~"],
+  ["liminal","閾の・境界的な","Beyond","Adj","~ space / ~ state"],
+  ["apophatic","否定的な（神学）","Beyond","Adj","~ theology / ~ approach"],
+  ["hermeneutic","解釈学的な","Beyond","Adj","~ approach / ~ framework"],
+  ["isomorphic","同型の","Beyond","Adj","~ structures / ~ mapping"],
+  ["synoptic","概括的な・総合的な","Beyond","Adj","~ view / ~ account"],
+  ["performative","遂行的な","Beyond","Adj","~ utterance / ~ contradiction"],
+  ["diachronic","通時的な","Beyond","Adj","~ analysis / ~ vs synchronic"],
+  ["aporetic","行き詰まりの・難問の","Beyond","Adj","~ tension / ~ structure"],
+
+  // ─── Beyond · Nouns ───
+  ["aporia","行き詰まり・難問","Beyond","N","philosophical ~ / confront an ~"],
+  ["telos","目的・終局","Beyond","N","the ~ of the argument / ultimate ~"],
+  ["simulacrum","模造品・虚像","Beyond","N","a ~ of democracy / mere ~"],
+  ["palimpsest","改訂重ね書き・重層的テキスト","Beyond","N","cultural ~ / the city as ~"],
+  ["prolegomenon","序論・緒言","Beyond","N","a ~ to the study / serve as ~"],
+  ["substratum","下部構造・基盤","Beyond","N","cultural ~ / linguistic ~"],
+  ["antinomy","二律背反","Beyond","N","Kantian ~ / ~ of reason"],
+  ["cathexis","感情集注","Beyond","N","emotional ~ / object ~"],
+  ["doxa","通念・常識","Beyond","N","challenge the ~ / established ~"],
+  ["habitus","ハビトゥス・社会的性向","Beyond","N","Bourdieu's ~ / cultural ~"],
+
+  // ─── Beyond · Academic Terms ───
   ["heuristic","発見的手法・経験則","Beyond","Ac","a useful ~ / ~ approach"],
   ["hegemony","覇権・支配的な影響力","Beyond","Ac","cultural ~ / ~ of capital"],
   ["zeitgeist","時代精神","Beyond","Ac","capture the ~ / reflect the ~"],
@@ -879,8 +1214,16 @@ const VOCAB = [
   ["praxis","実践・実行","Beyond","Ac","theory and ~ / informed by ~"],
   ["teleological","目的論的な","Beyond","Ac","~ argument / ~ view"],
   ["positivist","実証主義的な","Beyond","Ac","~ approach / ~ framework"],
+  ["phenomenological","現象学的な","Beyond","Ac","~ method / ~ inquiry"],
+  ["structuralist","構造主義的な","Beyond","Ac","~ analysis / ~ approach"],
+  ["post-structuralist","ポスト構造主義的な","Beyond","Ac","~ critique / ~ theory"],
+  ["deontological","義務論的な","Beyond","Ac","~ ethics / ~ framework"],
+  ["genealogical","系譜学的な","Beyond","Ac","~ analysis / Foucauldian ~"],
+  ["discursive","言説的な・談話の","Beyond","Ac","~ practice / ~ formation"],
+  ["semiotic","記号論的な","Beyond","Ac","~ analysis / ~ system"],
+  ["hermeneutical","解釈学的な","Beyond","Ac","~ circle / ~ tradition"],
 
-  // ─── Beyond CPE · Phrases / Structures ───
+  // ─── Beyond · Phrases / Structures ───
   ["insofar as","～の限りにおいて","Beyond","Ph","~ this is true, we must..."],
   ["predicated on","～を前提として・基づいて","Beyond","Ph","a view ~ the assumption that"],
   ["notwithstanding","～にもかかわらず","Beyond","Ph","~ the difficulties, progress was made"],
@@ -893,16 +1236,33 @@ const VOCAB = [
   ["on the premise that","～という前提で","Beyond","Ph","proceed ~ this is true"],
   ["to the extent that","～という点では","Beyond","Ph","~ this matters, we should..."],
   ["in the absence of","～がない状況では","Beyond","Ph","~ clear evidence, caution is warranted"],
+  ["mutatis mutandis","必要な変更を加えた上で","Beyond","Ph","applies ~ to other contexts"],
+  ["a fortiori","なおさら","Beyond","Ph","if X is true, ~ Y must be"],
+  ["ipso facto","事実そのものによって","Beyond","Ph","this ~ invalidates the argument"],
+  ["ex ante","事前の","Beyond","Ph","~ analysis / ~ expectations"],
+  ["ex post","事後の","Beyond","Ph","~ evaluation / ~ assessment"],
+  ["de facto","事実上の","Beyond","Ph","~ standard / ~ leader"],
+  ["prima facie","一見したところ","Beyond","Ph","~ evidence / ~ case"],
+  ["ceteris paribus","他の条件が同じならば","Beyond","Ph","~, demand will rise"],
+  ["pace","～には敬意を表しつつ異を唱えるが","Beyond","Ph","~ Keynes, this is not..."],
+  ["inter alia","とりわけ・なかんずく","Beyond","Ph","included, ~, three key reforms"],
 
-  // ─── Beyond CPE · Policy / Register ───
+  // ─── Beyond · Policy / Register ───
   ["policy landscape","政策の全体像・政策環境","Beyond","Pol","the current ~ / navigate the ~"],
   ["systemic risk","システミックリスク・構造的リスク","Beyond","Pol","pose ~ / address ~"],
   ["structural reform","構造改革","Beyond","Pol","~ is overdue / ~ agenda"],
   ["evidence-based","エビデンスに基づく","Beyond","Pol","~ policy / ~ decision-making"],
   ["cross-cutting","横断的な・複数分野にまたがる","Beyond","Pol","~ issue / ~ agenda"],
-  ["implementation gap","実施のギャップ・理念と実践の乖離","Beyond","Pol","address the ~"],
+  ["implementation gap","実施のギャップ","Beyond","Pol","address the ~"],
   ["stakeholder engagement","ステークホルダー参画","Beyond","Pol","meaningful ~ / improve ~"],
-  ["paradigm shift","パラダイムシフト・根本的な変化","Beyond","Pol","represent a ~ / trigger a ~"]
+  ["paradigm shift","パラダイムシフト・根本的な変化","Beyond","Pol","represent a ~ / trigger a ~"],
+  ["counterfactual","反事実的な","Beyond","Pol","~ analysis / ~ scenario"],
+  ["fiscal consolidation","財政再建","Beyond","Pol","~ measures / pursue ~"],
+  ["moral hazard","モラルハザード","Beyond","Pol","create ~ / ~ in banking"],
+  ["regulatory capture","規制の虜","Beyond","Pol","risk of ~ / prevent ~"],
+  ["path dependency","経路依存性","Beyond","Pol","~ in institutions / historical ~"],
+  ["Overton window","オーバートンの窓","Beyond","Pol","shift the ~ / within the ~"],
+  ["rent-seeking","レントシーキング","Beyond","Pol","~ behaviour / ~ by incumbents"]
 ];
 
 // ==================== RENDER ====================
@@ -939,12 +1299,13 @@ const CAT_EN = { V:"Verb", Adj:"Adj", N:"Noun", Col:"Colloc", Ph:"Phrase", Ac:"A
 function renderVocab() {
   const tbody = document.getElementById('vocab-tbody');
   tbody.innerHTML = VOCAB.map(([w, ja, lv, cat, note]) => {
-    const lvClass = lv === 'CPE' ? 'lbadge-cpe' : 'lbadge-beyond';
+    const lvClass = {Eiken1:'lbadge-eiken1',CAE:'lbadge-cae',CPE:'lbadge-cpe',Beyond:'lbadge-beyond'}[lv];
+    const lvLabel = {Eiken1:'英検1級',CAE:'CAE',CPE:'CPE',Beyond:'Beyond'}[lv];
     const catLabelJa = CAT_LABELS[cat] || cat;
     const catLabelEn = CAT_EN[cat] || cat;
     return `<tr data-lv="${lv}" data-cat="${cat}">
       <td class="vt-word">${w}</td>
-      <td><span class="lbadge ${lvClass}">${lv === 'CPE' ? 'CPE' : 'Beyond'}</span></td>
+      <td><span class="lbadge ${lvClass}">${lvLabel}</span></td>
       <td><span class="cbadge"><span data-en>${catLabelEn}</span><span data-ja>${catLabelJa}</span></span></td>
       <td class="vt-ja">${ja}</td>
       <td class="vt-note">${note}</td>

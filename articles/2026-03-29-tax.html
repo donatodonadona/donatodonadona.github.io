@@ -1,0 +1,1611 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="令和8年度税制改正の7大論点を解説。年収の壁178万円、防衛特別所得税、暗号資産分離課税、戦略R&D税額控除40%、グローバルミニマム税UTPR/QDMTT等。">
+  <title>令和8年度税制改正 — 7つの論点 | donato</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+JP:wght@300;400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../brand.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:           #F8F7F4;
+      --bg-code:      #EEECEA;
+      --bg-quote:     #EEECEA;
+      --bg-highlight: #EBF3FB;
+      --bg-subtle:    #F0EFEB;
+      --bg-card:      #F0EFEB;
+      --bg-header:    #F8F7F4;
+      --text-primary: #111320;
+      --text-body:    #2A2C3E;
+      --text-muted:   #565C70;
+      --text-light:   #888EA0;
+      --accent:       #1A6EB0;
+      --accent-warm:  #D4A010;
+      --border:       #D4D2CC;
+      --border-quote: #B8B6B0;
+      --border-light: #D4D2CC;
+      --tag-bg:       #E4EFF8;
+      --tag-text:     #1A6EB0;
+      --table-stripe: #F0EFEB;
+    }
+
+    /* ===== PROGRESS BAR ===== */
+    #progress-bar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      width: 0%;
+      background: var(--accent);
+      z-index: 300;
+      transition: width 0.1s linear;
+    }
+
+    body {
+      font-family: 'Noto Serif JP', Georgia, serif;
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--text-primary);
+      background: var(--bg);
+    }
+
+    /* ===== SITE HEADER ===== */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg-header);
+      border-bottom: 2px solid var(--accent);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .site-header-left { display: flex; align-items: center; gap: 12px; }
+    .wordmark {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: lowercase;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+    .wordmark span { color: var(--accent-warm); }
+    .header-sep { color: var(--border-quote); font-size: 13px; }
+    .header-media {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+    }
+    .site-header-right { display: flex; align-items: center; gap: 12px; }
+    .header-back-link {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .header-back-link:hover { color: var(--accent); }
+    .lang-toggle-bar {
+      display: flex;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .art-lang-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      padding: 3px 10px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .art-lang-btn.active { background: #F5C800; color: #111320; }
+    #theme-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      padding: 3px 9px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.15s;
+    }
+    #theme-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .header-date {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-light);
+      letter-spacing: 0.08em;
+    }
+
+    /* ===== STICKY INFO BAR ===== */
+    #sticky-bar {
+      position: sticky;
+      top: 44px;
+      z-index: 200;
+      background: var(--bg-subtle);
+      border-bottom: 1px solid var(--border-light);
+      padding: 7px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .sbar-cat {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+    }
+    .sbar-sep { color: var(--border-quote); font-size: 11px; }
+    .sbar-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+    .sbar-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      padding: 2px 8px;
+    }
+
+    /* ===== LAYOUT ===== */
+    .article-container { max-width: 1240px; margin: 0 auto; padding: 0 20px; }
+    .article-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 24px;
+    }
+    .article-body { grid-column: 2 / 10; max-width: 68ch; }
+    .article-sidebar {
+      grid-column: 10 / 13;
+      position: sticky;
+      top: 78px;
+      align-self: start;
+      max-height: calc(100vh - 90px);
+      overflow-y: auto;
+    }
+    .article-sidebar::-webkit-scrollbar { width: 4px; }
+    .article-sidebar::-webkit-scrollbar-track { background: transparent; }
+    .article-sidebar::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 2px; }
+
+    /* ===== TYPOGRAPHY ===== */
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+    }
+    .article-headline {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(2rem, 4vw, 2.6rem);
+      font-weight: 600;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+    .article-standfirst {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      font-weight: 400;
+    }
+    .byline {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    h2 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.45rem;
+      font-weight: 600;
+      line-height: 1.25;
+      color: var(--text-primary);
+      margin: 2em 0 0.75em;
+      border-top: 1px solid var(--border);
+      padding-top: 1em;
+    }
+    h3 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin: 1.75em 0 0.5em;
+    }
+    .article-body p { margin-bottom: 1.4em; font-size: 0.97rem; line-height: 1.8; }
+    .article-body ul, .article-body ol { margin: 0 0 1.4em 1.4em; }
+    .article-body li { margin-bottom: 0.4em; font-size: 0.95rem; line-height: 1.7; }
+    strong { color: var(--text-primary); font-weight: 600; }
+
+    /* ===== EXEC SUMMARY ===== */
+    .exec-summary {
+      background: var(--bg-highlight);
+      border: 1px solid var(--border-light);
+      border-left: 4px solid var(--accent);
+      padding: 24px;
+      margin: 0 0 2.5em;
+    }
+    .exec-block { margin-bottom: 20px; }
+    .exec-block:last-child { margin-bottom: 0; }
+    .exec-block + .exec-block { padding-top: 18px; border-top: 1px solid var(--border-light); }
+    .exec-tldr {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.02rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      line-height: 1.55;
+      margin-top: 8px;
+    }
+    .issues-list, .implications-list {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .issue-item { display: flex; gap: 10px; align-items: baseline; }
+    .issue-q {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--accent);
+      flex-shrink: 0;
+      min-width: 20px;
+    }
+    .issue-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: var(--text-body);
+      line-height: 1.55;
+    }
+    .implication-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: var(--text-body);
+      line-height: 1.55;
+      padding-left: 14px;
+      border-left: 2px solid var(--accent);
+    }
+    .read-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
+    .read-col-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.66rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 6px;
+    }
+    .read-label-yes { color: var(--accent); }
+    .read-label-no { color: var(--text-muted); }
+    .read-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-body);
+      line-height: 1.45;
+      padding-left: 10px;
+      border-left: 2px solid var(--accent);
+      margin-bottom: 5px;
+    }
+    .skip-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+      padding-left: 10px;
+      border-left: 2px solid var(--border-light);
+      margin-bottom: 5px;
+    }
+
+    /* ===== FORMULA / CALC ===== */
+    .formula {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.93em;
+      background: var(--bg-code);
+      border-left: 3px solid var(--accent);
+      padding: 14px 20px;
+      margin: 20px 0;
+      color: var(--text-primary);
+      overflow-x: auto;
+      line-height: 1.7;
+    }
+    .calc-block {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      padding: 20px 24px;
+      margin: 24px 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+      line-height: 1.8;
+    }
+    .calc-block .calc-row { display: flex; justify-content: space-between; max-width: 480px; }
+    .calc-block .calc-total {
+      border-top: 1px solid var(--border);
+      margin-top: 6px;
+      padding-top: 6px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .calc-block .calc-highlight { color: var(--accent); font-weight: 700; }
+    .calc-block .calc-warn { color: var(--accent-warm); font-weight: 700; }
+
+    /* ===== INSIGHT / TRAP BOX ===== */
+    .insight-box {
+      background: var(--bg-highlight);
+      border-left: 4px solid var(--accent);
+      padding: 18px 22px;
+      margin: 28px 0;
+    }
+    .insight-box p {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: var(--text-primary);
+    }
+    .insight-box strong { color: var(--accent); }
+    .trap-box {
+      background: #FEF9EC;
+      border-left: 4px solid var(--accent-warm);
+      padding: 18px 22px;
+      margin: 24px 0;
+    }
+    .trap-box p {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      line-height: 1.65;
+      color: var(--text-body);
+    }
+    .trap-box .trap-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      color: var(--accent-warm);
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+
+    /* ===== DATA TABLE ===== */
+    .data-table-wrap { overflow-x: auto; margin: 1.5em 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      background: var(--bg-subtle);
+      padding: 8px 12px;
+      text-align: left;
+      border-bottom: 2px solid var(--border);
+    }
+    td {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border-light);
+      color: var(--text-body);
+      font-family: 'Inter', sans-serif;
+    }
+    tr:nth-child(even) td { background: var(--table-stripe); }
+    .td-accent { color: var(--accent); font-weight: 600; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
+    .td-warn   { color: var(--accent-warm); font-weight: 600; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
+
+    /* ===== PULL QUOTE ===== */
+    .pull-quote {
+      border-left: 4px solid var(--accent);
+      margin: 2em 0;
+      padding: 1em 20px;
+      background: var(--bg-card);
+    }
+    .pull-quote p {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.2rem;
+      font-style: italic;
+      color: var(--text-primary);
+      line-height: 1.5;
+      margin-bottom: 6px !important;
+    }
+    .pull-quote footer {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* ===== NUMBERED LIST ===== */
+    .numbered-list { list-style: none; padding: 0; margin: 20px 0; }
+    .numbered-list li {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 16px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.92rem;
+      line-height: 1.65;
+      color: var(--text-body);
+    }
+    .numbered-list li .num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: white;
+      background: var(--accent);
+      min-width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    /* ===== SECTION SEP ===== */
+    .section-sep {
+      text-align: center;
+      color: var(--text-light);
+      font-size: 1.2rem;
+      letter-spacing: 0.5em;
+      margin: 48px 0;
+      user-select: none;
+    }
+
+    /* ===== SOURCE LIST ===== */
+    .source-list { list-style: none; padding: 0; }
+    .source-list li { margin-bottom: 6px; }
+    .source-list a {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--accent);
+      text-decoration: none;
+      line-height: 1.5;
+    }
+    .source-list a:hover { text-decoration: underline; }
+    .source-tag { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--text-muted); margin-left: 4px; }
+
+    /* ===== NEXT ARTICLE CTA ===== */
+    .next-article {
+      background: var(--text-primary);
+      color: #E4E2DC;
+      padding: 28px 32px;
+      margin-top: 56px;
+    }
+    .next-article .next-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      color: var(--accent-warm);
+      margin-bottom: 8px;
+    }
+    .next-article .next-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+    .next-article .next-desc {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.82rem;
+      color: #9299A8;
+      margin-top: 8px;
+    }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .keyfacts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+    .fact-card { background: var(--bg-highlight); padding: 10px 8px; }
+    .fact-card.highlight { background: #FDF8EC; border: 1px solid #E8D88A; }
+    .fact-value { font-family: 'JetBrains Mono', monospace; font-size: 1rem; font-weight: 500; color: var(--accent); line-height: 1.2; }
+    .fact-card.highlight .fact-value { color: #8A6A00; }
+    .fact-desc { font-family: 'Inter', sans-serif; font-size: 0.64rem; color: var(--text-muted); margin-top: 3px; line-height: 1.35; }
+    .fact-card.highlight .fact-desc { color: #7A6020; }
+    .highlights-list { list-style: none; padding: 0; margin-top: 12px; }
+    .highlight-item { padding: 9px 0; border-bottom: 1px solid var(--border-light); display: flex; gap: 10px; align-items: baseline; }
+    .highlight-item:last-child { border-bottom: none; }
+    .hl-num { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--accent); flex-shrink: 0; min-width: 18px; }
+    .hl-text { font-family: 'Inter', sans-serif; font-size: 0.76rem; color: var(--text-body); line-height: 1.45; }
+
+    /* ===== LANG TOGGLE ===== */
+    .lang-en { display: none; }
+
+    /* ===== FOOTER ===== */
+    .site-footer {
+      border-top: 1px solid var(--border-light);
+      margin-top: 4em;
+      padding: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* ===== PRINT ===== */
+    @media print {
+      body { background: white; font-size: 11pt; }
+      .site-header, #sticky-bar, #progress-bar { display: none; }
+      .article-sidebar { position: static; max-height: none; overflow: visible; }
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+    @page { size: A4; margin: 20mm 15mm; }
+
+    /* ===== MOBILE ===== */
+    @media (max-width: 900px) {
+      .article-body { grid-column: 1 / -1; }
+      .article-sidebar { position: static; max-height: none; overflow: visible; grid-column: 1 / -1; }
+      .article-grid { display: block; }
+      .read-grid { grid-template-columns: 1fr; }
+      #sticky-bar { flex-wrap: wrap; gap: 6px; }
+    }
+
+    body.dark {
+      --bg:           #0D1117;
+      --bg-code:      #161B22;
+      --bg-quote:     #161B22;
+      --bg-highlight: #0E1A2B;
+      --bg-subtle:    #161B22;
+      --bg-card:      #161B22;
+      --bg-header:    #0D1117;
+      --text-primary: #E4E2DC;
+      --text-body:    #C4C2BC;
+      --text-muted:   #8B93A8;
+      --text-light:   #575E70;
+      --accent:       #3A8FD0;
+      --accent-warm:  #F5C800;
+      --border:       #21253A;
+      --border-quote: #2A2D3E;
+      --border-light: #21253A;
+      --tag-bg:       #0E1A2B;
+      --tag-text:     #3A8FD0;
+      --table-stripe: #161B22;
+    }
+    body.dark .trap-box { background: #1C1800; }
+    body.dark .fact-card.highlight { background: #1A1600; border-color: #3A2D00; }
+    body.dark .fact-card.highlight .fact-value { color: #C4900E; }
+    body.dark .fact-card.highlight .fact-desc { color: #A07828; }
+    body.dark .next-article { background: #111320; }
+
+    /* ===== DIAGRAM FIGURES ===== */
+    .diagram-figure { margin: 2em 0; }
+    .diagram-figure figcaption { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; font-weight: 500; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 12px; }
+
+    /* Dark mode SVG overrides */
+    body.dark .diagram-figure svg rect[fill="#EBF3FB"],
+    body.dark .diagram-figure svg rect[fill="#F0EFEB"] { fill: #12141C; }
+    body.dark .diagram-figure svg rect[fill="#E8E6E0"],
+    body.dark .diagram-figure svg rect[fill="#C8C5BC"] { fill: #21253A; }
+    body.dark .diagram-figure svg rect[fill="#D6E8F7"] { fill: #0D2240; }
+    body.dark .diagram-figure svg rect[fill="#111320"] { fill: #0A0B10; }
+    body.dark .diagram-figure svg text[fill="#111320"],
+    body.dark .diagram-figure svg text[fill="#2A2C3E"] { fill: #E4E2DC; }
+    body.dark .diagram-figure svg text[fill="#565C70"],
+    body.dark .diagram-figure svg text[fill="#888EA0"] { fill: #7A8099; }
+    body.dark .diagram-figure svg text[fill="#8A6A00"] { fill: #C4900E; }
+    body.dark .diagram-figure svg line[stroke="#D4D2CC"] { stroke: #21253A; }
+  </style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<!-- 1. Site Header -->
+<header class="site-header">
+  <div class="site-header-left">
+    <a class="wordmark" href="../index.html">dona<span>to</span></a>
+    <span class="header-sep">&mdash;</span>
+    <a class="header-back-link" href="./index.html"><span class="lang-ja">記事一覧</span><span class="lang-en">Articles</span></a>
+    <span class="header-sep">&mdash;</span>
+    <span class="header-media">Finance Professional x AI</span>
+  </div>
+  <div class="site-header-right">
+    <div class="lang-toggle-bar">
+      <button class="art-lang-btn active" data-lang="ja" onclick="setLang('ja')">JP</button>
+      <button class="art-lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+    </div>
+    <button id="theme-btn" onclick="toggleTheme()" title="Dark/Light toggle">&#9788;</button>
+    <time class="header-date">2026-03-29</time>
+  </div>
+</header>
+
+<!-- 2. Sticky Info Bar -->
+<div id="sticky-bar">
+  <span class="sbar-cat"><span class="lang-ja">Tax Law</span><span class="lang-en">Tax Law</span></span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-text">2026-03-29</span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-badge" id="reading-time-badge"><span class="lang-ja">&#35336;&#31639;&#20013;</span><span class="lang-en">...</span></span>
+</div>
+
+<main style="padding: 0 0 3em;">
+  <div class="article-container">
+    <div class="article-grid">
+
+      <!-- 3. Article Body -->
+      <article class="article-body">
+
+        <!-- Article Header -->
+        <div style="padding: 36px 0 24px;">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+            <div class="section-label">Tax Law</div>
+            <span class="sbar-badge" id="reading-time-badge2"><span class="lang-ja">&#35336;&#31639;&#20013;</span><span class="lang-en">...</span></span>
+          </div>
+          <h1 class="article-headline">
+            <span class="lang-ja">令和8年度税制改正 &#8212; Finance Professional が押さえるべき7つの論点</span>
+            <span class="lang-en">Japan FY2026 Tax Reform &#8212; Seven Key Issues for Finance Professionals</span>
+          </h1>
+          <p class="article-standfirst">
+            <span class="lang-ja">年収の壁178万円、防衛特別所得税、暗号資産分離課税、戦略R&amp;D税額控除40%、グローバルミニマム税UTPR/QDMTT &#8212; 個人・法人・国際の全領域にわたる大型改正の要点を整理する。</span>
+            <span class="lang-en">Income tax threshold at 1.78m yen, defence surtax, crypto separate taxation, 40% strategic R&amp;D credit, Pillar Two UTPR/QDMTT &#8212; a comprehensive overview of the landmark reform spanning individuals, corporates, and international tax.</span>
+          </p>
+          <div style="display:flex; gap:16px; align-items:center; border-top:1px solid var(--border-light); border-bottom:1px solid var(--border-light); padding:10px 0;">
+            <span class="byline">By <strong>Donato Tax Notes</strong></span>
+            <span style="color:var(--border);">|</span>
+            <time class="byline" datetime="2026-03-29"><span class="lang-ja">2026年3月29日</span><span class="lang-en">29 March 2026</span></time>
+            <span style="color:var(--border);">|</span>
+            <span class="byline"><span class="lang-ja">税制改正 &#183; 国際税務 &#183; R&amp;D税制 &#183; 暗号資産</span><span class="lang-en">Tax Reform &#183; International Tax &#183; R&amp;D Credits &#183; Crypto</span></span>
+          </div>
+        </div>
+
+        <!-- Structured Executive Summary -->
+        <section class="exec-summary">
+          <!-- Block 1: Summary -->
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">概要</span><span class="lang-en">Summary</span></div>
+            <p class="exec-tldr">
+              <span class="lang-ja">令和8年度（2026年度）税制改正大綱は、物価高対応の「年収の壁」引上げ（103万&#8594;178万円）、防衛特別所得税の新設、暗号資産の申告分離課税化、戦略分野R&amp;D税額控除40%、グローバルミニマム税UTPR/QDMTT本格施行など、個人・法人・国際の全領域にわたる大型改正となった。Finance Professionalにとって、特にクロスボーダー案件の税務コスト再試算と、AI・量子等のR&amp;D投資の税効率設計が喫緊の課題となる。</span>
+              <span class="lang-en">The FY2026 tax reform proposals represent a sweeping overhaul across personal, corporate, and international taxation: raising the income tax threshold from 1.03m to 1.78m yen, introducing a defence surtax, enabling separate taxation for crypto-assets at 20%, granting a 40% R&amp;D tax credit for strategic sectors, and launching Pillar Two UTPR/QDMTT. For finance professionals, the immediate priorities are recalculating cross-border tax costs and optimising AI/quantum R&amp;D investment structures.</span>
+            </p>
+          </div>
+          <!-- Block 2: Key Questions -->
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">本稿の論点</span><span class="lang-en">Key Questions</span></div>
+            <ul class="issues-list">
+              <li class="issue-item">
+                <span class="issue-q">Q1</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>「178万円の壁」は本当に手取りを増やすのか？</strong> &#8212; 所得税の非課税枠は拡大するが、社会保険料の壁（106万・130万円）は未解消。実効的な手取り増加は限定的な層も存在する</span>
+                  <span class="lang-en"><strong>Does the 1.78m yen threshold truly increase take-home pay?</strong> &#8212; The income tax exemption widens, yet social insurance thresholds (1.06m/1.30m yen) remain unchanged, limiting the real benefit for certain groups</span>
+                </span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">Q2</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>グローバルミニマム税のUTPR/QDMTT同時施行で何が変わるのか？</strong> &#8212; IIR既導入に加え、2026年4月以降はUTPR（軽課税所得ルール）とQDMTT（国内最低課税）が適用開始。低税率国への利益移転戦略は実質的に機能しなくなる</span>
+                  <span class="lang-en"><strong>What changes with the simultaneous launch of UTPR and QDMTT?</strong> &#8212; Building on the existing IIR, from April 2026 UTPR (Under-Taxed Profits Rule) and QDMTT (Qualified Domestic Minimum Top-up Tax) take effect, rendering low-tax profit-shifting strategies largely inoperative</span>
+                </span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">Q3</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>暗号資産の分離課税はいつ適用されるのか？</strong> &#8212; 大綱に盛り込まれたが、金商法改正が前提条件。最速でも2028年1月以降の見込み</span>
+                  <span class="lang-en"><strong>When will crypto separate taxation come into force?</strong> &#8212; Included in the reform outline, but contingent on Financial Instruments and Exchange Act amendments; earliest application is January 2028</span>
+                </span>
+              </li>
+            </ul>
+          </div>
+          <!-- Block 3: Implications -->
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">Tax Law 実務家への含意</span><span class="lang-en">Implications for Tax Practitioners</span></div>
+            <ul class="implications-list">
+              <li class="implication-item">
+                <span class="lang-ja"><strong>Pillar Two実効税率シミュレーション</strong> &#8212; 多国籍企業のタックスプランニングにおいて、UTPR/QDMTT適用後の実効税率を即座に更新すべき</span>
+                <span class="lang-en"><strong>Pillar Two effective tax rate simulation</strong> &#8212; Multinational tax planning must immediately refresh effective tax rate models post-UTPR/QDMTT</span>
+              </li>
+              <li class="implication-item">
+                <span class="lang-ja"><strong>R&amp;D投資NPVの再計算</strong> &#8212; AI・量子・半導体分野のR&amp;D投資は、40%税額控除を前提に投資判断のNPVを再計算する価値がある</span>
+                <span class="lang-en"><strong>Recalculate R&amp;D investment NPV</strong> &#8212; The 40% credit for AI, quantum, and semiconductor R&amp;D warrants a refresh of investment NPV assumptions</span>
+              </li>
+              <li class="implication-item">
+                <span class="lang-ja"><strong>「178万円の壁」の限界を正確に伝える</strong> &#8212; 社保壁の未解消をクライアントに説明することが信頼構築に直結する</span>
+                <span class="lang-en"><strong>Communicate the limitations of the 1.78m threshold</strong> &#8212; Accurately explaining that social insurance thresholds remain unaddressed is critical for client trust</span>
+              </li>
+              <li class="implication-item">
+                <span class="lang-ja"><strong>Web3企業の日本回帰</strong> &#8212; 暗号資産保有企業の時価評価課税廃止と分離課税移行は、Web3企業の日本回帰を促進する可能性がある</span>
+                <span class="lang-en"><strong>Web3 firms returning to Japan</strong> &#8212; Abolishing mark-to-market taxation for corporate crypto holdings, combined with the separate tax regime, may encourage Web3 firms to re-domicile in Japan</span>
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- Who should read / skip -->
+        <div class="read-grid" style="margin-bottom: 2.5em;">
+          <div>
+            <div class="read-col-label read-label-yes"><span class="lang-ja">読むべき人</span><span class="lang-en">Who should read</span></div>
+            <div class="read-item"><span class="lang-ja">税務アドバイザリー</span><span class="lang-en">Tax advisory professionals</span></div>
+            <div class="read-item"><span class="lang-ja">M&amp;Aディール税務</span><span class="lang-en">M&amp;A deal tax specialists</span></div>
+            <div class="read-item"><span class="lang-ja">国際税務担当</span><span class="lang-en">International tax teams</span></div>
+            <div class="read-item"><span class="lang-ja">CFO・経営企画</span><span class="lang-en">CFOs and corporate planning</span></div>
+          </div>
+          <div>
+            <div class="read-col-label read-label-no"><span class="lang-ja">スキップしてよい人</span><span class="lang-en">Who may skip</span></div>
+            <div class="skip-item"><span class="lang-ja">国内中小企業のみを担当し、国際税務・投資税制に関与しない場合</span><span class="lang-en">Those focused solely on domestic SMEs without international tax or investment tax exposure</span></div>
+          </div>
+        </div>
+
+        <!-- ===== Section 1 ===== -->
+        <h2><span class="lang-ja">1. 「年収の壁」引上げ &#8212; 103万円から178万円へ</span><span class="lang-en">1. Raising the Income Threshold &#8212; From 1.03m to 1.78m Yen</span></h2>
+
+        <h3><span class="lang-ja">改正の背景</span><span class="lang-en">Background</span></h3>
+
+        <p>
+          <span class="lang-ja">1995年以来据え置かれてきた所得税の課税最低限（基礎控除48万円＋給与所得控除最低保障額55万円＝103万円）が、物価上昇を反映して引き上げられた。「178万円」の算出根拠は、1995年当時の最低賃金と現在の最低賃金の比率（約1.73倍）を103万円に乗じたもの。</span>
+          <span class="lang-en">The minimum taxable income threshold (basic deduction of 480k yen + minimum employment income deduction of 550k yen = 1.03m yen), unchanged since 1995, has been raised to reflect cumulative price increases. The figure of 1.78m yen is derived by applying the ratio of current to 1995 minimum wages (approximately 1.73x) to the 1.03m yen base.</span>
+        </p>
+
+        <h3><span class="lang-ja">具体的な変更点</span><span class="lang-en">Specific Changes</span></h3>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">項目</span><span class="lang-en">Item</span></th>
+                <th><span class="lang-ja">改正前</span><span class="lang-en">Before</span></th>
+                <th><span class="lang-ja">改正後</span><span class="lang-en">After</span></th>
+                <th><span class="lang-ja">適用時期</span><span class="lang-en">Effective</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="lang-ja">基礎控除（合計所得2,350万円以下）</span><span class="lang-en">Basic deduction (income &le; 23.5m yen)</span></td>
+                <td><span class="lang-ja">48万円</span><span class="lang-en">480k yen</span></td>
+                <td class="td-accent"><span class="lang-ja">58万円（+10万円）</span><span class="lang-en">580k yen (+100k)</span></td>
+                <td><span class="lang-ja">2026年分所得税</span><span class="lang-en">FY2026 income tax</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">基礎控除上乗せ（年収665万円以下）</span><span class="lang-en">Additional basic deduction (income &le; 6.65m yen)</span></td>
+                <td><span class="lang-ja">なし</span><span class="lang-en">None</span></td>
+                <td class="td-accent"><span class="lang-ja">最大37万円</span><span class="lang-en">Up to 370k yen</span></td>
+                <td><span class="lang-ja">2026年分所得税</span><span class="lang-en">FY2026 income tax</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">給与所得控除最低保障額</span><span class="lang-en">Minimum employment income deduction</span></td>
+                <td><span class="lang-ja">55万円</span><span class="lang-en">550k yen</span></td>
+                <td class="td-accent"><span class="lang-ja">65万円（+10万円）</span><span class="lang-en">650k yen (+100k)</span></td>
+                <td><span class="lang-ja">2026年分所得税</span><span class="lang-en">FY2026 income tax</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">課税最低限</span><span class="lang-en">Minimum taxable income</span></td>
+                <td><span class="lang-ja">103万円</span><span class="lang-en">1.03m yen</span></td>
+                <td class="td-accent"><span class="lang-ja">160万円（基本）/ 178万円（上乗せ込み）</span><span class="lang-en">1.60m (base) / 1.78m (with top-up)</span></td>
+                <td><span class="lang-ja">2026年分</span><span class="lang-en">FY2026</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">物価連動メカニズム</span><span class="lang-en">CPI-linked adjustment</span></td>
+                <td><span class="lang-ja">なし</span><span class="lang-en">None</span></td>
+                <td class="td-accent"><span class="lang-ja">CPI上昇率に連動して基礎控除を自動調整</span><span class="lang-en">Automatic adjustment of basic deduction linked to CPI</span></td>
+                <td><span class="lang-ja">2027年分以降</span><span class="lang-en">FY2027 onwards</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- DIAGRAM 1: 年収の壁 Before/After -->
+        <figure class="diagram-figure" role="figure" style="margin:2em 0;">
+          <figcaption class="diagram-title" style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;font-weight:500;letter-spacing:0.08em;color:var(--accent);margin-bottom:12px;">
+            <span class="lang-ja">年収の壁：改正前後の比較</span>
+            <span class="lang-en">Income Threshold: Before vs After Reform</span>
+          </figcaption>
+          <svg viewBox="0 0 560 280" style="width:100%;max-width:560px;display:block;margin:0 auto;font-family:Inter,sans-serif;" xmlns="http://www.w3.org/2000/svg">
+            <!-- Background -->
+            <rect x="0" y="0" width="560" height="280" rx="8" fill="#EBF3FB" opacity="0.45"/>
+
+            <!-- Column headers -->
+            <rect x="20" y="16" width="230" height="28" rx="4" fill="#E8E6E0"/>
+            <text x="135" y="34" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" font-weight="500" fill="#565C70">
+              <tspan class="lang-ja">改正前</tspan><tspan class="lang-en">Before Reform</tspan>
+            </text>
+            <rect x="310" y="16" width="230" height="28" rx="4" fill="#1A6EB0"/>
+            <text x="425" y="34" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" font-weight="500" fill="#ffffff">
+              <tspan class="lang-ja">改正後（2026年分〜）</tspan><tspan class="lang-en">After (FY2026 onwards)</tspan>
+            </text>
+
+            <!-- Arrow connector -->
+            <defs>
+              <marker id="arr1" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="8" markerHeight="6" orient="auto-start-reverse">
+                <polygon points="0 0,10 3.5,0 7" fill="#1A6EB0"/>
+              </marker>
+            </defs>
+            <line x1="255" y1="140" x2="305" y2="140" stroke="#1A6EB0" stroke-width="2" marker-end="url(#arr1)"/>
+
+            <!-- BEFORE side: income tax wall bar -->
+            <!-- 103万円 bar -->
+            <rect x="60" y="56" width="150" height="36" rx="4" fill="#C8C5BC"/>
+            <text x="135" y="78" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" font-weight="500" fill="#565C70">103万円</text>
+            <text x="135" y="100" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#888EA0">
+              <tspan class="lang-ja">所得税 課税最低限</tspan><tspan class="lang-en">Income tax threshold</tspan>
+            </text>
+
+            <!-- Social walls (before, greyed) -->
+            <rect x="60" y="116" width="80" height="28" rx="4" fill="#E8E6E0" stroke="#C8C5BC" stroke-width="1"/>
+            <text x="100" y="133" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#888EA0">106万円</text>
+
+            <rect x="60" y="154" width="110" height="28" rx="4" fill="#E8E6E0" stroke="#C8C5BC" stroke-width="1"/>
+            <text x="115" y="171" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#888EA0">130万円</text>
+
+            <text x="60" y="208" font-family="Inter,sans-serif" font-size="9" fill="#C8C5BC">
+              <tspan class="lang-ja">社会保険の壁（別制度）</tspan><tspan class="lang-en">Social insurance walls (separate)</tspan>
+            </text>
+
+            <!-- AFTER side: income tax wall bar raised -->
+            <rect x="350" y="56" width="150" height="36" rx="4" fill="#1A6EB0"/>
+            <text x="425" y="74" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" font-weight="600" fill="#ffffff">178万円</text>
+            <text x="425" y="88" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#BFD9F0">
+              <tspan class="lang-ja">（基本160万+上乗せ）</tspan><tspan class="lang-en">(base 1.6m + top-up)</tspan>
+            </text>
+            <text x="425" y="106" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#2E88CA">
+              <tspan class="lang-ja">所得税 課税最低限 ↑75%拡大</tspan><tspan class="lang-en">Income tax threshold ↑75% wider</tspan>
+            </text>
+
+            <!-- Social walls (after, still grayed — unresolved) -->
+            <rect x="350" y="120" width="80" height="28" rx="4" fill="#E8E6E0" stroke="#D4A010" stroke-width="1.5" stroke-dasharray="4,2"/>
+            <text x="390" y="137" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#8A6A00">106万円</text>
+
+            <rect x="350" y="158" width="110" height="28" rx="4" fill="#E8E6E0" stroke="#D4A010" stroke-width="1.5" stroke-dasharray="4,2"/>
+            <text x="405" y="175" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#8A6A00">130万円</text>
+
+            <text x="350" y="204" font-family="Inter,sans-serif" font-size="9" fill="#8A6A00">
+              <tspan class="lang-ja">未解消（今回改正の対象外）</tspan><tspan class="lang-en">Unresolved — outside this reform</tspan>
+            </text>
+
+            <!-- Legend -->
+            <rect x="20" y="228" width="10" height="10" rx="2" fill="#1A6EB0"/>
+            <text x="34" y="237" font-family="Inter,sans-serif" font-size="9" fill="#565C70">
+              <tspan class="lang-ja">所得税制（今回改正）</tspan><tspan class="lang-en">Income tax (this reform)</tspan>
+            </text>
+            <rect x="200" y="228" width="10" height="10" rx="2" fill="#E8E6E0" stroke="#D4A010" stroke-width="1.5" stroke-dasharray="3,1"/>
+            <text x="214" y="237" font-family="Inter,sans-serif" font-size="9" fill="#8A6A00">
+              <tspan class="lang-ja">社会保険（未解消）</tspan><tspan class="lang-en">Social insurance (unresolved)</tspan>
+            </text>
+
+            <!-- Source note -->
+            <text x="20" y="264" font-family="Inter,sans-serif" font-size="8" fill="#888EA0">
+              <tspan class="lang-ja">出典: 財務省 令和8年度税制改正の大綱の概要</tspan>
+              <tspan class="lang-en">Source: Ministry of Finance — FY2026 Tax Reform Outline</tspan>
+            </text>
+          </svg>
+        </figure>
+
+        <h3><span class="lang-ja">Finance Proが見落としがちなポイント</span><span class="lang-en">Commonly Overlooked Points</span></h3>
+
+        <div class="trap-box">
+          <div class="trap-label"><span class="lang-ja">注意</span><span class="lang-en">Caution</span></div>
+          <p>
+            <span class="lang-ja"><strong>社会保険の壁は未解消。</strong>所得税の非課税枠が178万円に拡大しても、社会保険料の適用基準（106万円・130万円）は別制度であり、今回の税制改正では手当てされていない。パート・アルバイトの就業調整行動が解消されるかは、社会保険制度改革の進展に依存する。</span>
+            <span class="lang-en"><strong>Social insurance thresholds remain unresolved.</strong> Even though the income tax exemption rises to 1.78m yen, social insurance contribution thresholds (1.06m/1.30m yen) belong to a separate regime and are not addressed in this tax reform. Whether part-time workers adjust their working hours depends on progress in social insurance reform.</span>
+          </p>
+        </div>
+
+        <p style="font-size:0.82rem; color:var(--text-muted);">
+          <span class="lang-ja">出典: <a href="https://www.mof.go.jp/tax_policy/tax_reform/outline/fy2026/08taikou_gaiyou.pdf" target="_blank" rel="noopener">財務省 令和8年度税制改正の大綱の概要</a> [公式]</span>
+          <span class="lang-en">Source: <a href="https://www.mof.go.jp/tax_policy/tax_reform/outline/fy2026/08taikou_gaiyou.pdf" target="_blank" rel="noopener">Ministry of Finance &#8212; FY2026 Tax Reform Outline</a> [Official]</span>
+        </p>
+
+        <div class="section-sep">&#8230;</div>
+
+        <!-- ===== Section 2 ===== -->
+        <h2><span class="lang-ja">2. 防衛特別所得税の新設</span><span class="lang-en">2. Introduction of the Defence Surtax</span></h2>
+
+        <h3><span class="lang-ja">制度設計</span><span class="lang-en">Design</span></h3>
+
+        <p>
+          <span class="lang-ja">防衛力強化の財源確保を目的として、「防衛特別所得税（仮称）」が2027年1月から課税される。税率は所得税額の1%。ただし、負担増を回避するための設計として、既存の「復興特別所得税」（現行2.1%）を1.1%に引き下げ、差額1%分を防衛特別所得税に振り替える形をとる。復興特別所得税の課税期間は2037年まで10年延長される。</span>
+          <span class="lang-en">A new "Defence Special Income Tax" (provisional name) will be levied from January 2027 at 1% of income tax liability. To avoid an outright increase, the existing Reconstruction Special Income Tax (currently 2.1%) is reduced to 1.1%, with the freed-up 1% reallocated to the defence surtax. The reconstruction surtax period is extended by 10 years to 2037.</span>
+        </p>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">項目</span><span class="lang-en">Item</span></th>
+                <th><span class="lang-ja">現行</span><span class="lang-en">Current</span></th>
+                <th><span class="lang-ja">2027年以降</span><span class="lang-en">From 2027</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="lang-ja">復興特別所得税</span><span class="lang-en">Reconstruction Surtax</span></td>
+                <td><span class="lang-ja">2.1%</span><span class="lang-en">2.1%</span></td>
+                <td class="td-warn"><span class="lang-ja">1.1%（&#9660;1.0%）</span><span class="lang-en">1.1% (&#9660;1.0%)</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">防衛特別所得税</span><span class="lang-en">Defence Surtax</span></td>
+                <td><span class="lang-ja">なし</span><span class="lang-en">None</span></td>
+                <td class="td-accent"><span class="lang-ja">1.0%（新設）</span><span class="lang-en">1.0% (new)</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">合計付加税率</span><span class="lang-en">Total surtax rate</span></td>
+                <td><span class="lang-ja">2.1%</span><span class="lang-en">2.1%</span></td>
+                <td><span class="lang-ja">2.1%（変わらず）</span><span class="lang-en">2.1% (unchanged)</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3><span class="lang-ja">含意</span><span class="lang-en">Implications</span></h3>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>実質的な税負担は変わらない</strong>が、復興財源の課税期間延長（2037年まで）は、「一時的」とされた付加税の恒久化リスクを示唆している。防衛費のGDP比2%目標達成には法人税・たばこ税の追加増税も予定されており、今後の動向に注意が必要。</span>
+            <span class="lang-en"><strong>The effective tax burden remains unchanged</strong>, yet extending the reconstruction surtax to 2037 signals the risk of a &ldquo;temporary&rdquo; levy becoming permanent. Achieving the 2% of GDP defence spending target also involves planned increases to corporate tax and tobacco tax, warranting continued monitoring.</span>
+          </p>
+        </div>
+
+        <p style="font-size:0.82rem; color:var(--text-muted);">
+          <span class="lang-ja">出典: <a href="https://agstax.or.jp/tax_reform/r8_2026/" target="_blank" rel="noopener">AGS税理士法人 令和8年度税制改正大綱の概要・解説</a> [報道]</span>
+          <span class="lang-en">Source: <a href="https://agstax.or.jp/tax_reform/r8_2026/" target="_blank" rel="noopener">AGS Tax &#8212; FY2026 Tax Reform Overview</a> [Professional]</span>
+        </p>
+
+        <div class="section-sep">&#8230;</div>
+
+        <!-- ===== Section 3 ===== -->
+        <h2><span class="lang-ja">3. 暗号資産（仮想通貨）の申告分離課税化</span><span class="lang-en">3. Separate Taxation for Crypto-assets</span></h2>
+
+        <h3><span class="lang-ja">現行制度の問題点</span><span class="lang-en">Issues with the Current Regime</span></h3>
+
+        <p>
+          <span class="lang-ja">暗号資産の譲渡益は「雑所得」として総合課税され、最高税率55%（所得税45%＋住民税10%）が適用される。これが日本のWeb3産業の海外流出の一因とされてきた。</span>
+          <span class="lang-en">Gains from crypto-asset disposals are currently taxed as "miscellaneous income" under comprehensive taxation, reaching a top marginal rate of 55% (45% income tax + 10% resident tax). This has been cited as a driver of Japan's Web3 industry exodus.</span>
+        </p>
+
+        <h3><span class="lang-ja">改正内容</span><span class="lang-en">Reform Details</span></h3>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">項目</span><span class="lang-en">Item</span></th>
+                <th><span class="lang-ja">現行</span><span class="lang-en">Current</span></th>
+                <th><span class="lang-ja">改正後</span><span class="lang-en">After Reform</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="lang-ja">課税方式</span><span class="lang-en">Tax method</span></td>
+                <td><span class="lang-ja">総合課税（雑所得）</span><span class="lang-en">Comprehensive (miscellaneous)</span></td>
+                <td class="td-accent"><span class="lang-ja">申告分離課税</span><span class="lang-en">Separate self-assessment</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">税率</span><span class="lang-en">Tax rate</span></td>
+                <td><span class="lang-ja">最高55%</span><span class="lang-en">Up to 55%</span></td>
+                <td class="td-accent"><span class="lang-ja">20%（所得税15%＋住民税5%）</span><span class="lang-en">20% (15% income + 5% resident)</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">損失繰越</span><span class="lang-en">Loss carry-forward</span></td>
+                <td><span class="lang-ja">不可</span><span class="lang-en">Not allowed</span></td>
+                <td class="td-accent"><span class="lang-ja">3年間繰越可</span><span class="lang-en">3-year carry-forward</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">対象取引</span><span class="lang-en">Scope</span></td>
+                <td><span class="lang-ja">&#8212;</span><span class="lang-en">&#8212;</span></td>
+                <td><span class="lang-ja">現物取引・デリバティブ取引・暗号資産ETF</span><span class="lang-en">Spot, derivatives, crypto-asset ETFs</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- DIAGRAM 2: 暗号資産 課税方式 Before/After -->
+        <figure class="diagram-figure" role="figure" style="margin:2em 0;">
+          <figcaption class="diagram-title" style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;font-weight:500;letter-spacing:0.08em;color:var(--accent);margin-bottom:12px;">
+            <span class="lang-ja">暗号資産課税：総合課税 → 申告分離課税</span>
+            <span class="lang-en">Crypto-asset Taxation: Comprehensive → Separate</span>
+          </figcaption>
+          <svg viewBox="0 0 560 220" style="width:100%;max-width:560px;display:block;margin:0 auto;" xmlns="http://www.w3.org/2000/svg">
+            <rect x="0" y="0" width="560" height="220" rx="8" fill="#EBF3FB" opacity="0.4"/>
+
+            <!-- Arrow -->
+            <defs>
+              <marker id="arr2" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="8" markerHeight="6" orient="auto-start-reverse">
+                <polygon points="0 0,10 3.5,0 7" fill="#1A6EB0"/>
+              </marker>
+            </defs>
+            <line x1="255" y1="106" x2="305" y2="106" stroke="#1A6EB0" stroke-width="2" marker-end="url(#arr2)"/>
+
+            <!-- BEFORE panel -->
+            <rect x="20" y="20" width="228" height="172" rx="6" fill="#F0EFEB" stroke="#C8C5BC" stroke-width="1"/>
+            <rect x="20" y="20" width="228" height="26" rx="6" fill="#C8C5BC"/>
+            <rect x="20" y="32" width="228" height="14" fill="#C8C5BC"/>
+            <text x="134" y="37" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" font-weight="500" fill="#565C70">
+              <tspan class="lang-ja">改正前（現行）</tspan><tspan class="lang-en">Current Regime</tspan>
+            </text>
+
+            <!-- Big rate number - before -->
+            <text x="134" y="98" text-anchor="middle" font-family="Cormorant Garamond,Georgia,serif" font-size="52" font-weight="600" fill="#888EA0">55%</text>
+            <text x="134" y="118" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#888EA0">
+              <tspan class="lang-ja">最高税率（所得税45%＋住民税10%）</tspan><tspan class="lang-en">Top marginal rate (45% income + 10% resident)</tspan>
+            </text>
+
+            <rect x="36" y="130" width="196" height="20" rx="3" fill="#E8E6E0"/>
+            <text x="134" y="143" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#888EA0">
+              <tspan class="lang-ja">課税方式: 総合課税（雑所得）</tspan><tspan class="lang-en">Method: Comprehensive (misc. income)</tspan>
+            </text>
+
+            <rect x="36" y="156" width="196" height="20" rx="3" fill="#E8E6E0"/>
+            <text x="134" y="169" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#888EA0">
+              <tspan class="lang-ja">損失繰越: 不可</tspan><tspan class="lang-en">Loss carry-forward: Not allowed</tspan>
+            </text>
+
+            <!-- AFTER panel -->
+            <rect x="312" y="20" width="228" height="172" rx="6" fill="#EBF3FB" stroke="#1A6EB0" stroke-width="1.5"/>
+            <rect x="312" y="20" width="228" height="26" rx="6" fill="#1A6EB0"/>
+            <rect x="312" y="32" width="228" height="14" fill="#1A6EB0"/>
+            <text x="426" y="37" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" font-weight="500" fill="#ffffff">
+              <tspan class="lang-ja">改正後（2028年1月〜予定）</tspan><tspan class="lang-en">After Reform (est. Jan 2028)</tspan>
+            </text>
+
+            <!-- Big rate number - after -->
+            <text x="426" y="98" text-anchor="middle" font-family="Cormorant Garamond,Georgia,serif" font-size="52" font-weight="600" fill="#1A6EB0">20%</text>
+            <text x="426" y="118" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#2E88CA">
+              <tspan class="lang-ja">申告分離課税（所得税15%＋住民税5%）</tspan><tspan class="lang-en">Separate (15% income + 5% resident)</tspan>
+            </text>
+
+            <rect x="328" y="130" width="196" height="20" rx="3" fill="#D6E8F7"/>
+            <text x="426" y="143" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#1A6EB0">
+              <tspan class="lang-ja">課税方式: 申告分離課税</tspan><tspan class="lang-en">Method: Separate self-assessment</tspan>
+            </text>
+
+            <rect x="328" y="156" width="196" height="20" rx="3" fill="#D6E8F7"/>
+            <text x="426" y="169" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#1A6EB0">
+              <tspan class="lang-ja">損失繰越: 3年間可</tspan><tspan class="lang-en">Loss carry-forward: 3 years</tspan>
+            </text>
+
+            <!-- Source -->
+            <text x="20" y="210" font-family="Inter,sans-serif" font-size="8" fill="#888EA0">
+              <tspan class="lang-ja">出典: 日本経済新聞・財務省 令和8年度税制改正の大綱の概要</tspan>
+              <tspan class="lang-en">Source: Nikkei; Ministry of Finance FY2026 Tax Reform Outline</tspan>
+            </text>
+          </svg>
+        </figure>
+
+        <h3><span class="lang-ja">重要な留意点</span><span class="lang-en">Key Considerations</span></h3>
+
+        <div class="trap-box">
+          <div class="trap-label"><span class="lang-ja">注意</span><span class="lang-en">Caution</span></div>
+          <p>
+            <span class="lang-ja"><strong>施行時期は金商法改正が前提条件。</strong>金融商品取引法の改正により暗号資産が金融商品として位置づけられた後に適用開始となるため、最速でも2028年1月以降の見込み。大綱に盛り込まれたことは画期的だが、即時適用ではない。</span>
+            <span class="lang-en"><strong>Effective date depends on FIEA amendment.</strong> The separate tax regime will only take effect once the Financial Instruments and Exchange Act is amended to classify crypto-assets as financial instruments. The earliest application date is January 2028. Inclusion in the reform outline is a milestone, but implementation is not immediate.</span>
+          </p>
+        </div>
+
+        <p>
+          <span class="lang-ja"><strong>法人の暗号資産時価評価課税</strong>についても見直しが進んでおり、自社発行トークンの期末時価評価課税の対象除外が拡大される方向。</span>
+          <span class="lang-en"><strong>Corporate mark-to-market taxation</strong> for crypto-assets is also under review, with the scope of exemption for self-issued tokens being expanded.</span>
+        </p>
+
+        <p style="font-size:0.82rem; color:var(--text-muted);">
+          <span class="lang-ja">出典: <a href="https://www.nikkei.com/article/DGXZQOUB1866E0Y5A211C2000000/" target="_blank" rel="noopener">日本経済新聞 仮想通貨所得、20%分離課税に</a> [報道]</span>
+          <span class="lang-en">Source: <a href="https://www.nikkei.com/article/DGXZQOUB1866E0Y5A211C2000000/" target="_blank" rel="noopener">Nikkei &#8212; Crypto gains to face 20% separate tax</a> [Press]</span>
+        </p>
+
+        <div class="section-sep">&#8230;</div>
+
+        <!-- ===== Section 4 ===== -->
+        <h2><span class="lang-ja">4. 戦略分野R&amp;D税額控除の新設 &#8212; AI・量子・半導体に40%</span><span class="lang-en">4. New Strategic R&amp;D Tax Credit &#8212; 40% for AI, Quantum, and Semiconductors</span></h2>
+
+        <h3><span class="lang-ja">制度の概要</span><span class="lang-en">Overview</span></h3>
+
+        <p>
+          <span class="lang-ja">産業技術力強化法に基づく「鍵となる産業技術」に関するR&amp;D支出について、従来の研究開発税制とは別枠で税額控除が認められる。</span>
+          <span class="lang-en">R&amp;D expenditure on "key industrial technologies" under the Industrial Technology Enhancement Act qualifies for a tax credit separate from the existing R&amp;D tax regime.</span>
+        </p>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">対象技術</span><span class="lang-en">Technology</span></th>
+                <th><span class="lang-ja">税額控除率</span><span class="lang-en">Credit rate</span></th>
+                <th><span class="lang-ja">共同・委託研究</span><span class="lang-en">Joint/Outsourced</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="lang-ja">AI・先端ロボティクス</span><span class="lang-en">AI &amp; advanced robotics</span></td>
+                <td class="td-accent">40%</td>
+                <td class="td-accent">50%</td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">量子技術</span><span class="lang-en">Quantum technology</span></td>
+                <td class="td-accent">40%</td>
+                <td class="td-accent">50%</td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">半導体・通信</span><span class="lang-en">Semiconductors &amp; telecoms</span></td>
+                <td class="td-accent">40%</td>
+                <td class="td-accent">50%</td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">バイオ・ヘルスケア</span><span class="lang-en">Bio &amp; healthcare</span></td>
+                <td class="td-accent">40%</td>
+                <td class="td-accent">50%</td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">核融合エネルギー</span><span class="lang-en">Fusion energy</span></td>
+                <td class="td-accent">40%</td>
+                <td class="td-accent">50%</td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">宇宙</span><span class="lang-en">Space</span></td>
+                <td class="td-accent">40%</td>
+                <td class="td-accent">50%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <ul>
+          <li><span class="lang-ja">税額控除限度額: 法人税額の10%</span><span class="lang-en">Credit cap: 10% of corporate tax liability</span></li>
+          <li><span class="lang-ja">限度超過額: 3年間の繰越控除可</span><span class="lang-en">Excess credits: 3-year carry-forward permitted</span></li>
+          <li><span class="lang-ja">海外委託研究: 控除対象額に制限あり</span><span class="lang-en">Overseas outsourced research: cap on eligible amounts</span></li>
+        </ul>
+
+        <h3><span class="lang-ja">Finance Proへの影響</span><span class="lang-en">Impact on Finance Professionals</span></h3>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>M&amp;Aバリュエーションへの反映。</strong>対象企業のR&amp;D支出が戦略分野に該当する場合、実効税率の低下をDCFモデルに反映すべき。特にAI・半導体関連のスタートアップ買収では、この税額控除の適格性がバリュエーションギャップの交渉材料になりうる。</span>
+            <span class="lang-en"><strong>Reflect in M&amp;A valuations.</strong> Where a target's R&amp;D spend qualifies for the strategic credit, the reduced effective tax rate should be factored into DCF models. For AI and semiconductor start-up acquisitions in particular, credit eligibility can serve as a negotiation lever for bridging valuation gaps.</span>
+          </p>
+        </div>
+
+        <p style="font-size:0.82rem; color:var(--text-muted);">
+          <span class="lang-ja">出典: <a href="https://assets.kpmg.com/content/dam/kpmg/jp/pdf/2025/jp-en-tax-newsletter-20251225.pdf" target="_blank" rel="noopener">KPMG Outline of the 2026 Tax Reform Proposals</a> [報道]</span>
+          <span class="lang-en">Source: <a href="https://assets.kpmg.com/content/dam/kpmg/jp/pdf/2025/jp-en-tax-newsletter-20251225.pdf" target="_blank" rel="noopener">KPMG &#8212; 2026 Tax Reform Proposals</a> [Professional]</span>
+        </p>
+
+        <div class="section-sep">&#8230;</div>
+
+        <!-- ===== Section 5 ===== -->
+        <h2><span class="lang-ja">5. グローバルミニマム税 &#8212; UTPR・QDMTT本格施行</span><span class="lang-en">5. Global Minimum Tax &#8212; UTPR and QDMTT Go Live</span></h2>
+
+        <h3><span class="lang-ja">日本の導入スケジュール</span><span class="lang-en">Japan&rsquo;s Implementation Timeline</span></h3>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">時期</span><span class="lang-en">Date</span></th>
+                <th><span class="lang-ja">導入ルール</span><span class="lang-en">Rule</span></th>
+                <th><span class="lang-ja">内容</span><span class="lang-en">Description</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="lang-ja">2024年4月〜</span><span class="lang-en">Apr 2024</span></td>
+                <td><span class="lang-ja">IIR（所得合算ルール）</span><span class="lang-en">IIR (Income Inclusion Rule)</span></td>
+                <td><span class="lang-ja">親会社所在国で15%まで課税</span><span class="lang-en">Top-up to 15% at parent jurisdiction</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">2026年4月〜</span><span class="lang-en">Apr 2026</span></td>
+                <td class="td-accent"><span class="lang-ja">UTPR（軽課税所得ルール）</span><span class="lang-en">UTPR (Under-Taxed Profits Rule)</span></td>
+                <td><span class="lang-ja">IIR課税後の残余トップアップ税額を他国の構成会社に配分</span><span class="lang-en">Allocates residual top-up tax to constituent entities in other jurisdictions post-IIR</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">2026年4月〜</span><span class="lang-en">Apr 2026</span></td>
+                <td class="td-accent"><span class="lang-ja">QDMTT（国内最低課税）</span><span class="lang-en">QDMTT (Qualified Domestic Minimum Top-up Tax)</span></td>
+                <td><span class="lang-ja">他国のIIR/UTPRに優先し、国内で15%まで課税</span><span class="lang-en">Domestic top-up to 15%, taking priority over foreign IIR/UTPR</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- DIAGRAM 3: グローバルミニマム税 3層構造フロー -->
+        <figure class="diagram-figure" role="figure" style="margin:2em 0;">
+          <figcaption class="diagram-title" style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;font-weight:500;letter-spacing:0.08em;color:var(--accent);margin-bottom:12px;">
+            <span class="lang-ja">グローバルミニマム税 — 日本の3層導入スケジュール</span>
+            <span class="lang-en">Global Minimum Tax — Japan's Three-Layer Implementation</span>
+          </figcaption>
+          <svg viewBox="0 0 560 340" style="width:100%;max-width:560px;display:block;margin:0 auto;" xmlns="http://www.w3.org/2000/svg">
+            <rect x="0" y="0" width="560" height="340" rx="8" fill="#EBF3FB" opacity="0.4"/>
+            <defs>
+              <marker id="arr3" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="8" markerHeight="6" orient="auto-start-reverse">
+                <polygon points="0 0,10 3.5,0 7" fill="#1A6EB0"/>
+              </marker>
+              <marker id="arr3w" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="8" markerHeight="6" orient="auto-start-reverse">
+                <polygon points="0 0,10 3.5,0 7" fill="#888EA0"/>
+              </marker>
+            </defs>
+
+            <!-- Timeline spine -->
+            <line x1="80" y1="44" x2="80" y2="296" stroke="#D4D2CC" stroke-width="2"/>
+
+            <!-- ===== Step 1: IIR (2024) ===== -->
+            <circle cx="80" cy="80" r="10" fill="#0F4F80"/>
+            <text x="80" y="84" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" font-weight="600" fill="#fff">1</text>
+
+            <rect x="104" y="58" width="430" height="44" rx="6" fill="#0F4F80"/>
+            <text x="120" y="75" font-family="JetBrains Mono,monospace" font-size="9" font-weight="500" fill="#BFD9F0">
+              <tspan class="lang-ja">2024年4月〜</tspan><tspan class="lang-en">Apr 2024</tspan>
+            </text>
+            <text x="120" y="91" font-family="Inter,sans-serif" font-size="10" font-weight="600" fill="#ffffff">
+              <tspan class="lang-ja">IIR（所得合算ルール）— 既施行</tspan><tspan class="lang-en">IIR (Income Inclusion Rule) — Already in force</tspan>
+            </text>
+            <text x="400" y="91" font-family="Inter,sans-serif" font-size="9" fill="#BFD9F0">
+              <tspan class="lang-ja">親会社国で15%まで課税</tspan><tspan class="lang-en">Top-up to 15% at parent jurisdiction</tspan>
+            </text>
+
+            <!-- Arrow down from IIR -->
+            <line x1="80" y1="106" x2="80" y2="136" stroke="#1A6EB0" stroke-width="1.5" stroke-dasharray="3,2"/>
+
+            <!-- ===== Step 2: UTPR (2026) ===== -->
+            <circle cx="80" cy="150" r="10" fill="#1A6EB0"/>
+            <text x="80" y="154" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" font-weight="600" fill="#fff">2</text>
+
+            <rect x="104" y="128" width="210" height="44" rx="6" fill="#1A6EB0"/>
+            <text x="120" y="145" font-family="JetBrains Mono,monospace" font-size="9" font-weight="500" fill="#BFD9F0">
+              <tspan class="lang-ja">2026年4月〜 ★新設</tspan><tspan class="lang-en">Apr 2026 ★ New</tspan>
+            </text>
+            <text x="120" y="161" font-family="Inter,sans-serif" font-size="10" font-weight="600" fill="#ffffff">
+              <tspan class="lang-ja">UTPR（軽課税所得ルール）</tspan><tspan class="lang-en">UTPR (Under-Taxed Profits Rule)</tspan>
+            </text>
+
+            <!-- Note for UTPR -->
+            <rect x="324" y="128" width="210" height="44" rx="6" fill="#EBF3FB" stroke="#1A6EB0" stroke-width="1"/>
+            <text x="334" y="145" font-family="Inter,sans-serif" font-size="9" fill="#2A2C3E">
+              <tspan class="lang-ja">IIR課税後の残余トップアップ税額を</tspan><tspan class="lang-en">Residual top-up tax post-IIR</tspan>
+            </text>
+            <text x="334" y="159" font-family="Inter,sans-serif" font-size="9" fill="#2A2C3E">
+              <tspan class="lang-ja">他国の構成会社に配分して課税</tspan><tspan class="lang-en">allocated to other jurisdictions</tspan>
+            </text>
+
+            <!-- Arrow down -->
+            <line x1="80" y1="176" x2="80" y2="206" stroke="#1A6EB0" stroke-width="1.5" stroke-dasharray="3,2"/>
+
+            <!-- ===== Step 3: QDMTT (2026) ===== -->
+            <circle cx="80" cy="220" r="10" fill="#1A6EB0"/>
+            <text x="80" y="224" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" font-weight="600" fill="#fff">3</text>
+
+            <rect x="104" y="198" width="210" height="44" rx="6" fill="#1A6EB0"/>
+            <text x="120" y="215" font-family="JetBrains Mono,monospace" font-size="9" font-weight="500" fill="#BFD9F0">
+              <tspan class="lang-ja">2026年4月〜 ★新設</tspan><tspan class="lang-en">Apr 2026 ★ New</tspan>
+            </text>
+            <text x="120" y="231" font-family="Inter,sans-serif" font-size="10" font-weight="600" fill="#ffffff">
+              <tspan class="lang-ja">QDMTT（国内最低課税）</tspan><tspan class="lang-en">QDMTT (Qualified Domestic Min. Top-up)</tspan>
+            </text>
+
+            <!-- Note for QDMTT -->
+            <rect x="324" y="198" width="210" height="44" rx="6" fill="#EBF3FB" stroke="#1A6EB0" stroke-width="1"/>
+            <text x="334" y="215" font-family="Inter,sans-serif" font-size="9" fill="#2A2C3E">
+              <tspan class="lang-ja">IIR/UTPRに優先して国内で15%まで</tspan><tspan class="lang-en">Domestic top-up to 15%, priority</tspan>
+            </text>
+            <text x="334" y="229" font-family="Inter,sans-serif" font-size="9" fill="#2A2C3E">
+              <tspan class="lang-ja">課税権を他国に取られる前に自国徴収</tspan><tspan class="lang-en">over foreign IIR/UTPR claims</tspan>
+            </text>
+
+            <!-- Arrow down to result -->
+            <line x1="80" y1="246" x2="80" y2="268" stroke="#1A6EB0" stroke-width="1.5" marker-end="url(#arr3)"/>
+
+            <!-- Result box -->
+            <rect x="104" y="268" width="430" height="36" rx="6" fill="#111320"/>
+            <text x="319" y="280" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" font-weight="500" fill="#F5C800">
+              <tspan class="lang-ja">IIR + UTPR + QDMTT 三層構造 → 低税率国への利益移転は実質的に機能しなくなる</tspan>
+              <tspan class="lang-en">IIR + UTPR + QDMTT triple layer → profit shifting to low-tax jurisdictions effectively neutralised</tspan>
+            </text>
+
+            <!-- Source -->
+            <text x="20" y="324" font-family="Inter,sans-serif" font-size="8" fill="#888EA0">
+              <tspan class="lang-ja">出典: 国税庁・EY Japan・財務省 令和8年度税制改正の大綱の概要</tspan>
+              <tspan class="lang-en">Source: NTA; EY Japan Pillar Two; Ministry of Finance FY2026 Tax Reform Outline</tspan>
+            </text>
+          </svg>
+        </figure>
+
+        <h3><span class="lang-ja">UTPR（Under-Taxed Profits Rule）の仕組み</span><span class="lang-en">How UTPR Works</span></h3>
+
+        <p>
+          <span class="lang-ja">多国籍企業グループの構成会社等が所在する国の実効税率が15%を下回る場合、IIRによる課税後の残余のトップアップ税額（UTPR税額）を、UTPR導入国に所在する構成会社に配分して課税する。</span>
+          <span class="lang-en">Where the effective tax rate in a jurisdiction where group constituent entities are located falls below 15%, the residual top-up tax amount after IIR (the UTPR tax) is allocated to constituent entities in UTPR-adopting jurisdictions.</span>
+        </p>
+
+        <h3><span class="lang-ja">QDMTT（Qualified Domestic Minimum Top-up Tax）の仕組み</span><span class="lang-en">How QDMTT Works</span></h3>
+
+        <p>
+          <span class="lang-ja">自国内の構成会社について、他国のIIR・UTPRに優先して国内で15%の最低税率まで課税する。QDMTTは「課税権の防衛」的な性質を持ち、トップアップ税額を他国に取られる前に自国で徴収する仕組み。</span>
+          <span class="lang-en">A domestic top-up tax applied to in-country constituent entities up to the 15% minimum rate, taking priority over foreign IIR and UTPR claims. QDMTT is essentially a "taxing rights defence" mechanism, collecting the top-up domestically before other jurisdictions can claim it.</span>
+        </p>
+
+        <h3><span class="lang-ja">令和8年度改正での追加変更</span><span class="lang-en">FY2026 Additional Changes</span></h3>
+
+        <ul>
+          <li><span class="lang-ja">移行期のDTA/DTL（繰延税金資産・負債）の取扱い明確化: 移行年度以前に計上された特定のDTA/DTLを調整対象税額の計算から除外（2026年4月以後開始事業年度から）</span><span class="lang-en">Clarification on transitional DTA/DTL treatment: certain deferred tax assets/liabilities recorded before the transition year are excluded from adjusted covered tax calculations (fiscal years beginning from April 2026)</span></li>
+          <li><span class="lang-ja">OECDの2025年1月Administrative Guidanceを国内法に反映</span><span class="lang-en">Incorporation of the OECD January 2025 Administrative Guidance into domestic law</span></li>
+          <li><span class="lang-ja">CFC税制の清算中外国関係会社の取扱い明確化</span><span class="lang-en">Clarification of CFC rules for foreign affiliates in liquidation</span></li>
+        </ul>
+
+        <h3><span class="lang-ja">実務上のインパクト</span><span class="lang-en">Practical Impact</span></h3>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>三層構造で利益移転は機能しなくなる。</strong>低税率国（アイルランド12.5%、シンガポール等の優遇税制）への利益移転戦略は、IIR + UTPR + QDMTTの三層構造により実質的に機能しなくなる。多国籍企業の税務チームは、各国のPillar Two対応状況をモニタリングし、実効税率の変動をリアルタイムでシミュレーションする体制が求められる。</span>
+            <span class="lang-en"><strong>The triple layer renders profit shifting inoperative.</strong> Strategies to shift profits to low-tax jurisdictions (Ireland at 12.5%, Singapore with preferential regimes, etc.) are effectively neutralised by the IIR + UTPR + QDMTT triple layer. Multinational tax teams must monitor each country's Pillar Two adoption and maintain real-time effective tax rate simulation capabilities.</span>
+          </p>
+        </div>
+
+        <p style="font-size:0.82rem; color:var(--text-muted);">
+          <span class="lang-ja">出典: <a href="https://www.ey.com/ja_jp/technical/ey-japan-tax-library/tax-alerts/2025/tax-alerts-04-22" target="_blank" rel="noopener">EY Japan グローバル・ミニマム課税に関する令和7年度税制改正が施行</a> [報道]; <a href="https://www.nta.go.jp/publication/pamph/pdf/0025004-012.pdf" target="_blank" rel="noopener">国税庁 グローバル・ミニマム課税への対応に関する改正のあらまし（2）</a> [公式]</span>
+          <span class="lang-en">Source: <a href="https://www.ey.com/ja_jp/technical/ey-japan-tax-library/tax-alerts/2025/tax-alerts-04-22" target="_blank" rel="noopener">EY Japan &#8212; Pillar Two reform enacted</a> [Professional]; <a href="https://www.nta.go.jp/publication/pamph/pdf/0025004-012.pdf" target="_blank" rel="noopener">NTA &#8212; Global Minimum Tax Reform Summary (2)</a> [Official]</span>
+        </p>
+
+        <div class="section-sep">&#8230;</div>
+
+        <!-- ===== Section 6 ===== -->
+        <h2><span class="lang-ja">6. 法人税 &#8212; 設備投資促進税制と賃上げ税制の再編</span><span class="lang-en">6. Corporate Tax &#8212; CapEx Incentives and Wage Hike Credits Restructured</span></h2>
+
+        <h3><span class="lang-ja">大規模設備投資促進税制（新設）</span><span class="lang-en">New Large-Scale CapEx Incentive</span></h3>
+
+        <p>
+          <span class="lang-ja">全産業を対象に、生産用設備の取得について即時償却または税額控除を選択できる制度が新設された。</span>
+          <span class="lang-en">A new regime allows all industries to elect either immediate depreciation or a tax credit on productive equipment acquisitions.</span>
+        </p>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">対象資産</span><span class="lang-en">Asset type</span></th>
+                <th><span class="lang-ja">即時償却</span><span class="lang-en">Immediate depreciation</span></th>
+                <th><span class="lang-ja">税額控除</span><span class="lang-en">Tax credit</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="lang-ja">生産用設備（機械装置等）</span><span class="lang-en">Productive equipment (machinery, etc.)</span></td>
+                <td class="td-accent"><span class="lang-ja">全額即時償却</span><span class="lang-en">Full immediate write-off</span></td>
+                <td class="td-accent"><span class="lang-ja">取得価額の7%</span><span class="lang-en">7% of acquisition cost</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">建物</span><span class="lang-en">Buildings</span></td>
+                <td class="td-accent"><span class="lang-ja">全額即時償却</span><span class="lang-en">Full immediate write-off</span></td>
+                <td class="td-accent"><span class="lang-ja">取得価額の4%</span><span class="lang-en">4% of acquisition cost</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3><span class="lang-ja">賃上げ税制の見直し</span><span class="lang-en">Wage Hike Credit Revision</span></h3>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">企業規模</span><span class="lang-en">Company size</span></th>
+                <th><span class="lang-ja">改正前</span><span class="lang-en">Before</span></th>
+                <th><span class="lang-ja">改正後</span><span class="lang-en">After</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="lang-ja">大企業</span><span class="lang-en">Large enterprises</span></td>
+                <td><span class="lang-ja">賃上げ税制あり（2026年3月末で廃止）</span><span class="lang-en">Wage credit available (expires March 2026)</span></td>
+                <td class="td-warn"><span class="lang-ja">廃止</span><span class="lang-en">Abolished</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">中堅企業</span><span class="lang-en">Mid-size enterprises</span></td>
+                <td><span class="lang-ja">賃上げ税制あり</span><span class="lang-en">Wage credit available</span></td>
+                <td><span class="lang-ja">要件厳格化のうえ継続（2027年3月末まで）</span><span class="lang-en">Continued with tighter criteria (to March 2027)</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">中小企業</span><span class="lang-en">SMEs</span></td>
+                <td><span class="lang-ja">賃上げ税制あり</span><span class="lang-en">Wage credit available</span></td>
+                <td class="td-accent"><span class="lang-ja">継続</span><span class="lang-en">Continued</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>
+          <span class="lang-ja">大企業の賃上げ税制廃止は、「自律的な賃上げが定着した」との政策判断だが、実際には税制優遇なしでの賃上げ継続に企業が消極的になるリスクもある。</span>
+          <span class="lang-en">The abolition for large enterprises reflects a policy judgement that autonomous wage increases have taken root, though there is a risk that firms become less willing to sustain raises without the tax incentive.</span>
+        </p>
+
+        <h3><span class="lang-ja">租税特別措置のメリハリ付け</span><span class="lang-en">Targeted Application of Special Measures</span></h3>
+
+        <div class="trap-box">
+          <div class="trap-label"><span class="lang-ja">注意</span><span class="lang-en">Caution</span></div>
+          <p>
+            <span class="lang-ja"><strong>収益拡大にもかかわらず賃上げ・投資に消極的な大企業</strong>に対し、研究開発税制を除く租税特別措置の適用を制限する仕組みが導入される。投資・賃上げの実績が税優遇の前提条件になる点に留意すべき。</span>
+            <span class="lang-en"><strong>Large enterprises that expand profits yet remain passive on wages and investment</strong> will face restrictions on special tax measures (excluding R&amp;D credits). Investment and wage increase track records are becoming prerequisites for tax incentive eligibility.</span>
+          </p>
+        </div>
+
+        <p style="font-size:0.82rem; color:var(--text-muted);">
+          <span class="lang-ja">出典: <a href="https://www.pwc.com/jp/en/taxnews/pdf/jtu-20251226-en.pdf" target="_blank" rel="noopener">PwC Japan Tax Update - Overview of 2026 Tax Reform Proposals</a> [報道]</span>
+          <span class="lang-en">Source: <a href="https://www.pwc.com/jp/en/taxnews/pdf/jtu-20251226-en.pdf" target="_blank" rel="noopener">PwC Japan &#8212; 2026 Tax Reform Overview</a> [Professional]</span>
+        </p>
+
+        <div class="section-sep">&#8230;</div>
+
+        <!-- ===== Section 7 ===== -->
+        <h2><span class="lang-ja">7. その他の注目改正</span><span class="lang-en">7. Other Notable Reforms</span></h2>
+
+        <h3><span class="lang-ja">NISA拡充 &#8212; 0歳からの積立投資</span><span class="lang-en">NISA Expansion &#8212; Investment from Age 0</span></h3>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">項目</span><span class="lang-en">Item</span></th>
+                <th><span class="lang-ja">改正内容</span><span class="lang-en">Change</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="lang-ja">対象年齢</span><span class="lang-en">Eligible age</span></td>
+                <td class="td-accent"><span class="lang-ja">つみたて投資枠を0歳から利用可能に拡大</span><span class="lang-en">Tsumitate NISA opened from age 0</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">年間投資上限（0〜17歳）</span><span class="lang-en">Annual cap (age 0&#8211;17)</span></td>
+                <td class="td-accent"><span class="lang-ja">60万円</span><span class="lang-en">600k yen</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">非課税保有限度額（0〜17歳）</span><span class="lang-en">Tax-free holding limit (age 0&#8211;17)</span></td>
+                <td class="td-accent"><span class="lang-ja">600万円</span><span class="lang-en">6m yen</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3><span class="lang-ja">国際観光旅客税の引上げ</span><span class="lang-en">International Tourist Tax Increase</span></h3>
+
+        <p>
+          <span class="lang-ja">出国1回あたり1,000円 &#8594; 3,000円に引上げ。</span>
+          <span class="lang-en">The departure tax rises from 1,000 yen to 3,000 yen per departure.</span>
+        </p>
+
+        <h3><span class="lang-ja">消費税 &#8212; クロスボーダーサービスの課税拡大</span><span class="lang-en">Consumption Tax &#8212; Broader Cross-border Service Taxation</span></h3>
+
+        <p>
+          <span class="lang-ja">日本国内の不動産に関するサービスを非居住者に提供する場合も消費税の課税対象に追加。</span>
+          <span class="lang-en">Services related to Japanese real estate provided to non-residents are now brought within the scope of consumption tax.</span>
+        </p>
+
+        <div class="section-sep">&#8230;</div>
+
+        <!-- ===== Sources ===== -->
+        <h2><span class="lang-ja">出典</span><span class="lang-en">Sources</span></h2>
+
+        <ul class="source-list">
+          <li><a href="https://www.mof.go.jp/tax_policy/tax_reform/outline/fy2026/08taikou_gaiyou.pdf" target="_blank" rel="noopener"><span class="lang-ja">財務省 令和8年度税制改正の大綱の概要</span><span class="lang-en">Ministry of Finance &#8212; FY2026 Tax Reform Outline</span></a> <span class="source-tag">[Official]</span></li>
+          <li><a href="https://www.mof.go.jp/english/policy/tax_policy/tax_reform/08keyhighlight.pdf" target="_blank" rel="noopener"><span class="lang-ja">財務省 Key Highlights of the 2026 Tax Reform</span><span class="lang-en">Ministry of Finance &#8212; Key Highlights of the 2026 Tax Reform</span></a> <span class="source-tag">[Official]</span></li>
+          <li><a href="https://www.nta.go.jp/publication/pamph/pdf/0025004-012.pdf" target="_blank" rel="noopener"><span class="lang-ja">国税庁 グローバル・ミニマム課税への対応に関する改正のあらまし（2）</span><span class="lang-en">NTA &#8212; Global Minimum Tax Reform Summary (2)</span></a> <span class="source-tag">[Official]</span></li>
+          <li><a href="https://www.ey.com/content/dam/ey-unified-site/ey-com/ja-jp/technical/ey-japan-tax-library/tax-alerts/2026/pdf/ey-japan-tax-alert-21-jan-2026-jp.pdf" target="_blank" rel="noopener"><span class="lang-ja">EY Japan 令和8年度税制改正大綱（詳細版）</span><span class="lang-en">EY Japan &#8212; FY2026 Tax Reform Outline (detailed)</span></a> <span class="source-tag">[Professional]</span></li>
+          <li><a href="https://www.ey.com/ja_jp/technical/ey-japan-tax-library/tax-alerts/2025/tax-alerts-04-22" target="_blank" rel="noopener"><span class="lang-ja">EY Japan グローバル・ミニマム課税に関する令和7年度税制改正が施行</span><span class="lang-en">EY Japan &#8212; Pillar Two reform enacted</span></a> <span class="source-tag">[Professional]</span></li>
+          <li><a href="https://assets.kpmg.com/content/dam/kpmg/jp/pdf/2025/jp-en-tax-newsletter-20251225.pdf" target="_blank" rel="noopener"><span class="lang-ja">KPMG Outline of the 2026 Tax Reform Proposals</span><span class="lang-en">KPMG &#8212; 2026 Tax Reform Proposals</span></a> <span class="source-tag">[Professional]</span></li>
+          <li><a href="https://www.pwc.com/jp/en/taxnews/pdf/jtu-20251226-en.pdf" target="_blank" rel="noopener"><span class="lang-ja">PwC Japan Tax Update - Overview of 2026 Tax Reform Proposals</span><span class="lang-en">PwC Japan &#8212; 2026 Tax Reform Overview</span></a> <span class="source-tag">[Professional]</span></li>
+          <li><a href="https://agstax.or.jp/tax_reform/r8_2026/" target="_blank" rel="noopener"><span class="lang-ja">AGS税理士法人 令和8年度税制改正大綱の概要・解説</span><span class="lang-en">AGS Tax &#8212; FY2026 Tax Reform Overview</span></a> <span class="source-tag">[Professional]</span></li>
+          <li><a href="https://www.nikkei.com/article/DGXZQOUB1866E0Y5A211C2000000/" target="_blank" rel="noopener"><span class="lang-ja">日本経済新聞 仮想通貨所得、20%分離課税に</span><span class="lang-en">Nikkei &#8212; Crypto gains to face 20% separate tax</span></a> <span class="source-tag">[Press]</span></li>
+          <li><a href="https://www.grantthornton.jp/en/insights/news-letter/tax-bulletin/202602/" target="_blank" rel="noopener"><span class="lang-ja">Grant Thornton Japan 2026 Fiscal Year Corporate &amp; International Tax Reforms</span><span class="lang-en">Grant Thornton Japan &#8212; FY2026 Corporate &amp; International Tax Reforms</span></a> <span class="source-tag">[Professional]</span></li>
+        </ul>
+
+      </article>
+
+      <!-- 4. Sidebar -->
+      <aside class="article-sidebar">
+
+        <!-- Key Facts -->
+        <div class="sidebar-card">
+          <div class="section-label">Key Facts</div>
+          <div class="keyfacts-grid">
+            <div class="fact-card highlight">
+              <div class="fact-value">178<span style="font-size:0.7em">&#19975;&#20870;</span></div>
+              <div class="fact-desc"><span class="lang-ja">所得税の課税最低限（年収の壁）</span><span class="lang-en">Income tax threshold</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">20%</div>
+              <div class="fact-desc"><span class="lang-ja">暗号資産 申告分離課税率</span><span class="lang-en">Crypto separate tax rate</span></div>
+            </div>
+            <div class="fact-card highlight">
+              <div class="fact-value">40%</div>
+              <div class="fact-desc"><span class="lang-ja">戦略分野R&amp;D税額控除</span><span class="lang-en">Strategic R&amp;D tax credit</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">15%</div>
+              <div class="fact-desc"><span class="lang-ja">グローバルミニマム税率（Pillar Two）</span><span class="lang-en">Global minimum tax rate (Pillar Two)</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">2027<span style="font-size:0.7em">/01</span></div>
+              <div class="fact-desc"><span class="lang-ja">防衛特別所得税 開始</span><span class="lang-en">Defence surtax start</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Key References -->
+        <div class="sidebar-card">
+          <div class="section-label">Key References</div>
+          <ul class="source-list" style="margin-top:10px;">
+            <li><a href="https://www.mof.go.jp/tax_policy/tax_reform/outline/fy2026/08taikou_gaiyou.pdf" target="_blank" rel="noopener"><span class="lang-ja">財務省 税制改正大綱</span><span class="lang-en">MOF Tax Reform Outline</span></a> <span class="source-tag">[Official]</span></li>
+            <li><a href="https://www.nta.go.jp/publication/pamph/pdf/0025004-012.pdf" target="_blank" rel="noopener"><span class="lang-ja">国税庁 ミニマム課税</span><span class="lang-en">NTA Global Min Tax</span></a> <span class="source-tag">[Official]</span></li>
+            <li><a href="https://www.ey.com/ja_jp/technical/ey-japan-tax-library/tax-alerts/2025/tax-alerts-04-22" target="_blank" rel="noopener"><span class="lang-ja">EY Japan Pillar Two</span><span class="lang-en">EY Japan Pillar Two</span></a> <span class="source-tag">[Professional]</span></li>
+            <li><a href="https://assets.kpmg.com/content/dam/kpmg/jp/pdf/2025/jp-en-tax-newsletter-20251225.pdf" target="_blank" rel="noopener"><span class="lang-ja">KPMG 税制改正</span><span class="lang-en">KPMG Tax Reform</span></a> <span class="source-tag">[Professional]</span></li>
+            <li><a href="https://www.pwc.com/jp/en/taxnews/pdf/jtu-20251226-en.pdf" target="_blank" rel="noopener"><span class="lang-ja">PwC Japan Tax Update</span><span class="lang-en">PwC Japan Tax Update</span></a> <span class="source-tag">[Professional]</span></li>
+            <li><a href="https://www.nikkei.com/article/DGXZQOUB1866E0Y5A211C2000000/" target="_blank" rel="noopener"><span class="lang-ja">日経 暗号資産課税</span><span class="lang-en">Nikkei Crypto Tax</span></a> <span class="source-tag">[Press]</span></li>
+          </ul>
+        </div>
+
+      </aside>
+
+    </div>
+  </div>
+</main>
+
+<!-- Footer with disclaimer -->
+<footer class="site-footer">
+  <span>Tax Law | donato | 2026-03-29</span>
+  <span>
+    <span class="lang-ja">本記事は情報提供を目的としたものであり、個別の税務・会計処理については専門家への確認を要します。</span>
+    <span class="lang-en">This article is for informational purposes only. Individual tax and accounting treatment requires consultation with a qualified professional.</span>
+  </span>
+</footer>
+
+<script>
+  // Progress bar
+  window.addEventListener('scroll', function() {
+    var h = document.documentElement;
+    var pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    document.getElementById('progress-bar').style.width = Math.min(pct, 100) + '%';
+  });
+
+  // Reading time (500 chars/min)
+  (function() {
+    var text = document.querySelector('.article-body') ? document.querySelector('.article-body').textContent : '';
+    var chars = text.length;
+    var minutes = Math.ceil(chars / 500);
+    var el1 = document.getElementById('reading-time-badge');
+    var el2 = document.getElementById('reading-time-badge2');
+    if (el1) el1.querySelector('.lang-ja').textContent = '約' + minutes + '分';
+    if (el2) el2.querySelector('.lang-ja').textContent = '約' + minutes + '分';
+    if (el1) el1.querySelector('.lang-en').textContent = '~' + minutes + ' min read';
+    if (el2) el2.querySelector('.lang-en').textContent = '~' + minutes + ' min read';
+  })();
+
+  // Lang toggle
+  let currentLang = localStorage.getItem('hp-lang') || 'ja';
+  let currentTheme = localStorage.getItem('hp-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('hp-lang', lang);
+    document.querySelectorAll('.lang-ja').forEach(el => el.style.display = lang === 'ja' ? 'inline' : 'none');
+    document.querySelectorAll('.lang-en').forEach(el => el.style.display = lang === 'en' ? 'inline' : 'none');
+    document.querySelectorAll('.art-lang-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+    document.documentElement.lang = lang === 'ja' ? 'ja' : 'en';
+  }
+  function toggleTheme() {
+    currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+    localStorage.setItem('hp-theme', currentTheme);
+    document.body.classList.toggle('dark', currentTheme === 'dark');
+    document.getElementById('theme-btn').textContent = currentTheme === 'light' ? '☀' : '☾';
+  }
+  document.addEventListener('DOMContentLoaded', () => {
+    setLang(currentLang);
+    if (currentTheme === 'dark') {
+      document.body.classList.add('dark');
+      document.getElementById('theme-btn').textContent = '☾';
+    }
+  });
+</script>
+
+</body>
+</html>

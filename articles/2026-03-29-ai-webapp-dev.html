@@ -1,0 +1,2016 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AI Web App開発の全体像 — Vercel AI SDK v6、MCP、Claude Code Agents/Skills の実践ガイド。初心者の落とし穴から上級者向けアーキテクチャまで体系的に解説。">
+  <title>AI Web App開発の全体像 — 初心者から上級者まで、Claude Code で実践するモダン AI 開発 | Finance x AI | donato</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+JP:wght@300;400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../brand.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:           #F8F7F4;
+      --bg-code:      #EEECEA;
+      --bg-quote:     #EEECEA;
+      --bg-highlight: #EBF3FB;
+      --bg-subtle:    #F0EFEB;
+      --bg-card:      #F0EFEB;
+      --bg-header:    #F8F7F4;
+      --text-primary: #111320;
+      --text-body:    #2A2C3E;
+      --text-muted:   #565C70;
+      --text-light:   #888EA0;
+      --accent:       #1A6EB0;
+      --accent-warm:  #D4A010;
+      --border:       #D4D2CC;
+      --border-quote: #B8B6B0;
+      --border-light: #D4D2CC;
+      --tag-bg:       #E4EFF8;
+      --tag-text:     #1A6EB0;
+      --table-stripe: #F0EFEB;
+    }
+
+    /* ===== PROGRESS BAR ===== */
+    #progress-bar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      width: 0%;
+      background: var(--accent);
+      z-index: 300;
+      transition: width 0.1s linear;
+    }
+
+    body {
+      font-family: 'Noto Serif JP', Georgia, serif;
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--text-primary);
+      background: var(--bg);
+    }
+
+    /* ===== SITE HEADER ===== */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg-header);
+      border-bottom: 2px solid var(--accent);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .site-header-left { display: flex; align-items: center; gap: 12px; }
+    .wordmark {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: lowercase;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+    .wordmark span { color: var(--accent-warm); }
+    .header-sep { color: var(--border-quote); font-size: 13px; }
+    .header-media {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+    }
+    .site-header-right { display: flex; align-items: center; gap: 12px; }
+    .header-back-link {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .header-back-link:hover { color: var(--accent); }
+    .lang-toggle-bar {
+      display: flex;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .art-lang-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      padding: 3px 10px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .art-lang-btn.active { background: #F5C800; color: #111320; }
+    #theme-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      padding: 3px 9px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.15s;
+    }
+    #theme-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .header-date {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-light);
+      letter-spacing: 0.08em;
+    }
+
+    /* ===== STICKY INFO BAR ===== */
+    #sticky-bar {
+      position: sticky;
+      top: 44px;
+      z-index: 200;
+      background: var(--bg-subtle);
+      border-bottom: 1px solid var(--border-light);
+      padding: 7px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .sbar-cat {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+    }
+    .sbar-sep { color: var(--border-quote); font-size: 11px; }
+    .sbar-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+    .sbar-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      padding: 2px 8px;
+    }
+
+    /* ===== LAYOUT ===== */
+    .article-container { max-width: 1240px; margin: 0 auto; padding: 0 20px; }
+    .article-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 24px;
+    }
+    .article-body { grid-column: 2 / 10; max-width: 68ch; }
+    .article-sidebar {
+      grid-column: 10 / 13;
+      position: sticky;
+      top: 78px;
+      align-self: start;
+      max-height: calc(100vh - 90px);
+      overflow-y: auto;
+    }
+    .article-sidebar::-webkit-scrollbar { width: 4px; }
+    .article-sidebar::-webkit-scrollbar-track { background: transparent; }
+    .article-sidebar::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 2px; }
+
+    /* ===== TYPOGRAPHY ===== */
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+    }
+    .article-headline {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(2rem, 4vw, 2.6rem);
+      font-weight: 600;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+    .article-standfirst {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      font-weight: 400;
+    }
+    .byline {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    h2 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.45rem;
+      font-weight: 600;
+      line-height: 1.25;
+      color: var(--text-primary);
+      margin: 2em 0 0.75em;
+      border-top: 1px solid var(--border);
+      padding-top: 1em;
+    }
+    h3 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin: 1.75em 0 0.5em;
+    }
+    .article-body p { margin-bottom: 1.4em; font-size: 0.97rem; line-height: 1.8; }
+    .article-body ul, .article-body ol { margin: 0 0 1.4em 1.4em; }
+    .article-body li { margin-bottom: 0.4em; font-size: 0.95rem; line-height: 1.7; }
+    strong { color: var(--text-primary); font-weight: 600; }
+
+    /* ===== EXEC SUMMARY ===== */
+    .exec-summary {
+      background: var(--bg-highlight);
+      border: 1px solid var(--border-light);
+      border-left: 4px solid var(--accent);
+      padding: 24px;
+      margin: 0 0 2.5em;
+    }
+    .exec-block { margin-bottom: 20px; }
+    .exec-block:last-child { margin-bottom: 0; }
+    .exec-block + .exec-block { padding-top: 18px; border-top: 1px solid var(--border-light); }
+    .exec-tldr {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.02rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      line-height: 1.55;
+      margin-top: 8px;
+    }
+    .issues-list, .implications-list {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .issue-item { display: flex; gap: 10px; align-items: baseline; }
+    .issue-q {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--accent);
+      flex-shrink: 0;
+      min-width: 20px;
+    }
+    .issue-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: var(--text-body);
+      line-height: 1.55;
+    }
+    .implication-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: var(--text-body);
+      line-height: 1.55;
+      padding-left: 14px;
+      border-left: 2px solid var(--accent);
+    }
+    .read-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
+    .read-col-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.66rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 6px;
+    }
+    .read-label-yes { color: var(--accent); }
+    .read-label-no { color: var(--text-muted); }
+    .read-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-body);
+      line-height: 1.45;
+      padding-left: 10px;
+      border-left: 2px solid var(--accent);
+      margin-bottom: 5px;
+    }
+    .skip-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+      padding-left: 10px;
+      border-left: 2px solid var(--border-light);
+      margin-bottom: 5px;
+    }
+
+    /* ===== FORMULA / CALC ===== */
+    .formula {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.93em;
+      background: var(--bg-code);
+      border-left: 3px solid var(--accent);
+      padding: 14px 20px;
+      margin: 20px 0;
+      color: var(--text-primary);
+      overflow-x: auto;
+      line-height: 1.7;
+    }
+    .calc-block {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      padding: 20px 24px;
+      margin: 24px 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+      line-height: 1.8;
+    }
+    .calc-block .calc-row { display: flex; justify-content: space-between; max-width: 480px; }
+    .calc-block .calc-total {
+      border-top: 1px solid var(--border);
+      margin-top: 6px;
+      padding-top: 6px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .calc-block .calc-highlight { color: var(--accent); font-weight: 700; }
+    .calc-block .calc-warn { color: var(--accent-warm); font-weight: 700; }
+
+    /* ===== INSIGHT / TRAP BOX ===== */
+    .insight-box {
+      background: var(--bg-highlight);
+      border-left: 4px solid var(--accent);
+      padding: 18px 22px;
+      margin: 28px 0;
+    }
+    .insight-box p {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: var(--text-primary);
+    }
+    .insight-box strong { color: var(--accent); }
+    .trap-box {
+      background: #FEF9EC;
+      border-left: 4px solid var(--accent-warm);
+      padding: 18px 22px;
+      margin: 24px 0;
+    }
+    .trap-box p {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      line-height: 1.65;
+      color: var(--text-body);
+    }
+    .trap-box .trap-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      color: var(--accent-warm);
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+
+    /* ===== DATA TABLE ===== */
+    .data-table-wrap { overflow-x: auto; margin: 1.5em 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      background: var(--bg-subtle);
+      padding: 8px 12px;
+      text-align: left;
+      border-bottom: 2px solid var(--border);
+    }
+    td {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border-light);
+      color: var(--text-body);
+      font-family: 'Inter', sans-serif;
+    }
+    tr:nth-child(even) td { background: var(--table-stripe); }
+    .td-accent { color: var(--accent); font-weight: 600; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
+    .td-warn   { color: var(--accent-warm); font-weight: 600; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
+
+    /* ===== PULL QUOTE ===== */
+    .pull-quote {
+      border-left: 4px solid var(--accent);
+      margin: 2em 0;
+      padding: 1em 20px;
+      background: var(--bg-card);
+    }
+    .pull-quote p {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.2rem;
+      font-style: italic;
+      color: var(--text-primary);
+      line-height: 1.5;
+      margin-bottom: 6px !important;
+    }
+    .pull-quote footer {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* ===== NUMBERED LIST ===== */
+    .numbered-list { list-style: none; padding: 0; margin: 20px 0; }
+    .numbered-list li {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 16px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.92rem;
+      line-height: 1.65;
+      color: var(--text-body);
+    }
+    .numbered-list li .num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: white;
+      background: var(--accent);
+      min-width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    /* ===== SECTION SEP ===== */
+    .section-sep {
+      text-align: center;
+      color: var(--text-light);
+      font-size: 1.2rem;
+      letter-spacing: 0.5em;
+      margin: 48px 0;
+      user-select: none;
+    }
+
+    /* ===== SOURCE LIST ===== */
+    .source-list { list-style: none; padding: 0; }
+    .source-list li { margin-bottom: 6px; }
+    .source-list a {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--accent);
+      text-decoration: none;
+      line-height: 1.5;
+    }
+    .source-list a:hover { text-decoration: underline; }
+    .source-tag { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--text-muted); margin-left: 4px; }
+
+    /* ===== NEXT ARTICLE CTA ===== */
+    .next-article {
+      background: var(--text-primary);
+      color: #E4E2DC;
+      padding: 28px 32px;
+      margin-top: 56px;
+    }
+    .next-article .next-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      color: var(--accent-warm);
+      margin-bottom: 8px;
+    }
+    .next-article .next-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+    .next-article .next-desc {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.82rem;
+      color: #9299A8;
+      margin-top: 8px;
+    }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .keyfacts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+    .fact-card { background: var(--bg-highlight); padding: 10px 8px; }
+    .fact-card.highlight { background: #FDF8EC; border: 1px solid #E8D88A; }
+    .fact-value { font-family: 'JetBrains Mono', monospace; font-size: 1rem; font-weight: 500; color: var(--accent); line-height: 1.2; }
+    .fact-card.highlight .fact-value { color: #8A6A00; }
+    .fact-desc { font-family: 'Inter', sans-serif; font-size: 0.64rem; color: var(--text-muted); margin-top: 3px; line-height: 1.35; }
+    .fact-card.highlight .fact-desc { color: #7A6020; }
+    .highlights-list { list-style: none; padding: 0; margin-top: 12px; }
+    .highlight-item { padding: 9px 0; border-bottom: 1px solid var(--border-light); display: flex; gap: 10px; align-items: baseline; }
+    .highlight-item:last-child { border-bottom: none; }
+    .hl-num { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--accent); flex-shrink: 0; min-width: 18px; }
+    .hl-text { font-family: 'Inter', sans-serif; font-size: 0.76rem; color: var(--text-body); line-height: 1.45; }
+
+    /* ===== LANG TOGGLE ===== */
+    .lang-en { display: none; }
+
+    /* ===== FOOTER ===== */
+    .site-footer {
+      border-top: 1px solid var(--border-light);
+      margin-top: 4em;
+      padding: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* ===== PRINT ===== */
+    @media print {
+      body { background: white; font-size: 11pt; }
+      .site-header, #sticky-bar, #progress-bar { display: none; }
+      .article-sidebar { position: static; max-height: none; overflow: visible; }
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+    @page { size: A4; margin: 20mm 15mm; }
+
+    /* ===== MOBILE ===== */
+    @media (max-width: 900px) {
+      .article-body { grid-column: 1 / -1; }
+      .article-sidebar { position: static; max-height: none; overflow: visible; grid-column: 1 / -1; }
+      .article-grid { display: block; }
+      .read-grid { grid-template-columns: 1fr; }
+      #sticky-bar { flex-wrap: wrap; gap: 6px; }
+    }
+
+    body.dark {
+      --bg:           #0D1117;
+      --bg-code:      #161B22;
+      --bg-quote:     #161B22;
+      --bg-highlight: #0E1A2B;
+      --bg-subtle:    #161B22;
+      --bg-card:      #161B22;
+      --bg-header:    #0D1117;
+      --text-primary: #E4E2DC;
+      --text-body:    #C4C2BC;
+      --text-muted:   #8B93A8;
+      --text-light:   #575E70;
+      --accent:       #3A8FD0;
+      --accent-warm:  #F5C800;
+      --border:       #21253A;
+      --border-quote: #2A2D3E;
+      --border-light: #21253A;
+      --tag-bg:       #0E1A2B;
+      --tag-text:     #3A8FD0;
+      --table-stripe: #161B22;
+    }
+    body.dark .trap-box { background: #1C1800; }
+    body.dark .fact-card.highlight { background: #1A1600; border-color: #3A2D00; }
+    body.dark .fact-card.highlight .fact-value { color: #C4900E; }
+    body.dark .fact-card.highlight .fact-desc { color: #A07828; }
+    body.dark .next-article { background: #111320; }
+
+    /* ===== DIAGRAM: shared ===== */
+    .diagram-figure { margin: 2em 0; }
+    .diagram-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+    .diagram-source {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--text-light);
+      margin-top: 6px;
+    }
+
+    /* ===== DIAGRAM: Tree CSS ===== */
+    .tree-css { margin: 1.5em 0; }
+    .tree-root {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #FFFFFF;
+      background: var(--accent);
+      padding: 10px 16px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+    }
+    .tree-branch {
+      margin-left: 20px;
+      border-left: 2px solid var(--border);
+      padding-left: 16px;
+      margin-bottom: 4px;
+    }
+    .tree-highlight {
+      border-left-color: var(--accent-warm);
+    }
+    .tree-node-l1 {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      padding: 8px 12px;
+      background: var(--bg-card);
+      border-radius: 4px;
+      margin-bottom: 4px;
+    }
+    .tree-highlight .tree-node-l1 {
+      background: #FDF8EC;
+      color: #8A6A00;
+    }
+    .tree-leaf {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.82rem;
+      color: var(--text-body);
+      padding: 6px 12px;
+      margin-left: 12px;
+      border-left: 1px solid var(--border-light);
+      padding-left: 12px;
+    }
+    body.dark .tree-root { background: #2E88CA; }
+    body.dark .tree-branch { border-left-color: #21253A; }
+    body.dark .tree-highlight { border-left-color: #C4900E; }
+    body.dark .tree-node-l1 { background: #1A1D28; }
+    body.dark .tree-highlight .tree-node-l1 { background: #1A1600; color: #C4900E; }
+    @media (max-width: 900px) {
+      .tree-branch { margin-left: 12px; padding-left: 10px; }
+      .tree-leaf { margin-left: 8px; }
+    }
+
+    /* ===== DIAGRAM: Flowchart SVG ===== */
+    .flowchart-svg { margin: 1em 0; }
+    body.dark .flowchart-svg rect[fill="#EBF3FB"] { fill: #0D1520; opacity: 0.8; }
+    body.dark .flowchart-svg rect[fill="#FFFFFF"] { fill: #12141C; stroke: #2E88CA; }
+    body.dark .flowchart-svg text[fill="#111320"] { fill: #E4E2DC; }
+    body.dark .flowchart-svg line[stroke="#1A6EB0"] { stroke: #2E88CA; }
+    body.dark .flowchart-svg polygon[fill="#1A6EB0"] { fill: #2E88CA; }
+    body.dark .flowchart-svg rect[fill="#1A6EB0"] { fill: #2E88CA; }
+  </style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<!-- 1. Site Header -->
+<header class="site-header">
+  <div class="site-header-left">
+    <a class="wordmark" href="../index.html">dona<span>to</span></a>
+    <span class="header-sep">&mdash;</span>
+    <a class="header-back-link" href="./index.html"><span class="lang-ja">記事一覧</span><span class="lang-en">Articles</span></a>
+    <span class="header-sep">&mdash;</span>
+    <span class="header-media">Finance Professional x AI</span>
+  </div>
+  <div class="site-header-right">
+    <div class="lang-toggle-bar">
+      <button class="art-lang-btn active" data-lang="ja" onclick="setLang('ja')">JP</button>
+      <button class="art-lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+    </div>
+    <button id="theme-btn" onclick="toggleTheme()" title="Dark/Light toggle">☀</button>
+    <time class="header-date">2026-03-29</time>
+  </div>
+</header>
+
+<!-- 2. Sticky Info Bar -->
+<div id="sticky-bar">
+  <span class="sbar-cat">Finance Professional x AI</span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-text"><span class="lang-ja">AI Web App開発の全体像</span><span class="lang-en">The Full Picture of AI Web App Development</span></span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-text">2026-03-29</span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-badge" id="reading-time-badge"><span class="lang-ja">計算中</span><span class="lang-en">...</span></span>
+</div>
+
+<main style="padding: 0 0 3em;">
+  <div class="article-container">
+    <div class="article-grid">
+
+      <!-- 3. Article Body -->
+      <article class="article-body">
+
+        <!-- Article Header -->
+        <div style="padding: 36px 0 24px;">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+            <div class="section-label">Finance x AI</div>
+            <span class="sbar-badge" id="reading-time-badge2"><span class="lang-ja">計算中</span><span class="lang-en">...</span></span>
+          </div>
+          <h1 class="article-headline">
+            <span class="lang-ja">AI Web App開発の全体像 &mdash; 初心者から上級者まで、Claude Code で実践するモダン AI 開発</span>
+            <span class="lang-en">The Full Picture of AI Web App Development &mdash; From Beginner to Advanced, Practising Modern AI Development with Claude Code</span>
+          </h1>
+          <p class="article-standfirst">
+            <span class="lang-ja">Vercel AI SDK v6のAgent抽象化、MCPの業界標準化、Claude CodeのSkills/Agentsエコシステム &mdash; 2026年のAI Web App開発を体系的に整理し、Finance Professionalが「環境を設計する」ための実践ガイドを提供する。</span>
+            <span class="lang-en">Vercel AI SDK v6 agent abstractions, MCP industry standardisation, and the Claude Code Skills/Agents ecosystem &mdash; a systematic guide to AI web app development in 2026, empowering finance professionals to design their own development environments.</span>
+          </p>
+          <div style="display:flex; gap:16px; align-items:center; border-top:1px solid var(--border-light); border-bottom:1px solid var(--border-light); padding:10px 0;">
+            <span class="byline">By <strong>Donato Finance x AI</strong></span>
+            <span style="color:var(--border);">|</span>
+            <time class="byline" datetime="2026-03-29"><span class="lang-ja">2026年3月29日</span><span class="lang-en">29 March 2026</span></time>
+            <span style="color:var(--border);">|</span>
+            <span class="byline"><span class="lang-ja">AI Web App &middot; Claude Code &middot; MCP &middot; Vercel AI SDK</span><span class="lang-en">AI Web App &middot; Claude Code &middot; MCP &middot; Vercel AI SDK</span></span>
+          </div>
+        </div>
+
+        <!-- Structured Executive Summary -->
+        <section class="exec-summary">
+          <!-- Block 1: Summary -->
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">概要</span><span class="lang-en">Summary</span></div>
+            <p class="exec-tldr">
+              <span class="lang-ja">AI Web App開発は2026年に入り「プロトタイプから本番環境」へのフェーズに移行した。Vercel AI SDK v6のAgent抽象化、MCPの業界標準化、Claude CodeのSkills/Agentsエコシステムにより、Finance Professionalがコードを書かずにAI開発環境を設計できる時代が到来している。本稿では全体像の整理から初心者の落とし穴、上級者向けアーキテクチャパターン、そしてClaude Codeで構築すべきAgents・Skillsの具体例までを体系的に解説する。</span>
+              <span class="lang-en">AI web app development entered a new phase in 2026, shifting from prototype to production. With Vercel AI SDK v6 agent abstractions, MCP industry standardisation, and the Claude Code Skills/Agents ecosystem, finance professionals can now design AI development environments without writing code. This article systematically covers the full landscape &mdash; from common beginner pitfalls and advanced architecture patterns to concrete examples of Agents and Skills you should build with Claude Code.</span>
+            </p>
+          </div>
+
+          <!-- Block 2: Key Questions -->
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">本稿の論点</span><span class="lang-en">Key Questions</span></div>
+            <ul class="issues-list">
+              <li class="issue-item">
+                <span class="issue-q">Q1</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>技術スタック選定</strong> &mdash; Vercel AI SDK・LangChain・Claude APIの使い分けと2026年の推奨構成</span>
+                  <span class="lang-en"><strong>Tech stack selection</strong> &mdash; When to use Vercel AI SDK, LangChain, or Claude API directly, and the recommended 2026 stack</span>
+                </span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">Q2</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>初心者 vs 上級者</strong> &mdash; 初心者が陥る8つの落とし穴と、上級者が実践するRAG・コスト最適化・テスト戦略の対比</span>
+                  <span class="lang-en"><strong>Beginner vs advanced</strong> &mdash; Eight common beginner pitfalls contrasted with advanced RAG, cost optimisation, and testing strategies</span>
+                </span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">Q3</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>Claude Code環境設計</strong> &mdash; Agents・Skills・Hooks・MCPの実践的な構築パターンとFinance実務への応用</span>
+                  <span class="lang-en"><strong>Claude Code environment design</strong> &mdash; Practical patterns for building Agents, Skills, Hooks, and MCP integrations, with finance use cases</span>
+                </span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Block 3: Implications for Practitioners -->
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">実務家への含意</span><span class="lang-en">Implications for Practitioners</span></div>
+            <ul class="implications-list">
+              <li class="implication-item">
+                <span class="lang-ja"><strong>技術選定はワークフロー設計</strong> &mdash; AI Web Appの技術選定はフレームワーク選びではなく「ワークフロー設計」の問題。Vercel AI SDK + Claude APIの組み合わせが2026年の標準的な出発点</span>
+                <span class="lang-en"><strong>Tech selection is workflow design</strong> &mdash; Choosing an AI web app stack is not about picking a framework but designing a workflow. Vercel AI SDK + Claude API is the standard starting point in 2026</span>
+              </li>
+              <li class="implication-item">
+                <span class="lang-ja"><strong>段階的に進めよ</strong> &mdash; 初心者の最大の失敗は「複雑なフレームワークから始める」こと。直接API呼び出し → SDK → RAG → エージェントの順で学ぶべき</span>
+                <span class="lang-en"><strong>Start simple, build up</strong> &mdash; The biggest beginner mistake is starting with a complex framework. Progress from direct API calls to SDK to RAG to agent frameworks</span>
+              </li>
+              <li class="implication-item">
+                <span class="lang-ja"><strong>プログラミング不要の自動化</strong> &mdash; Claude CodeのSkills/AgentsはMarkdown + YAMLで定義可能。DD資料作成・バリュエーションレビュー・監査チェックリストの自動化がコードなしで実現</span>
+                <span class="lang-en"><strong>Automation without programming</strong> &mdash; Claude Code Skills/Agents are defined in Markdown + YAML. DD document generation, valuation review, and audit checklists can be automated without writing code</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Read Grid -->
+          <div class="exec-block">
+            <div class="read-grid">
+              <div>
+                <div class="read-col-label read-label-yes"><span class="lang-ja">読むべき人</span><span class="lang-en">Who should read</span></div>
+                <div class="read-item"><span class="lang-ja">AI Webアプリ開発に興味があるFinance Professional</span><span class="lang-en">Finance professionals interested in AI web app development</span></div>
+                <div class="read-item"><span class="lang-ja">Claude Codeを導入済みだが活用しきれていない開発者</span><span class="lang-en">Developers who have adopted Claude Code but haven't fully leveraged it</span></div>
+                <div class="read-item"><span class="lang-ja">チームのAI開発環境を標準化したいテックリード</span><span class="lang-en">Tech leads seeking to standardise their team's AI development environment</span></div>
+              </div>
+              <div>
+                <div class="read-col-label read-label-no"><span class="lang-ja">スキップしてよい人</span><span class="lang-en">Who may skip</span></div>
+                <div class="skip-item"><span class="lang-ja">AIを業務に使う予定がない人</span><span class="lang-en">Those with no plans to use AI in their work</span></div>
+                <div class="skip-item"><span class="lang-ja">既にAI Webアプリを本番運用している上級エンジニア</span><span class="lang-en">Advanced engineers already running AI web apps in production</span></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================== -->
+        <!-- SECTION 1: The Full Picture -->
+        <!-- ============================== -->
+        <h2>
+          <span class="lang-ja">1. AI Web App開発の全体像 &mdash; 2026年の現在地</span>
+          <span class="lang-en">1. The Full Picture of AI Web App Development &mdash; Where We Stand in 2026</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">2025年後半から2026年にかけて、AI Web App開発は明確な転換点を迎えた。「ChatGPTのAPIを叩いてチャットUIを作る」段階は終わり、エージェント型アーキテクチャ、構造化出力、ツール呼び出し、そしてMCPによる外部システム統合が本番環境の標準になりつつある。</span>
+          <span class="lang-en">From late 2025 into 2026, AI web app development reached a clear inflection point. The era of simply calling the ChatGPT API and building a chat UI is over. Agentic architectures, structured output, tool calling, and MCP-based external system integration are becoming the production standard.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">3つのレイヤーで整理するとわかりやすい。</span>
+          <span class="lang-en">The landscape can be understood through three distinct layers.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja"><strong>基盤モデルAPI層</strong> &mdash; Claude API（Opus 4.6 / Sonnet 4.6 / Haiku 4.5）、OpenAI GPT-4o、Google Gemini。モデル選択はコスト・精度・速度のトレードオフで決まる。</span>
+          <span class="lang-en"><strong>Foundation Model API Layer</strong> &mdash; Claude API (Opus 4.6 / Sonnet 4.6 / Haiku 4.5), OpenAI GPT-4o, Google Gemini. Model selection is determined by cost, accuracy, and speed trade-offs.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja"><strong>オーケストレーション層</strong> &mdash; Vercel AI SDK v6、LangChain / LangGraph、Anthropic Agent SDK。モデルAPIの上に抽象化を被せ、ストリーミング、ツール呼び出し、マルチステップ推論を簡潔に実装する。</span>
+          <span class="lang-en"><strong>Orchestration Layer</strong> &mdash; Vercel AI SDK v6, LangChain / LangGraph, Anthropic Agent SDK. These sit atop model APIs, providing abstractions for streaming, tool calling, and multi-step reasoning.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja"><strong>開発環境層</strong> &mdash; Claude Code、Cursor、GitHub Copilot。コードを書くだけでなく、開発ワークフロー全体を自動化するエージェント型ツール。</span>
+          <span class="lang-en"><strong>Development Environment Layer</strong> &mdash; Claude Code, Cursor, GitHub Copilot. These are agentic tools that automate not just code writing, but the entire development workflow.</span>
+        </p>
+
+        <!-- Diagram: Architecture Layer Tree -->
+        <figure class="diagram-figure" role="figure">
+          <figcaption class="diagram-title">
+            <span class="lang-ja">AI Web App開発の3層構造</span>
+            <span class="lang-en">Three-Layer Architecture of AI Web App Development</span>
+          </figcaption>
+          <div class="tree-css">
+            <div class="tree-root">
+              <span class="lang-ja">AI Web App 開発スタック</span>
+              <span class="lang-en">AI Web App Development Stack</span>
+            </div>
+            <div class="tree-branch">
+              <div class="tree-node-l1">
+                <span class="lang-ja">基盤モデル API 層</span>
+                <span class="lang-en">Foundation Model API Layer</span>
+              </div>
+              <div class="tree-leaf"><span class="lang-ja">Claude API (Opus 4.6 / Sonnet 4.6 / Haiku 4.5)</span><span class="lang-en">Claude API (Opus 4.6 / Sonnet 4.6 / Haiku 4.5)</span></div>
+              <div class="tree-leaf"><span class="lang-ja">OpenAI GPT-4o</span><span class="lang-en">OpenAI GPT-4o</span></div>
+              <div class="tree-leaf"><span class="lang-ja">Google Gemini</span><span class="lang-en">Google Gemini</span></div>
+            </div>
+            <div class="tree-branch tree-highlight">
+              <div class="tree-node-l1">
+                <span class="lang-ja">オーケストレーション層</span>
+                <span class="lang-en">Orchestration Layer</span>
+              </div>
+              <div class="tree-leaf"><span class="lang-ja">Vercel AI SDK v6</span><span class="lang-en">Vercel AI SDK v6</span></div>
+              <div class="tree-leaf"><span class="lang-ja">LangChain / LangGraph</span><span class="lang-en">LangChain / LangGraph</span></div>
+              <div class="tree-leaf"><span class="lang-ja">Anthropic Agent SDK</span><span class="lang-en">Anthropic Agent SDK</span></div>
+            </div>
+            <div class="tree-branch">
+              <div class="tree-node-l1">
+                <span class="lang-ja">開発環境層</span>
+                <span class="lang-en">Development Environment Layer</span>
+              </div>
+              <div class="tree-leaf"><span class="lang-ja">Claude Code</span><span class="lang-en">Claude Code</span></div>
+              <div class="tree-leaf"><span class="lang-ja">Cursor</span><span class="lang-en">Cursor</span></div>
+              <div class="tree-leaf"><span class="lang-ja">GitHub Copilot</span><span class="lang-en">GitHub Copilot</span></div>
+            </div>
+          </div>
+          <div class="diagram-source">
+            <span class="lang-ja">筆者作成</span>
+            <span class="lang-en">Created by the author</span>
+          </div>
+        </figure>
+
+        <div class="pull-quote">
+          <p>
+            <span class="lang-ja">2026年のAI Web App開発で最も重要な判断は「どのモデルを使うか」ではなく「どうワークフローを設計するか」である。</span>
+            <span class="lang-en">The most important decision in AI web app development in 2026 is not which model to use, but how to design the workflow.</span>
+          </p>
+          <footer><span class="lang-ja">筆者分析</span><span class="lang-en">Author analysis</span></footer>
+        </div>
+
+        <div class="section-sep">&middot; &middot; &middot;</div>
+
+        <!-- ============================== -->
+        <!-- SECTION 2: Tech Stack -->
+        <!-- ============================== -->
+        <h2>
+          <span class="lang-ja">2. 技術スタック &mdash; 何をどう選ぶか</span>
+          <span class="lang-en">2. Tech Stack &mdash; What to Choose and How</span>
+        </h2>
+
+        <h3>
+          <span class="lang-ja">Vercel AI SDK v6 &mdash; TypeScript AIフレームワークの標準</span>
+          <span class="lang-en">Vercel AI SDK v6 &mdash; The Standard TypeScript AI Framework</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">2026年3月時点で最もダウンロードされているTypeScript AIフレームワーク。v6で追加されたAgent抽象化により、モデル・指示・ツールを一度定義すれば、アプリケーション全体で再利用できるようになった。</span>
+          <span class="lang-en">The most downloaded TypeScript AI framework as of March 2026. The Agent abstraction added in v6 allows you to define a model, instructions, and tools once and reuse them across your entire application.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">主要機能:</span>
+          <span class="lang-en">Key features:</span>
+        </p>
+
+        <ul>
+          <li><span class="lang-ja"><strong>Agent抽象化</strong>: モデル + 指示 + ツールを一つのオブジェクトとして定義</span><span class="lang-en"><strong>Agent abstraction</strong>: Define model + instructions + tools as a single object</span></li>
+          <li><span class="lang-ja"><strong>構造化出力 + ツール呼び出しの統合</strong>: マルチステップのツール呼び出しループの末尾で構造化出力を返す</span><span class="lang-en"><strong>Structured output + tool calling integration</strong>: Return structured output at the end of a multi-step tool calling loop</span></li>
+          <li><span class="lang-ja"><strong>実行承認（Human-in-the-loop）</strong>: 機密性の高いツール実行を手動レビューにフラグ</span><span class="lang-en"><strong>Execution approval (Human-in-the-loop)</strong>: Flag sensitive tool executions for manual review</span></li>
+          <li><span class="lang-ja"><strong>DevTools</strong>: エージェントフロー・プロンプト・出力・メトリクスを可視化するデバッグUI</span><span class="lang-en"><strong>DevTools</strong>: A debug UI to visualise agent flows, prompts, outputs, and metrics</span></li>
+          <li><span class="lang-ja"><strong>25以上のプロバイダー統合</strong>: OpenAI、Anthropic、Google、xAI等</span><span class="lang-en"><strong>25+ provider integrations</strong>: OpenAI, Anthropic, Google, xAI, and more</span></li>
+        </ul>
+
+        <p style="font-size:0.82rem; color:var(--text-muted); font-family:'Inter',sans-serif;">
+          <span class="lang-ja">出典: <a href="https://vercel.com/blog/ai-sdk-6" target="_blank" rel="noopener" style="color:var(--accent);">Vercel AI SDK 6 Blog</a> [公式]、<a href="https://ai-sdk.dev/docs/introduction" target="_blank" rel="noopener" style="color:var(--accent);">AI SDK Documentation</a> [公式]</span>
+          <span class="lang-en">Sources: <a href="https://vercel.com/blog/ai-sdk-6" target="_blank" rel="noopener" style="color:var(--accent);">Vercel AI SDK 6 Blog</a> [official], <a href="https://ai-sdk.dev/docs/introduction" target="_blank" rel="noopener" style="color:var(--accent);">AI SDK Documentation</a> [official]</span>
+        </p>
+
+        <h3>
+          <span class="lang-ja">LangChain &mdash; 複雑なエージェント・RAGパイプライン向け</span>
+          <span class="lang-en">LangChain &mdash; For Complex Agent and RAG Pipelines</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">RAG（Retrieval-Augmented Generation）や複雑なマルチエージェントワークフローを構築する場合のデファクトスタンダード。LangGraphによるグラフベースのエージェント制御が強み。</span>
+          <span class="lang-en">The de facto standard for building RAG (Retrieval-Augmented Generation) and complex multi-agent workflows. Its strength lies in LangGraph's graph-based agent control.</span>
+        </p>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>使い分けの指針</strong>: シンプルなチャットUIやストリーミング → Vercel AI SDK。複雑なRAGパイプラインやマルチエージェント → LangChain / LangGraph。</span>
+            <span class="lang-en"><strong>Selection guideline</strong>: For simple chat UIs and streaming &rarr; Vercel AI SDK. For complex RAG pipelines and multi-agent systems &rarr; LangChain / LangGraph.</span>
+          </p>
+        </div>
+
+        <p style="font-size:0.82rem; color:var(--text-muted); font-family:'Inter',sans-serif;">
+          <span class="lang-ja">出典: <a href="https://strapi.io/blog/langchain-vs-vercel-ai-sdk-vs-openai-sdk-comparison-guide" target="_blank" rel="noopener" style="color:var(--accent);">LangChain vs Vercel AI SDK Comparison</a> [報道]</span>
+          <span class="lang-en">Source: <a href="https://strapi.io/blog/langchain-vs-vercel-ai-sdk-vs-openai-sdk-comparison-guide" target="_blank" rel="noopener" style="color:var(--accent);">LangChain vs Vercel AI SDK Comparison</a> [press]</span>
+        </p>
+
+        <h3>
+          <span class="lang-ja">Claude API &mdash; 直接統合</span>
+          <span class="lang-en">Claude API &mdash; Direct Integration</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">Claude APIはツール呼び出し（GA）、ストリーミング（GA）、構造化出力（GA）、バッチAPI（非同期処理で50%コスト削減）、100万トークンコンテキスト（Opus 4.6ベータ）を提供する。Anthropic Agent SDKはClaude Codeと同じエージェントループ・ツール管理・コンテキスト管理をプログラマブルに利用できるSDKだ。</span>
+          <span class="lang-en">The Claude API offers tool calling (GA), streaming (GA), structured output (GA), a Batch API (50% cost reduction for asynchronous processing), and a 1-million-token context (Opus 4.6 beta). The Anthropic Agent SDK provides the same agent loop, tool management, and context management used by Claude Code in a programmable SDK.</span>
+        </p>
+
+        <p style="font-size:0.82rem; color:var(--text-muted); font-family:'Inter',sans-serif;">
+          <span class="lang-ja">出典: <a href="https://platform.claude.com/docs/en/release-notes/overview" target="_blank" rel="noopener" style="color:var(--accent);">Claude Platform Release Notes</a> [公式]、<a href="https://platform.claude.com/docs/en/agent-sdk/overview" target="_blank" rel="noopener" style="color:var(--accent);">Agent SDK Overview</a> [公式]</span>
+          <span class="lang-en">Sources: <a href="https://platform.claude.com/docs/en/release-notes/overview" target="_blank" rel="noopener" style="color:var(--accent);">Claude Platform Release Notes</a> [official], <a href="https://platform.claude.com/docs/en/agent-sdk/overview" target="_blank" rel="noopener" style="color:var(--accent);">Agent SDK Overview</a> [official]</span>
+        </p>
+
+        <h3>
+          <span class="lang-ja">2026年の推奨スタック</span>
+          <span class="lang-en">Recommended 2026 Stack</span>
+        </h3>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">レイヤー</span><span class="lang-en">Layer</span></th>
+                <th><span class="lang-ja">推奨</span><span class="lang-en">Recommended</span></th>
+                <th><span class="lang-ja">理由</span><span class="lang-en">Rationale</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="lang-ja">フレームワーク</span><span class="lang-en">Framework</span></td>
+                <td class="td-accent">Next.js</td>
+                <td><span class="lang-ja">サーバーサイドレンダリング + エッジ対応</span><span class="lang-en">Server-side rendering + edge support</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">言語</span><span class="lang-en">Language</span></td>
+                <td class="td-accent">TypeScript</td>
+                <td><span class="lang-ja">型安全性がAIツールの精度を向上</span><span class="lang-en">Type safety improves AI tool accuracy</span></td>
+              </tr>
+              <tr>
+                <td>UI</td>
+                <td class="td-accent">Tailwind CSS + shadcn/ui</td>
+                <td><span class="lang-ja">高速プロトタイピング</span><span class="lang-en">Rapid prototyping</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">AI統合</span><span class="lang-en">AI Integration</span></td>
+                <td class="td-accent">Vercel AI SDK v6</td>
+                <td><span class="lang-ja">ストリーミング・プロバイダー抽象化</span><span class="lang-en">Streaming and provider abstraction</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">モデル</span><span class="lang-en">Model</span></td>
+                <td class="td-accent">Sonnet 4.6 + Haiku 4.5</td>
+                <td><span class="lang-ja">コスト/精度バランス</span><span class="lang-en">Cost/accuracy balance</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">開発環境</span><span class="lang-en">Dev Environment</span></td>
+                <td class="td-accent">Claude Code</td>
+                <td><span class="lang-ja">エージェント型開発ワークフロー</span><span class="lang-en">Agentic development workflow</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p style="font-size:0.82rem; color:var(--text-muted); font-family:'Inter',sans-serif;">
+          <span class="lang-ja">出典: <a href="https://www.builder.io/blog/react-ai-stack-2026" target="_blank" rel="noopener" style="color:var(--accent);">The React + AI Stack for 2026</a> [報道]</span>
+          <span class="lang-en">Source: <a href="https://www.builder.io/blog/react-ai-stack-2026" target="_blank" rel="noopener" style="color:var(--accent);">The React + AI Stack for 2026</a> [press]</span>
+        </p>
+
+        <div class="section-sep">&middot; &middot; &middot;</div>
+
+        <!-- ============================== -->
+        <!-- SECTION 3: 8 Pitfalls -->
+        <!-- ============================== -->
+        <h2>
+          <span class="lang-ja">3. 初心者が陥る8つの落とし穴</span>
+          <span class="lang-en">3. Eight Pitfalls Beginners Fall Into</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">AI Web App開発の初心者が繰り返す失敗パターンは驚くほど共通している。</span>
+          <span class="lang-en">The failure patterns that AI web app beginners repeat are remarkably consistent.</span>
+        </p>
+
+        <h3>
+          <span class="lang-ja">落とし穴1: AIが不要な問題にAIを使う</span>
+          <span class="lang-en">Pitfall 1: Using AI for problems that don't need AI</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">すべての問題にLLMが必要なわけではない。ルールベースの処理、正規表現、線形計画法で解ける問題にAIを持ち込むと、コスト・レイテンシ・信頼性のすべてが悪化する。「このタスクにLLMは本当に必要か?」を最初に問うべき。</span>
+          <span class="lang-en">Not every problem requires an LLM. Introducing AI into tasks solvable with rule-based processing, regular expressions, or linear programming degrades cost, latency, and reliability across the board. The first question should always be: "Does this task truly need an LLM?"</span>
+        </p>
+
+        <h3>
+          <span class="lang-ja">落とし穴2: 複雑なフレームワークから始める</span>
+          <span class="lang-en">Pitfall 2: Starting with complex frameworks</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">LangChain、ベクターDB、ファインチューニングを初日から導入するのは過剰。段階的に進むべきだ:</span>
+          <span class="lang-en">Introducing LangChain, vector databases, and fine-tuning on day one is excessive. Progress incrementally:</span>
+        </p>
+
+        <ol class="numbered-list">
+          <li>
+            <span class="num">1</span>
+            <span><span class="lang-ja"><strong>直接API呼び出し</strong> &mdash; リクエスト/レスポンスの仕組みを理解</span><span class="lang-en"><strong>Direct API calls</strong> &mdash; Understand the request/response mechanism</span></span>
+          </li>
+          <li>
+            <span class="num">2</span>
+            <span><span class="lang-ja"><strong>Vercel AI SDK</strong> &mdash; ストリーミングUIの統合（100行超のコードが約20行に）</span><span class="lang-en"><strong>Vercel AI SDK</strong> &mdash; Integrate streaming UI (100+ lines of code reduced to ~20)</span></span>
+          </li>
+          <li>
+            <span class="num">3</span>
+            <span><span class="lang-ja"><strong>RAG追加</strong> &mdash; ドメイン固有知識が必要になったら</span><span class="lang-en"><strong>Add RAG</strong> &mdash; When domain-specific knowledge is needed</span></span>
+          </li>
+          <li>
+            <span class="num">4</span>
+            <span><span class="lang-ja"><strong>エージェントフレームワーク</strong> &mdash; マルチステップ推論が必要になったら</span><span class="lang-en"><strong>Agent frameworks</strong> &mdash; When multi-step reasoning is required</span></span>
+          </li>
+        </ol>
+
+        <h3>
+          <span class="lang-ja">落とし穴3: 初期の80%成功に騙される</span>
+          <span class="lang-en">Pitfall 3: Being deceived by the initial 80% success</span>
+        </h3>
+
+        <div class="trap-box">
+          <div class="trap-label"><span class="lang-ja">注意</span><span class="lang-en">Caution</span></div>
+          <p>
+            <span class="lang-ja">AIアプリの最初の80%は驚くほど簡単に動く。しかし95%の品質に到達するには、80%に到達するのと同じだけの時間がかかる。ハルシネーション処理、レイテンシ最適化、エッジケース対応、コンプライアンス対応を計画に含めること。</span>
+            <span class="lang-en">The first 80% of an AI app works surprisingly easily. But reaching 95% quality takes as much time as reaching 80%. Factor in hallucination handling, latency optimisation, edge case handling, and compliance into your plan.</span>
+          </p>
+        </div>
+
+        <h3>
+          <span class="lang-ja">落とし穴4: プロダクト設計の軽視</span>
+          <span class="lang-en">Pitfall 4: Neglecting product design</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">AIの技術的実装は実は比較的容易だ。難しいのはAIをユーザーワークフローに自然に統合するUX設計。「AIが答えを返す」だけでなく「ユーザーがAIの出力をどう活用するか」まで設計する。</span>
+          <span class="lang-en">The technical implementation of AI is actually straightforward. The difficult part is designing UX that naturally integrates AI into user workflows. Design not just "AI returns an answer" but "how users act on AI output."</span>
+        </p>
+
+        <h3>
+          <span class="lang-ja">落とし穴5: 人間による評価の省略</span>
+          <span class="lang-en">Pitfall 5: Skipping human evaluation</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">AI-as-a-judgeだけに頼り、人間の評価を省略するのはよくある失敗だ。毎日30〜1,000件のサンプルを手動評価するプロセスを組み込むべき。</span>
+          <span class="lang-en">Relying solely on AI-as-a-judge and skipping human evaluation is a common mistake. Build a process for manually evaluating 30 to 1,000 samples daily.</span>
+        </p>
+
+        <h3>
+          <span class="lang-ja">落とし穴6: エージェントに責務を詰め込みすぎる</span>
+          <span class="lang-en">Pitfall 6: Overloading agents with responsibilities</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">1つのエージェントに多くのツールと責務を持たせると、挙動が不安定になる。1エージェント2〜4ツールから始める。</span>
+          <span class="lang-en">Giving a single agent too many tools and responsibilities leads to unstable behaviour. Start with 2&ndash;4 tools per agent.</span>
+        </p>
+
+        <h3>
+          <span class="lang-ja">落とし穴7: プロンプトで構造を代替しようとする</span>
+          <span class="lang-en">Pitfall 7: Trying to substitute structure with prompts</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">プロンプトは判断を導くが、ルールを強制しない。不正な挙動はプロンプトの書き換えではなく、コードの構造（バリデーション、型チェック、ガードレール）で修正する。</span>
+          <span class="lang-en">Prompts guide judgement but do not enforce rules. Fix incorrect behaviour through code structure (validation, type checking, guardrails), not by rewriting prompts.</span>
+        </p>
+
+        <h3>
+          <span class="lang-ja">落とし穴8: 停止条件の未設定</span>
+          <span class="lang-en">Pitfall 8: Not setting stop conditions</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">エージェントは明示的に「いつ止まるか」を教えなければ止まらない。ループ、リトライ、コスト暴走の原因になる。</span>
+          <span class="lang-en">Agents won't stop unless explicitly told when to stop. This leads to loops, excessive retries, and runaway costs.</span>
+        </p>
+
+        <p style="font-size:0.82rem; color:var(--text-muted); font-family:'Inter',sans-serif;">
+          <span class="lang-ja">出典: <a href="https://huyenchip.com/2025/01/16/ai-engineering-pitfalls.html" target="_blank" rel="noopener" style="color:var(--accent);">Huyenchip: Common Pitfalls in AI Engineering</a> [報道]、<a href="https://codewave.com/insights/build-ai-agents-beginners-guide/" target="_blank" rel="noopener" style="color:var(--accent);">Building AI Agents: A Beginner's Guide</a> [報道]</span>
+          <span class="lang-en">Sources: <a href="https://huyenchip.com/2025/01/16/ai-engineering-pitfalls.html" target="_blank" rel="noopener" style="color:var(--accent);">Huyenchip: Common Pitfalls in AI Engineering</a> [press], <a href="https://codewave.com/insights/build-ai-agents-beginners-guide/" target="_blank" rel="noopener" style="color:var(--accent);">Building AI Agents: A Beginner's Guide</a> [press]</span>
+        </p>
+
+        <div class="section-sep">&middot; &middot; &middot;</div>
+
+        <!-- ============================== -->
+        <!-- SECTION 4: Advanced -->
+        <!-- ============================== -->
+        <h2>
+          <span class="lang-ja">4. 中/上級者向け &mdash; アーキテクチャ・コスト・テスト</span>
+          <span class="lang-en">4. Intermediate/Advanced &mdash; Architecture, Cost, and Testing</span>
+        </h2>
+
+        <h3>
+          <span class="lang-ja">RAG 2026: もう「素朴なRAG」では通用しない</span>
+          <span class="lang-en">RAG 2026: Naive RAG No Longer Suffices</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">2026年のRAGは、単純なベクター検索 → LLMへの注入パターンでは不十分だ。</span>
+          <span class="lang-en">In 2026, the simple pattern of vector search followed by LLM injection is no longer sufficient for RAG.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja"><strong>ハイブリッド検索</strong>: ベクター検索（意味的類似性）とBM25（字句一致）を並列に実行し、結果を統合する。キーワード検索とベクター検索を組み合わせたチームは、関連性スコアで二桁の改善を報告している。</span>
+          <span class="lang-en"><strong>Hybrid search</strong>: Run vector search (semantic similarity) and BM25 (lexical matching) in parallel, then merge the results. Teams combining keyword and vector search have reported double-digit improvements in relevance scores.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja"><strong>リランキング</strong>: 検索結果をクロスエンコーダーで再スコアリングし、真の関連性順に並べ替える。</span>
+          <span class="lang-en"><strong>Re-ranking</strong>: Re-score search results with a cross-encoder and reorder by true relevance.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja"><strong>クエリパイプライン</strong>: ユーザーの質問をそのまま検索に投げるのではなく、クエリの分解・拡張・ルーティングを行うパイプラインを構築する。堅牢なクエリパイプラインは、より大きなモデルへのアップグレードを上回る効果をもたらす場合がある。</span>
+          <span class="lang-en"><strong>Query pipeline</strong>: Rather than passing user questions directly to search, build a pipeline that decomposes, expands, and routes queries. A robust query pipeline can sometimes outperform upgrading to a larger model.</span>
+        </p>
+
+        <!-- Diagram: RAG Pipeline Flowchart -->
+        <figure class="diagram-figure" role="figure">
+          <figcaption class="diagram-title">
+            <span class="lang-ja">2026年型 RAG パイプライン</span>
+            <span class="lang-en">2026 RAG Pipeline</span>
+          </figcaption>
+          <svg class="flowchart-svg" viewBox="0 0 540 380"
+               style="width:100%;max-width:540px;display:block;margin:0 auto;"
+               xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <marker id="fc-arrow-rag" viewBox="0 0 10 7" refX="10" refY="3.5"
+                      markerWidth="10" markerHeight="7" orient="auto-start-reverse">
+                <polygon points="0 0, 10 3.5, 0 7" fill="#1A6EB0"/>
+              </marker>
+            </defs>
+
+            <!-- Background -->
+            <rect x="0" y="0" width="540" height="380" rx="8" fill="#EBF3FB" opacity="0.5"/>
+
+            <!-- Node 1: Query Pipeline (terminal/start) -->
+            <rect x="170" y="20" width="200" height="40" rx="20" fill="#1A6EB0" stroke="none"/>
+            <text x="270" y="44" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="500" fill="#FFFFFF">
+              <tspan class="lang-ja">クエリパイプライン</tspan>
+              <tspan class="lang-en">Query Pipeline</tspan>
+            </text>
+
+            <!-- Sub-labels for query pipeline -->
+            <text x="270" y="80" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#565C70">
+              <tspan class="lang-ja">分解 / 拡張 / ルーティング</tspan>
+              <tspan class="lang-en">Decompose / Expand / Route</tspan>
+            </text>
+
+            <!-- Edge 1-2 -->
+            <line x1="270" y1="88" x2="270" y2="110" stroke="#1A6EB0" stroke-width="1.5" marker-end="url(#fc-arrow-rag)"/>
+
+            <!-- Node 2: Hybrid Search (step) -->
+            <rect x="145" y="110" width="250" height="50" rx="8" fill="#FFFFFF" stroke="#1A6EB0" stroke-width="1.5"/>
+            <text x="270" y="133" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="500" fill="#111320">
+              <tspan class="lang-ja">ハイブリッド検索</tspan>
+              <tspan class="lang-en">Hybrid Search</tspan>
+            </text>
+            <text x="270" y="150" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#888EA0">
+              <tspan class="lang-ja">ベクター検索 + BM25 字句一致</tspan>
+              <tspan class="lang-en">Vector Search + BM25 Lexical</tspan>
+            </text>
+
+            <!-- Edge 2-3 -->
+            <line x1="270" y1="160" x2="270" y2="185" stroke="#1A6EB0" stroke-width="1.5" marker-end="url(#fc-arrow-rag)"/>
+
+            <!-- Node 3: Re-ranking (step) -->
+            <rect x="145" y="185" width="250" height="50" rx="8" fill="#FFFFFF" stroke="#1A6EB0" stroke-width="1.5"/>
+            <text x="270" y="208" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="500" fill="#111320">
+              <tspan class="lang-ja">リランキング</tspan>
+              <tspan class="lang-en">Re-ranking</tspan>
+            </text>
+            <text x="270" y="225" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#888EA0">
+              <tspan class="lang-ja">クロスエンコーダーで再スコアリング</tspan>
+              <tspan class="lang-en">Cross-encoder re-scoring</tspan>
+            </text>
+
+            <!-- Edge 3-4 -->
+            <line x1="270" y1="235" x2="270" y2="260" stroke="#1A6EB0" stroke-width="1.5" marker-end="url(#fc-arrow-rag)"/>
+
+            <!-- Node 4: LLM Generation (step) -->
+            <rect x="145" y="260" width="250" height="50" rx="8" fill="#FFFFFF" stroke="#1A6EB0" stroke-width="1.5"/>
+            <text x="270" y="283" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="500" fill="#111320">
+              <tspan class="lang-ja">LLM 生成</tspan>
+              <tspan class="lang-en">LLM Generation</tspan>
+            </text>
+            <text x="270" y="300" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#888EA0">
+              <tspan class="lang-ja">関連性の高いコンテキストのみ注入</tspan>
+              <tspan class="lang-en">Inject only high-relevance context</tspan>
+            </text>
+
+            <!-- Edge 4-5 -->
+            <line x1="270" y1="310" x2="270" y2="330" stroke="#1A6EB0" stroke-width="1.5" marker-end="url(#fc-arrow-rag)"/>
+
+            <!-- Node 5: Output (terminal/end) -->
+            <rect x="170" y="330" width="200" height="36" rx="18" fill="#1A6EB0" stroke="none"/>
+            <text x="270" y="352" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" font-weight="500" fill="#FFFFFF">
+              <tspan class="lang-ja">根拠付き回答</tspan>
+              <tspan class="lang-en">Grounded Response</tspan>
+            </text>
+          </svg>
+          <div class="diagram-source">
+            <span class="lang-ja">筆者作成</span>
+            <span class="lang-en">Created by the author</span>
+          </div>
+        </figure>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>堅牢なクエリパイプラインは、より大きなモデルへのアップグレードを上回る効果をもたらす場合がある。</strong>RAGの品質改善はモデルのスケールアップよりも、検索・前処理パイプラインの最適化に投資すべき。</span>
+            <span class="lang-en"><strong>A robust query pipeline can sometimes outperform upgrading to a larger model.</strong> RAG quality improvements should prioritise investment in search and pre-processing pipeline optimisation over model scale-up.</span>
+          </p>
+        </div>
+
+        <p style="font-size:0.82rem; color:var(--text-muted); font-family:'Inter',sans-serif;">
+          <span class="lang-ja">出典: <a href="https://redwerk.com/blog/rag-best-practices/" target="_blank" rel="noopener" style="color:var(--accent);">RAG Best Practices 2026</a> [報道]、<a href="https://aishwaryasrinivasan.substack.com/p/all-you-need-to-know-about-rag-in" target="_blank" rel="noopener" style="color:var(--accent);">All You Need to Know About RAG in 2026</a> [報道]</span>
+          <span class="lang-en">Sources: <a href="https://redwerk.com/blog/rag-best-practices/" target="_blank" rel="noopener" style="color:var(--accent);">RAG Best Practices 2026</a> [press], <a href="https://aishwaryasrinivasan.substack.com/p/all-you-need-to-know-about-rag-in" target="_blank" rel="noopener" style="color:var(--accent);">All You Need to Know About RAG in 2026</a> [press]</span>
+        </p>
+
+        <h3>
+          <span class="lang-ja">コスト最適化の3本柱</span>
+          <span class="lang-en">The Three Pillars of Cost Optimisation</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja"><strong>プロンプトキャッシュ</strong> &mdash; 静的コンテンツ（システム指示）を先頭に、大量コンテキストを中央に、動的コンテンツ（ユーザー質問）を末尾に配置。60〜90%のコスト削減が可能。</span>
+          <span class="lang-en"><strong>Prompt caching</strong> &mdash; Place static content (system instructions) at the front, bulk context in the middle, and dynamic content (user questions) at the end. This can achieve 60&ndash;90% cost reduction.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja"><strong>モデルルーティング</strong> &mdash; タスク複雑度に応じてモデルを使い分ける。分類・要約・簡単なQ&AにはHaiku 4.5（Sonnetの90%の能力で3倍のコスト効率）。複雑な推論・コード生成にはSonnet 4.6。最高精度が必要な場合のみOpus 4.6。</span>
+          <span class="lang-en"><strong>Model routing</strong> &mdash; Route tasks to models based on complexity. For classification, summarisation, and simple Q&A, use Haiku 4.5 (90% of Sonnet's capability at 3x cost efficiency). For complex reasoning and code generation, use Sonnet 4.6. Use Opus 4.6 only when maximum accuracy is required.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja"><strong>バッチAPI</strong> &mdash; リアルタイム性が不要な処理（レポート生成、大量データ分析）にはAnthropicのバッチAPIで50%コスト削減。</span>
+          <span class="lang-en"><strong>Batch API</strong> &mdash; For processing that doesn't require real-time responses (report generation, bulk data analysis), use Anthropic's Batch API for 50% cost reduction.</span>
+        </p>
+
+        <div class="calc-block">
+          <div style="font-weight:600; margin-bottom:8px; font-size:0.9em;">
+            <span class="lang-ja">コスト最適化シミュレーション（月間100万リクエスト）</span>
+            <span class="lang-en">Cost Optimisation Simulation (1M requests/month)</span>
+          </div>
+          <div class="calc-row"><span><span class="lang-ja">ベースライン（Sonnet全処理）</span><span class="lang-en">Baseline (all Sonnet)</span></span><span>$3,000</span></div>
+          <div class="calc-row"><span><span class="lang-ja">+ モデルルーティング（70% Haiku）</span><span class="lang-en">+ Model routing (70% Haiku)</span></span><span>-$1,200</span></div>
+          <div class="calc-row"><span><span class="lang-ja">+ プロンプトキャッシュ</span><span class="lang-en">+ Prompt caching</span></span><span>-$600</span></div>
+          <div class="calc-row"><span><span class="lang-ja">+ バッチAPI（20%非同期化）</span><span class="lang-en">+ Batch API (20% async)</span></span><span>-$300</span></div>
+          <div class="calc-row calc-total"><span><span class="lang-ja">最適化後</span><span class="lang-en">After optimisation</span></span><span class="calc-highlight">$900</span></div>
+          <div class="calc-row calc-total"><span><span class="lang-ja">削減率</span><span class="lang-en">Reduction</span></span><span class="calc-warn">-70%</span></div>
+        </div>
+
+        <p style="font-size:0.82rem; color:var(--text-muted); font-family:'Inter',sans-serif;">
+          <span class="lang-ja">出典: <a href="https://promptbuilder.cc/blog/prompt-caching-token-economics-2025" target="_blank" rel="noopener" style="color:var(--accent);">Prompt Caching Token Economics</a> [報道]、<a href="https://moltbook-ai.com/posts/ai-agent-cost-optimization-2026" target="_blank" rel="noopener" style="color:var(--accent);">AI Agent Cost Optimisation 2026</a> [報道]</span>
+          <span class="lang-en">Sources: <a href="https://promptbuilder.cc/blog/prompt-caching-token-economics-2025" target="_blank" rel="noopener" style="color:var(--accent);">Prompt Caching Token Economics</a> [press], <a href="https://moltbook-ai.com/posts/ai-agent-cost-optimization-2026" target="_blank" rel="noopener" style="color:var(--accent);">AI Agent Cost Optimisation 2026</a> [press]</span>
+        </p>
+
+        <h3>
+          <span class="lang-ja">AIアプリのテスト戦略</span>
+          <span class="lang-en">Testing Strategy for AI Apps</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">LLMアプリのテストは非決定論的出力という固有の課題がある。</span>
+          <span class="lang-en">Testing LLM apps has the inherent challenge of non-deterministic output.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja"><strong>評価フレームワーク</strong>: Langfuse（オブザーバビリティ）、DeepEval（LLM評価）、Promptfoo（プロンプトテスト）を組み合わせる。</span>
+          <span class="lang-en"><strong>Evaluation frameworks</strong>: Combine Langfuse (observability), DeepEval (LLM evaluation), and Promptfoo (prompt testing).</span>
+        </p>
+
+        <p>
+          <span class="lang-ja"><strong>評価次元</strong>: 正確性、関連性、有害性、一貫性、根拠性（grounding）を個別にスコアリングする。</span>
+          <span class="lang-en"><strong>Evaluation dimensions</strong>: Score accuracy, relevance, harmfulness, consistency, and grounding individually.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja"><strong>ヒューマン・イン・ザ・ループ</strong>: 自動評価だけでは不十分。毎日30〜1,000件の手動評価を継続する。</span>
+          <span class="lang-en"><strong>Human-in-the-loop</strong>: Automated evaluation alone is insufficient. Maintain daily manual evaluation of 30&ndash;1,000 samples.</span>
+        </p>
+
+        <p style="font-size:0.82rem; color:var(--text-muted); font-family:'Inter',sans-serif;">
+          <span class="lang-ja">出典: <a href="https://www.confident-ai.com/blog/llm-testing-in-2024-top-methods-and-strategies" target="_blank" rel="noopener" style="color:var(--accent);">LLM Testing: Top Methods and Strategies</a> [報道]</span>
+          <span class="lang-en">Source: <a href="https://www.confident-ai.com/blog/llm-testing-in-2024-top-methods-and-strategies" target="_blank" rel="noopener" style="color:var(--accent);">LLM Testing: Top Methods and Strategies</a> [press]</span>
+        </p>
+
+        <h3>
+          <span class="lang-ja">デプロイ: エッジが標準に</span>
+          <span class="lang-en">Deployment: Edge Is the Standard</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">2026年のデプロイはエッジコンピューティングが標準:</span>
+          <span class="lang-en">Edge computing is the deployment standard in 2026:</span>
+        </p>
+
+        <ul>
+          <li><span class="lang-ja"><strong>Vercel</strong>: Fluid Computeによるバイトコードキャッシュ + 予測的インスタンスウォーミング</span><span class="lang-en"><strong>Vercel</strong>: Bytecode caching via Fluid Compute + predictive instance warming</span></li>
+          <li><span class="lang-ja"><strong>Cloudflare Workers</strong>: V8アイソレートが5ms未満で起動（Lambdaの200〜1000msコールドスタートに対して）</span><span class="lang-en"><strong>Cloudflare Workers</strong>: V8 isolates start in under 5ms (compared to Lambda's 200&ndash;1,000ms cold start)</span></li>
+        </ul>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">プラットフォーム</span><span class="lang-en">Platform</span></th>
+                <th><span class="lang-ja">月間100万AIリクエスト概算</span><span class="lang-en">Est. Cost per 1M AI Requests/month</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Vercel + OpenAI</td>
+                <td class="td-warn">$800 &ndash; $2,000</td>
+              </tr>
+              <tr>
+                <td>Cloudflare Workers AI</td>
+                <td class="td-accent">$150 &ndash; $400</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p style="font-size:0.82rem; color:var(--text-muted); font-family:'Inter',sans-serif;">
+          <span class="lang-ja">出典: <a href="https://sparkco.ai/blog/vercel-vs-cloudflare-edge-deployment-deep-dive" target="_blank" rel="noopener" style="color:var(--accent);">Vercel vs Cloudflare Edge Deployment Deep Dive</a> [報道]</span>
+          <span class="lang-en">Source: <a href="https://sparkco.ai/blog/vercel-vs-cloudflare-edge-deployment-deep-dive" target="_blank" rel="noopener" style="color:var(--accent);">Vercel vs Cloudflare Edge Deployment Deep Dive</a> [press]</span>
+        </p>
+
+        <div class="section-sep">&middot; &middot; &middot;</div>
+
+        <!-- ============================== -->
+        <!-- SECTION 5: Claude Code Workflow -->
+        <!-- ============================== -->
+        <h2>
+          <span class="lang-ja">5. Claude Code での実践 &mdash; 開発ワークフロー</span>
+          <span class="lang-en">5. Practising with Claude Code &mdash; Development Workflow</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">Claude Codeは単なるAIコーディングアシスタントではない。ファイル読み書き、シェル実行、Web検索、MCP接続を持つエージェント型開発環境だ。</span>
+          <span class="lang-en">Claude Code is not merely an AI coding assistant. It is an agentic development environment with file read/write, shell execution, web search, and MCP connectivity.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">実績データ: Fountain（開発速度50%向上）、Rakuten（7時間の自律コーディングセッション）、CRED（開発速度2倍）、TELUS（50万時間の削減）。</span>
+          <span class="lang-en">Track record: Fountain (50% development speed improvement), Rakuten (7-hour autonomous coding sessions), CRED (2x development speed), TELUS (500,000 hours saved).</span>
+        </p>
+
+        <p style="font-size:0.82rem; color:var(--text-muted); font-family:'Inter',sans-serif;">
+          <span class="lang-ja">出典: <a href="https://claude.com/customers/fountain" target="_blank" rel="noopener" style="color:var(--accent);">Fountain Customer Story</a> [公式]、<a href="https://claude.com/customers/rakuten" target="_blank" rel="noopener" style="color:var(--accent);">Rakuten Customer Story</a> [公式]、<a href="https://claude.com/customers/cred" target="_blank" rel="noopener" style="color:var(--accent);">CRED Customer Story</a> [公式]、<a href="https://claude.com/customers/telus" target="_blank" rel="noopener" style="color:var(--accent);">TELUS Customer Story</a> [公式]</span>
+          <span class="lang-en">Sources: <a href="https://claude.com/customers/fountain" target="_blank" rel="noopener" style="color:var(--accent);">Fountain Customer Story</a> [official], <a href="https://claude.com/customers/rakuten" target="_blank" rel="noopener" style="color:var(--accent);">Rakuten Customer Story</a> [official], <a href="https://claude.com/customers/cred" target="_blank" rel="noopener" style="color:var(--accent);">CRED Customer Story</a> [official], <a href="https://claude.com/customers/telus" target="_blank" rel="noopener" style="color:var(--accent);">TELUS Customer Story</a> [official]</span>
+        </p>
+
+        <h3>
+          <span class="lang-ja">基本ワークフロー</span>
+          <span class="lang-en">Core Workflow</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja"><strong>Plan-before-code</strong>: コードを書く前にPlan Mode（<code>Shift+Tab</code>でトグル）で計画をレビュー・承認する。これにより手戻りが激減する。</span>
+          <span class="lang-en"><strong>Plan-before-code</strong>: Before writing code, toggle Plan Mode (<code>Shift+Tab</code>) to review and approve the plan. This dramatically reduces rework.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja"><strong>段階的な作業依頼</strong>:</span>
+          <span class="lang-en"><strong>Incremental task delegation</strong>:</span>
+        </p>
+
+        <ol class="numbered-list">
+          <li>
+            <span class="num">1</span>
+            <span><span class="lang-ja">「このコードベースの概要を教えて」 &mdash; 探索</span><span class="lang-en">"Give me an overview of this codebase" &mdash; Exploration</span></span>
+          </li>
+          <li>
+            <span class="num">2</span>
+            <span><span class="lang-ja">「このバグの原因を特定して」 &mdash; 診断</span><span class="lang-en">"Identify the cause of this bug" &mdash; Diagnosis</span></span>
+          </li>
+          <li>
+            <span class="num">3</span>
+            <span><span class="lang-ja">「修正案を提示して、承認したら適用して」 &mdash; 実装</span><span class="lang-en">"Propose a fix and apply when approved" &mdash; Implementation</span></span>
+          </li>
+          <li>
+            <span class="num">4</span>
+            <span><span class="lang-ja">「テストを書いて実行して」 &mdash; 検証</span><span class="lang-en">"Write and run tests" &mdash; Verification</span></span>
+          </li>
+          <li>
+            <span class="num">5</span>
+            <span><span class="lang-ja">「PRを作成して」 &mdash; デリバリー</span><span class="lang-en">"Create a PR" &mdash; Delivery</span></span>
+          </li>
+        </ol>
+
+        <p>
+          <span class="lang-ja"><strong>並列セッション</strong>: <code>claude --worktree feature-auth</code> でgit worktreeを使った並列セッションが可能。機能実装とバグ修正を同時に進められる。</span>
+          <span class="lang-en"><strong>Parallel sessions</strong>: Use <code>claude --worktree feature-auth</code> to run parallel sessions via git worktrees. Work on feature implementation and bug fixes simultaneously.</span>
+        </p>
+
+        <h3>
+          <span class="lang-ja">CLAUDE.md &mdash; 開発環境の設計書</span>
+          <span class="lang-en">CLAUDE.md &mdash; The Development Environment Blueprint</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">プロジェクトルートの<code>CLAUDE.md</code>がClaude Codeの行動指針になる。約150〜200行を目安に:</span>
+          <span class="lang-en">The <code>CLAUDE.md</code> at the project root serves as Claude Code's behavioural guide. Within a budget of approximately 150&ndash;200 lines of instructions:</span>
+        </p>
+
+        <ul>
+          <li><span class="lang-ja">ビルド・テストコマンド</span><span class="lang-en">Build and test commands</span></li>
+          <li><span class="lang-ja">コードスタイル規則</span><span class="lang-en">Code style rules</span></li>
+          <li><span class="lang-ja">ワークフロー制約</span><span class="lang-en">Workflow constraints</span></li>
+          <li><span class="lang-ja">既知のゴッチャ（落とし穴）</span><span class="lang-en">Known gotchas</span></li>
+        </ul>
+
+        <p>
+          <span class="lang-ja"><code>/init</code>で雛形を生成し、プロジェクト固有の情報に絞り込む。</span>
+          <span class="lang-en">Generate a scaffold with <code>/init</code>, then narrow down to project-specific information.</span>
+        </p>
+
+        <div class="trap-box">
+          <div class="trap-label"><span class="lang-ja">注意</span><span class="lang-en">Caution</span></div>
+          <p>
+            <span class="lang-ja">CLAUDE.mdは「助言」（遵守率約80%）。100%の強制が必要ならHooksを使う。</span>
+            <span class="lang-en">CLAUDE.md acts as "advice" (approximately 80% compliance rate). If 100% enforcement is needed, use Hooks.</span>
+          </p>
+        </div>
+
+        <p style="font-size:0.82rem; color:var(--text-muted); font-family:'Inter',sans-serif;">
+          <span class="lang-ja">出典: <a href="https://code.claude.com/docs/en/best-practices" target="_blank" rel="noopener" style="color:var(--accent);">Claude Code Best Practices</a> [公式]、<a href="https://www.humanlayer.dev/blog/writing-a-good-claude-md" target="_blank" rel="noopener" style="color:var(--accent);">Writing a Good CLAUDE.md</a> [報道]</span>
+          <span class="lang-en">Sources: <a href="https://code.claude.com/docs/en/best-practices" target="_blank" rel="noopener" style="color:var(--accent);">Claude Code Best Practices</a> [official], <a href="https://www.humanlayer.dev/blog/writing-a-good-claude-md" target="_blank" rel="noopener" style="color:var(--accent);">Writing a Good CLAUDE.md</a> [press]</span>
+        </p>
+
+        <div class="section-sep">&middot; &middot; &middot;</div>
+
+        <!-- ============================== -->
+        <!-- SECTION 6: Agents & Skills -->
+        <!-- ============================== -->
+        <h2>
+          <span class="lang-ja">6. Claude Code で作っておくべき Agents &amp; Skills</span>
+          <span class="lang-en">6. Agents &amp; Skills You Should Build with Claude Code</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">Claude Codeの真価は、自分の業務に特化したAgentsとSkillsを構築できる点にある。以下、実務で効果の高いパターンを分類して紹介する。</span>
+          <span class="lang-en">The true value of Claude Code lies in building Agents and Skills tailored to your own work. Below, we categorise and introduce patterns that deliver high practical impact.</span>
+        </p>
+
+        <!-- Diagram: Agents & Skills Taxonomy -->
+        <figure class="diagram-figure" role="figure">
+          <figcaption class="diagram-title">
+            <span class="lang-ja">Claude Code Agents &amp; Skills の分類体系</span>
+            <span class="lang-en">Claude Code Agents &amp; Skills Taxonomy</span>
+          </figcaption>
+          <div class="tree-css">
+            <div class="tree-root">
+              <span class="lang-ja">Agents &amp; Skills</span>
+              <span class="lang-en">Agents &amp; Skills</span>
+            </div>
+            <div class="tree-branch">
+              <div class="tree-node-l1">
+                <span class="lang-ja">コード品質系</span>
+                <span class="lang-en">Code Quality</span>
+              </div>
+              <div class="tree-leaf"><span class="lang-ja">Code Reviewer Agent</span><span class="lang-en">Code Reviewer Agent</span></div>
+              <div class="tree-leaf"><span class="lang-ja">Security Reviewer Agent</span><span class="lang-en">Security Reviewer Agent</span></div>
+            </div>
+            <div class="tree-branch">
+              <div class="tree-node-l1">
+                <span class="lang-ja">開発ワークフロー系</span>
+                <span class="lang-en">Development Workflow</span>
+              </div>
+              <div class="tree-leaf"><span class="lang-ja">TDD Guide Agent</span><span class="lang-en">TDD Guide Agent</span></div>
+              <div class="tree-leaf"><span class="lang-ja">Build Error Resolver Agent</span><span class="lang-en">Build Error Resolver Agent</span></div>
+            </div>
+            <div class="tree-branch">
+              <div class="tree-node-l1">
+                <span class="lang-ja">コンテンツ・ドキュメント系</span>
+                <span class="lang-en">Content &amp; Documentation</span>
+              </div>
+              <div class="tree-leaf"><span class="lang-ja">Article Pipeline Skill</span><span class="lang-en">Article Pipeline Skill</span></div>
+              <div class="tree-leaf"><span class="lang-ja">Deep Research Skill</span><span class="lang-en">Deep Research Skill</span></div>
+            </div>
+            <div class="tree-branch tree-highlight">
+              <div class="tree-node-l1">
+                <span class="lang-ja">Finance 実務応用系</span>
+                <span class="lang-en">Finance Practice Applications</span>
+              </div>
+              <div class="tree-leaf"><span class="lang-ja">DD Document Skill</span><span class="lang-en">DD Document Skill</span></div>
+              <div class="tree-leaf"><span class="lang-ja">Valuation Review Skill</span><span class="lang-en">Valuation Review Skill</span></div>
+              <div class="tree-leaf"><span class="lang-ja">Audit Checklist Skill</span><span class="lang-en">Audit Checklist Skill</span></div>
+            </div>
+            <div class="tree-branch">
+              <div class="tree-node-l1">
+                <span class="lang-ja">アーキテクチャ・計画系</span>
+                <span class="lang-en">Architecture &amp; Planning</span>
+              </div>
+              <div class="tree-leaf"><span class="lang-ja">Planner Agent</span><span class="lang-en">Planner Agent</span></div>
+              <div class="tree-leaf"><span class="lang-ja">Architect Agent</span><span class="lang-en">Architect Agent</span></div>
+            </div>
+          </div>
+          <div class="diagram-source">
+            <span class="lang-ja">筆者作成</span>
+            <span class="lang-en">Created by the author</span>
+          </div>
+        </figure>
+
+        <h3>
+          <span class="lang-ja">コード品質系</span>
+          <span class="lang-en">Code Quality</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja"><strong>Code Reviewer Agent</strong> &mdash; コード変更のたびに自動起動し、品質・セキュリティ・保守性を3つの観点からレビュー。CRITICAL/HIGHの問題を検出したら修正を要求する。</span>
+          <span class="lang-en"><strong>Code Reviewer Agent</strong> &mdash; Automatically triggers on every code change, reviewing from three perspectives: quality, security, and maintainability. Requests fixes when CRITICAL/HIGH issues are detected.</span>
+        </p>
+
+        <div class="formula" style="white-space:pre-wrap; font-size:0.82em; line-height:1.6;"># .claude/agents/code-reviewer.md
+---
+name: code-reviewer
+description: Review code quality, security, and maintainability
+tools: Read, Grep, Glob, Bash
+model: sonnet
+---</div>
+
+        <p>
+          <span class="lang-ja"><strong>Security Reviewer Agent</strong> &mdash; ハードコードされたシークレット、SQLインジェクション、XSS、OWASP Top 10を検出。</span>
+          <span class="lang-en"><strong>Security Reviewer Agent</strong> &mdash; Detects hardcoded secrets, SQL injection, XSS, and OWASP Top 10 vulnerabilities.</span>
+        </p>
+
+        <div class="formula" style="white-space:pre-wrap; font-size:0.82em; line-height:1.6;"># .claude/agents/security-reviewer.md
+---
+name: security-reviewer
+description: Detect security vulnerabilities
+tools: Read, Grep, Glob, Bash
+model: sonnet
+---</div>
+
+        <h3>
+          <span class="lang-ja">開発ワークフロー系</span>
+          <span class="lang-en">Development Workflow</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja"><strong>TDD Guide Agent</strong> &mdash; RED（テスト失敗）→ GREEN（最小実装）→ IMPROVE（リファクタリング）のサイクルを強制。</span>
+          <span class="lang-en"><strong>TDD Guide Agent</strong> &mdash; Enforces the RED (test failure) &rarr; GREEN (minimal implementation) &rarr; IMPROVE (refactoring) cycle.</span>
+        </p>
+
+        <div class="formula" style="white-space:pre-wrap; font-size:0.82em; line-height:1.6;"># .claude/agents/tdd-guide.md
+---
+name: tdd-guide
+description: Guide test-driven development
+tools: Read, Write, Edit, Bash, Grep, Glob
+model: sonnet
+---</div>
+
+        <p>
+          <span class="lang-ja"><strong>Build Error Resolver Agent</strong> &mdash; エラーメッセージを解析し、段階的に修正。修正ごとに検証を行う。</span>
+          <span class="lang-en"><strong>Build Error Resolver Agent</strong> &mdash; Analyses error messages and fixes incrementally, verifying after each fix.</span>
+        </p>
+
+        <div class="formula" style="white-space:pre-wrap; font-size:0.82em; line-height:1.6;"># .claude/agents/build-error-resolver.md
+---
+name: build-error-resolver
+description: Analyse and fix build errors
+tools: Read, Edit, Bash, Grep, Glob
+model: sonnet
+---</div>
+
+        <h3>
+          <span class="lang-ja">コンテンツ・ドキュメント系</span>
+          <span class="lang-en">Content &amp; Documentation</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja"><strong>Article Pipeline Skill</strong> &mdash; 記事作成の全工程（リサーチ → ドラフト → 図表提案 → HTML生成 → 品質ゲート → 公開）をスラッシュコマンド一つで実行。</span>
+          <span class="lang-en"><strong>Article Pipeline Skill</strong> &mdash; Execute the entire article creation process (research &rarr; draft &rarr; diagram proposal &rarr; HTML generation &rarr; quality gate &rarr; publish) with a single slash command.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja"><strong>Deep Research Skill</strong> &mdash; WebSearchとWebFetchを組み合わせた多段階リサーチ。英語・日本語の両方で検索し、信頼性ラベル付きで結果を構造化。</span>
+          <span class="lang-en"><strong>Deep Research Skill</strong> &mdash; Multi-stage research combining WebSearch and WebFetch. Searches in both English and Japanese, structuring results with reliability labels.</span>
+        </p>
+
+        <h3>
+          <span class="lang-ja">アーキテクチャ・計画系</span>
+          <span class="lang-en">Architecture &amp; Planning</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja"><strong>Planner Agent</strong> &mdash; PRD、アーキテクチャ、タスクリスト、リスク評価を含む計画を生成。コードには触れず、計画のみ。</span>
+          <span class="lang-en"><strong>Planner Agent</strong> &mdash; Generates plans including PRDs, architecture, task lists, and risk assessments. Touches no code; planning only.</span>
+        </p>
+
+        <div class="formula" style="white-space:pre-wrap; font-size:0.82em; line-height:1.6;"># .claude/agents/planner.md
+---
+name: planner
+description: Step-by-step implementation planning
+tools: Read, Grep, Glob
+model: opus
+---</div>
+
+        <p>
+          <span class="lang-ja"><strong>Architect Agent</strong> &mdash; 設計判断が必要な場面で、トレードオフ分析と推奨を提供。</span>
+          <span class="lang-en"><strong>Architect Agent</strong> &mdash; Provides trade-off analysis and recommendations when design decisions are needed.</span>
+        </p>
+
+        <div class="formula" style="white-space:pre-wrap; font-size:0.82em; line-height:1.6;"># .claude/agents/architect.md
+---
+name: architect
+description: System design and technical decisions
+tools: Read, Grep, Glob
+model: opus
+---</div>
+
+        <h3>
+          <span class="lang-ja">Finance実務応用系</span>
+          <span class="lang-en">Finance Practice Applications</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja"><strong>DD Document Skill</strong> &mdash; デューデリジェンス資料の複数セクションをAgent Teamsで並列作成。財務分析・法務レビュー・事業分析を同時進行。</span>
+          <span class="lang-en"><strong>DD Document Skill</strong> &mdash; Create multiple due diligence document sections in parallel using Agent Teams. Run financial analysis, legal review, and business analysis simultaneously.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja"><strong>Valuation Review Skill</strong> &mdash; バリュエーションモデルを複数の観点（DCF前提の妥当性、マルチプル選定、ベータ算出方法）から並列レビュー。</span>
+          <span class="lang-en"><strong>Valuation Review Skill</strong> &mdash; Review valuation models from multiple perspectives in parallel (DCF assumption validity, multiple selection, beta calculation methodology).</span>
+        </p>
+
+        <p>
+          <span class="lang-ja"><strong>Audit Checklist Skill</strong> &mdash; 監査手続のチェックリストを自動生成し、関連する会計基準・法令の参照リンクを付与。</span>
+          <span class="lang-en"><strong>Audit Checklist Skill</strong> &mdash; Automatically generate audit procedure checklists with reference links to relevant accounting standards and regulations.</span>
+        </p>
+
+        <h3>
+          <span class="lang-ja">Hooks &mdash; バックストップとして</span>
+          <span class="lang-en">Hooks &mdash; As a Backstop</span>
+        </h3>
+
+        <div class="formula" style="white-space:pre-wrap; font-size:0.82em; line-height:1.6;">{
+  "hooks": {
+    "PreToolUse": [{
+      "matcher": "Bash",
+      "hooks": [{
+        "type": "command",
+        "command": "node scripts/block-dangerous-commands.js"
+      }]
+    }],
+    "PostToolUse": [{
+      "matcher": "Write",
+      "hooks": [{
+        "type": "command",
+        "command": "npx prettier --write $CLAUDE_FILE_PATH"
+      }]
+    }]
+  }
+}</div>
+
+        <p>
+          <span class="lang-ja">HooksはSkillの手順が守られなかった場合の最終防衛線。Exit code 2でブロックし、stderrの理由をClaudeが読んで代替手段を考える。</span>
+          <span class="lang-en">Hooks serve as the last line of defence when Skill procedures aren't followed. They block with exit code 2, and Claude reads the stderr reason to consider alternative approaches.</span>
+        </p>
+
+        <div class="section-sep">&middot; &middot; &middot;</div>
+
+        <!-- ============================== -->
+        <!-- SECTION 7: MCP -->
+        <!-- ============================== -->
+        <h2>
+          <span class="lang-ja">7. MCP &mdash; 外部システムとの接続</span>
+          <span class="lang-en">7. MCP &mdash; Connecting to External Systems</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">Model Context Protocol (MCP) はClaude Codeを外部ツール・データベースと接続するオープンプロトコル。2025年12月にLinux Foundation傘下のAgentic AI Foundation (AAIF) に寄贈され、OpenAI・Google・Microsoft・AWS・Cloudflareが支援する業界標準となった。</span>
+          <span class="lang-en">The Model Context Protocol (MCP) is an open protocol connecting Claude Code to external tools and databases. Donated to the Linux Foundation's Agentic AI Foundation (AAIF) in December 2025, it has become an industry standard backed by OpenAI, Google, Microsoft, AWS, and Cloudflare.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">月間9,700万以上のSDKダウンロード、5,800以上のサーバー、300以上のクライアント。</span>
+          <span class="lang-en">Over 97 million monthly SDK downloads, more than 5,800 servers, and over 300 clients.</span>
+        </p>
+
+        <h3>
+          <span class="lang-ja">実用的なMCPサーバー</span>
+          <span class="lang-en">Practical MCP Servers</span>
+        </h3>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">サーバー</span><span class="lang-en">Server</span></th>
+                <th><span class="lang-ja">用途</span><span class="lang-en">Use Case</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="td-accent">GitHub MCP</td>
+                <td><span class="lang-ja">PR操作・Issue管理・コードレビュー</span><span class="lang-en">PR operations, issue management, code review</span></td>
+              </tr>
+              <tr>
+                <td class="td-accent">Slack MCP</td>
+                <td><span class="lang-ja">チャンネル投稿・メッセージ検索</span><span class="lang-en">Channel posting, message search</span></td>
+              </tr>
+              <tr>
+                <td class="td-accent">Playwright MCP</td>
+                <td><span class="lang-ja">ブラウザテスト・E2Eテスト</span><span class="lang-en">Browser testing, E2E testing</span></td>
+              </tr>
+              <tr>
+                <td class="td-accent">PostgreSQL MCP</td>
+                <td><span class="lang-ja">データベースクエリ・分析</span><span class="lang-en">Database queries, analysis</span></td>
+              </tr>
+              <tr>
+                <td class="td-accent">Notion MCP</td>
+                <td><span class="lang-ja">ドキュメント管理・ナレッジベース</span><span class="lang-en">Document management, knowledge base</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>
+          <span class="lang-ja">セットアップ:</span>
+          <span class="lang-en">Setup:</span>
+        </p>
+
+        <div class="formula" style="white-space:pre-wrap; font-size:0.82em; line-height:1.6;">claude mcp add github --provider stdio -- npx -y @github/mcp-server</div>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>Agent スコーピング</strong>: MCPサーバーを特定のAgentにのみ付与できる。「データ分析AgentだけがPostgreSQLに接続可能」という最小権限設計が可能。</span>
+            <span class="lang-en"><strong>Agent scoping</strong>: MCP servers can be assigned to specific Agents only. This enables least-privilege design such as "only the data analysis Agent can connect to PostgreSQL."</span>
+          </p>
+        </div>
+
+        <p style="font-size:0.82rem; color:var(--text-muted); font-family:'Inter',sans-serif;">
+          <span class="lang-ja">出典: <a href="http://blog.modelcontextprotocol.io/posts/2026-mcp-roadmap/" target="_blank" rel="noopener" style="color:var(--accent);">MCP Roadmap 2026</a> [公式]、<a href="https://www.anthropic.com/news/donating-the-model-context-protocol-and-establishing-of-the-agentic-ai-foundation" target="_blank" rel="noopener" style="color:var(--accent);">Anthropic: Donating MCP</a> [公式]</span>
+          <span class="lang-en">Sources: <a href="http://blog.modelcontextprotocol.io/posts/2026-mcp-roadmap/" target="_blank" rel="noopener" style="color:var(--accent);">MCP Roadmap 2026</a> [official], <a href="https://www.anthropic.com/news/donating-the-model-context-protocol-and-establishing-of-the-agentic-ai-foundation" target="_blank" rel="noopener" style="color:var(--accent);">Anthropic: Donating MCP</a> [official]</span>
+        </p>
+
+        <div class="section-sep">&middot; &middot; &middot;</div>
+
+        <!-- ============================== -->
+        <!-- SECTION 8: Conclusion -->
+        <!-- ============================== -->
+        <h2>
+          <span class="lang-ja">8. まとめ &mdash; 「環境設計」という新しい開発スキル</span>
+          <span class="lang-en">8. Conclusion &mdash; "Environment Design" as a New Development Skill</span>
+        </h2>
+
+        <div class="pull-quote">
+          <p>
+            <span class="lang-ja">AI Web App開発の本質は、コードを書く技術からワークフローを設計する技術へと変化している。</span>
+            <span class="lang-en">The essence of AI web app development is shifting from the skill of writing code to the skill of designing workflows.</span>
+          </p>
+          <footer><span class="lang-ja">筆者分析</span><span class="lang-en">Author analysis</span></footer>
+        </div>
+
+        <p>
+          <span class="lang-ja"><strong>初心者へ</strong>: シンプルに始めよ。直接API呼び出しから入り、必要に応じてフレームワークを追加する。80%の成功に安心せず、本番品質までの道のりを計画に含めること。</span>
+          <span class="lang-en"><strong>For beginners</strong>: Start simple. Begin with direct API calls and add frameworks as needed. Don't be comforted by 80% success; include the journey to production quality in your plan.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja"><strong>中/上級者へ</strong>: RAGはハイブリッド検索 + リランキングが2026年の最低ライン。コスト最適化はモデルルーティング + プロンプトキャッシュ + バッチAPIの3本柱で攻める。テストは非決定論的出力に対応した評価フレームワークを導入する。</span>
+          <span class="lang-en"><strong>For intermediate/advanced practitioners</strong>: Hybrid search + re-ranking is the minimum bar for RAG in 2026. Attack cost optimisation with the three pillars: model routing, prompt caching, and Batch API. Adopt evaluation frameworks designed for non-deterministic output.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja"><strong>Claude Codeユーザーへ</strong>: Agents・Skills・Hooks・MCPの4つのレイヤーを理解し、自分の業務に特化した環境を設計せよ。「プロンプトを上手く書く」から「環境を設計する」への発想転換が、AI活用の次のステージへの入口だ。</span>
+          <span class="lang-en"><strong>For Claude Code users</strong>: Understand the four layers &mdash; Agents, Skills, Hooks, and MCP &mdash; and design an environment tailored to your work. The mindset shift from "writing better prompts" to "designing the environment" is the gateway to the next stage of AI utilisation.</span>
+        </p>
+
+        <div class="section-sep">&middot; &middot; &middot;</div>
+
+        <!-- ===== SOURCES ===== -->
+        <h2>
+          <span class="lang-ja">出典</span>
+          <span class="lang-en">Sources</span>
+        </h2>
+
+        <ul class="source-list">
+          <li><a href="https://vercel.com/blog/ai-sdk-6" target="_blank" rel="noopener">Vercel AI SDK 6 Blog</a> <span class="source-tag">[official]</span></li>
+          <li><a href="https://ai-sdk.dev/docs/introduction" target="_blank" rel="noopener">AI SDK Documentation</a> <span class="source-tag">[official]</span></li>
+          <li><a href="https://platform.claude.com/docs/en/release-notes/overview" target="_blank" rel="noopener">Claude Platform Release Notes</a> <span class="source-tag">[official]</span></li>
+          <li><a href="https://platform.claude.com/docs/en/agent-sdk/overview" target="_blank" rel="noopener">Agent SDK Overview</a> <span class="source-tag">[official]</span></li>
+          <li><a href="https://code.claude.com/docs/en/skills" target="_blank" rel="noopener">Extend Claude with Skills</a> <span class="source-tag">[official]</span></li>
+          <li><a href="https://code.claude.com/docs/en/sub-agents" target="_blank" rel="noopener">Create Custom Subagents</a> <span class="source-tag">[official]</span></li>
+          <li><a href="https://code.claude.com/docs/en/best-practices" target="_blank" rel="noopener">Claude Code Best Practices</a> <span class="source-tag">[official]</span></li>
+          <li><a href="http://blog.modelcontextprotocol.io/posts/2026-mcp-roadmap/" target="_blank" rel="noopener">MCP Roadmap 2026</a> <span class="source-tag">[official]</span></li>
+          <li><a href="https://www.anthropic.com/news/donating-the-model-context-protocol-and-establishing-of-the-agentic-ai-foundation" target="_blank" rel="noopener">Anthropic: Donating MCP and Establishing AAIF</a> <span class="source-tag">[official]</span></li>
+          <li><a href="https://strapi.io/blog/langchain-vs-vercel-ai-sdk-vs-openai-sdk-comparison-guide" target="_blank" rel="noopener">LangChain vs Vercel AI SDK vs OpenAI SDK</a> <span class="source-tag">[press]</span></li>
+          <li><a href="https://www.builder.io/blog/react-ai-stack-2026" target="_blank" rel="noopener">The React + AI Stack for 2026</a> <span class="source-tag">[press]</span></li>
+          <li><a href="https://www.nucamp.co/blog/building-ai-powered-apps-in-2026-integrating-openai-and-claude-apis-with-react-and-node" target="_blank" rel="noopener">Building AI-Powered Apps in 2026</a> <span class="source-tag">[press]</span></li>
+          <li><a href="https://huyenchip.com/2025/01/16/ai-engineering-pitfalls.html" target="_blank" rel="noopener">Huyenchip: Common Pitfalls in AI Engineering</a> <span class="source-tag">[press]</span></li>
+          <li><a href="https://redwerk.com/blog/rag-best-practices/" target="_blank" rel="noopener">RAG Best Practices 2026</a> <span class="source-tag">[press]</span></li>
+          <li><a href="https://aishwaryasrinivasan.substack.com/p/all-you-need-to-know-about-rag-in" target="_blank" rel="noopener">All You Need to Know About RAG in 2026</a> <span class="source-tag">[press]</span></li>
+          <li><a href="https://promptbuilder.cc/blog/prompt-caching-token-economics-2025" target="_blank" rel="noopener">Prompt Caching Token Economics</a> <span class="source-tag">[press]</span></li>
+          <li><a href="https://moltbook-ai.com/posts/ai-agent-cost-optimization-2026" target="_blank" rel="noopener">AI Agent Cost Optimisation 2026</a> <span class="source-tag">[press]</span></li>
+          <li><a href="https://www.confident-ai.com/blog/llm-testing-in-2024-top-methods-and-strategies" target="_blank" rel="noopener">LLM Testing: Top Methods and Strategies</a> <span class="source-tag">[press]</span></li>
+          <li><a href="https://sparkco.ai/blog/vercel-vs-cloudflare-edge-deployment-deep-dive" target="_blank" rel="noopener">Vercel vs Cloudflare Edge Deployment</a> <span class="source-tag">[press]</span></li>
+          <li><a href="https://www.humanlayer.dev/blog/writing-a-good-claude-md" target="_blank" rel="noopener">Writing a Good CLAUDE.md</a> <span class="source-tag">[press]</span></li>
+          <li><a href="https://claude-world.com/articles/claude-code-complete-guide-2026/" target="_blank" rel="noopener">Claude Code Complete Guide 2026</a> <span class="source-tag">[press]</span></li>
+          <li><a href="https://claude.com/customers/fountain" target="_blank" rel="noopener">Fountain Customer Story</a> <span class="source-tag">[official]</span></li>
+          <li><a href="https://claude.com/customers/rakuten" target="_blank" rel="noopener">Rakuten Customer Story</a> <span class="source-tag">[official]</span></li>
+          <li><a href="https://claude.com/customers/cred" target="_blank" rel="noopener">CRED Customer Story</a> <span class="source-tag">[official]</span></li>
+          <li><a href="https://claude.com/customers/telus" target="_blank" rel="noopener">TELUS Customer Story</a> <span class="source-tag">[official]</span></li>
+        </ul>
+
+      </article>
+
+      <!-- 4. Sidebar -->
+      <aside class="article-sidebar">
+
+        <!-- Key Facts Card -->
+        <div class="sidebar-card">
+          <div class="section-label">Key Facts</div>
+          <div class="keyfacts-grid">
+            <div class="fact-card highlight">
+              <div class="fact-value">97M+</div>
+              <div class="fact-desc"><span class="lang-ja">MCP月間SDKダウンロード数</span><span class="lang-en">MCP monthly SDK downloads</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">50%</div>
+              <div class="fact-desc"><span class="lang-ja">バッチAPIによるコスト削減</span><span class="lang-en">Cost reduction via Batch API</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">5ms</div>
+              <div class="fact-desc"><span class="lang-ja">Cloudflare Workersコールドスタート</span><span class="lang-en">Cloudflare Workers cold start</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">25+</div>
+              <div class="fact-desc"><span class="lang-ja">AI SDKプロバイダー数</span><span class="lang-en">AI SDK provider integrations</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">~80%</div>
+              <div class="fact-desc"><span class="lang-ja">CLAUDE.md遵守率</span><span class="lang-en">CLAUDE.md compliance rate</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">5,800+</div>
+              <div class="fact-desc"><span class="lang-ja">MCPサーバー数</span><span class="lang-en">MCP servers available</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Highlights Card -->
+        <div class="sidebar-card">
+          <div class="section-label"><span class="lang-ja">ハイライト</span><span class="lang-en">Highlights</span></div>
+          <ul class="highlights-list">
+            <li class="highlight-item">
+              <span class="hl-num">01</span>
+              <span class="hl-text"><span class="lang-ja">技術選定は「フレームワーク選び」ではなく「ワークフロー設計」</span><span class="lang-en">Tech selection is about workflow design, not framework choice</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">02</span>
+              <span class="hl-text"><span class="lang-ja">直接API → SDK → RAG → エージェントの順で段階的に学ぶ</span><span class="lang-en">Learn progressively: direct API, then SDK, then RAG, then agents</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">03</span>
+              <span class="hl-text"><span class="lang-ja">RAGはハイブリッド検索+リランキングが2026年の最低ライン</span><span class="lang-en">Hybrid search + re-ranking is the 2026 RAG minimum bar</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">04</span>
+              <span class="hl-text"><span class="lang-ja">コスト最適化3本柱: モデルルーティング・キャッシュ・バッチAPI</span><span class="lang-en">Three cost optimisation pillars: model routing, caching, Batch API</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">05</span>
+              <span class="hl-text"><span class="lang-ja">Claude CodeのAgents/Skills/Hooks/MCPで業務特化の環境設計が可能</span><span class="lang-en">Design work-specific environments with Claude Code Agents/Skills/Hooks/MCP</span></span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Key References -->
+        <div class="sidebar-card">
+          <div class="section-label">Key References</div>
+          <ul class="source-list" style="margin-top:10px;">
+            <li><a href="https://vercel.com/blog/ai-sdk-6" target="_blank" rel="noopener">Vercel AI SDK 6 Blog</a> <span class="source-tag">[official]</span></li>
+            <li><a href="https://platform.claude.com/docs/en/agent-sdk/overview" target="_blank" rel="noopener">Agent SDK Overview</a> <span class="source-tag">[official]</span></li>
+            <li><a href="https://code.claude.com/docs/en/best-practices" target="_blank" rel="noopener">Claude Code Best Practices</a> <span class="source-tag">[official]</span></li>
+            <li><a href="https://code.claude.com/docs/en/skills" target="_blank" rel="noopener">Extend Claude with Skills</a> <span class="source-tag">[official]</span></li>
+            <li><a href="http://blog.modelcontextprotocol.io/posts/2026-mcp-roadmap/" target="_blank" rel="noopener">MCP Roadmap 2026</a> <span class="source-tag">[official]</span></li>
+            <li><a href="https://huyenchip.com/2025/01/16/ai-engineering-pitfalls.html" target="_blank" rel="noopener">Huyenchip: AI Engineering Pitfalls</a> <span class="source-tag">[press]</span></li>
+            <li><a href="https://redwerk.com/blog/rag-best-practices/" target="_blank" rel="noopener">RAG Best Practices 2026</a> <span class="source-tag">[press]</span></li>
+            <li><a href="https://www.builder.io/blog/react-ai-stack-2026" target="_blank" rel="noopener">The React + AI Stack for 2026</a> <span class="source-tag">[press]</span></li>
+            <li><a href="https://sparkco.ai/blog/vercel-vs-cloudflare-edge-deployment-deep-dive" target="_blank" rel="noopener">Vercel vs Cloudflare Edge Deployment</a> <span class="source-tag">[press]</span></li>
+            <li><a href="https://www.humanlayer.dev/blog/writing-a-good-claude-md" target="_blank" rel="noopener">Writing a Good CLAUDE.md</a> <span class="source-tag">[press]</span></li>
+          </ul>
+        </div>
+
+      </aside>
+
+    </div>
+  </div>
+</main>
+
+<!-- Footer: Career/AI category = no disclaimer needed -->
+<footer class="site-footer">
+  <span>Finance Professional x AI | donato | 2026-03-29</span>
+  <span></span>
+</footer>
+
+<script>
+  // Progress bar
+  window.addEventListener('scroll', function() {
+    var h = document.documentElement;
+    var pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    document.getElementById('progress-bar').style.width = Math.min(pct, 100) + '%';
+  });
+
+  // Reading time (500 chars/min)
+  (function() {
+    var text = document.querySelector('.article-body') ? document.querySelector('.article-body').textContent : '';
+    var chars = text.length;
+    var minutes = Math.ceil(chars / 500);
+    var el1 = document.getElementById('reading-time-badge');
+    var el2 = document.getElementById('reading-time-badge2');
+    if (el1) el1.querySelector('.lang-ja').textContent = '約' + minutes + '分';
+    if (el2) el2.querySelector('.lang-ja').textContent = '約' + minutes + '分';
+    if (el1) el1.querySelector('.lang-en').textContent = '~' + minutes + ' min read';
+    if (el2) el2.querySelector('.lang-en').textContent = '~' + minutes + ' min read';
+  })();
+
+  // Lang toggle
+  let currentLang = localStorage.getItem('hp-lang') || 'ja';
+  let currentTheme = localStorage.getItem('hp-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('hp-lang', lang);
+    document.querySelectorAll('.lang-ja').forEach(el => el.style.display = lang === 'ja' ? 'inline' : 'none');
+    document.querySelectorAll('.lang-en').forEach(el => el.style.display = lang === 'en' ? 'inline' : 'none');
+    document.querySelectorAll('.art-lang-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+    document.documentElement.lang = lang === 'ja' ? 'ja' : 'en';
+  }
+  function toggleTheme() {
+    currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+    localStorage.setItem('hp-theme', currentTheme);
+    document.body.classList.toggle('dark', currentTheme === 'dark');
+    document.getElementById('theme-btn').textContent = currentTheme === 'light' ? '☀' : '☾';
+  }
+  document.addEventListener('DOMContentLoaded', () => {
+    setLang(currentLang);
+    if (currentTheme === 'dark') {
+      document.body.classList.add('dark');
+      document.getElementById('theme-btn').textContent = '☾';
+    }
+  });
+</script>
+
+</body>
+</html>

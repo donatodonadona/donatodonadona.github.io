@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Claude Code is not a chatbot — it is a programmable platform. Agents, Skills, Hooks, and MCP form an extensibility stack that turns a CLI into a self-evolving development environment.">
+  <title>Agents, Skills, and the Extensibility Stack | Claude Code Deep Dive #003 | donato</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+JP:wght@300;400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../brand.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:           #F8F7F4;
+      --bg-code:      #EEECEA;
+      --bg-quote:     #EEECEA;
+      --bg-highlight: #EBF3FB;
+      --bg-subtle:    #F0EFEB;
+      --bg-card:      #F0EFEB;
+      --bg-header:    #F8F7F4;
+      --text-primary: #111320;
+      --text-body:    #2A2C3E;
+      --text-muted:   #565C70;
+      --text-light:   #888EA0;
+      --accent:       #1A6EB0;
+      --accent-warm:  #D4A010;
+      --border:       #D4D2CC;
+      --border-quote: #B8B6B0;
+      --border-light: #D4D2CC;
+      --tag-bg:       #E4EFF8;
+      --tag-text:     #1A6EB0;
+      --table-stripe: #F0EFEB;
+    }
+
+    #progress-bar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      width: 0%;
+      background: var(--accent);
+      z-index: 300;
+      transition: width 0.1s linear;
+    }
+
+    body {
+      font-family: 'Noto Serif JP', Georgia, serif;
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--text-primary);
+      background: var(--bg);
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg-header);
+      border-bottom: 2px solid var(--accent);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .site-header-left { display: flex; align-items: center; gap: 12px; }
+    .wordmark {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: lowercase;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+    .wordmark span { color: var(--accent-warm); }
+    .header-sep { color: var(--border-quote); font-size: 13px; }
+    .header-media {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+    }
+    .site-header-right { display: flex; align-items: center; gap: 12px; }
+    .header-back-link {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .header-back-link:hover { color: var(--accent); }
+    .lang-toggle-bar {
+      display: flex;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .art-lang-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      padding: 3px 10px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .art-lang-btn.active { background: #F5C800; color: #111320; }
+    #theme-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      padding: 3px 9px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.15s;
+    }
+    #theme-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .header-date {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-light);
+      letter-spacing: 0.08em;
+    }
+
+    #sticky-bar {
+      position: sticky;
+      top: 44px;
+      z-index: 200;
+      background: var(--bg-subtle);
+      border-bottom: 1px solid var(--border-light);
+      padding: 7px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .sbar-cat {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+    }
+    .sbar-sep { color: var(--border-quote); font-size: 11px; }
+    .sbar-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+    .sbar-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      padding: 2px 8px;
+    }
+
+    .article-container { max-width: 1240px; margin: 0 auto; padding: 0 20px; }
+    .article-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 24px;
+    }
+    .article-body { grid-column: 2 / 10; max-width: 68ch; }
+    .article-sidebar {
+      grid-column: 10 / 13;
+      position: sticky;
+      top: 78px;
+      align-self: start;
+      max-height: calc(100vh - 90px);
+      overflow-y: auto;
+    }
+    .article-sidebar::-webkit-scrollbar { width: 4px; }
+    .article-sidebar::-webkit-scrollbar-track { background: transparent; }
+    .article-sidebar::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 2px; }
+
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+    }
+    .article-headline {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(2rem, 4vw, 2.6rem);
+      font-weight: 600;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+    .article-standfirst {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      font-weight: 400;
+    }
+    .byline {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    h2 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.45rem;
+      font-weight: 600;
+      line-height: 1.25;
+      color: var(--text-primary);
+      margin: 2em 0 0.75em;
+      border-top: 1px solid var(--border);
+      padding-top: 1em;
+    }
+    h3 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin: 1.75em 0 0.5em;
+    }
+    .article-body p { margin-bottom: 1.4em; font-size: 0.97rem; line-height: 1.8; }
+    .article-body ul, .article-body ol { margin: 0 0 1.4em 1.4em; }
+    .article-body li { margin-bottom: 0.4em; font-size: 0.95rem; line-height: 1.7; }
+    strong { color: var(--text-primary); font-weight: 600; }
+
+    .exec-summary {
+      background: var(--bg-highlight);
+      border: 1px solid var(--border-light);
+      border-left: 4px solid var(--accent);
+      padding: 24px;
+      margin: 0 0 2.5em;
+    }
+    .exec-block { margin-bottom: 20px; }
+    .exec-block:last-child { margin-bottom: 0; }
+    .exec-block + .exec-block { padding-top: 18px; border-top: 1px solid var(--border-light); }
+    .exec-tldr {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.02rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      line-height: 1.55;
+      margin-top: 8px;
+    }
+    .issues-list, .implications-list {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .issue-item { display: flex; gap: 10px; align-items: baseline; }
+    .issue-q {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--accent);
+      flex-shrink: 0;
+      min-width: 20px;
+    }
+    .issue-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: var(--text-body);
+      line-height: 1.55;
+    }
+    .implication-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: var(--text-body);
+      line-height: 1.55;
+      padding-left: 14px;
+      border-left: 2px solid var(--accent);
+    }
+
+    .formula {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.93em;
+      background: var(--bg-code);
+      border-left: 3px solid var(--accent);
+      padding: 14px 20px;
+      margin: 20px 0;
+      color: var(--text-primary);
+      overflow-x: auto;
+      line-height: 1.7;
+    }
+
+    .insight-box {
+      background: var(--bg-highlight);
+      border-left: 4px solid var(--accent);
+      padding: 18px 22px;
+      margin: 28px 0;
+    }
+    .insight-box p {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: var(--text-primary);
+    }
+    .insight-box strong { color: var(--accent); }
+    .trap-box {
+      background: #FEF9EC;
+      border-left: 4px solid var(--accent-warm);
+      padding: 18px 22px;
+      margin: 24px 0;
+    }
+    .trap-box p {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      line-height: 1.65;
+      color: var(--text-body);
+    }
+    .trap-box .trap-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      color: var(--accent-warm);
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+
+    .data-table-wrap { overflow-x: auto; margin: 1.5em 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      background: var(--bg-subtle);
+      padding: 8px 12px;
+      text-align: left;
+      border-bottom: 2px solid var(--border);
+    }
+    td {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border-light);
+      color: var(--text-body);
+      font-family: 'Inter', sans-serif;
+    }
+    tr:nth-child(even) td { background: var(--table-stripe); }
+    .td-accent { color: var(--accent); font-weight: 600; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
+
+    .pull-quote {
+      border-left: 4px solid var(--accent);
+      margin: 2em 0;
+      padding: 1em 20px;
+      background: var(--bg-card);
+    }
+    .pull-quote p {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.2rem;
+      font-style: italic;
+      color: var(--text-primary);
+      line-height: 1.5;
+      margin-bottom: 6px !important;
+    }
+    .pull-quote footer {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .numbered-list { list-style: none; padding: 0; margin: 20px 0; }
+    .numbered-list li {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 16px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.92rem;
+      line-height: 1.65;
+      color: var(--text-body);
+    }
+    .numbered-list li .num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: white;
+      background: var(--accent);
+      min-width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    .section-sep {
+      text-align: center;
+      color: var(--text-light);
+      font-size: 1.2rem;
+      letter-spacing: 0.5em;
+      margin: 48px 0;
+      user-select: none;
+    }
+
+    .source-list { list-style: none; padding: 0; }
+    .source-list li { margin-bottom: 6px; }
+    .source-list a {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--accent);
+      text-decoration: none;
+      line-height: 1.5;
+    }
+    .source-list a:hover { text-decoration: underline; }
+    .source-tag { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--text-muted); margin-left: 4px; }
+
+    .sidebar-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .keyfacts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+    .fact-card { background: var(--bg-highlight); padding: 10px 8px; }
+    .fact-card.highlight { background: #FDF8EC; border: 1px solid #E8D88A; }
+    .fact-value { font-family: 'JetBrains Mono', monospace; font-size: 1rem; font-weight: 500; color: var(--accent); line-height: 1.2; }
+    .fact-card.highlight .fact-value { color: #8A6A00; }
+    .fact-desc { font-family: 'Inter', sans-serif; font-size: 0.64rem; color: var(--text-muted); margin-top: 3px; line-height: 1.35; }
+    .fact-card.highlight .fact-desc { color: #7A6020; }
+    .highlights-list { list-style: none; padding: 0; margin-top: 12px; }
+    .highlight-item { padding: 9px 0; border-bottom: 1px solid var(--border-light); display: flex; gap: 10px; align-items: baseline; }
+    .highlight-item:last-child { border-bottom: none; }
+    .hl-num { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--accent); flex-shrink: 0; min-width: 18px; }
+    .hl-text { font-family: 'Inter', sans-serif; font-size: 0.76rem; color: var(--text-body); line-height: 1.45; }
+
+    .lang-en { display: none; }
+
+    .site-footer {
+      border-top: 1px solid var(--border-light);
+      margin-top: 4em;
+      padding: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    @media print {
+      body { background: white; font-size: 11pt; }
+      .site-header, #sticky-bar, #progress-bar { display: none; }
+      .article-sidebar { position: static; max-height: none; overflow: visible; }
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+    @page { size: A4; margin: 20mm 15mm; }
+
+    @media (max-width: 900px) {
+      .article-body { grid-column: 1 / -1; }
+      .article-sidebar { position: static; max-height: none; overflow: visible; grid-column: 1 / -1; }
+      .article-grid { display: block; }
+      #sticky-bar { flex-wrap: wrap; gap: 6px; }
+    }
+
+    body.dark {
+      --bg:           #0D1117;
+      --bg-code:      #161B22;
+      --bg-quote:     #161B22;
+      --bg-highlight: #0E1A2B;
+      --bg-subtle:    #161B22;
+      --bg-card:      #161B22;
+      --bg-header:    #0D1117;
+      --text-primary: #E4E2DC;
+      --text-body:    #C4C2BC;
+      --text-muted:   #8B93A8;
+      --text-light:   #575E70;
+      --accent:       #3A8FD0;
+      --accent-warm:  #F5C800;
+      --border:       #21253A;
+      --border-quote: #2A2D3E;
+      --border-light: #21253A;
+      --tag-bg:       #0E1A2B;
+      --tag-text:     #3A8FD0;
+      --table-stripe: #161B22;
+    }
+    body.dark .trap-box { background: #1C1800; }
+    body.dark .fact-card.highlight { background: #1A1600; border-color: #3A2D00; }
+    body.dark .fact-card.highlight .fact-value { color: #C4900E; }
+    body.dark .fact-card.highlight .fact-desc { color: #A07828; }
+
+    /* arch diagram */
+    .arch-diagram {
+      background: var(--bg-code);
+      border: 1px solid var(--border);
+      padding: 24px;
+      margin: 24px 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      line-height: 1.6;
+      color: var(--text-body);
+      overflow-x: auto;
+      white-space: pre;
+    }
+    .arch-diagram .hl { color: var(--accent); font-weight: 700; }
+    .arch-diagram .hw { color: var(--accent-warm); font-weight: 700; }
+  </style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<header class="site-header">
+  <div class="site-header-left">
+    <a class="wordmark" href="../index.html">dona<span>to</span></a>
+    <span class="header-sep">&mdash;</span>
+    <a class="header-back-link" href="./index.html"><span class="lang-ja">記事一覧</span><span class="lang-en">Articles</span></a>
+    <span class="header-sep">&mdash;</span>
+    <span class="header-media">Claude Code Deep Dive</span>
+  </div>
+  <div class="site-header-right">
+    <div class="lang-toggle-bar">
+      <button class="art-lang-btn active" data-lang="ja" onclick="setLang('ja')">JP</button>
+      <button class="art-lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+    </div>
+    <button id="theme-btn" onclick="toggleTheme()" title="Toggle theme">☀</button>
+    <time class="header-date">2026-03-29</time>
+  </div>
+</header>
+
+<div id="sticky-bar">
+  <span class="sbar-cat">Claude Code Deep Dive</span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-text"><span class="lang-ja">#003 &middot; Agents &middot; Skills &middot; Extensibility</span><span class="lang-en">#003 &middot; Agents &middot; Skills &middot; Extensibility</span></span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-text">2026-03-29</span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-badge" id="reading-time-badge"><span class="lang-ja">計算中</span><span class="lang-en">...</span></span>
+</div>
+
+<main style="padding: 0 0 3em;">
+  <div class="article-container">
+    <div class="article-grid">
+
+      <article class="article-body">
+
+        <div style="padding: 36px 0 24px;">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+            <div class="section-label">Claude Code Deep Dive &nbsp;#003</div>
+            <span class="sbar-badge" id="reading-time-badge2"><span class="lang-ja">計算中</span><span class="lang-en">...</span></span>
+          </div>
+          <h1 class="article-headline">
+            <span class="lang-ja">チャットボットではない、プログラマブルプラットフォームである &mdash; Agents, Skills, Hooks, MCP の本質</span>
+            <span class="lang-en">It Is Not a Chatbot &mdash; It Is a Programmable Platform: The Essence of Agents, Skills, Hooks, and MCP</span>
+          </h1>
+          <p class="article-standfirst">
+            <span class="lang-ja">Claude Code の本当の価値は「AIと会話できること」ではない。Agents・Skills・Hooks・MCP という4つの拡張レイヤーによって、自分の仕事に合わせて進化する開発環境を構築できることにある。本稿ではこのアーキテクチャの本質、各コンポーネントの役割、そして実務での活用法を解説する。</span>
+            <span class="lang-en">The real value of Claude Code is not "talking to AI." It lies in four extensibility layers &mdash; Agents, Skills, Hooks, and MCP &mdash; that let you build a development environment which evolves to fit your work. This article explains the essence of this architecture, what each component does, and how to put it to practical use.</span>
+          </p>
+          <div style="display:flex; gap:16px; align-items:center; border-top:1px solid var(--border-light); border-bottom:1px solid var(--border-light); padding:10px 0;">
+            <span class="byline">By <strong>donato</strong></span>
+            <span style="color:var(--border);">|</span>
+            <time class="byline" datetime="2026-03-29"><span class="lang-ja">2026年3月29日</span><span class="lang-en">29 March 2026</span></time>
+            <span style="color:var(--border);">|</span>
+            <span class="byline"><span class="lang-ja">Agents &middot; Skills &middot; Hooks &middot; MCP</span><span class="lang-en">Agents &middot; Skills &middot; Hooks &middot; MCP</span></span>
+          </div>
+        </div>
+
+        <!-- Executive Summary -->
+        <section class="exec-summary">
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">概要</span><span class="lang-en">Summary</span></div>
+            <p class="exec-tldr">
+              <span class="lang-ja">Claude Code は CLI 型 AI アシスタントだが、その真の設計思想は「プログラマブルプラットフォーム」である。Agents（自律的なサブプロセス）、Skills（再利用可能なプロンプトパッケージ）、Hooks（ライフサイクルイベントへの自動応答）、MCP（外部ツール統合プロトコル）の4層が、単なるチャットを「自分の業務に最適化された開発環境」に変える。本稿ではこの拡張スタックの本質と、実務での組み合わせ方を解説する。</span>
+              <span class="lang-en">Claude Code is a CLI-based AI assistant, but its true design philosophy is that of a "programmable platform." Four layers &mdash; Agents (autonomous sub-processes), Skills (reusable prompt packages), Hooks (automatic responses to lifecycle events), and MCP (an external tool integration protocol) &mdash; transform a simple chat into a development environment optimised for your specific work. This article explains the essence of this extensibility stack and how to combine its components in practice.</span>
+            </p>
+          </div>
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">本稿の論点</span><span class="lang-en">Key Questions</span></div>
+            <ul class="issues-list">
+              <li class="issue-item">
+                <span class="issue-q">Q1</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>なぜ「拡張性」が本質なのか</strong> &mdash; チャットボットとプラットフォームの根本的な違いは何か</span>
+                  <span class="lang-en"><strong>Why "extensibility" is the essence</strong> &mdash; What fundamentally separates a chatbot from a platform?</span>
+                </span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">Q2</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>4つのレイヤーはどう分担するか</strong> &mdash; Agents / Skills / Hooks / MCP はそれぞれ何を担い、何を担わないか</span>
+                  <span class="lang-en"><strong>How the four layers divide responsibilities</strong> &mdash; What does each of Agents / Skills / Hooks / MCP own, and what does it not?</span>
+                </span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">Q3</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>実務でどう組み合わせるか</strong> &mdash; コードレビュー、リサーチ、自動フォーマットなど、具体的なワークフローにどう落とし込むか</span>
+                  <span class="lang-en"><strong>How to combine them in practice</strong> &mdash; How to embed these into concrete workflows like code review, research, and auto-formatting</span>
+                </span>
+              </li>
+            </ul>
+          </div>
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">実務家への含意</span><span class="lang-en">Implications for Practitioners</span></div>
+            <ul class="implications-list">
+              <li class="implication-item">
+                <span class="lang-ja"><strong>「対話」から「設計」へ</strong> &mdash; Claude Code を使いこなすとは、プロンプトを上手く書くことではなく、自分の仕事をAgents / Skills / Hooks / MCP の組み合わせとして設計することである</span>
+                <span class="lang-en"><strong>From "conversation" to "design"</strong> &mdash; Mastering Claude Code is not about writing better prompts; it is about designing your work as a composition of Agents, Skills, Hooks, and MCP</span>
+              </li>
+              <li class="implication-item">
+                <span class="lang-ja"><strong>蓄積が複利になる</strong> &mdash; 一度作った Skill や Agent の定義は再利用できる。使い込むほど環境が育ち、生産性が加速する</span>
+                <span class="lang-en"><strong>Accumulation compounds</strong> &mdash; Once created, Skill and Agent definitions are reusable. The more you invest, the more your environment grows, and productivity accelerates</span>
+              </li>
+              <li class="implication-item">
+                <span class="lang-ja"><strong>非エンジニアにも開かれている</strong> &mdash; 定義ファイルは Markdown + YAML。プログラミング言語を書く必要はない</span>
+                <span class="lang-en"><strong>Open to non-engineers</strong> &mdash; Definition files are Markdown + YAML. No programming language is required</span>
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- ===== Section 1: The Platform Thesis ===== -->
+        <h2><span class="lang-ja">1. チャットボットとプラットフォームの決定的な違い</span><span class="lang-en">1. The Decisive Difference Between a Chatbot and a Platform</span></h2>
+
+        <p>
+          <span class="lang-ja">ChatGPT、Gemini、Claude.ai &mdash; ブラウザ型 AI は「問いを投げて答えを受け取る」ツールである。強力だが、構造的な限界がある。セッションが終われば文脈は消え、次の会話はゼロから始まる。ユーザーの業務プロセスに組み込まれることはなく、あくまで「相談相手」に留まる。</span>
+          <span class="lang-en">ChatGPT, Gemini, Claude.ai &mdash; browser-based AI tools are designed around "ask a question, get an answer." They are powerful, but structurally limited. When a session ends, context evaporates and the next conversation starts from zero. They are never embedded in your work process &mdash; they remain a "consultant" you visit.</span>
+        </p>
+        <p>
+          <span class="lang-ja">Claude Code が根本的に異なるのは、<strong>ユーザーが自分の業務ロジックをシステムに組み込める</strong>点にある。4つの拡張レイヤー &mdash; Agents、Skills、Hooks、MCP &mdash; がその仕組みだ。</span>
+          <span class="lang-en">Where Claude Code fundamentally differs is that <strong>users can embed their own business logic into the system</strong>. Four extensibility layers &mdash; Agents, Skills, Hooks, and MCP &mdash; provide the mechanism.</span>
+        </p>
+
+        <div class="arch-diagram"><span class="lang-ja"><span class="hl">Session</span> (メイン会話スレッド)
+  |
+  |-- <span class="hl">Skills</span>       再利用可能なプロンプト指示書
+  |     |-- 一部は <span class="hl">Agents</span> をフォークして実行
+  |
+  |-- <span class="hl">Agents</span>       独立コンテキストで動く自律ワーカー
+  |     |-- 独自ツール権限
+  |     |-- 独自メモリ
+  |     |-- 独自 MCP サーバー
+  |
+  |-- <span class="hw">Hooks</span>        ライフサイクルイベントへの自動応答
+  |     |-- PreToolUse  (実行前バリデーション)
+  |     |-- PostToolUse (実行後フォーマット)
+  |     |-- Stop        (最終検証)
+  |
+  |-- <span class="hl">MCP</span>          外部ツール・API・DB の統合プロトコル
+        |-- stdio (ローカルプロセス)
+        |-- HTTP  (リモートサーバー)</span><span class="lang-en"><span class="hl">Session</span> (Main conversation thread)
+  |
+  |-- <span class="hl">Skills</span>       Reusable prompt instruction packages
+  |     |-- Some fork into <span class="hl">Agents</span> for execution
+  |
+  |-- <span class="hl">Agents</span>       Autonomous workers with isolated context
+  |     |-- Own tool permissions
+  |     |-- Own persistent memory
+  |     |-- Own MCP servers
+  |
+  |-- <span class="hw">Hooks</span>        Automatic responses to lifecycle events
+  |     |-- PreToolUse  (pre-execution validation)
+  |     |-- PostToolUse (post-execution formatting)
+  |     |-- Stop        (final verification)
+  |
+  |-- <span class="hl">MCP</span>          Integration protocol for external tools/APIs/DBs
+        |-- stdio (local processes)
+        |-- HTTP  (remote servers)</span></div>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>核心:</strong> チャットボットは「あなたの質問」を待つ。プラットフォームは「あなたの設計」を待つ。Claude Code は後者である。</span>
+            <span class="lang-en"><strong>Core insight:</strong> A chatbot waits for your questions. A platform waits for your design. Claude Code is the latter.</span>
+          </p>
+        </div>
+
+        <div class="section-sep">&middot;&middot;&middot;&middot;&middot;</div>
+
+        <!-- ===== Section 2: Agents ===== -->
+        <h2><span class="lang-ja">2. Agents &mdash; 独立した文脈を持つ自律ワーカー</span><span class="lang-en">2. Agents &mdash; Autonomous Workers with Isolated Context</span></h2>
+
+        <h3><span class="lang-ja">2.1 Agents とは何か</span><span class="lang-en">2.1 What are Agents?</span></h3>
+        <p>
+          <span class="lang-ja">Agent（サブエージェント）とは、メインの会話スレッドから独立したコンテキストウィンドウで動作する、特化型の AI ワーカーである。メインスレッドが「プロジェクトマネージャー」なら、Agent は「専門家チーム」に相当する。</span>
+          <span class="lang-en">Agents (subagents) are specialised AI workers that operate in their own independent context window, separate from the main conversation thread. If the main thread is the "project manager," Agents are the "specialist team."</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">重要な設計原則は3つある:</span>
+          <span class="lang-en">Three design principles are critical:</span>
+        </p>
+        <ul class="numbered-list">
+          <li>
+            <span class="num">1</span>
+            <span>
+              <span class="lang-ja"><strong>コンテキスト分離</strong> &mdash; Agent は親スレッドとメモリを共有しない。これにより、メインの会話が大量のリサーチ結果やログで汚染されることを防ぐ</span>
+              <span class="lang-en"><strong>Context isolation</strong> &mdash; Agents do not share memory with the parent thread. This prevents the main conversation from being polluted by large volumes of research results or logs</span>
+            </span>
+          </li>
+          <li>
+            <span class="num">2</span>
+            <span>
+              <span class="lang-ja"><strong>ツール権限の制御</strong> &mdash; Agent ごとに使用できるツールを制限できる。「リサーチ用 Agent はファイル編集不可」「レビュー用 Agent は Bash 不可」といった設計が可能</span>
+              <span class="lang-en"><strong>Tool permission control</strong> &mdash; Available tools can be restricted per Agent. Designs like "research Agent cannot edit files" or "review Agent cannot use Bash" become possible</span>
+            </span>
+          </li>
+          <li>
+            <span class="num">3</span>
+            <span>
+              <span class="lang-ja"><strong>並列実行</strong> &mdash; 独立した Agent は同時に起動できる。セキュリティレビュー、パフォーマンス分析、型チェックを並列で走らせることで、直列実行の数倍の速度で結果が得られる</span>
+              <span class="lang-en"><strong>Parallel execution</strong> &mdash; Independent Agents can run concurrently. Running security review, performance analysis, and type checking in parallel yields results several times faster than sequential execution</span>
+            </span>
+          </li>
+        </ul>
+
+        <h3><span class="lang-ja">2.2 Agent の定義方法</span><span class="lang-en">2.2 How to define an Agent</span></h3>
+        <p>
+          <span class="lang-ja">Agent は Markdown ファイル + YAML フロントマターで定義する。プログラミング言語は不要だ。</span>
+          <span class="lang-en">Agents are defined as Markdown files with YAML frontmatter. No programming language is needed.</span>
+        </p>
+
+        <div class="formula"><span class="lang-ja"># ファイル: .claude/agents/code-reviewer.md
+
+---
+name: code-reviewer
+description: コード変更後に品質・セキュリティ・保守性をレビュー
+tools: Read, Grep, Glob, Bash
+model: sonnet
+maxTurns: 50
+---
+
+あなたはコードレビューの専門家です。
+変更されたファイルを分析し、以下の観点で問題を報告してください:
+- セキュリティ脆弱性（CRITICAL）
+- パフォーマンス問題（HIGH）
+- 可読性・保守性（MEDIUM）</span><span class="lang-en"># File: .claude/agents/code-reviewer.md
+
+---
+name: code-reviewer
+description: Reviews quality, security, and maintainability after code changes
+tools: Read, Grep, Glob, Bash
+model: sonnet
+maxTurns: 50
+---
+
+You are a code review specialist.
+Analyse the changed files and report issues from these perspectives:
+- Security vulnerabilities (CRITICAL)
+- Performance issues (HIGH)
+- Readability and maintainability (MEDIUM)</span></div>
+
+        <p>
+          <span class="lang-ja">主要なフロントマターフィールドを整理する:</span>
+          <span class="lang-en">The key frontmatter fields are:</span>
+        </p>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">フィールド</span><span class="lang-en">Field</span></th>
+                <th><span class="lang-ja">役割</span><span class="lang-en">Purpose</span></th>
+                <th><span class="lang-ja">例</span><span class="lang-en">Example</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="td-accent">name</td>
+                <td><span class="lang-ja">一意の識別子</span><span class="lang-en">Unique identifier</span></td>
+                <td>code-reviewer</td>
+              </tr>
+              <tr>
+                <td class="td-accent">tools</td>
+                <td><span class="lang-ja">使用許可ツールのホワイトリスト</span><span class="lang-en">Allowlist of permitted tools</span></td>
+                <td>Read, Grep, Glob</td>
+              </tr>
+              <tr>
+                <td class="td-accent">model</td>
+                <td><span class="lang-ja">使用モデルの指定</span><span class="lang-en">Model override</span></td>
+                <td>sonnet / opus / haiku</td>
+              </tr>
+              <tr>
+                <td class="td-accent">maxTurns</td>
+                <td><span class="lang-ja">最大ターン数</span><span class="lang-en">Max agentic turns</span></td>
+                <td>50</td>
+              </tr>
+              <tr>
+                <td class="td-accent">memory</td>
+                <td><span class="lang-ja">永続メモリのスコープ</span><span class="lang-en">Persistent memory scope</span></td>
+                <td>project / user / local</td>
+              </tr>
+              <tr>
+                <td class="td-accent">isolation</td>
+                <td><span class="lang-ja">Git worktree での隔離実行</span><span class="lang-en">Run in isolated git worktree</span></td>
+                <td>worktree</td>
+              </tr>
+              <tr>
+                <td class="td-accent">mcpServers</td>
+                <td><span class="lang-ja">この Agent 専用の MCP サーバー</span><span class="lang-en">MCP servers scoped to this Agent</span></td>
+                <td>postgres, github</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="trap-box">
+          <div class="trap-label"><span class="lang-ja">注意</span><span class="lang-en">Caveat</span></div>
+          <p>
+            <span class="lang-ja">Agent は子 Agent を生成できない（無限再帰防止）。複雑なワークフローは、メインスレッドが複数の Agent を並列で起動するオーケストレーションパターンで実現する。</span>
+            <span class="lang-en">Agents cannot spawn child Agents (to prevent infinite recursion). Complex workflows are achieved through an orchestration pattern where the main thread launches multiple Agents in parallel.</span>
+          </p>
+        </div>
+
+        <div class="section-sep">&middot;&middot;&middot;&middot;&middot;</div>
+
+        <!-- ===== Section 3: Skills ===== -->
+        <h2><span class="lang-ja">3. Skills &mdash; 再利用可能なプロンプト・パッケージ</span><span class="lang-en">3. Skills &mdash; Reusable Prompt Packages</span></h2>
+
+        <h3><span class="lang-ja">3.1 Skills とは何か</span><span class="lang-en">3.1 What are Skills?</span></h3>
+        <p>
+          <span class="lang-ja">Skill はスラッシュコマンド（<code>/deploy</code>、<code>/review</code> 等）として呼び出せる、再利用可能なプロンプト指示書である。「毎回同じ指示を書く」という非効率を排除し、チームや個人のベストプラクティスをパッケージ化する。</span>
+          <span class="lang-en">Skills are reusable prompt instruction packages invocable as slash commands (<code>/deploy</code>, <code>/review</code>, etc.). They eliminate the inefficiency of "writing the same instructions every time" and package best practices for teams and individuals.</span>
+        </p>
+        <p>
+          <span class="lang-ja">Agent が「誰がやるか」を定義するなら、Skill は「何をやるか」を定義する。</span>
+          <span class="lang-en">If an Agent defines "who does it," a Skill defines "what to do."</span>
+        </p>
+
+        <h3><span class="lang-ja">3.2 Skill の定義方法</span><span class="lang-en">3.2 How to define a Skill</span></h3>
+        <p>
+          <span class="lang-ja">Skill はディレクトリ構造で管理する。中核は <code>SKILL.md</code> ファイルだ。</span>
+          <span class="lang-en">Skills are managed as directory structures. The core is the <code>SKILL.md</code> file.</span>
+        </p>
+
+        <div class="formula"><span class="lang-ja"># ディレクトリ構造
+~/.claude/skills/deploy/
+  ├── SKILL.md          # 必須 — フロントマター + 指示
+  ├── checklist.md      # 任意 — 補助資料
+  └── scripts/
+      └── validate.sh   # 任意 — ヘルパースクリプト</span><span class="lang-en"># Directory structure
+~/.claude/skills/deploy/
+  ├── SKILL.md          # Required — frontmatter + instructions
+  ├── checklist.md      # Optional — supporting material
+  └── scripts/
+      └── validate.sh   # Optional — helper scripts</span></div>
+
+        <div class="formula"><span class="lang-ja"># SKILL.md の例
+---
+name: deploy
+description: 本番環境へのデプロイを実行
+user-invocable: true
+allowed-tools: Bash(npm *), Read
+context: fork
+agent: general-purpose
+argument-hint: [environment]
+---
+
+## デプロイ手順
+1. テストスイートを実行し、全パスを確認
+2. ビルドを実行
+3. $ARGUMENTS 環境にデプロイ
+4. ヘルスチェックを実行</span><span class="lang-en"># SKILL.md example
+---
+name: deploy
+description: Execute deployment to production
+user-invocable: true
+allowed-tools: Bash(npm *), Read
+context: fork
+agent: general-purpose
+argument-hint: [environment]
+---
+
+## Deployment procedure
+1. Run the test suite and confirm all pass
+2. Execute the build
+3. Deploy to the $ARGUMENTS environment
+4. Run health checks</span></div>
+
+        <p>
+          <span class="lang-ja">注目すべきは <code>context: fork</code> フィールドだ。これを指定すると、Skill は独立した Agent コンテキストで実行される。メインの会話を汚さずに複雑な作業を遂行できる。</span>
+          <span class="lang-en">The <code>context: fork</code> field deserves attention. When specified, the Skill executes in an isolated Agent context. Complex work can be performed without polluting the main conversation.</span>
+        </p>
+
+        <h3><span class="lang-ja">3.3 動的コンテキスト注入</span><span class="lang-en">3.3 Dynamic context injection</span></h3>
+        <p>
+          <span class="lang-ja">Skill の強力な機能の一つが、シェルコマンドの結果をプロンプトに動的に注入する <code>!</code> バッククォート構文だ。</span>
+          <span class="lang-en">One of the most powerful Skill features is the <code>!</code> backtick syntax, which dynamically injects shell command output into the prompt.</span>
+        </p>
+
+        <div class="formula"><span class="lang-ja"># PR レビュー Skill の例
+---
+name: pr-summary
+context: fork
+agent: Explore
+---
+
+## PR の変更内容
+- Diff: !`gh pr diff`
+- 変更ファイル: !`gh pr diff --name-only`
+
+上記の差分を分析し、レビューコメントを作成してください。</span><span class="lang-en"># PR review Skill example
+---
+name: pr-summary
+context: fork
+agent: Explore
+---
+
+## PR changes
+- Diff: !`gh pr diff`
+- Changed files: !`gh pr diff --name-only`
+
+Analyse the diff above and draft review comments.</span></div>
+
+        <p>
+          <span class="lang-ja"><code>!`gh pr diff`</code> はClaude が処理を開始する前にシェルで実行され、その出力がプロンプト内に展開される。つまり、Skill は静的な指示書ではなく、実行時に動的にコンテキストを取得できる「生きた指示書」になる。</span>
+          <span class="lang-en"><code>!`gh pr diff`</code> is executed in the shell before Claude begins processing, and the output is expanded within the prompt. In other words, a Skill is not a static instruction sheet &mdash; it becomes a "living document" that dynamically acquires context at runtime.</span>
+        </p>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>Skill と Agent の関係:</strong> Skill = 「何をするか」の定義。Agent = 「誰がするか」の定義。<code>context: fork</code> + <code>agent:</code> で両者を接続すると、「この専門家にこの仕事を頼む」というパターンが成立する。</span>
+            <span class="lang-en"><strong>Skill-Agent relationship:</strong> Skill = definition of "what to do." Agent = definition of "who does it." Connecting both via <code>context: fork</code> + <code>agent:</code> creates the pattern: "assign this job to this specialist."</span>
+          </p>
+        </div>
+
+        <div class="section-sep">&middot;&middot;&middot;&middot;&middot;</div>
+
+        <!-- ===== Section 4: Hooks ===== -->
+        <h2><span class="lang-ja">4. Hooks &mdash; 「止める装置」と「自動実行装置」</span><span class="lang-en">4. Hooks &mdash; The "Stop" Mechanism and the "Auto-Execute" Mechanism</span></h2>
+
+        <h3><span class="lang-ja">4.1 Hooks とは何か</span><span class="lang-en">4.1 What are Hooks?</span></h3>
+        <p>
+          <span class="lang-ja">Hooks は Claude Code のライフサイクルイベントに応答して自動実行されるシェルコマンドだ。Agent や Skill が「AI の判断」に依存するのに対し、Hooks は<strong>決定論的</strong>に動作する。AI が判断を誤っても、Hook が物理的に止める。</span>
+          <span class="lang-en">Hooks are shell commands that execute automatically in response to Claude Code lifecycle events. While Agents and Skills depend on "AI judgement," Hooks operate <strong>deterministically</strong>. Even if the AI makes a wrong call, the Hook physically stops it.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">これが重要な理由: AI は確率的に動作する。「絶対にやってはいけないこと」をプロンプトで禁止しても、100%の遵守は保証できない。Hooks は確率ではなく、コードで強制する。</span>
+          <span class="lang-en">This matters because AI operates probabilistically. Even if you prohibit something via prompt, 100% compliance cannot be guaranteed. Hooks enforce rules not with probability, but with code.</span>
+        </p>
+
+        <h3><span class="lang-ja">4.2 主要なライフサイクルイベント</span><span class="lang-en">4.2 Key lifecycle events</span></h3>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">イベント</span><span class="lang-en">Event</span></th>
+                <th><span class="lang-ja">発火タイミング</span><span class="lang-en">When it fires</span></th>
+                <th><span class="lang-ja">用途例</span><span class="lang-en">Use case</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="td-accent">PreToolUse</td>
+                <td><span class="lang-ja">ツール実行前</span><span class="lang-en">Before tool execution</span></td>
+                <td><span class="lang-ja">危険なコマンドのブロック、パラメータ検証</span><span class="lang-en">Block dangerous commands, validate parameters</span></td>
+              </tr>
+              <tr>
+                <td class="td-accent">PostToolUse</td>
+                <td><span class="lang-ja">ツール実行成功後</span><span class="lang-en">After tool success</span></td>
+                <td><span class="lang-ja">自動フォーマット、リンター再実行</span><span class="lang-en">Auto-format, re-run linters</span></td>
+              </tr>
+              <tr>
+                <td class="td-accent">SessionStart</td>
+                <td><span class="lang-ja">セッション開始時</span><span class="lang-en">Session start</span></td>
+                <td><span class="lang-ja">環境セットアップ、コンテキスト読み込み</span><span class="lang-en">Environment setup, context loading</span></td>
+              </tr>
+              <tr>
+                <td class="td-accent">Stop</td>
+                <td><span class="lang-ja">Claude の応答完了時</span><span class="lang-en">When Claude finishes responding</span></td>
+                <td><span class="lang-ja">最終検証、チェックリスト確認</span><span class="lang-en">Final verification, checklist confirmation</span></td>
+              </tr>
+              <tr>
+                <td class="td-accent">UserPromptSubmit</td>
+                <td><span class="lang-ja">プロンプト送信前</span><span class="lang-en">Before prompt processing</span></td>
+                <td><span class="lang-ja">入力の前処理・バリデーション</span><span class="lang-en">Input preprocessing and validation</span></td>
+              </tr>
+              <tr>
+                <td class="td-accent">FileChanged</td>
+                <td><span class="lang-ja">監視ファイルの変更時</span><span class="lang-en">When watched files change</span></td>
+                <td><span class="lang-ja">リアクティブな更新トリガー</span><span class="lang-en">Reactive update triggers</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3><span class="lang-ja">4.3 設定例</span><span class="lang-en">4.3 Configuration example</span></h3>
+        <p>
+          <span class="lang-ja">Hooks は <code>settings.json</code> で設定する。以下は「TypeScript ファイルを編集したら自動で Prettier を実行する」例だ。</span>
+          <span class="lang-en">Hooks are configured in <code>settings.json</code>. Below is an example that "automatically runs Prettier when a TypeScript file is edited."</span>
+        </p>
+
+        <div class="formula">{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "if": "Edit(*.ts)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npx prettier --write \"$FILE_PATH\"",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  }
+}</div>
+
+        <p>
+          <span class="lang-ja">Hook の戻り値も重要だ。<strong>Exit code 0</strong> はアクション続行、<strong>Exit code 2</strong> はアクションをブロックする。ブロック理由を stderr に書くと、Claude がそれを読んで代替手段を考える。</span>
+          <span class="lang-en">Hook return values are also important. <strong>Exit code 0</strong> allows the action to proceed; <strong>Exit code 2</strong> blocks it. If you write a reason to stderr, Claude reads it and considers alternatives.</span>
+        </p>
+
+        <div class="trap-box">
+          <div class="trap-label"><span class="lang-ja">設計原則</span><span class="lang-en">Design principle</span></div>
+          <p>
+            <span class="lang-ja">Hooks の量産は解決策ではない。根本対策は Skill の手順に正しいワークフローを組み込むこと。Hooks はそのバックストップ（最終防衛線）として最小限に留める。</span>
+            <span class="lang-en">Mass-producing Hooks is not the solution. The root fix is to embed the correct workflow within Skill procedures. Hooks serve as a backstop (last line of defence) and should be kept to a minimum.</span>
+          </p>
+        </div>
+
+        <div class="section-sep">&middot;&middot;&middot;&middot;&middot;</div>
+
+        <!-- ===== Section 5: MCP ===== -->
+        <h2><span class="lang-ja">5. MCP &mdash; 外部世界への接続プロトコル</span><span class="lang-en">5. MCP &mdash; The Protocol for Connecting to the Outside World</span></h2>
+
+        <h3><span class="lang-ja">5.1 MCP とは何か</span><span class="lang-en">5.1 What is MCP?</span></h3>
+        <p>
+          <span class="lang-ja">Model Context Protocol (MCP) は、Claude Code を外部ツール・API・データベースと接続するオープンソース標準プロトコルである。MCP サーバーは「ツール」（Claude が呼び出せる関数）、「リソース」（Claude が読めるデータ）、「プロンプト」（テンプレート）を公開する。</span>
+          <span class="lang-en">Model Context Protocol (MCP) is an open-source standard protocol connecting Claude Code to external tools, APIs, and databases. MCP servers expose "tools" (functions Claude can call), "resources" (data Claude can read), and "prompts" (templates).</span>
+        </p>
+        <p>
+          <span class="lang-ja">これにより、Claude Code の能力は文字通り無制限に拡張できる。GitHub でコードを検索する、PostgreSQL にクエリを投げる、Notion にページを作る、Slack にメッセージを送る &mdash; すべて MCP 経由で実現可能だ。</span>
+          <span class="lang-en">This means Claude Code's capabilities can be extended literally without limit. Searching code on GitHub, querying PostgreSQL, creating Notion pages, sending Slack messages &mdash; all achievable via MCP.</span>
+        </p>
+
+        <h3><span class="lang-ja">5.2 接続方式</span><span class="lang-en">5.2 Connection methods</span></h3>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">トランスポート</span><span class="lang-en">Transport</span></th>
+                <th><span class="lang-ja">用途</span><span class="lang-en">Use case</span></th>
+                <th><span class="lang-ja">例</span><span class="lang-en">Example</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="td-accent">stdio</td>
+                <td><span class="lang-ja">ローカルプロセス</span><span class="lang-en">Local processes</span></td>
+                <td>npx -y @github/mcp-server</td>
+              </tr>
+              <tr>
+                <td class="td-accent">HTTP</td>
+                <td><span class="lang-ja">リモートサーバー（推奨）</span><span class="lang-en">Remote servers (recommended)</span></td>
+                <td>https://mcp.notion.com/mcp</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3><span class="lang-ja">5.3 設定例</span><span class="lang-en">5.3 Configuration example</span></h3>
+
+        <div class="formula"><span class="lang-ja"># プロジェクトルートの .mcp.json
+{
+  "mcpServers": {
+    "github": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@github/mcp-server"],
+      "env": {
+        "GITHUB_TOKEN": "${GITHUB_TOKEN}"
+      }
+    },
+    "notion": {
+      "type": "http",
+      "url": "https://mcp.notion.com/mcp",
+      "headers": {
+        "Authorization": "Bearer ${NOTION_TOKEN}"
+      }
+    }
+  }
+}</span><span class="lang-en"># .mcp.json at project root
+{
+  "mcpServers": {
+    "github": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@github/mcp-server"],
+      "env": {
+        "GITHUB_TOKEN": "${GITHUB_TOKEN}"
+      }
+    },
+    "notion": {
+      "type": "http",
+      "url": "https://mcp.notion.com/mcp",
+      "headers": {
+        "Authorization": "Bearer ${NOTION_TOKEN}"
+      }
+    }
+  }
+}</span></div>
+
+        <p>
+          <span class="lang-ja">MCP サーバーは Agent にスコープすることも可能だ。「データベース分析 Agent だけが PostgreSQL に接続できる」という設計により、最小権限の原則を実現できる。</span>
+          <span class="lang-en">MCP servers can also be scoped to specific Agents. The design principle of least privilege is achievable &mdash; for example, "only the database analyst Agent can connect to PostgreSQL."</span>
+        </p>
+
+        <div class="section-sep">&middot;&middot;&middot;&middot;&middot;</div>
+
+        <!-- ===== Section 6: Composition ===== -->
+        <h2><span class="lang-ja">6. 4つのレイヤーの組み合わせ方</span><span class="lang-en">6. How to Combine the Four Layers</span></h2>
+
+        <p>
+          <span class="lang-ja">各コンポーネントは単独でも有用だが、真価を発揮するのは組み合わせたときだ。以下に代表的なパターンを示す。</span>
+          <span class="lang-en">Each component is useful on its own, but the real power emerges in combination. Below are representative patterns.</span>
+        </p>
+
+        <h3><span class="lang-ja">Pattern A: Skill + Agent（タスク委譲）</span><span class="lang-en">Pattern A: Skill + Agent (task delegation)</span></h3>
+        <p>
+          <span class="lang-ja"><code>/code-review</code> Skill が <code>context: fork</code> で専用 Agent にレビューを委譲。メインスレッドはレビュー結果だけを受け取り、コンテキストを消費しない。</span>
+          <span class="lang-en">The <code>/code-review</code> Skill delegates review to a dedicated Agent via <code>context: fork</code>. The main thread receives only the results, consuming no context.</span>
+        </p>
+
+        <h3><span class="lang-ja">Pattern B: Hook + Skill（自動品質保証）</span><span class="lang-en">Pattern B: Hook + Skill (automated quality assurance)</span></h3>
+        <p>
+          <span class="lang-ja">PostToolUse Hook がファイル編集を検知し、自動で Prettier を実行。さらに Stop Hook でリンターを走らせ、問題があれば Claude にフィードバック。Skill 側にもワークフローを記述し、Hook は最終防衛線として機能。</span>
+          <span class="lang-en">A PostToolUse Hook detects file edits and auto-runs Prettier. A Stop Hook then runs the linter and feeds back any issues to Claude. The Skill also describes the workflow; the Hook serves as the last line of defence.</span>
+        </p>
+
+        <h3><span class="lang-ja">Pattern C: Agent + MCP（スコープ付き外部接続）</span><span class="lang-en">Pattern C: Agent + MCP (scoped external access)</span></h3>
+        <p>
+          <span class="lang-ja">データ分析 Agent に PostgreSQL の MCP サーバーのみを付与。この Agent はデータベースにクエリできるが、ファイル編集やGitHub操作はできない。最小権限の原則がアーキテクチャレベルで実現される。</span>
+          <span class="lang-en">Grant only the PostgreSQL MCP server to a data analysis Agent. This Agent can query the database but cannot edit files or perform GitHub operations. The principle of least privilege is achieved at the architectural level.</span>
+        </p>
+
+        <h3><span class="lang-ja">Pattern D: 並列 Agent オーケストレーション</span><span class="lang-en">Pattern D: Parallel Agent orchestration</span></h3>
+        <p>
+          <span class="lang-ja">メインスレッドが3つの Agent を並列起動: セキュリティレビュー、パフォーマンス分析、テスト実行。それぞれ独立したコンテキストで動作し、結果がメインスレッドに集約される。直列実行の3倍以上の速度で、かつメインのコンテキストを汚さない。</span>
+          <span class="lang-en">The main thread launches three Agents in parallel: security review, performance analysis, and test execution. Each operates in an isolated context, and results are aggregated by the main thread. More than three times faster than sequential execution, without polluting the main context.</span>
+        </p>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>設計の指針:</strong> 「何を」= Skill、「誰が」= Agent、「強制」= Hook、「外部接続」= MCP。この4軸で自分のワークフローを分解すれば、最適な構成が見えてくる。</span>
+            <span class="lang-en"><strong>Design guideline:</strong> "What" = Skill, "Who" = Agent, "Enforce" = Hook, "External" = MCP. Decompose your workflow along these four axes and the optimal configuration will emerge.</span>
+          </p>
+        </div>
+
+        <div class="section-sep">&middot;&middot;&middot;&middot;&middot;</div>
+
+        <!-- ===== Section 7: Plugins & Marketplace ===== -->
+        <h2><span class="lang-ja">7. Plugins とエコシステムの現在地</span><span class="lang-en">7. Plugins and the Current State of the Ecosystem</span></h2>
+
+        <p>
+          <span class="lang-ja">Skills、Agents、Hooks、MCP サーバーの定義を一つにパッケージ化し、配布する仕組みが <strong>Plugins</strong> だ。</span>
+          <span class="lang-en"><strong>Plugins</strong> are the mechanism for packaging and distributing Skills, Agents, Hooks, and MCP server definitions together.</span>
+        </p>
+
+        <div class="formula"><span class="lang-ja"># Plugin のディレクトリ構造
+my-plugin/
+  ├── plugin.json       # メタデータ
+  ├── skills/           # Skill 定義群
+  │   └── deploy/
+  │       └── SKILL.md
+  ├── agents/           # Agent 定義群
+  │   └── reviewer.md
+  ├── hooks/            # Hook 設定
+  │   └── hooks.json
+  └── .mcp.json         # MCP サーバー定義</span><span class="lang-en"># Plugin directory structure
+my-plugin/
+  ├── plugin.json       # Metadata
+  ├── skills/           # Skill definitions
+  │   └── deploy/
+  │       └── SKILL.md
+  ├── agents/           # Agent definitions
+  │   └── reviewer.md
+  ├── hooks/            # Hook configuration
+  │   └── hooks.json
+  └── .mcp.json         # MCP server definitions</span></div>
+
+        <p>
+          <span class="lang-ja">配布は GitHub リポジトリ経由で行われ、<code>claude plugin install</code> コマンドでインストールする。Anthropic 公式のプラグインレジストリ（<code>anthropics/claude-plugins-official</code>）も GitHub 上に存在する。</span>
+          <span class="lang-en">Distribution occurs via GitHub repositories and plugins are installed with the <code>claude plugin install</code> command. Anthropic's official plugin registry (<code>anthropics/claude-plugins-official</code>) exists on GitHub.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">エンタープライズ環境では、管理者がマネージド設定を通じて組織全体にプラグインを配布できる。これにより「全社で同じコードレビュー基準を使う」「承認されたMCPサーバーのみ許可する」といったガバナンスが可能になる。</span>
+          <span class="lang-en">In enterprise environments, administrators can distribute plugins organisation-wide through managed settings. This enables governance such as "use the same code review standards across the company" or "allow only approved MCP servers."</span>
+        </p>
+
+        <div class="section-sep">&middot;&middot;&middot;&middot;&middot;</div>
+
+        <!-- ===== Section 8: Conclusion ===== -->
+        <h2><span class="lang-ja">8. 結論 &mdash; 「使い方を覚える」から「環境を設計する」へ</span><span class="lang-en">8. Conclusion &mdash; From "Learning to Use" to "Designing Your Environment"</span></h2>
+
+        <p>
+          <span class="lang-ja">Claude Code の拡張スタックを一文で要約するなら:</span>
+          <span class="lang-en">The Claude Code extensibility stack, summarised in one sentence:</span>
+        </p>
+
+        <div class="pull-quote">
+          <p>
+            <span class="lang-ja">Skill が「何をするか」を定義し、Agent が「誰がするか」を決め、Hook が「やってはいけないこと」を強制し、MCP が「外の世界」と繋ぐ。この4層の組み合わせが、チャットボットをプログラマブルプラットフォームに変える。</span>
+            <span class="lang-en">Skills define "what to do," Agents decide "who does it," Hooks enforce "what must not happen," and MCP connects to "the outside world." The combination of these four layers transforms a chatbot into a programmable platform.</span>
+          </p>
+        </div>
+
+        <p>
+          <span class="lang-ja">定義ファイルはすべて Markdown + YAML であり、プログラミング言語の知識は不要だ。つまり、ファイナンスのプロフェッショナルが、自分の業務ワークフローを AI 環境に直接組み込むことが技術的に可能な時代になった。</span>
+          <span class="lang-en">All definition files are Markdown + YAML, requiring no programming language knowledge. This means we have entered an era where finance professionals can technically embed their business workflows directly into an AI environment.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">重要なのは「上手くプロンプトを書く」ことではない。自分の仕事を Agents / Skills / Hooks / MCP の組み合わせとして設計することだ。一度設計した環境は蓄積し、複利で生産性を向上させる。</span>
+          <span class="lang-en">What matters is not "writing better prompts." It is designing your work as a composition of Agents, Skills, Hooks, and MCP. Once designed, the environment accumulates and improves productivity with compound returns.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">次回は、このアーキテクチャを Finance Professional の実務（DD資料作成、バリュエーション、監査対応）にどう適用するか、具体的なケーススタディで解説する。</span>
+          <span class="lang-en">In the next instalment, we will explore how to apply this architecture to Finance Professional workflows (DD material preparation, valuation, audit support) through concrete case studies.</span>
+        </p>
+
+      </article>
+
+      <!-- Sidebar -->
+      <aside class="article-sidebar">
+
+        <div class="sidebar-card">
+          <div class="section-label"><span class="lang-ja">4層の役割</span><span class="lang-en">Four-layer roles</span></div>
+          <div class="keyfacts-grid">
+            <div class="fact-card">
+              <div class="fact-value">Skills</div>
+              <div class="fact-desc"><span class="lang-ja">何をするか</span><span class="lang-en">What to do</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">Agents</div>
+              <div class="fact-desc"><span class="lang-ja">誰がするか</span><span class="lang-en">Who does it</span></div>
+            </div>
+            <div class="fact-card highlight">
+              <div class="fact-value">Hooks</div>
+              <div class="fact-desc"><span class="lang-ja">強制する</span><span class="lang-en">Enforce rules</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">MCP</div>
+              <div class="fact-desc"><span class="lang-ja">外部接続</span><span class="lang-en">External link</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-card">
+          <div class="section-label"><span class="lang-ja">定義ファイルの場所</span><span class="lang-en">Definition file locations</span></div>
+          <ul class="highlights-list">
+            <li class="highlight-item">
+              <span class="hl-num">01</span>
+              <span class="hl-text"><span class="lang-ja">Skills: ~/.claude/skills/ または .claude/skills/</span><span class="lang-en">Skills: ~/.claude/skills/ or .claude/skills/</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">02</span>
+              <span class="hl-text"><span class="lang-ja">Agents: ~/.claude/agents/ または .claude/agents/</span><span class="lang-en">Agents: ~/.claude/agents/ or .claude/agents/</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">03</span>
+              <span class="hl-text"><span class="lang-ja">Hooks: settings.json の hooks セクション</span><span class="lang-en">Hooks: hooks section of settings.json</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">04</span>
+              <span class="hl-text"><span class="lang-ja">MCP: .mcp.json (プロジェクトルート)</span><span class="lang-en">MCP: .mcp.json (project root)</span></span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="sidebar-card">
+          <div class="section-label">Claude Code Deep Dive</div>
+          <ol class="highlights-list" style="list-style:none;padding:0;">
+            <li class="highlight-item">
+              <span class="hl-num">01</span>
+              <span class="hl-text"><a href="./2026-03-22-claude-code-001.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">ブラウザから卒業する日</span><span class="lang-en">The Day You Graduate From the Browser</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">02</span>
+              <span class="hl-text"><a href="./2026-03-22-claude-code-002.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">生産性10倍の使い方</span><span class="lang-en">Techniques to 10x Your Productivity</span></a></span>
+            </li>
+            <li class="highlight-item" style="border-bottom:none;">
+              <span class="hl-num" style="color:var(--accent-warm);">03</span>
+              <span class="hl-text" style="color:var(--accent-warm);font-weight:600;"><span class="lang-ja">Agents, Skills, Extensibility (本稿)</span><span class="lang-en">Agents, Skills, Extensibility (this article)</span></span>
+            </li>
+          </ol>
+        </div>
+
+        <div class="sidebar-card">
+          <div class="section-label">Key References</div>
+          <ul class="source-list" style="margin-top:10px;">
+            <li><a href="https://docs.anthropic.com/en/docs/claude-code" target="_blank" rel="noopener">Claude Code Documentation</a> <span class="source-tag">Official</span></li>
+            <li><a href="https://modelcontextprotocol.io/" target="_blank" rel="noopener">Model Context Protocol Specification</a> <span class="source-tag">Official</span></li>
+            <li><a href="https://github.com/anthropics/claude-code" target="_blank" rel="noopener">Claude Code GitHub Repository</a> <span class="source-tag">GitHub</span></li>
+          </ul>
+        </div>
+
+      </aside>
+
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <span>Claude Code Deep Dive #003 | donato | 2026-03-29</span>
+  <span></span>
+</footer>
+
+<script>
+  // Progress bar
+  window.addEventListener('scroll', function() {
+    var h = document.documentElement;
+    var pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    document.getElementById('progress-bar').style.width = Math.min(pct, 100) + '%';
+  });
+
+  // Reading time (500字/分)
+  (function() {
+    var text = document.querySelector('.article-body') ? document.querySelector('.article-body').textContent : '';
+    var chars = text.length;
+    var minutes = Math.ceil(chars / 500);
+    var el1 = document.getElementById('reading-time-badge');
+    var el2 = document.getElementById('reading-time-badge2');
+    if (el1) el1.querySelector('.lang-ja').textContent = '約' + minutes + '分';
+    if (el2) el2.querySelector('.lang-ja').textContent = '約' + minutes + '分';
+    if (el1) el1.querySelector('.lang-en').textContent = '~' + minutes + ' min read';
+    if (el2) el2.querySelector('.lang-en').textContent = '~' + minutes + ' min read';
+  })();
+
+  // Lang toggle
+  let currentLang = localStorage.getItem('hp-lang') || 'ja';
+  let currentTheme = localStorage.getItem('hp-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('hp-lang', lang);
+    document.querySelectorAll('.lang-ja').forEach(el => el.style.display = lang === 'ja' ? 'inline' : 'none');
+    document.querySelectorAll('.lang-en').forEach(el => el.style.display = lang === 'en' ? 'inline' : 'none');
+    document.querySelectorAll('.art-lang-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+    document.documentElement.lang = lang === 'ja' ? 'ja' : 'en';
+  }
+  function toggleTheme() {
+    currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+    localStorage.setItem('hp-theme', currentTheme);
+    document.body.classList.toggle('dark', currentTheme === 'dark');
+    document.getElementById('theme-btn').textContent = currentTheme === 'light' ? '☀' : '☾';
+  }
+  document.addEventListener('DOMContentLoaded', () => {
+    setLang(currentLang);
+    if (currentTheme === 'dark') {
+      document.body.classList.add('dark');
+      document.getElementById('theme-btn').textContent = '☾';
+    }
+  });
+</script>
+
+</body>
+</html>

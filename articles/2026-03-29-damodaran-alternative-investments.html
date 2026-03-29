@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Damodaranがオルタナティブ投資の「約束と現実」を徹底検証。ヘッジファンド・PE・VC・不動産・コレクタブルの分散効果とアルファは本当に存在するのか。高コスト・非流動性・消えるアルファの3重苦を解剖する。Damodaran Watch #004。">
+  <title>オルタナティブ投資の不確かな報酬 | Damodaran Watch #004 | donato</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+JP:wght@300;400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../brand.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:           #F8F7F4;
+      --bg-code:      #EEECEA;
+      --bg-quote:     #EEECEA;
+      --bg-highlight: #EBF3FB;
+      --bg-subtle:    #F0EFEB;
+      --bg-card:      #F0EFEB;
+      --bg-header:    #F8F7F4;
+      --text-primary: #111320;
+      --text-body:    #2A2C3E;
+      --text-muted:   #565C70;
+      --text-light:   #888EA0;
+      --accent:       #1A6EB0;
+      --accent-warm:  #D4A010;
+      --accent-damo:  #2D9CDB;
+      --border:       #D4D2CC;
+      --border-quote: #B8B6B0;
+      --border-light: #D4D2CC;
+      --tag-bg:       #E4EFF8;
+      --tag-text:     #1A6EB0;
+      --table-stripe: #F0EFEB;
+    }
+
+    /* ===== PROGRESS BAR ===== */
+    #progress-bar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      width: 0%;
+      background: var(--accent-damo);
+      z-index: 300;
+      transition: width 0.1s linear;
+    }
+
+    body {
+      font-family: 'Noto Serif JP', Georgia, serif;
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--text-primary);
+      background: var(--bg);
+    }
+
+    /* ===== SITE HEADER ===== */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg-header);
+      border-bottom: 2px solid var(--accent-damo);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .site-header-left { display: flex; align-items: center; gap: 12px; }
+    .wordmark {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: lowercase;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+    .wordmark span { color: var(--accent-warm); }
+    .header-sep { color: var(--border-quote); font-size: 13px; }
+    .header-media {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+    }
+    .site-header-right { display: flex; align-items: center; gap: 12px; }
+    .header-back-link {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .header-back-link:hover { color: var(--accent-damo); }
+    .lang-toggle-bar {
+      display: flex;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .art-lang-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      padding: 3px 10px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .art-lang-btn.active { background: #F5C800; color: #111320; }
+    #theme-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      padding: 3px 9px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.15s;
+    }
+    #theme-btn:hover { border-color: var(--accent-damo); color: var(--accent-damo); }
+    .header-date {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-light);
+      letter-spacing: 0.08em;
+    }
+
+    /* ===== STICKY INFO BAR ===== */
+    #sticky-bar {
+      position: sticky;
+      top: 44px;
+      z-index: 200;
+      background: var(--bg-subtle);
+      border-bottom: 1px solid var(--border-light);
+      padding: 7px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .sbar-cat {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--accent-damo);
+      letter-spacing: 0.1em;
+    }
+    .sbar-sep { color: var(--border-quote); font-size: 11px; }
+    .sbar-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+    .sbar-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      padding: 2px 8px;
+    }
+
+    /* ===== LAYOUT ===== */
+    .article-container { max-width: 1240px; margin: 0 auto; padding: 0 20px; }
+    .article-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 24px;
+    }
+    .article-body { grid-column: 2 / 10; max-width: 68ch; }
+    .article-sidebar {
+      grid-column: 10 / 13;
+      position: sticky;
+      top: 78px;
+      align-self: start;
+      max-height: calc(100vh - 90px);
+      overflow-y: auto;
+    }
+    .article-sidebar::-webkit-scrollbar { width: 4px; }
+    .article-sidebar::-webkit-scrollbar-track { background: transparent; }
+    .article-sidebar::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 2px; }
+
+    /* ===== TYPOGRAPHY ===== */
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      color: var(--accent-damo);
+    }
+    .article-headline {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(2rem, 4vw, 2.6rem);
+      font-weight: 600;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+    .article-standfirst {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      font-weight: 400;
+    }
+    .byline {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    h2 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.45rem;
+      font-weight: 600;
+      line-height: 1.25;
+      color: var(--text-primary);
+      margin: 2em 0 0.75em;
+      border-top: 1px solid var(--border);
+      padding-top: 1em;
+    }
+    h3 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin: 1.75em 0 0.5em;
+    }
+    .article-body p { margin-bottom: 1.4em; font-size: 0.97rem; line-height: 1.8; }
+    .article-body ul, .article-body ol { margin: 0 0 1.4em 1.4em; }
+    .article-body li { margin-bottom: 0.4em; font-size: 0.95rem; line-height: 1.7; }
+    strong { color: var(--text-primary); font-weight: 600; }
+
+    /* ===== EXEC SUMMARY ===== */
+    .exec-summary {
+      background: var(--bg-highlight);
+      border: 1px solid var(--border-light);
+      border-left: 4px solid var(--accent-damo);
+      padding: 24px;
+      margin: 0 0 2.5em;
+    }
+    .exec-block { margin-bottom: 20px; }
+    .exec-block:last-child { margin-bottom: 0; }
+    .exec-block + .exec-block { padding-top: 18px; border-top: 1px solid var(--border-light); }
+    .exec-tldr {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.02rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      line-height: 1.55;
+      margin-top: 8px;
+    }
+    .issues-list, .implications-list {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .issue-item { display: flex; gap: 10px; align-items: baseline; }
+    .issue-q {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--accent-damo);
+      flex-shrink: 0;
+      min-width: 20px;
+    }
+    .issue-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: var(--text-body);
+      line-height: 1.55;
+    }
+    .implication-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: var(--text-body);
+      line-height: 1.55;
+      padding-left: 14px;
+      border-left: 2px solid var(--accent-damo);
+    }
+    .read-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
+    .read-col-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.66rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 6px;
+    }
+    .read-label-yes { color: var(--accent-damo); }
+    .read-label-no { color: var(--text-muted); }
+    .read-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-body);
+      line-height: 1.45;
+      padding-left: 10px;
+      border-left: 2px solid var(--accent-damo);
+      margin-bottom: 5px;
+    }
+    .skip-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+      padding-left: 10px;
+      border-left: 2px solid var(--border-light);
+      margin-bottom: 5px;
+    }
+
+    /* ===== FORMULA / CALC ===== */
+    .formula {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.93em;
+      background: var(--bg-code);
+      border-left: 3px solid var(--accent-damo);
+      padding: 14px 20px;
+      margin: 20px 0;
+      color: var(--text-primary);
+      overflow-x: auto;
+      line-height: 1.7;
+    }
+    .calc-block {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      padding: 20px 24px;
+      margin: 24px 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+      line-height: 1.8;
+    }
+    .calc-block .calc-row { display: flex; justify-content: space-between; max-width: 480px; }
+    .calc-block .calc-total {
+      border-top: 1px solid var(--border);
+      margin-top: 6px;
+      padding-top: 6px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .calc-block .calc-highlight { color: var(--accent-damo); font-weight: 700; }
+    .calc-block .calc-warn { color: var(--accent-warm); font-weight: 700; }
+
+    /* ===== INSIGHT / TRAP BOX ===== */
+    .insight-box {
+      background: var(--bg-highlight);
+      border-left: 4px solid var(--accent-damo);
+      padding: 18px 22px;
+      margin: 28px 0;
+    }
+    .insight-box p {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: var(--text-primary);
+    }
+    .insight-box strong { color: var(--accent-damo); }
+    .trap-box {
+      background: #FEF9EC;
+      border-left: 4px solid var(--accent-warm);
+      padding: 18px 22px;
+      margin: 24px 0;
+    }
+    .trap-box p {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      line-height: 1.65;
+      color: var(--text-body);
+    }
+    .trap-box .trap-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      color: var(--accent-warm);
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+
+    /* ===== DATA TABLE ===== */
+    .data-table-wrap { overflow-x: auto; margin: 1.5em 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      background: var(--bg-subtle);
+      padding: 8px 12px;
+      text-align: left;
+      border-bottom: 2px solid var(--border);
+    }
+    td {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border-light);
+      color: var(--text-body);
+      font-family: 'Inter', sans-serif;
+    }
+    tr:nth-child(even) td { background: var(--table-stripe); }
+    .td-accent { color: var(--accent-damo); font-weight: 600; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
+    .td-warn   { color: var(--accent-warm); font-weight: 600; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
+
+    /* ===== PULL QUOTE ===== */
+    .pull-quote {
+      border-left: 4px solid var(--accent-damo);
+      margin: 2em 0;
+      padding: 1em 20px;
+      background: var(--bg-card);
+    }
+    .pull-quote p {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.2rem;
+      font-style: italic;
+      color: var(--text-primary);
+      line-height: 1.5;
+      margin-bottom: 6px !important;
+    }
+    .pull-quote footer {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* ===== NUMBERED LIST ===== */
+    .numbered-list { list-style: none; padding: 0; margin: 20px 0; }
+    .numbered-list li {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 16px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.92rem;
+      line-height: 1.65;
+      color: var(--text-body);
+    }
+    .numbered-list li .num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: white;
+      background: var(--accent-damo);
+      min-width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    /* ===== SECTION SEP ===== */
+    .section-sep {
+      text-align: center;
+      color: var(--text-light);
+      font-size: 1.2rem;
+      letter-spacing: 0.5em;
+      margin: 48px 0;
+      user-select: none;
+    }
+
+    /* ===== SOURCE LIST ===== */
+    .source-list { list-style: none; padding: 0; }
+    .source-list li { margin-bottom: 6px; }
+    .source-list a {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--accent-damo);
+      text-decoration: none;
+      line-height: 1.5;
+    }
+    .source-list a:hover { text-decoration: underline; }
+    .source-tag { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--text-muted); margin-left: 4px; }
+
+    /* ===== NEXT ARTICLE CTA ===== */
+    .next-article {
+      background: var(--text-primary);
+      color: #E4E2DC;
+      padding: 28px 32px;
+      margin-top: 56px;
+    }
+    .next-article .next-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      color: var(--accent-warm);
+      margin-bottom: 8px;
+    }
+    .next-article .next-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+    .next-article .next-desc {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.82rem;
+      color: #9299A8;
+      margin-top: 8px;
+    }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .keyfacts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+    .fact-card { background: var(--bg-highlight); padding: 10px 8px; }
+    .fact-card.highlight { background: #FDF8EC; border: 1px solid #E8D88A; }
+    .fact-value { font-family: 'JetBrains Mono', monospace; font-size: 1rem; font-weight: 500; color: var(--accent-damo); line-height: 1.2; }
+    .fact-card.highlight .fact-value { color: #8A6A00; }
+    .fact-desc { font-family: 'Inter', sans-serif; font-size: 0.64rem; color: var(--text-muted); margin-top: 3px; line-height: 1.35; }
+    .fact-card.highlight .fact-desc { color: #7A6020; }
+    .highlights-list { list-style: none; padding: 0; margin-top: 12px; }
+    .highlight-item { padding: 9px 0; border-bottom: 1px solid var(--border-light); display: flex; gap: 10px; align-items: baseline; }
+    .highlight-item:last-child { border-bottom: none; }
+    .hl-num { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--accent-damo); flex-shrink: 0; min-width: 18px; }
+    .hl-text { font-family: 'Inter', sans-serif; font-size: 0.76rem; color: var(--text-body); line-height: 1.45; }
+
+    /* ===== LANG TOGGLE ===== */
+    .lang-en { display: none; }
+
+    /* ===== FOOTER ===== */
+    .site-footer {
+      border-top: 1px solid var(--border-light);
+      margin-top: 4em;
+      padding: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* ===== PRINT ===== */
+    @media print {
+      body { background: white; font-size: 11pt; }
+      .site-header, #sticky-bar, #progress-bar { display: none; }
+      .article-sidebar { position: static; max-height: none; overflow: visible; }
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+    @page { size: A4; margin: 20mm 15mm; }
+
+    /* ===== MOBILE ===== */
+    .article-byline-row {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      border-top: 1px solid var(--border-light);
+      border-bottom: 1px solid var(--border-light);
+      padding: 10px 0;
+    }
+    @media (max-width: 900px) {
+      .article-body { grid-column: 1 / -1; }
+      .article-sidebar { position: static; max-height: none; overflow: visible; grid-column: 1 / -1; }
+      .article-grid { display: block; }
+      .read-grid { grid-template-columns: 1fr; }
+      #sticky-bar { flex-wrap: wrap; gap: 6px; }
+      .article-byline-row { flex-wrap: wrap; gap: 8px; }
+      .art-lang-btn { padding: 10px 14px; font-size: 11px; }
+      #theme-btn { padding: 10px 12px; min-width: 44px; min-height: 44px; }
+      .sbar-cat, .sbar-text, .sbar-badge { font-size: 11px; }
+      .fact-desc { font-size: 11px; }
+      .hl-text { font-size: 13px; }
+      .header-date { display: none; }
+    }
+
+    body.dark {
+      --bg:           #0D1117;
+      --bg-code:      #161B22;
+      --bg-quote:     #161B22;
+      --bg-highlight: #0E1A2B;
+      --bg-subtle:    #161B22;
+      --bg-card:      #161B22;
+      --bg-header:    #0D1117;
+      --text-primary: #E4E2DC;
+      --text-body:    #C4C2BC;
+      --text-muted:   #8B93A8;
+      --text-light:   #575E70;
+      --accent:       #3A8FD0;
+      --accent-warm:  #F5C800;
+      --accent-damo:  #4AB0E8;
+      --border:       #21253A;
+      --border-quote: #2A2D3E;
+      --border-light: #21253A;
+      --tag-bg:       #0E1A2B;
+      --tag-text:     #3A8FD0;
+      --table-stripe: #161B22;
+    }
+    body.dark .trap-box { background: #1C1800; }
+    body.dark .fact-card.highlight { background: #1A1600; border-color: #3A2D00; }
+    body.dark .fact-card.highlight .fact-value { color: #C4900E; }
+    body.dark .fact-card.highlight .fact-desc { color: #A07828; }
+    body.dark .next-article { background: #111320; }
+  </style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<!-- 1. Site Header -->
+<header class="site-header">
+  <div class="site-header-left">
+    <a class="wordmark" href="../index.html">dona<span>to</span></a>
+    <span class="header-sep">&mdash;</span>
+    <a class="header-back-link" href="./index.html"><span class="lang-ja">記事一覧</span><span class="lang-en">Articles</span></a>
+    <span class="header-sep">&mdash;</span>
+    <span class="header-media">Damodaran Watch</span>
+  </div>
+  <div class="site-header-right">
+    <div class="lang-toggle-bar">
+      <button class="art-lang-btn active" data-lang="ja" onclick="setLang('ja')">JP</button>
+      <button class="art-lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+    </div>
+    <button id="theme-btn" onclick="toggleTheme()" title="Toggle light/dark">&#9788;</button>
+    <time class="header-date">2026-03-29</time>
+  </div>
+</header>
+
+<!-- 2. Sticky Info Bar -->
+<div id="sticky-bar">
+  <span class="sbar-cat">Damodaran Watch</span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-text"><span class="lang-ja">#004 &middot; オルタナティブ投資 &middot; 分散とアルファの幻想</span><span class="lang-en">#004 &middot; Alternative Investments &middot; The Diversification and Alpha Illusion</span></span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-text">2026-03-29</span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-badge" id="reading-time-badge"><span class="lang-ja">計算中</span><span class="lang-en">...</span></span>
+</div>
+
+<main style="padding: 0 0 3em;">
+  <div class="article-container">
+    <div class="article-grid">
+
+      <!-- 3. Article Body -->
+      <article class="article-body">
+
+        <!-- Article Header -->
+        <div style="padding: 36px 0 24px;">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+            <div class="section-label">Damodaran Watch &nbsp;#004</div>
+            <span class="sbar-badge" id="reading-time-badge2"><span class="lang-ja">計算中</span><span class="lang-en">...</span></span>
+          </div>
+          <h1 class="article-headline">
+            <span class="lang-ja">オルタナティブ投資の不確かな報酬 &mdash; 杯と唇のあいだに潜む落とし穴</span>
+            <span class="lang-en">The (Uncertain) Payoff from Alternative Investments &mdash; Many a Slip between the Cup and the Lip</span>
+          </h1>
+          <p class="article-standfirst">
+            <span class="lang-ja">オルタナティブ投資は「低相関による分散効果」と「アルファの創出」を二本柱として売り込まれてきた。しかしDamodaranは、実際のネットリターンは「控えめに言っても限定的、悪ければマイナス」であると論じ、ヘッジファンド・PE・VCの高コスト・非流動性・消えるアルファの三重苦を徹底検証する。</span>
+            <span class="lang-en">Alternative investments have been sold on two pillars: diversification through low correlations and alpha generation. Yet Damodaran argues that actual net benefits have been "modest at best and negative at worst," and dissects the triple burden of high costs, illiquidity, and vanishing alpha across hedge funds, private equity, and venture capital.</span>
+          </p>
+          <div class="article-byline-row">
+            <span class="byline">By <strong>Donato Valuation Notes</strong></span>
+            <span style="color:var(--border);">|</span>
+            <time class="byline" datetime="2026-03-29"><span class="lang-ja">2026年3月29日</span><span class="lang-en">29 March 2026</span></time>
+            <span style="color:var(--border);">|</span>
+            <span class="byline"><span class="lang-ja">オルタナティブ投資 &middot; ヘッジファンド &middot; プライベートエクイティ</span><span class="lang-en">Alternative Investments &middot; Hedge Funds &middot; Private Equity</span></span>
+          </div>
+        </div>
+
+        <!-- Executive Summary -->
+        <section class="exec-summary">
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">概要</span><span class="lang-en">Summary</span></div>
+            <p class="exec-tldr">
+              <span class="lang-ja">Damodaranは、オルタナティブ投資（ヘッジファンド・PE・VC・不動産・コレクタブル）の「セールスピッチ」を2つに分解する。(1) 公開市場との低相関による分散効果、(2) 非効率な市場でのアルファ創出。しかし相関は危機時に急上昇し、プライベート資産の低ボラティリティは評価ラグの産物にすぎない。アルファも2009年前後にゼロ以下に消え、2&amp;20の手数料構造が残りの価値を吸い取る。Yaleエンダウメントが2025年6月にPE持分の大量売却を発表したことが、この潮流の象徴であると論じている。</span>
+              <span class="lang-en">Damodaran deconstructs the "sales pitch" for alternative investments (hedge funds, PE, VC, real estate, collectibles) into two claims: (1) diversification via low correlations with public markets, and (2) alpha generation in inefficient markets. But correlations spike during crises, and the low volatility of private assets is merely an artefact of appraisal lags. Alpha vanished to zero or below around 2009, and the two-and-twenty fee structure extracts whatever value remains. Yale's endowment announcing the sale of billions in PE holdings in June 2025 epitomises this turning tide.</span>
+            </p>
+          </div>
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">本稿の論点</span><span class="lang-en">Key Questions</span></div>
+            <ul class="issues-list">
+              <li class="issue-item">
+                <span class="issue-q">Q1</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>オルタナティブ投資の宇宙</strong> &mdash; ロングショート戦略・パブリック/プライベートの境界・資産クラスはどう整理されるか</span>
+                  <span class="lang-en"><strong>The alternative investment universe</strong> &mdash; How are long-short strategies, the public-private divide, and asset classes mapped out?</span>
+                </span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">Q2</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>セールスピッチ vs 現実</strong> &mdash; 相関行列とヒストリカルアルファに基づく「理論上の便益」は実際のリターンに反映されているか</span>
+                  <span class="lang-en"><strong>Sales pitch vs reality</strong> &mdash; Do the "theoretical benefits" based on correlation matrices and historical alpha translate into actual returns?</span>
+                </span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">Q3</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>投資家への実践的含意</strong> &mdash; オルタナティブを完全に排除すべきか、それとも条件付きで組み込む余地はあるか</span>
+                  <span class="lang-en"><strong>Practical implications for investors</strong> &mdash; Should alternatives be excluded entirely, or is there conditional room for inclusion?</span>
+                </span>
+              </li>
+            </ul>
+          </div>
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">Damodaran Watch 実務家への含意</span><span class="lang-en">Implications for Practitioners</span></div>
+            <ul class="implications-list">
+              <li class="implication-item">
+                <span class="lang-ja"><strong>プライベート資産の低ボラティリティは評価ラグの産物であり、真のリスク低減ではない。</strong>PE・VCの「低相関」をポートフォリオ最適化モデルにそのまま投入すると、危機時に実際のドローダウンを過小評価する。</span>
+                <span class="lang-en"><strong>The low volatility of private assets is an artefact of appraisal lags, not genuine risk reduction.</strong> Feeding PE/VC "low correlations" into portfolio optimisation models underestimates actual drawdowns during crises.</span>
+              </li>
+              <li class="implication-item">
+                <span class="lang-ja"><strong>ヘッジファンドのアルファは2009年までにゼロ以下に低下し、公開市場との相関は0.65から0.87に上昇した。</strong>分散効果もアルファも同時に消えている。</span>
+                <span class="lang-en"><strong>Hedge fund alpha dropped to zero or below by 2009, and correlation with public markets rose from 0.65 to 0.87.</strong> Both diversification benefits and alpha have vanished simultaneously.</span>
+              </li>
+              <li class="implication-item">
+                <span class="lang-ja"><strong>2&amp;20の手数料構造は、仮にグロスアルファが残存していても投資家のネットリターンをゼロに近づける。</strong>コストを差し引いた後にオルタナティブ投資がプラスの価値を生む確率は急速にゼロに近づく。</span>
+                <span class="lang-en"><strong>The two-and-twenty fee structure drives net investor returns towards zero even if gross alpha persists.</strong> The probability of alternatives adding net value after costs approaches zero rapidly.</span>
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- ===== Section 1: The Alternative Investment Universe ===== -->
+        <h2><span class="lang-ja">オルタナティブ投資の宇宙</span><span class="lang-en">The Alternative Investment Universe</span></h2>
+
+        <p>
+          <span class="lang-ja">Damodaranは、「オルタナティブ」という用語は、標準的な投資アドバイスがロングオンリーの株式・債券・現金に限定されていることを前提としていると指摘する。この標準的な枠組みから外れる投資は、大きく3つのカテゴリに分類される。</span>
+          <span class="lang-en">Damodaran notes that the term "alternative" is premised on the belief that standard investment advice targets long-only investors allocating between traded stocks, bonds, and cash. Investments falling outside this standard framework divide into three broad categories.</span>
+        </p>
+
+        <h3><span class="lang-ja">1. ロングショート戦略</span><span class="lang-en">1. Long-short strategies</span></h3>
+
+        <p>
+          <span class="lang-ja">理論上、ロングとショートは鏡像の関係にあるが、実務上は全く異なるリスクプロファイルを持つ。ほとんどの投資信託・年金基金・エンダウメントはショートポジションを取ることが制限されている。ヘッジファンドは約1世紀にわたりショート取引の自由を与えられてきた結果、株式や債券とは異なるリターン分布を生み出してきた。デリバティブ市場はオプション・先物・スワップ・フォワードを通じて、さらに多様なポジション構築を可能にしている。</span>
+          <span class="lang-en">In theory, long and short positions are mirror images, but in practice they carry fundamentally different risk profiles. Most mutual funds, pension funds, and endowments are restricted from taking short positions. Hedge funds have had the freedom to short assets for nearly a century, creating return distributions that diverge from stocks and bonds. Derivatives markets enable even more diverse positions through options, futures, swaps, and forwards.</span>
+        </p>
+
+        <h3><span class="lang-ja">2. パブリック/プライベートの境界</span><span class="lang-en">2. The public-private divide</span></h3>
+
+        <p>
+          <span class="lang-ja">経済の大きな部分は、上場も取引もされていない非公開企業で構成されている。これらの企業に資本を供給する主要な主体は3つある。</span>
+          <span class="lang-en">Large segments of the economy consist of private businesses that are neither listed nor traded. Three main vehicles provide equity capital to these businesses.</span>
+        </p>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">区分</span><span class="lang-en">Vehicle</span></th>
+                <th><span class="lang-ja">対象</span><span class="lang-en">Target</span></th>
+                <th><span class="lang-ja">特徴</span><span class="lang-en">Characteristics</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="td-accent"><span class="lang-ja">ベンチャーキャピタル</span><span class="lang-en">Venture Capital</span></td>
+                <td><span class="lang-ja">アイデア段階から成長段階の企業</span><span class="lang-en">Idea-stage to growth-stage firms</span></td>
+                <td><span class="lang-ja">1950年代に起源。21世紀のテクノロジー企業台頭で急成長</span><span class="lang-en">Originated in the 1950s; grew significantly with 21st-century tech dominance</span></td>
+              </tr>
+              <tr>
+                <td class="td-accent"><span class="lang-ja">プライベートエクイティ</span><span class="lang-en">Private Equity</span></td>
+                <td><span class="lang-ja">成熟した非公開企業</span><span class="lang-en">Established private businesses</span></td>
+                <td><span class="lang-ja">過去40年で制度化。数百億ドル規模の調達能力</span><span class="lang-en">Formalised over four decades; capacity to raise tens of billions</span></td>
+              </tr>
+              <tr>
+                <td class="td-accent"><span class="lang-ja">プライベートクレジット</span><span class="lang-en">Private Credit</span></td>
+                <td><span class="lang-ja">他の信用源から遮断された企業</span><span class="lang-en">Borrowers cut off from other credit sources</span></td>
+                <td><span class="lang-ja">交渉ベースのレート・条件。真のデフォルトリスク評価が価値提案</span><span class="lang-en">Negotiated rates and terms; value lies in better default risk assessment</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3><span class="lang-ja">3. 資産クラス</span><span class="lang-en">3. Asset classes</span></h3>
+
+        <p>
+          <span class="lang-ja">不動産は歴史的に非流動的でローカルな投資だったが、REITやMBSが流動性と標準化をもたらした。コレクタブル（金・美術品・暗号資産/NFT）はキャッシュフローをほとんど生まず、希少性と持続的需要によって価格が決まる。いずれも非流動性・標準化の欠如・専門的評価の必要性という共通の障壁を持つ。</span>
+          <span class="lang-en">Real estate has historically been illiquid and localised, though REITs and mortgage-backed securities later introduced liquidity and standardisation. Collectibles (gold, art, crypto/NFTs) generate little or no cash flow and are priced by scarcity and enduring demand. All share the common barriers of illiquidity, lack of standardisation, and the need for expert assessment.</span>
+        </p>
+
+        <!-- ===== Section 2: The Sales Pitch ===== -->
+        <h2><span class="lang-ja">セールスピッチ：相関とアルファの二本柱</span><span class="lang-en">The Sales Pitch: Correlation and Alpha</span></h2>
+
+        <p>
+          <span class="lang-ja">オルタナティブ投資のセールスピッチは、ポートフォリオ理論に基づく2つの主張で構成されている。</span>
+          <span class="lang-en">The sales pitch for alternative investments rests on two claims rooted in portfolio theory.</span>
+        </p>
+
+        <h3><span class="lang-ja">相関の論拠：分散効果</span><span class="lang-en">The correlation argument: Diversification</span></h3>
+
+        <p>
+          <span class="lang-ja">完全に相関しない投資を組み合わせれば、リスクあたりのリターンが改善される。Damodaranは、株式・債券・ヘッジファンド・PE・プライベートクレジット・美術品・金・コレクタブルの相関行列を提示し、理論上は伝統的な60/40ポートフォリオでは得られない分散効果が存在することを示す。オルタナティブを加えたポートフォリオは、紙の上ではより高いリターンとより低いリスクを実現する。</span>
+          <span class="lang-en">Portfolio theory suggests that combining non-perfectly correlated investments yields a better risk-return tradeoff. Damodaran presents a correlation matrix across stocks, bonds, hedge funds, PE, private credit, fine art, gold, and collectibles, showing that alternatives theoretically offer diversification unavailable in traditional 60/40 portfolios. On paper, portfolios incorporating alternatives deliver higher returns with lower risk.</span>
+        </p>
+
+        <h3><span class="lang-ja">アルファの論拠：超過リターン</span><span class="lang-en">The alpha argument: Excess returns</span></h3>
+
+        <p>
+          <span class="lang-ja">分散効果に加えて、オルタナティブの提唱者は「非効率な市場でのアルファ創出」を主張する。非流動性と不透明性がミスプライシングを持続させ、専門的なマネージャーがローカルな知識を活用して超過リターンを獲得できるという論理である。この主張はヘッジファンド・VC・PEのマネージャーについて最も頻繁に用いられる。</span>
+          <span class="lang-en">Beyond diversification, alternative advocates argue that illiquidity and opacity allow mispricing to persist, and that specialist managers possess superior localised knowledge to earn excess returns. This argument appears most frequently regarding hedge fund, VC, and PE managers.</span>
+        </p>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>Damodaranの分析：</strong>投資クラス内のマネージャー間でリターンに大きなばらつきが存在し、特にPEとVCで顕著。アウトパフォーマンスの持続性はVCとPEでは公開市場より高いが、ネットリターンが非流動性と不透明性を正当化するかは不明確とDamodaranは指摘する。</span>
+            <span class="lang-en"><strong>Damodaran's analysis:</strong> Significant variation exists across managers within investment classes, especially in PE and VC. Outperformance persistence is higher in VC and PE than in public markets, but Damodaran notes it remains unclear whether net returns justify the illiquidity and opacity.</span>
+          </p>
+        </div>
+
+        <!-- ===== Section 3: Rise of Alternative Investing ===== -->
+        <h2><span class="lang-ja">オルタナティブ投資の隆盛</span><span class="lang-en">The Rise of Alternative Investing</span></h2>
+
+        <p>
+          <span class="lang-ja">セールスピッチは特に機関投資家に対して効果を発揮した。KKRのデータによれば、年金基金のオルタナティブ投資配分は過去20年で大幅に増加している。</span>
+          <span class="lang-en">The sales pitch has demonstrably worked, particularly at the institutional level. KKR data shows substantial growth in alternative investment allocations within pension fund holdings over the past two decades.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">この流れの先駆者がYaleエンダウメントのDavid Swensenである。Swensenは他のアイビーリーグ機関よりも早くPEとヘッジファンドへの配分を開始し、21世紀の大半においてYaleのリターンは同業他社を上回った。</span>
+          <span class="lang-en">The pioneer of this trend was David Swensen at Yale's endowment. Swensen moved into PE and hedge funds earlier than other Ivy League institutions, and Yale's returns outpaced its peers through much of the 21st century.</span>
+        </p>
+
+        <div class="trap-box">
+          <div class="trap-label"><span class="lang-ja">しかし、この成功は持続しなかった</span><span class="lang-en">But this success did not last</span></div>
+          <p>
+            <span class="lang-ja">Yaleエンダウメントは<strong>2025年6月、PE持分の数十億ドル規模の売却</strong>を発表した。長年にわたるPEのアンダーパフォーマンスが理由である。かつてのオルタナティブ投資の最大の成功事例が、自らその限界を認めた形となった。</span>
+            <span class="lang-en">Yale's endowment announced in <strong>June 2025 its intent to sell billions in private equity holdings</strong> after years of underperformance. The former poster child for alternative investing effectively conceded its limitations.</span>
+          </p>
+        </div>
+
+        <!-- ===== Section 4: Where's the Beef? ===== -->
+        <div class="section-sep">&bull; &bull; &bull;</div>
+
+        <h2><span class="lang-ja">Where's the Beef? &mdash; 疑わしきオルタナティブの便益</span><span class="lang-en">Where's the Beef? &mdash; The Questionable Benefits</span></h2>
+
+        <p>
+          <span class="lang-ja">理論上の約束にもかかわらず、実際の結果は期待を大きく下回っている。Damodaranは複数の研究を引用して、オルタナティブ投資の4つの構造的問題を指摘する。</span>
+          <span class="lang-en">Despite theoretical promise, actual results have been underwhelming. Damodaran cites multiple studies to identify four structural problems with alternative investments.</span>
+        </p>
+
+        <h3><span class="lang-ja">問題1：相関は見かけほど低くない</span><span class="lang-en">Problem 1: Correlations are not as low as they appear</span></h3>
+
+        <p>
+          <span class="lang-ja">プライベート資産の低相関には2つの構造的バイアスがある。第一に<strong>評価ラグ</strong>：公開市場の資産は取引価格でリアルタイムに値洗いされるが、プライベート資産は鑑定評価に依存し、市場の急変に遅れて反応する。結果として、PE・VCは実際よりも低ボラティリティに見える。第二に<strong>危機時の同調</strong>：長期の安定した市場では低相関が観察されるが、投資家が最も分散効果を必要とする危機時に、ほぼすべての投資クラスが公開市場と連動して下落する。</span>
+          <span class="lang-en">The low correlations of private assets suffer from two structural biases. First, <strong>appraisal lags</strong>: public assets are marked to market in real time via transactions, whilst private assets rely on appraisals that lag rapid market moves. As a result, PE and VC appear less volatile than they truly are. Second, <strong>crisis synchronisation</strong>: whilst low correlations hold during stable markets, nearly all asset classes move in lockstep with public markets during crises &mdash; precisely when investors need diversification most.</span>
+        </p>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>2008年の金融危機と2020年のCOVIDメルトダウンの両方で、プライベート資産に大きく配分していたファンドは公開市場と同等のドローダウンを経験した。</strong>金・コレクタブル・不動産は相対的に低い相関を維持するが、機関投資家の採用が進むにつれこれらの相関も上昇傾向にある。</span>
+            <span class="lang-en"><strong>In both the 2008 banking crisis and the 2020 COVID meltdown, funds with large private allocations experienced drawdowns comparable to public markets.</strong> Gold, collectibles, and real estate maintain relatively lower correlations, but even these show rising correlations as institutional adoption increases.</span>
+          </p>
+        </div>
+
+        <h3><span class="lang-ja">問題2：消えるアルファ</span><span class="lang-en">Problem 2: Vanishing alpha</span></h3>
+
+        <p>
+          <span class="lang-ja">プライベート市場でのアルファ創出能力は複数の要因で低下している。</span>
+          <span class="lang-en">The ability to generate alpha in private markets has declined due to multiple factors.</span>
+        </p>
+
+        <ul>
+          <li>
+            <span class="lang-ja"><strong>キャパシティの制約：</strong>ファンド規模とAUMの増大に伴い、簡単に稼げる余地が縮小。平均的なVC・PE・ヘッジファンドマネージャーは、平均的な投信マネージャーと同程度の成績に収斂</span>
+            <span class="lang-en"><strong>Capacity constraints:</strong> As funds and AUM grew, easy-money capacity faded. The average VC, PE, or hedge fund manager has converged to no better or worse than the average mutual fund manager</span>
+          </li>
+          <li>
+            <span class="lang-ja"><strong>市場効率の改善：</strong>情報の平準化が進み、かつてのファンドマネージャーの優位性が消失</span>
+            <span class="lang-en"><strong>Market efficiency improvements:</strong> The investment game has become more difficult as information asymmetries have diminished</span>
+          </li>
+          <li>
+            <span class="lang-ja"><strong>パッシブ競合：</strong>アクティブマネージャーの戦略を検知・複製するETFの台頭により、超過リターンが持続しない</span>
+            <span class="lang-en"><strong>Passive competition:</strong> ETFs that spot and replicate active managers' strategies mean excess returns, even if present, do not persist</span>
+          </li>
+        </ul>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">投資区分</span><span class="lang-en">Category</span></th>
+                <th><span class="lang-ja">アルファの推移</span><span class="lang-en">Alpha Trajectory</span></th>
+                <th><span class="lang-ja">出典</span><span class="lang-en">Source</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="td-accent"><span class="lang-ja">ヘッジファンド</span><span class="lang-en">Hedge Funds</span></td>
+                <td><span class="lang-ja">2009年までにアルファがゼロ以下に低下。公開市場との相関は0.65 &rarr; 0.87に上昇</span><span class="lang-en">Alpha dropped to zero or below by 2009. Correlation with public markets rose from 0.65 to 0.87</span></td>
+                <td><span class="lang-ja">Damodaranブログ引用（Sullivan研究）</span><span class="lang-en">Cited in Damodaran (Sullivan study)</span></td>
+              </tr>
+              <tr>
+                <td class="td-accent"><span class="lang-ja">プライベートエクイティ</span><span class="lang-en">Private Equity</span></td>
+                <td><span class="lang-ja">1998-2007年は公開市場を大幅に上回ったが、直近では公開市場リターンに収斂</span><span class="lang-en">Ran well above public market returns 1998-2007, but converged to public market returns in recent years</span></td>
+                <td><span class="lang-ja">Damodaranブログ引用（2025）</span><span class="lang-en">Cited in Damodaran (2025)</span></td>
+              </tr>
+              <tr>
+                <td class="td-accent"><span class="lang-ja">エンダウメント全体</span><span class="lang-en">Endowments Overall</span></td>
+                <td><span class="lang-ja">オルタナティブ配分が増えるほど超過リターンはより大きくマイナスに</span><span class="lang-en">Excess returns become more negative as alternative allocation increases</span></td>
+                <td>Richard Ennis</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3><span class="lang-ja">問題3：非流動性と不透明性</span><span class="lang-en">Problem 3: Illiquidity and opacity</span></h3>
+
+        <p>
+          <span class="lang-ja">オルタナティブ投資の提唱者は、年金やエンダウメントのような長期投資家にとって非流動性は問題にならないと主張する。しかしDamodaranは、投資家は時間軸とキャッシュニーズを完全にコントロールできない点を指摘する。流動性ニーズは市場の急性危機時にこそ高まり、非流動性は取引コスト（ビッド・アスクスプレッド、プライスインパクト）としてリターンを蝕む。</span>
+          <span class="lang-en">Advocates argue that long-horizon investors (pension and endowment funds) should not view illiquidity as problematic. But Damodaran counters that investors cannot perfectly control time horizons and cash needs. Liquidity needs rise during acute market crises, and illiquidity manifests as transaction costs (bid-ask spreads, price impact) that drain returns.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">透明性の問題も深刻である。多くのオルタナティブ投資ビークルは不透明なガバナンス構造と限定的なレポーティングで運営されており、投資家はディール構成やリターン配分の「外から覗き込む」立場に置かれる。好況時には見て見ぬふりをされるが、不況時には不透明性が被害を増幅させる。</span>
+          <span class="lang-en">Transparency issues are equally severe. Many alternative vehicles operate with opaque governance structures and limited reporting, leaving investors "on the outside looking in" during deal structuring and return apportionment. Whilst glossed over in good times, opacity exacerbates damage during downturns.</span>
+        </p>
+
+        <h3><span class="lang-ja">問題4：コストの重荷</span><span class="lang-en">Problem 4: The cost burden</span></h3>
+
+        <p>
+          <span class="lang-ja">オルタナティブ投資の手数料は、運用報酬（AUMの一定割合）と成功報酬（ベンチマークを超えるリターンの一定割合）の二層構造である。歴史的な「2&amp;20」モデル &mdash; 資産の2%＋超過リターンの20% &mdash; は下方圧力を受けているものの、公開市場の代替手段と比較して依然として高コストである。</span>
+          <span class="lang-en">Alternative investment fees consist of a management fee (percentage of AUM) and a performance fee (percentage of returns exceeding a benchmark). The historical "two-and-twenty" model &mdash; 2% of assets plus 20% of excess returns &mdash; has faced downward pressure, but remains substantially more expensive than public market alternatives.</span>
+        </p>
+
+        <div class="pull-quote">
+          <p>
+            <span class="lang-ja">"高コストのビークルを加えることは、投資で勝つことをさらに困難にするだけだ。"</span>
+            <span class="lang-en">"Adding high cost vehicles makes it even more difficult to win in investing."</span>
+          </p>
+          <footer>Aswath Damodaran</footer>
+        </div>
+
+        <!-- ===== Section 5: Recommendations ===== -->
+        <h2><span class="lang-ja">投資家への4つの提言</span><span class="lang-en">Four Recommendations for Investors</span></h2>
+
+        <p>
+          <span class="lang-ja">Damodaranは、オルタナティブ投資の「簡単に稼げる時代」は終わったと結論づけた上で、投資家に対して4つの実践的な提言を行っている。</span>
+          <span class="lang-en">Damodaran concludes that the days of easy money in alternative investments have wound down, and offers four practical recommendations for investors.</span>
+        </p>
+
+        <ul class="numbered-list">
+          <li>
+            <span class="num">1</span>
+            <span>
+              <span class="lang-ja"><strong>オルタナティブの選別基準を「相関」に置く</strong> &mdash; アルファのセールスピッチは信頼性を失っている。PE・VCの魅力は低下し、一部のヘッジファンド戦略・金・コレクタブルが相対的に有望。暗号資産については「陪審員は未だ審議中」であり、ビットコインはコレクタブルよりリスキーな株式に近い挙動を示す。</span>
+              <span class="lang-en"><strong>Use correlation, not alpha, as the selection criterion</strong> &mdash; The alpha pitch has lost credibility. PE and VC become less attractive, whilst some hedge fund strategies, gold, and collectibles offer relatively better prospects. The jury is still out on crypto &mdash; bitcoin behaves more like risky equity than a traditional collectible.</span>
+            </span>
+          </li>
+          <li>
+            <span class="num">2</span>
+            <span>
+              <span class="lang-ja"><strong>高コスト・複雑なビークルを避ける</strong> &mdash; 2&amp;20をヘッジファンドに支払うエンダウメントや年金基金のマネージャーは「まず頭を検査し、その後解雇すべき」とDamodaranは断言する。売り手も買い手も理解できないほど複雑な戦略に基づくオルタナティブ投資も回避すべきである。</span>
+              <span class="lang-en"><strong>Avoid high-cost and exotic vehicles</strong> &mdash; Endowment or pension fund managers paying two-and-twenty to hedge funds "first need their heads examined and then summarily fired," Damodaran states. Also avoid alternatives based on strategies so complex that neither seller nor buyer understands them.</span>
+            </span>
+          </li>
+          <li>
+            <span class="num">3</span>
+            <span>
+              <span class="lang-ja"><strong>時間軸と流動性ニーズに正直になる</strong> &mdash; オルタナティブ投資は公開市場より流動性と透明性が低いため、キャッシュニーズが明確な長期投資家に適する。個人投資家はパニックや同調圧力への脆弱性を自覚すべきであり、機関投資家は時間軸がクライアントによって決まる（自分の好みではない）ことを認識すべきである。</span>
+              <span class="lang-en"><strong>Be realistic about time horizon and liquidity needs</strong> &mdash; Alternatives carry less liquidity and transparency, making them better suited for long-term investors with well-specified cash needs. Individual investors should be honest about susceptibility to panic and peer pressure; institutional investors must recognise that time horizons are client-determined, not preference-based.</span>
+            </span>
+          </li>
+          <li>
+            <span class="num">4</span>
+            <span>
+              <span class="lang-ja"><strong>相関行列とヒストリカルアルファを鵜呑みにしない</strong> &mdash; 過去の相関行列は非上場資産を含む場合に信頼性を欠き、アルファは時間とともに消失する。そのビークルが積極的に売り込まれるほど、その傾向は一層強まる。オルタナティブのセールスピッチは「相関行列でジュースを加え、過去のアルファでフレーバーを付けた」ものであるとDamodaranは警告する。</span>
+              <span class="lang-en"><strong>Be wary of correlation matrices and historical alpha</strong> &mdash; Historical correlations involving non-traded investments are untrustworthy, and alpha fades over time &mdash; more so when the vehicles that delivered it are sold relentlessly. Damodaran warns that the alternative sales pitch is "juiced by correlation matrices" and historical alpha.</span>
+            </span>
+          </li>
+        </ul>
+
+        <!-- ===== Conclusion ===== -->
+        <h2><span class="lang-ja">結論</span><span class="lang-en">Conclusion</span></h2>
+
+        <div class="pull-quote">
+          <p>
+            <span class="lang-ja">"オルタナティブ投資を売る側にとっても買う側にとっても、簡単に稼げる時代は終わった。"</span>
+            <span class="lang-en">"The days of easy money for those selling alternative investments as well as those buying these investments have wound down."</span>
+          </p>
+          <footer>Aswath Damodaran</footer>
+        </div>
+
+        <p>
+          <span class="lang-ja">Damodaranは、オルタナティブ投資が約束してきた「分散効果とアルファによるリスク・リターンの改善」は、現実にはほとんど実現していないと結論づける。理論的な根拠は存在するものの、高コスト・危機時に崩壊する相関の前提・不透明性・アルファの消失という実務上の障壁が、その恩恵を打ち消している。長年の信奉者であった機関投資家ですら、PE・ヘッジファンド・VCが巨大化しすぎ、高コストになりすぎて価値を生まなくなったのではないかと疑問を呈し始めている。</span>
+          <span class="lang-en">Damodaran concludes that the promised benefits of alternative investing &mdash; better risk-return tradeoffs through diversification and alpha generation &mdash; have largely failed to materialise in practice. Whilst some theoretical foundation exists, high costs, correlation assumptions that collapse during crises, opacity, and vanishing alpha have neutralised those benefits. Even long-standing institutional believers now question whether PE, hedge funds, and VC have become too large and too costly to add value.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">Damodaranは、機関投資家がオルタナティブへの配分を縮小し始めた今、次のターゲットは個人投資家であると警告する。彼の4つの提言は、その波に飲み込まれないための指針として機能する。</span>
+          <span class="lang-en">Damodaran warns that as institutional investors become less willing to allocate to alternatives, individual investors are now being targeted. His four recommendations serve as a guide to avoid being swept up in this wave.</span>
+        </p>
+
+        <div class="section-sep">&bull; &bull; &bull;</div>
+
+        <p style="font-size:0.85rem; color:var(--text-muted);">
+          <span class="lang-ja">本稿はDamodaranのブログ投稿「The (Uncertain) Payoff from Alternative Investments: Many a slip between the cup and the lip?」（2025年6月17日）の要約・解説記事です。原文の引用・データはすべて原著に帰属します。</span>
+          <span class="lang-en">This article summarises and discusses Damodaran's blog post "The (Uncertain) Payoff from Alternative Investments: Many a slip between the cup and the lip?" (17 June 2025). All quoted material and data belong to the original author.</span>
+        </p>
+
+        <!-- Next Article CTA -->
+        <div class="next-article">
+          <div class="next-label"><span class="lang-ja">前回の記事</span><span class="lang-en">Previous</span></div>
+          <div class="next-title"><a href="./2026-03-28-damodaran-investment-philosophy.html" style="color:inherit;text-decoration:none;"><span class="lang-ja">Damodaran Watch #003 &mdash; 投資の北極星を見つける &mdash; 投資哲学の探求</span><span class="lang-en">Damodaran Watch #003 &mdash; Finding Your Investing Lodestar &mdash; In Search of an Investment Philosophy</span></a></div>
+          <div class="next-desc"><span class="lang-ja">自分の信念・性格・資本に合った投資哲学を5ステップで構築する</span><span class="lang-en">Build an investment philosophy aligned with your beliefs, personality, and capital in five steps</span></div>
+        </div>
+
+      </article>
+
+      <!-- 4. Sidebar -->
+      <aside class="article-sidebar">
+
+        <!-- Key Facts -->
+        <div class="sidebar-card">
+          <div class="section-label">Key Facts</div>
+          <div class="keyfacts-grid">
+            <div class="fact-card">
+              <div class="fact-value">2&amp;20</div>
+              <div class="fact-desc"><span class="lang-ja">オルタナティブの典型的手数料構造</span><span class="lang-en">Typical alternative fee structure</span></div>
+            </div>
+            <div class="fact-card highlight">
+              <div class="fact-value">0.87</div>
+              <div class="fact-desc"><span class="lang-ja">ヘッジファンドと公開市場の直近相関</span><span class="lang-en">Recent HF-public market correlation</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">2009</div>
+              <div class="fact-desc"><span class="lang-ja">ヘッジファンドのアルファがゼロに到達した年</span><span class="lang-en">Year hedge fund alpha hit zero</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">0.65</div>
+              <div class="fact-desc"><span class="lang-ja">1990年代のヘッジファンド-公開市場相関</span><span class="lang-en">1990s HF-public market correlation</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Highlights -->
+        <div class="sidebar-card">
+          <div class="section-label"><span class="lang-ja">重要ポイント</span><span class="lang-en">Highlights</span></div>
+          <ul class="highlights-list">
+            <li class="highlight-item">
+              <span class="hl-num">01</span>
+              <span class="hl-text"><span class="lang-ja">プライベート資産の低ボラティリティは評価ラグの産物</span><span class="lang-en">Low private asset volatility is an appraisal lag artefact</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">02</span>
+              <span class="hl-text"><span class="lang-ja">危機時にほぼすべての資産が公開市場と連動して下落</span><span class="lang-en">Nearly all assets move in lockstep with public markets during crises</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">03</span>
+              <span class="hl-text"><span class="lang-ja">ヘッジファンドのアルファは2009年にゼロ以下へ</span><span class="lang-en">Hedge fund alpha dropped to zero or below by 2009</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">04</span>
+              <span class="hl-text"><span class="lang-ja">Yaleが2025年6月にPE持分の大量売却を発表</span><span class="lang-en">Yale announced massive PE selloff in June 2025</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">05</span>
+              <span class="hl-text"><span class="lang-ja">次のターゲットは個人投資家</span><span class="lang-en">Individual investors are the next target</span></span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Series Index -->
+        <div class="sidebar-card">
+          <div class="section-label">Damodaran Watch</div>
+          <ol class="highlights-list" style="list-style:none;padding:0;">
+            <li class="highlight-item">
+              <span class="hl-num">01</span>
+              <span class="hl-text"><a href="./2026-03-22-damodaran-ai-scenarios.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">AIシナリオ：ドゥームズデイから無害なボットまで</span><span class="lang-en">AI Scenarios: From Doomsday to Do-Nothing Bots</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">02</span>
+              <span class="hl-text"><a href="./2026-03-23-damodaran-erp-monologue.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">リスクの価格：ERP独白</span><span class="lang-en">The Price of Risk: ERP Monologue</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">03</span>
+              <span class="hl-text"><a href="./2026-03-28-damodaran-investment-philosophy.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">投資の北極星を見つける</span><span class="lang-en">Finding Your Investing Lodestar</span></a></span>
+            </li>
+            <li class="highlight-item" style="border-bottom:none;">
+              <span class="hl-num" style="color:var(--accent-warm);">04</span>
+              <span class="hl-text" style="font-weight:600;"><span class="lang-ja">オルタナティブ投資の不確かな報酬（本稿）</span><span class="lang-en">The (Uncertain) Payoff from Alternative Investments (this article)</span></span>
+            </li>
+          </ol>
+        </div>
+
+        <!-- Key References -->
+        <div class="sidebar-card">
+          <div class="section-label">Key References</div>
+          <ul class="source-list" style="margin-top:10px;">
+            <li><a href="https://aswathdamodaran.blogspot.com/2025/06/the-uncertain-payoff-from-alternative.html" target="_blank" rel="noopener">Damodaran Blog: The (Uncertain) Payoff from Alternative Investments</a> <span class="source-tag">Original</span></li>
+            <li><a href="https://pages.stern.nyu.edu/~adamodar/" target="_blank" rel="noopener">Damodaran Online (NYU Stern)</a> <span class="source-tag">Data</span></li>
+          </ul>
+        </div>
+
+      </aside>
+
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <span>Damodaran Watch #004 | donato Valuation Notes | 2026-03-29</span>
+  <span>
+    <span class="lang-ja">本稿は情報提供を目的とした解説記事であり、特定の投資行動を推奨するものではありません。投資判断はご自身の責任でお願いいたします。</span>
+    <span class="lang-en">This article is for informational purposes only and does not constitute investment advice. Investment decisions are the reader's own responsibility.</span>
+  </span>
+</footer>
+
+<script>
+  // Progress bar
+  window.addEventListener('scroll', function() {
+    var h = document.documentElement;
+    var pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    document.getElementById('progress-bar').style.width = Math.min(pct, 100) + '%';
+  });
+
+  // Reading time (500 chars/min)
+  (function() {
+    var text = document.querySelector('.article-body') ? document.querySelector('.article-body').textContent : '';
+    var chars = text.length;
+    var minutes = Math.ceil(chars / 500);
+    var el1 = document.getElementById('reading-time-badge');
+    var el2 = document.getElementById('reading-time-badge2');
+    if (el1) el1.querySelector('.lang-ja').textContent = '約' + minutes + '分';
+    if (el2) el2.querySelector('.lang-ja').textContent = '約' + minutes + '分';
+    if (el1) el1.querySelector('.lang-en').textContent = '~' + minutes + ' min read';
+    if (el2) el2.querySelector('.lang-en').textContent = '~' + minutes + ' min read';
+  })();
+
+  // Lang toggle
+  let currentLang = localStorage.getItem('hp-lang') || 'ja';
+  let currentTheme = localStorage.getItem('hp-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('hp-lang', lang);
+    document.querySelectorAll('.lang-ja').forEach(el => el.style.display = lang === 'ja' ? 'inline' : 'none');
+    document.querySelectorAll('.lang-en').forEach(el => el.style.display = lang === 'en' ? 'inline' : 'none');
+    document.querySelectorAll('.art-lang-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+    document.documentElement.lang = lang === 'ja' ? 'ja' : 'en';
+  }
+  function toggleTheme() {
+    currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+    localStorage.setItem('hp-theme', currentTheme);
+    document.body.classList.toggle('dark', currentTheme === 'dark');
+    document.getElementById('theme-btn').textContent = currentTheme === 'light' ? '\u2606' : '\u263E';
+  }
+  document.addEventListener('DOMContentLoaded', () => {
+    setLang(currentLang);
+    if (currentTheme === 'dark') {
+      document.body.classList.add('dark');
+      document.getElementById('theme-btn').textContent = '\u263E';
+    }
+  });
+</script>
+
+</body>
+</html>

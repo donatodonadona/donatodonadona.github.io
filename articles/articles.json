@@ -1,5 +1,16 @@
 [
   {
+    "date": "2026-03-29",
+    "category": "valuation",
+    "genre_en": "Valuation Theory Lab  #013",
+    "genre_ja": "Valuation Theory Lab  #013",
+    "href": "./articles/2026-03-29-ifrs16-ev-bridge.html",
+    "title_en": "Rethinking EV Bridge Post-IFRS 16 — EV/EBITDA vs. EBITDAR",
+    "title_ja": "IFRS 16後のEV Bridgeを再考する — EV/EBITDA vs. EBITDAR",
+    "summary_en": "IFRS 16 inflated both EBITDA and EV by bringing operating leases onto the balance sheet. But the effect on EV/EBITDA is not neutral — the multiple compresses for high-multiple firms and expands for low-multiple firms. This article proves the arithmetic, quantifies industry-level impacts, and reconstructs a lease-neutral comparison framework using EBITDAR and Lease-adjusted EV.",
+    "summary_ja": "IFRS 16はオペレーティングリースのオンバランス化によりEBITDAとEVの両方を膨張させた。しかしEV/EBITDAへの影響は中立ではない。高倍率企業ほど倍率は圧縮され、低倍率企業ほど上昇する。本稿ではその算術的メカニズムを証明し、業種別インパクトを定量化し、EBITDARとLease-adjusted EVによるリース中立な比較枠組みを再構築する。"
+  },
+  {
     "date": "2026-03-23",
     "category": "damodaran",
     "genre_en": "Damodaran Watch  #002",

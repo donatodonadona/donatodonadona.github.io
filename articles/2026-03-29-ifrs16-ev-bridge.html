@@ -1,0 +1,1475 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="IFRS 16はオペレーティングリースをオンバランス化し、EBITDAとEVの両方を膨張させた。EV/EBITDAは分子も分母も変わるが中立ではない。EBITDARとLease-adjusted EVによるリース中立な比較枠組み、業種別インパクト定量分析、IFRS vs US GAAP vs J-GAAPのクロススタンダード調整を解説。Valuation Theory Lab #013。">
+  <title>IFRS 16後のEV Bridgeを再考する — EV/EBITDA vs. EBITDAR | Valuation Theory Lab #013 | donato</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+JP:wght@300;400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../brand.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:           #F8F7F4;
+      --bg-code:      #EEECEA;
+      --bg-quote:     #EEECEA;
+      --bg-highlight: #EBF3FB;
+      --bg-subtle:    #F0EFEB;
+      --bg-card:      #F0EFEB;
+      --bg-header:    #F8F7F4;
+      --text-primary: #111320;
+      --text-body:    #2A2C3E;
+      --text-muted:   #565C70;
+      --text-light:   #888EA0;
+      --accent:       #1A6EB0;
+      --accent-warm:  #D4A010;
+      --border:       #D4D2CC;
+      --border-quote: #B8B6B0;
+      --border-light: #D4D2CC;
+      --tag-bg:       #E4EFF8;
+      --tag-text:     #1A6EB0;
+      --table-stripe: #F0EFEB;
+    }
+
+    /* ===== PROGRESS BAR ===== */
+    #progress-bar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      width: 0%;
+      background: var(--accent);
+      z-index: 300;
+      transition: width 0.1s linear;
+    }
+
+    body {
+      font-family: 'Noto Serif JP', Georgia, serif;
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--text-primary);
+      background: var(--bg);
+    }
+
+    /* ===== SITE HEADER ===== */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg-header);
+      border-bottom: 2px solid var(--accent);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .site-header-left { display: flex; align-items: center; gap: 12px; }
+    .wordmark {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: lowercase;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+    .wordmark span { color: var(--accent-warm); }
+    .header-sep { color: var(--border-quote); font-size: 13px; }
+    .header-media {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+    }
+    .site-header-right { display: flex; align-items: center; gap: 12px; }
+    .header-back-link {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .header-back-link:hover { color: var(--accent); }
+    .lang-toggle-bar {
+      display: flex;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .art-lang-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      padding: 3px 10px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .art-lang-btn.active { background: #F5C800; color: #111320; }
+    #theme-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      padding: 3px 9px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.15s;
+    }
+    #theme-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .header-date {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-light);
+      letter-spacing: 0.08em;
+    }
+
+    /* ===== STICKY INFO BAR ===== */
+    #sticky-bar {
+      position: sticky;
+      top: 44px;
+      z-index: 200;
+      background: var(--bg-subtle);
+      border-bottom: 1px solid var(--border-light);
+      padding: 7px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .sbar-cat {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+    }
+    .sbar-sep { color: var(--border-quote); font-size: 11px; }
+    .sbar-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+    .sbar-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      padding: 2px 8px;
+    }
+
+    /* ===== LAYOUT ===== */
+    .article-container { max-width: 1240px; margin: 0 auto; padding: 0 20px; }
+    .article-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 24px;
+    }
+    .article-body { grid-column: 2 / 10; max-width: 68ch; }
+    .article-sidebar {
+      grid-column: 10 / 13;
+      position: sticky;
+      top: 78px;
+      align-self: start;
+      max-height: calc(100vh - 90px);
+      overflow-y: auto;
+    }
+    .article-sidebar::-webkit-scrollbar { width: 4px; }
+    .article-sidebar::-webkit-scrollbar-track { background: transparent; }
+    .article-sidebar::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 2px; }
+
+    /* ===== TYPOGRAPHY ===== */
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+    }
+    .article-headline {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(2rem, 4vw, 2.6rem);
+      font-weight: 600;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+    .article-standfirst {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      font-weight: 400;
+    }
+    .byline {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    h2 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.45rem;
+      font-weight: 600;
+      line-height: 1.25;
+      color: var(--text-primary);
+      margin: 2em 0 0.75em;
+      border-top: 1px solid var(--border);
+      padding-top: 1em;
+    }
+    h3 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin: 1.75em 0 0.5em;
+    }
+    .article-body p { margin-bottom: 1.4em; font-size: 0.97rem; line-height: 1.8; }
+    .article-body ul, .article-body ol { margin: 0 0 1.4em 1.4em; }
+    .article-body li { margin-bottom: 0.4em; font-size: 0.95rem; line-height: 1.7; }
+    strong { color: var(--text-primary); font-weight: 600; }
+
+    /* ===== EXEC SUMMARY ===== */
+    .exec-summary {
+      background: var(--bg-highlight);
+      border: 1px solid var(--border-light);
+      border-left: 4px solid var(--accent);
+      padding: 24px;
+      margin: 0 0 2.5em;
+    }
+    .exec-block { margin-bottom: 20px; }
+    .exec-block:last-child { margin-bottom: 0; }
+    .exec-block + .exec-block { padding-top: 18px; border-top: 1px solid var(--border-light); }
+    .exec-tldr {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.02rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      line-height: 1.55;
+      margin-top: 8px;
+    }
+    .issues-list, .implications-list {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .issue-item { display: flex; gap: 10px; align-items: baseline; }
+    .issue-q {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--accent);
+      flex-shrink: 0;
+      min-width: 20px;
+    }
+    .issue-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: var(--text-body);
+      line-height: 1.55;
+    }
+    .implication-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: var(--text-body);
+      line-height: 1.55;
+      padding-left: 14px;
+      border-left: 2px solid var(--accent);
+    }
+    .read-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
+    .read-col-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.66rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 6px;
+    }
+    .read-label-yes { color: var(--accent); }
+    .read-label-no { color: var(--text-muted); }
+    .read-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-body);
+      line-height: 1.45;
+      padding-left: 10px;
+      border-left: 2px solid var(--accent);
+      margin-bottom: 5px;
+    }
+    .skip-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+      padding-left: 10px;
+      border-left: 2px solid var(--border-light);
+      margin-bottom: 5px;
+    }
+
+    /* ===== FORMULA / CALC ===== */
+    .formula {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.93em;
+      background: var(--bg-code);
+      border-left: 3px solid var(--accent);
+      padding: 14px 20px;
+      margin: 20px 0;
+      color: var(--text-primary);
+      overflow-x: auto;
+      line-height: 1.7;
+    }
+    .calc-block {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      padding: 20px 24px;
+      margin: 24px 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+      line-height: 1.8;
+    }
+    .calc-block .calc-row { display: flex; justify-content: space-between; max-width: 480px; }
+    .calc-block .calc-total {
+      border-top: 1px solid var(--border);
+      margin-top: 6px;
+      padding-top: 6px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .calc-block .calc-highlight { color: var(--accent); font-weight: 700; }
+    .calc-block .calc-warn { color: var(--accent-warm); font-weight: 700; }
+
+    /* ===== INSIGHT / TRAP BOX ===== */
+    .insight-box {
+      background: var(--bg-highlight);
+      border-left: 4px solid var(--accent);
+      padding: 18px 22px;
+      margin: 28px 0;
+    }
+    .insight-box p {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: var(--text-primary);
+    }
+    .insight-box strong { color: var(--accent); }
+    .trap-box {
+      background: #FEF9EC;
+      border-left: 4px solid var(--accent-warm);
+      padding: 18px 22px;
+      margin: 24px 0;
+    }
+    .trap-box p {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      line-height: 1.65;
+      color: var(--text-body);
+    }
+    .trap-box .trap-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      color: var(--accent-warm);
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+
+    /* ===== DATA TABLE ===== */
+    .data-table-wrap { overflow-x: auto; margin: 1.5em 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      background: var(--bg-subtle);
+      padding: 8px 12px;
+      text-align: left;
+      border-bottom: 2px solid var(--border);
+    }
+    td {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border-light);
+      color: var(--text-body);
+      font-family: 'Inter', sans-serif;
+    }
+    tr:nth-child(even) td { background: var(--table-stripe); }
+    .td-accent { color: var(--accent); font-weight: 600; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
+    .td-warn   { color: var(--accent-warm); font-weight: 600; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
+
+    /* ===== PULL QUOTE ===== */
+    .pull-quote {
+      border-left: 4px solid var(--accent);
+      margin: 2em 0;
+      padding: 1em 20px;
+      background: var(--bg-card);
+    }
+    .pull-quote p {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.2rem;
+      font-style: italic;
+      color: var(--text-primary);
+      line-height: 1.5;
+      margin-bottom: 6px !important;
+    }
+    .pull-quote footer {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* ===== NUMBERED LIST ===== */
+    .numbered-list { list-style: none; padding: 0; margin: 20px 0; }
+    .numbered-list li {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 16px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.92rem;
+      line-height: 1.65;
+      color: var(--text-body);
+    }
+    .numbered-list li .num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: white;
+      background: var(--accent);
+      min-width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    /* ===== SECTION SEP ===== */
+    .section-sep {
+      text-align: center;
+      color: var(--text-light);
+      font-size: 1.2rem;
+      letter-spacing: 0.5em;
+      margin: 48px 0;
+      user-select: none;
+    }
+
+    /* ===== SOURCE LIST ===== */
+    .source-list { list-style: none; padding: 0; }
+    .source-list li { margin-bottom: 6px; }
+    .source-list a {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--accent);
+      text-decoration: none;
+      line-height: 1.5;
+    }
+    .source-list a:hover { text-decoration: underline; }
+    .source-tag { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--text-muted); margin-left: 4px; }
+
+    /* ===== NEXT ARTICLE CTA ===== */
+    .next-article {
+      background: var(--text-primary);
+      color: #E4E2DC;
+      padding: 28px 32px;
+      margin-top: 56px;
+    }
+    .next-article .next-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      color: var(--accent-warm);
+      margin-bottom: 8px;
+    }
+    .next-article .next-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+    .next-article .next-desc {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.82rem;
+      color: #9299A8;
+      margin-top: 8px;
+    }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .keyfacts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+    .fact-card { background: var(--bg-highlight); padding: 10px 8px; }
+    .fact-card.highlight { background: #FDF8EC; border: 1px solid #E8D88A; }
+    .fact-value { font-family: 'JetBrains Mono', monospace; font-size: 1rem; font-weight: 500; color: var(--accent); line-height: 1.2; }
+    .fact-card.highlight .fact-value { color: #8A6A00; }
+    .fact-desc { font-family: 'Inter', sans-serif; font-size: 0.64rem; color: var(--text-muted); margin-top: 3px; line-height: 1.35; }
+    .fact-card.highlight .fact-desc { color: #7A6020; }
+    .highlights-list { list-style: none; padding: 0; margin-top: 12px; }
+    .highlight-item { padding: 9px 0; border-bottom: 1px solid var(--border-light); display: flex; gap: 10px; align-items: baseline; }
+    .highlight-item:last-child { border-bottom: none; }
+    .hl-num { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--accent); flex-shrink: 0; min-width: 18px; }
+    .hl-text { font-family: 'Inter', sans-serif; font-size: 0.76rem; color: var(--text-body); line-height: 1.45; }
+
+    /* ===== LANG TOGGLE ===== */
+    .lang-en { display: none; }
+
+    /* ===== FOOTER ===== */
+    .site-footer {
+      border-top: 1px solid var(--border-light);
+      margin-top: 4em;
+      padding: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* ===== PRINT ===== */
+    @media print {
+      body { background: white; font-size: 11pt; }
+      .site-header, #sticky-bar, #progress-bar { display: none; }
+      .article-sidebar { position: static; max-height: none; overflow: visible; }
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+    @page { size: A4; margin: 20mm 15mm; }
+
+    /* ===== MOBILE ===== */
+    @media (max-width: 900px) {
+      .article-body { grid-column: 1 / -1; }
+      .article-sidebar { position: static; max-height: none; overflow: visible; grid-column: 1 / -1; }
+      .article-grid { display: block; }
+      .read-grid { grid-template-columns: 1fr; }
+      #sticky-bar { flex-wrap: wrap; gap: 6px; }
+    }
+
+    body.dark {
+      --bg:           #0D1117;
+      --bg-code:      #161B22;
+      --bg-quote:     #161B22;
+      --bg-highlight: #0E1A2B;
+      --bg-subtle:    #161B22;
+      --bg-card:      #161B22;
+      --bg-header:    #0D1117;
+      --text-primary: #E4E2DC;
+      --text-body:    #C4C2BC;
+      --text-muted:   #8B93A8;
+      --text-light:   #575E70;
+      --accent:       #3A8FD0;
+      --accent-warm:  #F5C800;
+      --border:       #21253A;
+      --border-quote: #2A2D3E;
+      --border-light: #21253A;
+      --tag-bg:       #0E1A2B;
+      --tag-text:     #3A8FD0;
+      --table-stripe: #161B22;
+    }
+    body.dark .trap-box { background: #1C1800; }
+    body.dark .fact-card.highlight { background: #1A1600; border-color: #3A2D00; }
+    body.dark .fact-card.highlight .fact-value { color: #C4900E; }
+    body.dark .fact-card.highlight .fact-desc { color: #A07828; }
+    body.dark .next-article { background: #111320; }
+  </style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<!-- 1. Site Header -->
+<header class="site-header">
+  <div class="site-header-left">
+    <a class="wordmark" href="../index.html">dona<span>to</span></a>
+    <span class="header-sep">—</span>
+    <a class="header-back-link" href="./index.html"><span class="lang-ja">記事一覧</span><span class="lang-en">Articles</span></a>
+    <span class="header-sep">—</span>
+    <span class="header-media">Valuation Theory Lab</span>
+  </div>
+  <div class="site-header-right">
+    <div class="lang-toggle-bar">
+      <button class="art-lang-btn active" data-lang="ja" onclick="setLang('ja')">JP</button>
+      <button class="art-lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+    </div>
+    <button id="theme-btn" onclick="toggleTheme()" title="Dark/Light toggle">☀</button>
+    <time class="header-date">2026-03-29</time>
+  </div>
+</header>
+
+<!-- 2. Sticky Info Bar -->
+<div id="sticky-bar">
+  <span class="sbar-cat">Valuation Theory Lab</span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-text"><span class="lang-ja">Series #013 · IFRS 16 × EV Bridge</span><span class="lang-en">Series #013 · IFRS 16 × EV Bridge</span></span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-text">2026-03-29</span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-badge" id="reading-time-badge"><span class="lang-ja">計算中</span><span class="lang-en">...</span></span>
+</div>
+
+<main style="padding: 0 0 3em;">
+  <div class="article-container">
+    <div class="article-grid">
+
+      <!-- 3. Article Body -->
+      <article class="article-body">
+
+        <!-- Article Header -->
+        <div style="padding: 36px 0 24px;">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+            <div class="section-label">Valuation Theory Lab &nbsp;#013</div>
+            <span class="sbar-badge" id="reading-time-badge2"><span class="lang-ja">計算中</span><span class="lang-en">...</span></span>
+          </div>
+          <h1 class="article-headline">
+            <span class="lang-ja">IFRS 16後のEV Bridgeを再考する — EV/EBITDA vs. EBITDAR</span>
+            <span class="lang-en">Rethinking EV Bridge Post-IFRS 16 — EV/EBITDA vs. EBITDAR</span>
+          </h1>
+          <p class="article-standfirst">
+            <span class="lang-ja">IFRS 16はオペレーティングリースをバランスシートに載せた。EBITDAは膨張し、EVも膨張した。「分子も分母も増えるなら中立」と考える実務家は多いが、それは算術的に誤りだ。本稿では、IFRS 16がEV bridgeとマルチプルに与える構造的な影響を定量的に分析し、リース中立な比較枠組みを再構築する。</span>
+            <span class="lang-en">IFRS 16 brought operating leases onto the balance sheet. EBITDA inflated. EV inflated. Many practitioners assume the effect is neutral because both the numerator and denominator grew. That assumption is arithmetically wrong. This article quantifies the structural impact of IFRS 16 on the EV bridge and multiples, and reconstructs a lease-neutral comparison framework.</span>
+          </p>
+          <div style="display:flex; gap:16px; align-items:center; border-top:1px solid var(--border-light); border-bottom:1px solid var(--border-light); padding:10px 0;">
+            <span class="byline">By <strong>Donato Valuation Notes</strong></span>
+            <span style="color:var(--border);">|</span>
+            <time class="byline" datetime="2026-03-29"><span class="lang-ja">2026年3月29日</span><span class="lang-en">29 March 2026</span></time>
+            <span style="color:var(--border);">|</span>
+            <span class="byline"><span class="lang-ja">IFRS 16 · EV Bridge · EBITDAR · リース会計 · M&A</span><span class="lang-en">IFRS 16 · EV Bridge · EBITDAR · Lease Accounting · M&A</span></span>
+          </div>
+        </div>
+
+        <!-- Exec Summary -->
+        <section class="exec-summary">
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">概要</span><span class="lang-en">Summary</span></div>
+            <p class="exec-tldr">
+              <span class="lang-ja">IFRS 16（2019年1月発効）はオペレーティングリースを使用権資産＋リース負債としてオンバランス化した。これによりEBITDAは年間リース費用分だけ増加し、Enterprise Valueはリース負債分だけ増加する。しかしこの「分子・分母の同時増加」はEV/EBITDA倍率を中立にはしない。リース負債がリース費用の約4〜6倍であるため、元の倍率が高い企業ほど倍率は低下し、低い企業ほど上昇する。EBITDAR（EBITDA + Rent）とLease-adjusted EV（EV - リース負債）を使ったリース中立な比較が、クロススタンダード分析の標準手法になりつつある。</span>
+              <span class="lang-en">IFRS 16 (effective January 2019) brought operating leases onto the balance sheet as right-of-use assets and lease liabilities. EBITDA increases by the annual lease expense; Enterprise Value increases by the lease liability. But this simultaneous increase in numerator and denominator does not leave EV/EBITDA neutral. Because lease liabilities are roughly 4-6x the annual lease charge, the multiple falls for high-multiple firms and rises for low-multiple firms. EBITDAR (EBITDA + Rent) paired with Lease-adjusted EV (EV minus lease liabilities) is emerging as the standard lease-neutral framework for cross-standard analysis.</span>
+            </p>
+          </div>
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">本稿の論点</span><span class="lang-en">Key Questions</span></div>
+            <ul class="issues-list">
+              <li class="issue-item">
+                <span class="issue-q">Q1</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>EV/EBITDAはなぜ中立でないのか</strong> — 分子と分母の増加幅が異なる算術的メカニズムと、元の倍率水準との関係</span>
+                  <span class="lang-en"><strong>Why is EV/EBITDA not neutral?</strong> — The arithmetic mechanism behind the asymmetric increase in numerator vs. denominator, and its relationship to the original multiple level</span>
+                </span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">Q2</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>EBITDARはなぜリース中立なのか</strong> — EBITDAR + Lease-adjusted EVの組み合わせが会計基準間の比較可能性を回復する論理</span>
+                  <span class="lang-en"><strong>Why is EBITDAR lease-neutral?</strong> — How EBITDAR paired with Lease-adjusted EV restores comparability across accounting standards</span>
+                </span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">Q3</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>業種別インパクトはどれほど異なるか</strong> — 小売・航空・飲食でのEBITDA膨張率とEV/EBITDA変動の定量分析</span>
+                  <span class="lang-en"><strong>How does the impact vary by industry?</strong> — Quantifying EBITDA inflation and EV/EBITDA shifts in retail, airlines, and restaurants</span>
+                </span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">Q4</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>IFRS vs US GAAP vs J-GAAPのクロススタンダード比較をどう調整するか</strong> — ASC 842とIFRS 16のP&L処理差異、日本基準の今後</span>
+                  <span class="lang-en"><strong>How do we adjust for cross-standard comparisons?</strong> — P&L treatment differences between ASC 842 and IFRS 16, and the trajectory of Japanese GAAP</span>
+                </span>
+              </li>
+            </ul>
+          </div>
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">Valuation実務家への含意</span><span class="lang-en">Implications for Practitioners</span></div>
+            <ul class="implications-list">
+              <li class="implication-item">
+                <span class="lang-ja"><strong>「IFRS 16で倍率は変わらない」は誤り</strong> — リース依存度の高い企業ほどEV/EBITDAは低下する。Comps分析でリース比率の異なる企業を並べると、比較可能性が崩壊する</span>
+                <span class="lang-en"><strong>"IFRS 16 doesn't change multiples" is wrong</strong> — The more lease-dependent the firm, the greater the EV/EBITDA compression. Comparing peers with different lease intensities in comps analysis destroys comparability</span>
+              </li>
+              <li class="implication-item">
+                <span class="lang-ja"><strong>EV/EBITDARを標準化せよ</strong> — リース中立な比較には、EBITDARとLease-adjusted EVの組み合わせが必要。業種全体で一貫した手法を適用すること</span>
+                <span class="lang-en"><strong>Standardise on EV/EBITDAR</strong> — Lease-neutral comparisons require pairing EBITDAR with Lease-adjusted EV. Apply the methodology consistently across the entire peer set</span>
+              </li>
+              <li class="implication-item">
+                <span class="lang-ja"><strong>M&A交渉ではリース調整が価値論点になる</strong> — Lease-adjusted EVの定義がSPA上のEV-Equity bridge条項に直結する。買い手と売り手でリース負債の範囲認識が異なれば、数億円の差が生じうる</span>
+                <span class="lang-en"><strong>Lease adjustments are a value negotiation point in M&A</strong> — The definition of Lease-adjusted EV directly feeds into EV-to-Equity bridge clauses in SPAs. Buyer and seller disagreements on lease liability scope can create multi-million differences in value</span>
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- ===== Section 1: What IFRS 16 Changed ===== -->
+
+        <h2>
+          <span class="lang-ja">1. IFRS 16が変えたもの — IAS 17からの構造転換</span>
+          <span class="lang-en">1. What IFRS 16 Changed — The Structural Shift from IAS 17</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">2019年1月1日に発効したIFRS 16「リース」は、IAS 17の二分法を廃止した。IAS 17の下では、リースはファイナンスリースとオペレーティングリースに分類され、後者はオフバランスのまま損益計算書に賃借料として計上されていた。IFRS 16はこの区分を撤廃し、短期リース（12ヶ月以下）と少額資産リース（新品購入時の価値がおよそUS$5,000以下）を除くすべてのリースについて、借手に使用権資産（Right-of-Use asset）とリース負債の認識を要求する。</span>
+          <span class="lang-en">IFRS 16 "Leases", effective 1 January 2019, abolished the dual classification model of IAS 17. Under IAS 17, leases were categorised as either finance leases or operating leases, with the latter kept off-balance-sheet and recognised as rental expense in the income statement. IFRS 16 eliminated this distinction and requires lessees to recognise a right-of-use (ROU) asset and a lease liability for all leases except short-term leases (12 months or fewer) and low-value asset leases (underlying asset value approximately US$5,000 or less when new).</span>
+        </p>
+
+        <h3>
+          <span class="lang-ja">P&Lへの影響：費用の再分類</span>
+          <span class="lang-en">Impact on the P&L: Expense Reclassification</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">IAS 17下のオペレーティングリース費用は、販管費（Operating Expenses）の一部として一括計上されていた。IFRS 16下では、この費用が2つの構成要素に分解される。</span>
+          <span class="lang-en">Under IAS 17, operating lease expense was recognised as a single charge within operating expenses. Under IFRS 16, this expense is decomposed into two components.</span>
+        </p>
+
+        <div class="formula">
+          <span class="lang-ja">IAS 17: Operating Lease Expense（販管費内）<br><br>IFRS 16: Depreciation of ROU Asset（D&A内）+ Interest on Lease Liability（金融費用内）</span>
+          <span class="lang-en">IAS 17: Operating Lease Expense (within SG&A)<br><br>IFRS 16: Depreciation of ROU Asset (within D&A) + Interest on Lease Liability (within finance costs)</span>
+        </div>
+
+        <p>
+          <span class="lang-ja">この再分類が意味するのは、<strong>EBITDAの定義上、リース費用が計算から完全に消える</strong>ということだ。減価償却はEBITDAの「DA」部分で除外され、利息はEBITDAの「I」部分で除外される。結果、IFRS 16適用後のEBITDAは、旧基準下のオペレーティングリース費用の全額分だけ機械的に増加する。</span>
+          <span class="lang-en">The implication of this reclassification is that <strong>the lease expense disappears entirely from the EBITDA calculation by definition</strong>. Depreciation is excluded through the "DA" in EBITDA; interest is excluded through the "I". Consequently, post-IFRS 16 EBITDA mechanically increases by the full amount of the former operating lease expense.</span>
+        </p>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>EBITDA膨張は「収益性の改善」ではない。</strong>IFRS 16によるEBITDAの増加は企業の経済実態を何も変えていない。同じキャッシュフロー、同じ契約義務のもとで、会計上の費用分類が変わっただけだ。しかしEBITDAをベースにしたマルチプルは、このインフレを反映して構造的に変化する。</span>
+            <span class="lang-en"><strong>EBITDA inflation is not an improvement in profitability.</strong> The IFRS 16-driven increase in EBITDA changes nothing about the firm's economic reality. The same cash flows, the same contractual obligations — only the accounting classification of the expense has shifted. Yet multiples based on EBITDA structurally change to reflect this inflation.</span>
+          </p>
+        </div>
+
+        <div class="section-sep">· · ·</div>
+
+        <!-- ===== Section 2: EV Bridge ===== -->
+
+        <h2>
+          <span class="lang-ja">2. EV Bridgeの再構築 — リース負債はどこに入るか</span>
+          <span class="lang-en">2. Reconstructing the EV Bridge — Where Lease Liabilities Sit</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">Enterprise Value（EV）は、株式価値（Equity Value）から出発し、Net Debtを加算して全資本提供者への価値を表す。IFRS 16以前のEV bridgeは比較的単純だった。</span>
+          <span class="lang-en">Enterprise Value (EV) starts from Equity Value and adds Net Debt to represent the value claim of all capital providers. The pre-IFRS 16 EV bridge was relatively straightforward.</span>
+        </p>
+
+        <div class="calc-block">
+          <div style="margin-bottom: 12px; font-weight: 500; color: var(--text-muted); font-size: 0.75em; letter-spacing: 0.1em;">
+            <span class="lang-ja">Pre-IFRS 16 EV Bridge</span>
+            <span class="lang-en">Pre-IFRS 16 EV Bridge</span>
+          </div>
+          <div class="calc-row"><span>Equity Value (Market Cap)</span><span>1,000</span></div>
+          <div class="calc-row"><span>(+) Financial Debt</span><span>300</span></div>
+          <div class="calc-row"><span>(-) Cash & Equivalents</span><span>(100)</span></div>
+          <div class="calc-row"><span>(+) Minority Interest</span><span>50</span></div>
+          <div class="calc-row"><span>(-) Associates / JV</span><span>(30)</span></div>
+          <div class="calc-row"><span>(+) Pension Deficit</span><span>20</span></div>
+          <div class="calc-row calc-total"><span><span class="calc-highlight">Enterprise Value</span></span><span class="calc-highlight">1,240</span></div>
+        </div>
+
+        <p>
+          <span class="lang-ja">IFRS 16以降、リース負債がバランスシート上に出現するため、これをNet Debtに含めるかどうかが論点になる。理論的には、<strong>EBITDAとEVは対応関係にある</strong>。EBITDAからリース費用が除外されている以上、EVにはリース負債を含めなければならない。さもなければ、分子（EV）と分母（EBITDA）が異なるキャッシュフローの対象を表すことになり、倍率が意味をなさなくなる。</span>
+          <span class="lang-en">Post-IFRS 16, lease liabilities appear on the balance sheet, and the question becomes whether to include them in Net Debt. Theoretically, <strong>EV and EBITDA must correspond</strong>. If EBITDA excludes the lease expense, EV must include the lease liability. Otherwise, the numerator (EV) and denominator (EBITDA) represent claims on different cash flow streams, and the multiple becomes meaningless.</span>
+        </p>
+
+        <div class="calc-block">
+          <div style="margin-bottom: 12px; font-weight: 500; color: var(--text-muted); font-size: 0.75em; letter-spacing: 0.1em;">
+            <span class="lang-ja">Post-IFRS 16 EV Bridge</span>
+            <span class="lang-en">Post-IFRS 16 EV Bridge</span>
+          </div>
+          <div class="calc-row"><span>Equity Value (Market Cap)</span><span>1,000</span></div>
+          <div class="calc-row"><span>(+) Financial Debt</span><span>300</span></div>
+          <div class="calc-row"><span><span class="calc-warn">(+) Lease Liabilities (IFRS 16)</span></span><span class="calc-warn">200</span></div>
+          <div class="calc-row"><span>(-) Cash & Equivalents</span><span>(100)</span></div>
+          <div class="calc-row"><span>(+) Minority Interest</span><span>50</span></div>
+          <div class="calc-row"><span>(-) Associates / JV</span><span>(30)</span></div>
+          <div class="calc-row"><span>(+) Pension Deficit</span><span>20</span></div>
+          <div class="calc-row calc-total"><span><span class="calc-highlight">Enterprise Value</span></span><span class="calc-highlight">1,440</span></div>
+        </div>
+
+        <div class="trap-box">
+          <div class="trap-label"><span class="lang-ja">Practitioner Trap</span><span class="lang-en">Practitioner Trap</span></div>
+          <p>
+            <span class="lang-ja">データベース（Capital IQ、Bloomberg等）のEV計算は、リース負債の取り扱いが統一されていない。一部のプロバイダーはIFRS 16リース負債を自動的にNet Debtに含め、他のプロバイダーは含めない。Comps分析を行う際は、<strong>EVの定義がリース負債を含んでいるかどうかを必ず確認</strong>し、ピアセット全体で一貫した処理をすること。</span>
+            <span class="lang-en">Database providers (Capital IQ, Bloomberg, etc.) are not uniform in their treatment of lease liabilities in EV calculations. Some automatically include IFRS 16 lease liabilities in Net Debt; others do not. When performing comps analysis, <strong>always verify whether the EV definition includes lease liabilities</strong> and apply consistent treatment across the entire peer set.</span>
+          </p>
+        </div>
+
+        <div class="section-sep">· · ·</div>
+
+        <!-- ===== Section 3: Why EV/EBITDA Is Not Neutral ===== -->
+
+        <h2>
+          <span class="lang-ja">3. EV/EBITDAはなぜ中立でないのか — 算術的証明</span>
+          <span class="lang-en">3. Why EV/EBITDA Is Not Neutral — An Arithmetic Proof</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">「EV/EBITDAの分子（EV）も分母（EBITDA）も同じだけ増えるから倍率は変わらない」という直感は誤りだ。増加額が同じであっても、増加率が異なるからだ。</span>
+          <span class="lang-en">"Both the numerator (EV) and denominator (EBITDA) increase by the same lease-related amount, so the multiple is unchanged" — this intuition is wrong. Even if the absolute increases were comparable, the rates of increase differ.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">以下の変数を定義する。</span>
+          <span class="lang-en">Define the following variables.</span>
+        </p>
+
+        <div class="formula">
+          EV₀ = Pre-IFRS 16 Enterprise Value<br>
+          EBITDA₀ = Pre-IFRS 16 EBITDA<br>
+          R = <span class="lang-ja">年間オペレーティングリース費用（Annual Operating Lease Expense）</span><span class="lang-en">Annual Operating Lease Expense</span><br>
+          L = <span class="lang-ja">リース負債（Lease Liability = リース料のPV）</span><span class="lang-en">Lease Liability (PV of lease payments)</span><br><br>
+
+          <span class="lang-ja">IFRS 16適用後:</span><span class="lang-en">Post-IFRS 16:</span><br>
+          EV₁ = EV₀ + L<br>
+          EBITDA₁ = EBITDA₀ + R
+        </div>
+
+        <p>
+          <span class="lang-ja">EV/EBITDA倍率の変化を確認する。</span>
+          <span class="lang-en">Examine the change in the EV/EBITDA multiple.</span>
+        </p>
+
+        <div class="formula">
+          <span class="lang-ja">Pre-IFRS 16倍率:</span><span class="lang-en">Pre-IFRS 16 multiple:</span> M₀ = EV₀ / EBITDA₀<br><br>
+          <span class="lang-ja">Post-IFRS 16倍率:</span><span class="lang-en">Post-IFRS 16 multiple:</span> M₁ = (EV₀ + L) / (EBITDA₀ + R)<br><br>
+          M₁ = M₀ <span class="lang-ja">が成立するのは</span><span class="lang-en">holds only when</span> L/R = EV₀/EBITDA₀ = M₀ <span class="lang-ja">の場合のみ</span><span class="lang-en"></span>
+        </div>
+
+        <p>
+          <span class="lang-ja">つまり、<strong>リース負債のリース費用に対する倍率（L/R）が、元のEV/EBITDA倍率（M₀）と一致するときのみ、IFRS 16は倍率に中立</strong>となる。L/Rはリース契約の平均残存期間と割引率で決まり、典型的には<strong>4〜6倍</strong>の範囲に収まる（平均残存期間5〜7年、割引率3〜5%の場合）。</span>
+          <span class="lang-en">In other words, <strong>IFRS 16 is neutral to the multiple only when the lease liability-to-lease expense ratio (L/R) equals the original EV/EBITDA multiple (M₀)</strong>. L/R is determined by the weighted average remaining lease term and discount rate, and typically falls in the range of <strong>4-6x</strong> (for average remaining terms of 5-7 years at 3-5% discount rates).</span>
+        </p>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>M₀ > L/R のとき、M₁ < M₀（倍率は低下する）。</strong>EV/EBITDAが10xの企業で、L/Rが5xの場合、IFRS 16適用後の倍率は圧縮される。つまり、ほとんどの健全な企業（EV/EBITDA > 5x）では、IFRS 16は倍率を引き下げる方向に作用する。</span>
+            <span class="lang-en"><strong>When M₀ > L/R, M₁ < M₀ (the multiple falls).</strong> For a firm trading at EV/EBITDA of 10x where L/R is 5x, the post-IFRS 16 multiple compresses. In practice, for most healthy businesses (EV/EBITDA > 5x), IFRS 16 pushes the multiple downward.</span>
+          </p>
+        </div>
+
+        <h3>
+          <span class="lang-ja">数値例：リテール企業のケース</span>
+          <span class="lang-en">Numerical Example: A Retail Company</span>
+        </h3>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th></th>
+                <th><span class="lang-ja">Pre-IFRS 16</span><span class="lang-en">Pre-IFRS 16</span></th>
+                <th><span class="lang-ja">Post-IFRS 16</span><span class="lang-en">Post-IFRS 16</span></th>
+                <th><span class="lang-ja">変動</span><span class="lang-en">Change</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="lang-ja">売上高</span><span class="lang-en">Revenue</span></td>
+                <td>1,000</td>
+                <td>1,000</td>
+                <td>—</td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">営業費用（リース費用 80 含む）</span><span class="lang-en">Operating Expenses (incl. lease expense 80)</span></td>
+                <td>(800)</td>
+                <td>(720)</td>
+                <td class="td-warn">+80</td>
+              </tr>
+              <tr>
+                <td><strong>EBITDA</strong></td>
+                <td><strong>200</strong></td>
+                <td><strong>280</strong></td>
+                <td class="td-warn">+40%</td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">D&A（ROU償却 70 含む）</span><span class="lang-en">D&A (incl. ROU depreciation 70)</span></td>
+                <td>(50)</td>
+                <td>(120)</td>
+                <td>—</td>
+              </tr>
+              <tr>
+                <td>EBIT</td>
+                <td>150</td>
+                <td>160</td>
+                <td>+7%</td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">支払利息（リース利息 12 含む）</span><span class="lang-en">Interest (incl. lease interest 12)</span></td>
+                <td>(15)</td>
+                <td>(27)</td>
+                <td>—</td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">税引前利益</span><span class="lang-en">Profit Before Tax</span></td>
+                <td>135</td>
+                <td>133</td>
+                <td><span class="lang-ja">微減</span><span class="lang-en">Slight decrease</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="calc-block">
+          <div style="margin-bottom: 12px; font-weight: 500; color: var(--text-muted); font-size: 0.75em; letter-spacing: 0.1em;">
+            <span class="lang-ja">EV/EBITDA倍率の変化</span>
+            <span class="lang-en">Change in EV/EBITDA multiple</span>
+          </div>
+          <div class="calc-row"><span>Equity Value</span><span>2,000</span></div>
+          <div class="calc-row"><span>Net Debt (pre-IFRS 16)</span><span>200</span></div>
+          <div class="calc-row"><span>EV₀</span><span>2,200</span></div>
+          <div class="calc-row"><span>EBITDA₀</span><span>200</span></div>
+          <div class="calc-row calc-total"><span>EV/EBITDA (Pre)</span><span class="calc-highlight">11.0x</span></div>
+          <br>
+          <div class="calc-row"><span><span class="calc-warn">(+) Lease Liabilities</span></span><span class="calc-warn">400</span></div>
+          <div class="calc-row"><span>EV₁</span><span>2,600</span></div>
+          <div class="calc-row"><span>EBITDA₁</span><span>280</span></div>
+          <div class="calc-row calc-total"><span>EV/EBITDA (Post)</span><span class="calc-highlight">9.3x</span></div>
+          <br>
+          <div class="calc-row"><span><span class="lang-ja">倍率変動</span><span class="lang-en">Multiple change</span></span><span class="calc-warn">-1.7x (-16%)</span></div>
+          <div class="calc-row"><span>L/R</span><span>400/80 = 5.0x</span></div>
+        </div>
+
+        <p>
+          <span class="lang-ja">L/R = 5.0x に対してM₀ = 11.0x であるため、倍率は11.0xから9.3xへと1.7ポイント低下する。企業の経済実態は何も変わっていないにもかかわらず。</span>
+          <span class="lang-en">With L/R = 5.0x against M₀ = 11.0x, the multiple falls from 11.0x to 9.3x — a 1.7-turn compression. The economic reality of the business has not changed at all.</span>
+        </p>
+
+        <div class="section-sep">· · ·</div>
+
+        <!-- ===== Section 4: EBITDAR ===== -->
+
+        <h2>
+          <span class="lang-ja">4. EBITDAR — リース中立な指標の構築</span>
+          <span class="lang-en">4. EBITDAR — Constructing a Lease-Neutral Metric</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">IFRS 16による比較可能性の崩壊に対する実務的な解答が、<strong>EBITDAR</strong>（Earnings Before Interest, Taxes, Depreciation, Amortisation, and Rent）だ。</span>
+          <span class="lang-en">The practical answer to the comparability breakdown caused by IFRS 16 is <strong>EBITDAR</strong> (Earnings Before Interest, Taxes, Depreciation, Amortisation, and Rent).</span>
+        </p>
+
+        <div class="formula">
+          <span class="lang-ja">Pre-IFRS 16:</span><span class="lang-en">Pre-IFRS 16:</span><br>
+          EBITDAR = EBITDA + Operating Lease Expense = 200 + 80 = 280<br><br>
+          <span class="lang-ja">Post-IFRS 16:</span><span class="lang-en">Post-IFRS 16:</span><br>
+          EBITDAR = EBITDA + 0 = 280<br>
+          <span class="lang-ja">（リース費用は既にEBITDAから除外済み）</span><span class="lang-en">(Lease expense already excluded from EBITDA)</span><br><br>
+          <strong><span class="lang-ja">→ EBITDARは会計基準に関係なく同一の値</span><span class="lang-en">→ EBITDAR is identical regardless of accounting standard</span></strong>
+        </div>
+
+        <p>
+          <span class="lang-ja">EBITDARは、リース費用を含まない営業キャッシュフローの近似値として、会計基準間で一貫した比較が可能になる。ただし、分母をEBITDARにする以上、分子のEVもリースを除外して対応させなければならない。</span>
+          <span class="lang-en">EBITDAR provides a proxy for operating cash flow before lease payments that is consistent across accounting standards. However, if the denominator excludes leases via EBITDAR, the EV numerator must also be adjusted to exclude leases for consistency.</span>
+        </p>
+
+        <div class="formula">
+          <strong>Lease-adjusted EV = EV - Lease Liabilities</strong><br><br>
+          <span class="lang-ja">Lease-adjusted EV / EBITDAR → リース中立な倍率</span>
+          <span class="lang-en">Lease-adjusted EV / EBITDAR → Lease-neutral multiple</span>
+        </div>
+
+        <div class="calc-block">
+          <div style="margin-bottom: 12px; font-weight: 500; color: var(--text-muted); font-size: 0.75em; letter-spacing: 0.1em;">
+            <span class="lang-ja">リース中立倍率の計算</span>
+            <span class="lang-en">Lease-neutral multiple calculation</span>
+          </div>
+          <div class="calc-row"><span>EV (Post-IFRS 16)</span><span>2,600</span></div>
+          <div class="calc-row"><span>(-) Lease Liabilities</span><span>(400)</span></div>
+          <div class="calc-row"><span>Lease-adjusted EV</span><span>2,200</span></div>
+          <div class="calc-row"><span>EBITDAR</span><span>280</span></div>
+          <div class="calc-row calc-total"><span>Lease-adj. EV / EBITDAR</span><span class="calc-highlight">7.9x</span></div>
+        </div>
+
+        <p>
+          <span class="lang-ja">この7.9xは、IFRS 16の影響を完全に排除した倍率であり、IAS 17時代の企業データとも、US GAAP企業とも直接比較可能だ。</span>
+          <span class="lang-en">This 7.9x is a multiple entirely purged of IFRS 16 effects, directly comparable to IAS 17-era data and to US GAAP reporters.</span>
+        </p>
+
+        <div class="trap-box">
+          <div class="trap-label"><span class="lang-ja">Practitioner Trap</span><span class="lang-en">Practitioner Trap</span></div>
+          <p>
+            <span class="lang-ja">EBITDARの「R」の定義が曖昧な実務家がいる。IAS 17下では「R = 注記に開示されているオペレーティングリース費用」だが、IFRS 16下では「R = 0」（リース費用が既にEBITDAに含まれていない）。つまり、<strong>IFRS 16適用企業のEBITDARはEBITDAと同値</strong>になる。Pre/Post IFRS 16の時系列比較では、IAS 17期間のEBITDAにリース費用をアドバックしてEBITDARに揃える必要がある。</span>
+            <span class="lang-en">Some practitioners are imprecise about the "R" in EBITDAR. Under IAS 17, "R = operating lease expense disclosed in notes". Under IFRS 16, "R = 0" (the lease expense is already excluded from EBITDA). In other words, <strong>for IFRS 16 reporters, EBITDAR equals EBITDA</strong>. When comparing across pre/post IFRS 16 time series, you need to add back lease expense to the IAS 17 period EBITDA to align on EBITDAR.</span>
+          </p>
+        </div>
+
+        <div class="section-sep">· · ·</div>
+
+        <!-- ===== Section 5: Industry Impact ===== -->
+
+        <h2>
+          <span class="lang-ja">5. 業種別インパクト — 誰が最も影響を受けたか</span>
+          <span class="lang-en">5. Industry Impact — Who Was Hit Hardest</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">IFRS 16の影響はリース依存度に比例する。IASB自身が2016年の影響分析で公表したデータによれば、オフバランスのオペレーティングリース残高が最も大きかったのは小売・航空・ホスピタリティの3業種だ。以下は業種別の典型的なEBITDA膨張率の推計だ。</span>
+          <span class="lang-en">The impact of IFRS 16 is proportional to lease dependency. The IASB's own 2016 effects analysis showed that off-balance-sheet operating lease obligations were largest in retail, airlines, and hospitality. Below are typical EBITDA inflation estimates by industry.</span>
+        </p>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">業種</span><span class="lang-en">Industry</span></th>
+                <th><span class="lang-ja">EBITDA膨張率</span><span class="lang-en">EBITDA Inflation</span></th>
+                <th><span class="lang-ja">典型的なL/R</span><span class="lang-en">Typical L/R</span></th>
+                <th><span class="lang-ja">EV/EBITDA変動</span><span class="lang-en">EV/EBITDA Shift</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="lang-ja">航空</span><span class="lang-en">Airlines</span></td>
+                <td class="td-warn">+30-50%</td>
+                <td>5-8x</td>
+                <td class="td-warn"><span class="lang-ja">大幅低下</span><span class="lang-en">Significant decline</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">小売（食品・ファッション）</span><span class="lang-en">Retail (grocery/fashion)</span></td>
+                <td class="td-warn">+20-40%</td>
+                <td>4-6x</td>
+                <td class="td-warn"><span class="lang-ja">大幅低下</span><span class="lang-en">Significant decline</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">飲食・ホスピタリティ</span><span class="lang-en">Restaurants/Hospitality</span></td>
+                <td class="td-warn">+25-45%</td>
+                <td>5-7x</td>
+                <td class="td-warn"><span class="lang-ja">大幅低下</span><span class="lang-en">Significant decline</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">通信</span><span class="lang-en">Telecommunications</span></td>
+                <td>+10-20%</td>
+                <td>4-6x</td>
+                <td><span class="lang-ja">中程度の低下</span><span class="lang-en">Moderate decline</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">ヘルスケア</span><span class="lang-en">Healthcare</span></td>
+                <td>+5-15%</td>
+                <td>4-5x</td>
+                <td><span class="lang-ja">小幅な低下</span><span class="lang-en">Modest decline</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">テクノロジー</span><span class="lang-en">Technology</span></td>
+                <td>+2-8%</td>
+                <td>3-5x</td>
+                <td><span class="lang-ja">軽微</span><span class="lang-en">Minimal</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">金融</span><span class="lang-en">Financial Services</span></td>
+                <td>+1-5%</td>
+                <td>3-4x</td>
+                <td><span class="lang-ja">ほぼなし</span><span class="lang-en">Negligible</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>
+          <span class="lang-ja">航空業界は特に顕著だ。航空機リースは長期かつ高額であり、IFRS 16導入により一部の航空会社ではバランスシート上の負債が2倍以上に膨張した。British Airwaysの親会社IAGは、IFRS 16初年度適用時にリース負債を約100億ユーロ認識し、Net Debt/EBITDA比率が劇的に変化した（IAG, Annual Report 2019）。</span>
+          <span class="lang-en">The airline industry is particularly striking. Aircraft leases are long-term and high-value, and IFRS 16 adoption more than doubled on-balance-sheet debt for some carriers. IAG, parent of British Airways, recognised approximately EUR 10 billion of lease liabilities upon initial IFRS 16 application, dramatically altering its Net Debt/EBITDA ratio (IAG, Annual Report 2019).</span>
+        </p>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>Comps分析でリース依存度が異なる企業を並べると、IFRS 16は倍率差を生む。</strong>例えば、店舗を自社保有するリテーラーと全店舗をリースするリテーラーを比較する場合、IFRS 16下のEV/EBITDAは後者の方が低く見える。これは事業の質の差ではなく、不動産戦略の差に過ぎない。EV/EBITDARを使えば、この歪みは消える。</span>
+            <span class="lang-en"><strong>In comps analysis, comparing firms with different lease intensities creates artificial multiple gaps under IFRS 16.</strong> For example, a retailer that owns its stores versus one that leases all locations will show a lower EV/EBITDA for the latter under IFRS 16. This is not a difference in business quality — it is merely a difference in property strategy. Using EV/EBITDAR eliminates this distortion.</span>
+          </p>
+        </div>
+
+        <div class="section-sep">· · ·</div>
+
+        <!-- ===== Section 6: Cross-Standard Comparability ===== -->
+
+        <h2>
+          <span class="lang-ja">6. クロススタンダード比較 — IFRS vs US GAAP vs J-GAAP</span>
+          <span class="lang-en">6. Cross-Standard Comparability — IFRS vs US GAAP vs J-GAAP</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">IFRS 16の影響を正しく理解するには、他の会計基準におけるリース処理との比較が不可欠だ。</span>
+          <span class="lang-en">To properly understand the impact of IFRS 16, comparison with lease treatment under other accounting standards is essential.</span>
+        </p>
+
+        <h3>
+          <span class="lang-ja">US GAAP: ASC 842 — デュアルモデルの維持</span>
+          <span class="lang-en">US GAAP: ASC 842 — Preserving the Dual Model</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">US GAAPのASC 842（2019年発効、非公開企業は2022年）もリースのオンバランス化を要求するが、P&L処理においてIFRS 16と決定的に異なる。ASC 842はオペレーティングリースとファイナンスリースの二分法を維持し、<strong>オペレーティングリースについてはP&L上で単一のリース費用（straight-line）を営業費用として計上し続ける</strong>。つまり、BSはIFRS 16と同様にリース負債が計上されるが、EBITDAへの影響はIFRS 16より小さい。</span>
+          <span class="lang-en">US GAAP's ASC 842 (effective 2019 for public companies, 2022 for private) also requires on-balance-sheet recognition of leases, but differs fundamentally from IFRS 16 in its P&L treatment. ASC 842 retains the dual classification of operating and finance leases, and <strong>for operating leases, a single straight-line lease expense continues to be recognised within operating expenses on the P&L</strong>. Thus, the balance sheet shows lease liabilities (similar to IFRS 16), but the impact on EBITDA is smaller than under IFRS 16.</span>
+        </p>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th></th>
+                <th>IFRS 16</th>
+                <th>US GAAP (ASC 842)</th>
+                <th><span class="lang-ja">J-GAAP（現行）</span><span class="lang-en">J-GAAP (current)</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="lang-ja">BS: リース負債</span><span class="lang-en">BS: Lease liability</span></td>
+                <td class="td-accent"><span class="lang-ja">認識</span><span class="lang-en">Recognised</span></td>
+                <td class="td-accent"><span class="lang-ja">認識</span><span class="lang-en">Recognised</span></td>
+                <td><span class="lang-ja">ファイナンスリースのみ</span><span class="lang-en">Finance leases only</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">P&L: オペリース費用</span><span class="lang-en">P&L: Op. lease expense</span></td>
+                <td class="td-warn"><span class="lang-ja">D&A + 利息に分解</span><span class="lang-en">Split to D&A + Interest</span></td>
+                <td><span class="lang-ja">単一費用（Opex内）</span><span class="lang-en">Single expense (in Opex)</span></td>
+                <td><span class="lang-ja">単一費用（Opex内）</span><span class="lang-en">Single expense (in Opex)</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">EBITDAへの影響</span><span class="lang-en">Impact on EBITDA</span></td>
+                <td class="td-warn"><span class="lang-ja">大（リース費用全額加算）</span><span class="lang-en">Large (full lease cost added)</span></td>
+                <td><span class="lang-ja">小（一部のみ）</span><span class="lang-en">Small (partial only)</span></td>
+                <td><span class="lang-ja">なし</span><span class="lang-en">None</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">EVへの影響</span><span class="lang-en">Impact on EV</span></td>
+                <td class="td-warn"><span class="lang-ja">リース負債全額加算</span><span class="lang-en">Full lease liability added</span></td>
+                <td class="td-warn"><span class="lang-ja">リース負債全額加算</span><span class="lang-en">Full lease liability added</span></td>
+                <td><span class="lang-ja">ファイナンスリースのみ</span><span class="lang-en">Finance leases only</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="trap-box">
+          <div class="trap-label"><span class="lang-ja">Practitioner Trap</span><span class="lang-en">Practitioner Trap</span></div>
+          <p>
+            <span class="lang-ja">IFRS 16適用企業とUS GAAP企業をEV/EBITDAで直接比較してはならない。IFRS企業のEBITDAはリース費用分だけ膨張しているが、US GAAP企業のEBITDAはオペレーティングリース費用がまだ控除されたままだ。EBITDARベースに揃えるか、IFRS企業のEBITDAからリース費用分を差し引いて「Pre-IFRS 16 EBITDA」に戻すか、どちらかの調整が必要。</span>
+            <span class="lang-en">Never directly compare IFRS 16 reporters and US GAAP reporters on EV/EBITDA. The IFRS firm's EBITDA is inflated by the lease expense, whilst the US GAAP firm's EBITDA still has the operating lease charge deducted. Either align on EBITDAR, or subtract the lease expense from the IFRS firm's EBITDA to derive a "Pre-IFRS 16 EBITDA".</span>
+          </p>
+        </div>
+
+        <h3>
+          <span class="lang-ja">日本基準（J-GAAP）の動向 — ASBJ新リース基準</span>
+          <span class="lang-en">Japanese GAAP Trajectory — ASBJ New Lease Standard</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">日本基準では現在もリース取引に関する会計基準（企業会計基準第13号）が適用されており、オペレーティングリースはオフバランスのままだ。しかしASBJ（企業会計基準委員会）は2024年9月に新リース基準（企業会計基準第34号）を公表し、IFRS 16と概ね整合する借手のオンバランス化を2027年4月1日以後開始する事業年度から強制適用とした。</span>
+          <span class="lang-en">Japanese GAAP currently applies ASBJ Statement No. 13 on lease transactions, keeping operating leases off-balance-sheet. However, the ASBJ published a new lease standard (ASBJ Statement No. 34) in September 2024, broadly converging with IFRS 16 to require on-balance-sheet recognition by lessees. Mandatory application begins for fiscal years starting on or after 1 April 2027.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">つまり、2027年度以降は日本基準企業もIFRS 16と同様のEBITDA膨張・EV膨張を経験する。J-GAAP企業を含むグローバルComps分析では、この適用タイミングの差異を意識しなければならない。</span>
+          <span class="lang-en">In other words, from FY2027 onwards, J-GAAP reporters will experience the same EBITDA and EV inflation as IFRS 16 adopters. Global comps analysis that includes J-GAAP firms must be conscious of this adoption timing difference.</span>
+        </p>
+
+        <div class="section-sep">· · ·</div>
+
+        <!-- ===== Section 7: M&A Implications ===== -->
+
+        <h2>
+          <span class="lang-ja">7. M&A実務への含意 — リース調整が交渉論点になる</span>
+          <span class="lang-en">7. M&A Implications — Lease Adjustments as a Negotiation Point</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">M&A取引において、IFRS 16は3つの実務論点を生んでいる。</span>
+          <span class="lang-en">In M&A transactions, IFRS 16 creates three practical issues.</span>
+        </p>
+
+        <h3>
+          <span class="lang-ja">7.1 EV-Equity Bridge条項</span>
+          <span class="lang-en">7.1 EV-to-Equity Bridge Clauses</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">SPA（株式譲渡契約）のEV-Equity bridge条項では、Net Debtの定義が交渉の焦点になる。リース負債をNet Debtに含めるかどうかで、最終的な株式譲渡価格が大きく変わる。<strong>買い手はリース負債をNet Debtに含めたい</strong>（EVからの控除額が増え、Equity Valueが下がる）。<strong>売り手はリース負債を除外したい</strong>（控除額が減り、Equity Valueが上がる）。</span>
+          <span class="lang-en">In the EV-to-Equity bridge clause of SPAs (Share Purchase Agreements), the definition of Net Debt becomes a focal point of negotiation. Whether lease liabilities are included in Net Debt significantly affects the final equity purchase price. <strong>Buyers want lease liabilities in Net Debt</strong> (increasing the deduction from EV, lowering Equity Value). <strong>Sellers want them excluded</strong> (reducing the deduction, raising Equity Value).</span>
+        </p>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>原則は「EBITDAとの対応」。</strong>交渉の出発点は明確だ。EBITDAベースで倍率を決めた以上、そのEBITDAからリース費用が除外されているのであれば、EVにリース負債を含めなければ整合性がない。逆に、Pre-IFRS 16 EBITDAで倍率交渉した場合は、リース負債をNet Debtから除外するのが整合的だ。</span>
+            <span class="lang-en"><strong>The principle is "consistency with EBITDA".</strong> The starting point is clear. If the multiple was agreed on an EBITDA basis where lease expense is excluded, then lease liabilities must be in EV for consistency. Conversely, if the multiple was negotiated on a Pre-IFRS 16 EBITDA basis, excluding lease liabilities from Net Debt is the consistent approach.</span>
+          </p>
+        </div>
+
+        <h3>
+          <span class="lang-ja">7.2 Normalised EBITDAの調整</span>
+          <span class="lang-en">7.2 Normalised EBITDA Adjustments</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">DD（デューデリジェンス）で作成されるNormalised EBITDA（正規化EBITDA）は、IFRS 16の影響を明示的に取り扱う必要がある。IM（インフォメーション・メモランダム）やManagement Presentationで提示されるEBITDAが「Pre-IFRS 16」か「Post-IFRS 16」かを確認し、倍率のベースと一致させること。買い手のバリュエーションモデルと売り手の提示資料でEBITDAの定義が異なっていると、倍率の比較が意味をなさなくなる。</span>
+          <span class="lang-en">Normalised EBITDA prepared during due diligence must explicitly address the IFRS 16 effect. Verify whether the EBITDA presented in the IM (Information Memorandum) or Management Presentation is "Pre-IFRS 16" or "Post-IFRS 16", and align it with the multiple basis. If the buyer's valuation model and the seller's presentation materials use different EBITDA definitions, comparisons become meaningless.</span>
+        </p>
+
+        <h3>
+          <span class="lang-ja">7.3 リースの「Debt-like」性質の評価</span>
+          <span class="lang-en">7.3 Assessing the "Debt-like" Nature of Leases</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">すべてのリースが等しくDebt-likeとは限らない。短期リース、解約可能リース、変動リース料（売上連動賃料等）は、固定長期有利子負債とは異なるリスクプロファイルを持つ。M&A実務では、リース契約の詳細レビューに基づいて、<strong>どのリースをNet Debtに含め、どのリースを営業費用として扱うか</strong>を個別に判断するケースも増えている。</span>
+          <span class="lang-en">Not all leases are equally debt-like. Short-term leases, cancellable leases, and variable lease payments (such as turnover-based rent) have a fundamentally different risk profile from fixed long-term financial debt. In M&A practice, it is increasingly common to <strong>evaluate which leases to include in Net Debt and which to treat as operating costs</strong> based on detailed review of the lease portfolio.</span>
+        </p>
+
+        <div class="section-sep">· · ·</div>
+
+        <!-- ===== Section 8: Practical Adjustment Framework ===== -->
+
+        <h2>
+          <span class="lang-ja">8. 実務調整フレームワーク — 5ステップ</span>
+          <span class="lang-en">8. Practical Adjustment Framework — Five Steps</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">IFRS 16環境下でのComps分析およびDCFモデリングにおける推奨調整手順を整理する。</span>
+          <span class="lang-en">Below is the recommended adjustment procedure for comps analysis and DCF modelling in the IFRS 16 environment.</span>
+        </p>
+
+        <ul class="numbered-list">
+          <li>
+            <span class="num">1</span>
+            <span>
+              <span class="lang-ja"><strong>会計基準の確認</strong> — ピアセット全企業の適用基準（IFRS / US GAAP / J-GAAP）を特定し、リース処理方式を一覧化する。IFRS 16の初年度適用方法（完全遡及法 vs. 修正遡及法）も確認する。</span>
+              <span class="lang-en"><strong>Identify accounting standards</strong> — Map the applicable standard (IFRS / US GAAP / J-GAAP) for every firm in the peer set and tabulate the lease treatment. Also note the IFRS 16 transition method (full retrospective vs. modified retrospective).</span>
+            </span>
+          </li>
+          <li>
+            <span class="num">2</span>
+            <span>
+              <span class="lang-ja"><strong>リースデータの収集</strong> — 財務諸表の注記から、リース負債残高（流動＋非流動）、年間減価償却（ROU）、年間リース利息、短期リース費用・少額リース費用を抽出する。IAS 17期間については、注記のオペレーティングリース最低支払額を使用する。</span>
+              <span class="lang-en"><strong>Collect lease data</strong> — From financial statement notes, extract lease liability balances (current + non-current), annual ROU depreciation, annual lease interest, and short-term/low-value lease expenses. For IAS 17 periods, use the minimum operating lease payments disclosed in notes.</span>
+            </span>
+          </li>
+          <li>
+            <span class="num">3</span>
+            <span>
+              <span class="lang-ja"><strong>EBITDARの計算</strong> — IFRS 16企業: EBITDAR = EBITDA（既にリース除外済み）。US GAAP企業: EBITDAR = EBITDA + Operating Lease Expense。J-GAAP企業: EBITDAR = EBITDA + オペレーティングリース費用。</span>
+              <span class="lang-en"><strong>Calculate EBITDAR</strong> — IFRS 16 firms: EBITDAR = EBITDA (leases already excluded). US GAAP firms: EBITDAR = EBITDA + Operating Lease Expense. J-GAAP firms: EBITDAR = EBITDA + Operating Lease Expense.</span>
+            </span>
+          </li>
+          <li>
+            <span class="num">4</span>
+            <span>
+              <span class="lang-ja"><strong>Lease-adjusted EVの計算</strong> — 全企業について: Lease-adjusted EV = EV - Lease Liabilities（BS計上額）。US GAAP・J-GAAP企業でオフバランスリースがある場合は、注記の最低リース料をPV換算してEVに加算した上で差し引く（結果的にEVに影響なし）。</span>
+              <span class="lang-en"><strong>Calculate Lease-adjusted EV</strong> — For all firms: Lease-adjusted EV = EV - Lease Liabilities (on BS). For US GAAP/J-GAAP firms with off-balance-sheet leases, capitalise minimum lease payments at PV, add to EV, and then subtract (net zero effect on Lease-adjusted EV).</span>
+            </span>
+          </li>
+          <li>
+            <span class="num">5</span>
+            <span>
+              <span class="lang-ja"><strong>Lease-adjusted EV / EBITDAR で比較</strong> — このリース中立倍率をピアセット全体で計算し、中央値・四分位数を算出する。標準的なEV/EBITDAも参考として併記するが、リース依存度が異なるピア間の比較にはEV/EBITDARを優先する。</span>
+              <span class="lang-en"><strong>Compare on Lease-adjusted EV / EBITDAR</strong> — Calculate this lease-neutral multiple across the entire peer set, deriving the median and interquartile range. Present standard EV/EBITDA as a reference, but prioritise EV/EBITDAR for comparisons across peers with differing lease intensities.</span>
+            </span>
+          </li>
+        </ul>
+
+        <div class="section-sep">· · ·</div>
+
+        <!-- ===== Section 9: Conclusion ===== -->
+
+        <h2>
+          <span class="lang-ja">9. 結語 — リース会計の「中立性幻想」を超えて</span>
+          <span class="lang-en">9. Conclusion — Beyond the "Neutrality Illusion" of Lease Accounting</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">IFRS 16は透明性を高める改善だったが、バリュエーション実務には予想以上の波紋を広げた。「分子も分母も増えるから中立」という直感は算術的に誤りであり、リース依存度の異なる企業間のComps比較を歪め、M&A交渉のEV-Equity bridge条項に新たな論点を追加した。</span>
+          <span class="lang-en">IFRS 16 was an improvement in transparency, but it sent larger ripples through valuation practice than expected. The intuition that "both numerator and denominator grow, so it's neutral" is arithmetically wrong, distorting comps comparisons between firms with different lease intensities and adding new negotiation points to EV-to-Equity bridge clauses in M&A.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">実務家が取るべきアプローチは明確だ。EBITDARとLease-adjusted EVによるリース中立な比較枠組みを標準手法として採用し、クロススタンダード分析では会計基準間のP&L処理差異を明示的に調整する。そしてM&A交渉では、EBITDAの定義とNet Debtの定義が一貫していることを、SPA条項レベルで確認する。</span>
+          <span class="lang-en">The approach practitioners should take is clear. Adopt EBITDAR and Lease-adjusted EV as the standard lease-neutral comparison framework. In cross-standard analysis, explicitly adjust for P&L treatment differences between accounting regimes. And in M&A negotiations, verify at the SPA clause level that the EBITDA definition and Net Debt definition are internally consistent.</span>
+        </p>
+
+        <div class="pull-quote">
+          <p>
+            <span class="lang-ja">会計基準は経済実態を変えない。しかし、会計基準が変わるとき、その経済実態を測る道具も再校正しなければならない。</span>
+            <span class="lang-en">Accounting standards do not change economic reality. But when the standard changes, the instruments we use to measure that reality must be recalibrated.</span>
+          </p>
+        </div>
+
+      </article>
+
+      <!-- 4. Sidebar -->
+      <aside class="article-sidebar">
+
+        <!-- Key Facts -->
+        <div class="sidebar-card">
+          <div class="section-label">Key Facts</div>
+          <div class="keyfacts-grid">
+            <div class="fact-card">
+              <div class="fact-value">2019</div>
+              <div class="fact-desc"><span class="lang-ja">IFRS 16 発効年</span><span class="lang-en">IFRS 16 effective year</span></div>
+            </div>
+            <div class="fact-card highlight">
+              <div class="fact-value">4-6x</div>
+              <div class="fact-desc"><span class="lang-ja">典型的な L/R 比率</span><span class="lang-en">Typical L/R ratio</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">+30-50%</div>
+              <div class="fact-desc"><span class="lang-ja">航空業 EBITDA膨張率</span><span class="lang-en">Airline EBITDA inflation</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">2027</div>
+              <div class="fact-desc"><span class="lang-ja">ASBJ新リース基準 適用開始</span><span class="lang-en">ASBJ new lease std. effective</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Highlights -->
+        <div class="sidebar-card">
+          <div class="section-label"><span class="lang-ja">Highlights</span><span class="lang-en">Highlights</span></div>
+          <ul class="highlights-list">
+            <li class="highlight-item">
+              <span class="hl-num">01</span>
+              <span class="hl-text"><span class="lang-ja">IFRS 16でEBITDAは旧リース費用分だけ機械的に膨張する</span><span class="lang-en">IFRS 16 mechanically inflates EBITDA by the former lease expense</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">02</span>
+              <span class="hl-text"><span class="lang-ja">EV/EBITDAは中立でない — M₀ > L/Rなら倍率は低下する</span><span class="lang-en">EV/EBITDA is not neutral — multiple falls when M₀ > L/R</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">03</span>
+              <span class="hl-text"><span class="lang-ja">Lease-adj. EV / EBITDARがリース中立な標準倍率</span><span class="lang-en">Lease-adj. EV / EBITDAR is the lease-neutral standard multiple</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">04</span>
+              <span class="hl-text"><span class="lang-ja">US GAAP ASC 842はP&L処理が異なり直接比較不可</span><span class="lang-en">US GAAP ASC 842 differs in P&L treatment — no direct comparison</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">05</span>
+              <span class="hl-text"><span class="lang-ja">M&AのSPA条項でEBITDA定義とNet Debt定義の整合性が必須</span><span class="lang-en">SPA clauses must align EBITDA and Net Debt definitions</span></span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Series Index -->
+        <div class="sidebar-card">
+          <div class="section-label">Valuation Theory Lab</div>
+          <ol class="highlights-list" style="list-style:none;padding:0;">
+            <li class="highlight-item">
+              <span class="hl-num">01</span>
+              <span class="hl-text"><a href="./2026-03-20-valuation.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">Terminal Value</span><span class="lang-en">Terminal Value</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">02</span>
+              <span class="hl-text"><a href="./2026-03-21-wacc.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">WACC & CAPM</span><span class="lang-en">WACC & CAPM</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">03</span>
+              <span class="hl-text"><a href="./2026-03-21-beta-hamada.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">Beta & Hamada</span><span class="lang-en">Beta & Hamada</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">04</span>
+              <span class="hl-text"><a href="./2026-03-22-cyclical.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">Cyclical & Mid-cycle</span><span class="lang-en">Cyclical & Mid-cycle</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">05</span>
+              <span class="hl-text"><a href="./2026-03-22-dloc-dlom.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">DLOC & DLOM</span><span class="lang-en">DLOC & DLOM</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">06</span>
+              <span class="hl-text"><a href="./2026-03-22-multiples-comparability.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">Multiples Comparability</span><span class="lang-en">Multiples Comparability</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">13</span>
+              <span class="hl-text" style="color:var(--accent);font-weight:600;"><span class="lang-ja">IFRS 16 × EV Bridge ← Now</span><span class="lang-en">IFRS 16 × EV Bridge ← Now</span></span>
+            </li>
+          </ol>
+        </div>
+
+        <!-- Key References -->
+        <div class="sidebar-card">
+          <div class="section-label">Key References</div>
+          <ul class="source-list" style="margin-top:10px;">
+            <li><a href="https://www.ifrs.org/issued-standards/list-of-standards/ifrs-16-leases/" target="_blank" rel="noopener">IFRS 16 Leases — IFRS Foundation</a> <span class="source-tag">[official]</span></li>
+            <li><a href="https://www.ifrs.org/content/dam/ifrs/publications/amendments/english/2016/ifrs-16-effects-analysis.pdf" target="_blank" rel="noopener">IFRS 16 Effects Analysis (2016) — IASB</a> <span class="source-tag">[official]</span></li>
+            <li><a href="https://www.fasb.org/page/PageContent?pageId=/standards/accounting-standards-codification-842.html" target="_blank" rel="noopener">ASC 842 Leases — FASB</a> <span class="source-tag">[official]</span></li>
+            <li><a href="https://www.asb.or.jp/jp/accounting_standards/accounting_standards/y2024/2024-0913.html" target="_blank" rel="noopener">ASBJ Statement No. 34 — Leases</a> <span class="source-tag">[official]</span></li>
+            <li><a href="https://www.iairgroup.com/~/media/Files/I/IAG/annual-reports/iag-annual-report-and-accounts-2019.pdf" target="_blank" rel="noopener">IAG Annual Report 2019</a> <span class="source-tag">[corporate]</span></li>
+            <li><a href="https://pages.stern.nyu.edu/~adamodar/" target="_blank" rel="noopener">Damodaran Online — NYU Stern</a> <span class="source-tag">[academic]</span></li>
+          </ul>
+        </div>
+
+      </aside>
+
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <span>Valuation Theory Lab #013 | donato Valuation Notes | 2026-03-29</span>
+  <span>
+    <span class="lang-ja">本稿は理論解説を目的としています。投資・M&Aの意思決定には専門家への確認を推奨します。</span>
+    <span class="lang-en">This article is intended as a theoretical discussion. Professional advice should be sought for investment and M&A decisions.</span>
+  </span>
+</footer>
+
+<script>
+  // Progress bar
+  window.addEventListener('scroll', function() {
+    var h = document.documentElement;
+    var pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    document.getElementById('progress-bar').style.width = Math.min(pct, 100) + '%';
+  });
+
+  // Reading time (500 chars/min)
+  (function() {
+    var text = document.querySelector('.article-body') ? document.querySelector('.article-body').textContent : '';
+    var chars = text.length;
+    var minutes = Math.ceil(chars / 500);
+    var el1 = document.getElementById('reading-time-badge');
+    var el2 = document.getElementById('reading-time-badge2');
+    if (el1) el1.querySelector('.lang-ja').textContent = '約' + minutes + '分';
+    if (el2) el2.querySelector('.lang-ja').textContent = '約' + minutes + '分';
+    if (el1) el1.querySelector('.lang-en').textContent = '~' + minutes + ' min read';
+    if (el2) el2.querySelector('.lang-en').textContent = '~' + minutes + ' min read';
+  })();
+
+  // Lang toggle
+  let currentLang = localStorage.getItem('hp-lang') || 'ja';
+  let currentTheme = localStorage.getItem('hp-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('hp-lang', lang);
+    document.querySelectorAll('.lang-ja').forEach(el => el.style.display = lang === 'ja' ? 'inline' : 'none');
+    document.querySelectorAll('.lang-en').forEach(el => el.style.display = lang === 'en' ? 'inline' : 'none');
+    document.querySelectorAll('.art-lang-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+    document.documentElement.lang = lang === 'ja' ? 'ja' : 'en';
+  }
+  function toggleTheme() {
+    currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+    localStorage.setItem('hp-theme', currentTheme);
+    document.body.classList.toggle('dark', currentTheme === 'dark');
+    document.getElementById('theme-btn').textContent = currentTheme === 'light' ? '☀' : '☾';
+  }
+  document.addEventListener('DOMContentLoaded', () => {
+    setLang(currentLang);
+    if (currentTheme === 'dark') {
+      document.body.classList.add('dark');
+      document.getElementById('theme-btn').textContent = '☾';
+    }
+  });
+</script>
+
+</body>
+</html>

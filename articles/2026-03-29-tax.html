@@ -551,6 +551,9 @@
     }
     @page { size: A4; margin: 20mm 15mm; }
 
+    /* ===== RESPONSIVE BASE ===== */
+    img, figure, svg { max-width: 100%; height: auto; }
+
     /* ===== MOBILE ===== */
     @media (max-width: 900px) {
       .article-body { grid-column: 1 / -1; }
@@ -558,6 +561,18 @@
       .article-grid { display: block; }
       .read-grid { grid-template-columns: 1fr; }
       #sticky-bar { flex-wrap: wrap; gap: 6px; }
+    }
+    @media (max-width: 768px) {
+      .article-grid { display: block; }
+      .article-sidebar { display: none; }
+      #sticky-bar { font-size: 0.75rem; padding: 6px 12px; }
+      h1 { font-size: clamp(1.6rem, 5vw, 2.2rem); }
+    }
+    @media (max-width: 480px) {
+      body { font-size: 15px; }
+      .article-body { padding: 0 12px; }
+      .exec-summary { padding: 16px; }
+      .fact-card { min-width: unset; width: 100%; }
     }
 
     body.dark {
@@ -710,7 +725,7 @@
             <div class="section-label"><span class="lang-ja">Tax Law 実務家への含意</span><span class="lang-en">Implications for Tax Practitioners</span></div>
             <ul class="implications-list">
               <li class="implication-item">
-                <span class="lang-ja"><strong>Pillar Two実効税率シミュレーション</strong> &#8212; 多国籍企業のタックスプランニングにおいて、UTPR/QDMTT適用後の実効税率を即座に更新すべき</span>
+                <span class="lang-ja"><strong>Pillar Two実効税率シミュレーション</strong> &#8212; 多国籍企業のタックスプランニングにおいて、UTPR/QDMTT適用後の実効税率モデルを即座に更新すべき</span>
                 <span class="lang-en"><strong>Pillar Two effective tax rate simulation</strong> &#8212; Multinational tax planning must immediately refresh effective tax rate models post-UTPR/QDMTT</span>
               </li>
               <li class="implication-item">
@@ -750,8 +765,8 @@
         <h3><span class="lang-ja">改正の背景</span><span class="lang-en">Background</span></h3>
 
         <p>
-          <span class="lang-ja">1995年以来据え置かれてきた所得税の課税最低限（基礎控除48万円＋給与所得控除最低保障額55万円＝103万円）が、物価上昇を反映して引き上げられた。「178万円」の算出根拠は、1995年当時の最低賃金と現在の最低賃金の比率（約1.73倍）を103万円に乗じたもの。</span>
-          <span class="lang-en">The minimum taxable income threshold (basic deduction of 480k yen + minimum employment income deduction of 550k yen = 1.03m yen), unchanged since 1995, has been raised to reflect cumulative price increases. The figure of 1.78m yen is derived by applying the ratio of current to 1995 minimum wages (approximately 1.73x) to the 1.03m yen base.</span>
+          <span class="lang-ja">年収103万円という数字は、実に30年間変わらなかった。その間、最低賃金は約1.73倍になり、物価も上昇し続けた。1995年以来据え置かれてきた所得税の課税最低限（基礎控除48万円＋給与所得控除最低保障額55万円＝103万円）が、今回の改正でようやく物価上昇を反映して引き上げられた。「178万円」の算出根拠は、1995年当時の最低賃金と現在の最低賃金の比率（約1.73倍）を103万円に乗じたもの。</span>
+          <span class="lang-en">The 1.03m yen threshold had not moved for thirty years. Over that period, the minimum wage rose by approximately 1.73x and prices climbed steadily. The minimum taxable income threshold (basic deduction of 480k yen + minimum employment income deduction of 550k yen = 1.03m yen), unchanged since 1995, has now been raised to reflect cumulative price increases. The figure of 1.78m yen is derived by applying the ratio of current to 1995 minimum wages (approximately 1.73x) to the 1.03m yen base.</span>
         </p>
 
         <h3><span class="lang-ja">具体的な変更点</span><span class="lang-en">Specific Changes</span></h3>
@@ -887,7 +902,7 @@
           </svg>
         </figure>
 
-        <h3><span class="lang-ja">Finance Proが見落としがちなポイント</span><span class="lang-en">Commonly Overlooked Points</span></h3>
+        <h3><span class="lang-ja">Finance Professionalが見落としやすいポイント</span><span class="lang-en">Commonly Overlooked Points</span></h3>
 
         <div class="trap-box">
           <div class="trap-label"><span class="lang-ja">注意</span><span class="lang-en">Caution</span></div>
@@ -947,7 +962,7 @@
 
         <div class="insight-box">
           <p>
-            <span class="lang-ja"><strong>実質的な税負担は変わらない</strong>が、復興財源の課税期間延長（2037年まで）は、「一時的」とされた付加税の恒久化リスクを示唆している。防衛費のGDP比2%目標達成には法人税・たばこ税の追加増税も予定されており、今後の動向に注意が必要。</span>
+            <span class="lang-ja"><strong>実質的な税負担は変わらない</strong>が、復興財源の課税期間延長（2037年まで）は、「一時的」とされた付加税の恒久化リスクを示唆している。防衛費のGDP比2%目標達成には法人税・たばこ税の追加増税も予定されており、今後の動向に注視が必要。</span>
             <span class="lang-en"><strong>The effective tax burden remains unchanged</strong>, yet extending the reconstruction surtax to 2037 signals the risk of a &ldquo;temporary&rdquo; levy becoming permanent. Achieving the 2% of GDP defence spending target also involves planned increases to corporate tax and tobacco tax, warranting continued monitoring.</span>
           </p>
         </div>
@@ -1160,7 +1175,7 @@
           <li><span class="lang-ja">海外委託研究: 控除対象額に制限あり</span><span class="lang-en">Overseas outsourced research: cap on eligible amounts</span></li>
         </ul>
 
-        <h3><span class="lang-ja">Finance Proへの影響</span><span class="lang-en">Impact on Finance Professionals</span></h3>
+        <h3><span class="lang-ja">Finance Professionalへの影響</span><span class="lang-en">Impact on Finance Professionals</span></h3>
 
         <div class="insight-box">
           <p>
@@ -1314,7 +1329,7 @@
         <h3><span class="lang-ja">UTPR（Under-Taxed Profits Rule）の仕組み</span><span class="lang-en">How UTPR Works</span></h3>
 
         <p>
-          <span class="lang-ja">多国籍企業グループの構成会社等が所在する国の実効税率が15%を下回る場合、IIRによる課税後の残余のトップアップ税額（UTPR税額）を、UTPR導入国に所在する構成会社に配分して課税する。</span>
+          <span class="lang-ja">多国籍企業グループの構成会社等が所在する国の実効税率が15%を下回る場合、IIRによる課税後の残余トップアップ税額（UTPR税額）を、UTPR導入国に所在する構成会社に配分して課税する。</span>
           <span class="lang-en">Where the effective tax rate in a jurisdiction where group constituent entities are located falls below 15%, the residual top-up tax amount after IIR (the UTPR tax) is allocated to constituent entities in UTPR-adopting jurisdictions.</span>
         </p>
 
@@ -1415,7 +1430,7 @@
         </div>
 
         <p>
-          <span class="lang-ja">大企業の賃上げ税制廃止は、「自律的な賃上げが定着した」との政策判断だが、実際には税制優遇なしでの賃上げ継続に企業が消極的になるリスクもある。</span>
+          <span class="lang-ja">大企業の賃上げ税制廃止は、「自律的な賃上げが定着した」との政策判断だが、実際には税制優遇なしで賃上げを継続することに企業が消極的になるリスクもある。</span>
           <span class="lang-en">The abolition for large enterprises reflects a policy judgement that autonomous wage increases have taken root, though there is a risk that firms become less willing to sustain raises without the tax incentive.</span>
         </p>
 
@@ -1476,8 +1491,8 @@
         <h3><span class="lang-ja">消費税 &#8212; クロスボーダーサービスの課税拡大</span><span class="lang-en">Consumption Tax &#8212; Broader Cross-border Service Taxation</span></h3>
 
         <p>
-          <span class="lang-ja">日本国内の不動産に関するサービスを非居住者に提供する場合も消費税の課税対象に追加。</span>
-          <span class="lang-en">Services related to Japanese real estate provided to non-residents are now brought within the scope of consumption tax.</span>
+          <span class="lang-ja">日本国内の不動産に関するサービスを非居住者に提供する場合も消費税の課税対象に追加。対象は不動産管理・仲介・鑑定等の役務提供で、海外投資家向けに国内不動産サービスを提供する事業者は請求書・契約書の消費税処理の見直しが必要になる。クロスボーダー取引を扱う法務・財務チームは、2026年10月以降の新規契約締結時に課税対象の確認を怠らないようにしたい。</span>
+          <span class="lang-en">Services related to Japanese real estate provided to non-residents are now brought within the scope of consumption tax. Covered services include property management, brokerage, and appraisal. Businesses providing domestic real estate services to overseas investors will need to review consumption tax treatment in their invoices and contracts. Legal and finance teams handling cross-border transactions should confirm taxability at contract execution from October 2026 onwards.</span>
         </p>
 
         <div class="section-sep">&#8230;</div>

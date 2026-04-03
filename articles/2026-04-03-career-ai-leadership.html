@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AIエージェント時代のリーダーシップ変革。管理者からオーケストレーターへの転換と、Finance Professionalが今鍛えるべき3つの領域。">
+  <title>AI時代のリーダーシップ — 管理者からオーケストレーターへ | Finance Professional x Career | donato</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+JP:wght@300;400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../brand.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:           #F8F7F4;
+      --bg-code:      #EEECEA;
+      --bg-quote:     #EEECEA;
+      --bg-highlight: #EBF3FB;
+      --bg-subtle:    #F0EFEB;
+      --bg-card:      #F0EFEB;
+      --bg-header:    #F8F7F4;
+      --text-primary: #111320;
+      --text-body:    #2A2C3E;
+      --text-muted:   #565C70;
+      --text-light:   #888EA0;
+      --accent:       #1A6EB0;
+      --accent-warm:  #D4A010;
+      --border:       #D4D2CC;
+      --border-quote: #B8B6B0;
+      --border-light: #D4D2CC;
+      --tag-bg:       #E4EFF8;
+      --tag-text:     #1A6EB0;
+      --table-stripe: #F0EFEB;
+    }
+
+    /* ===== PROGRESS BAR ===== */
+    #progress-bar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      width: 0%;
+      background: var(--accent);
+      z-index: 300;
+      transition: width 0.1s linear;
+    }
+
+    body {
+      font-family: 'Noto Serif JP', Georgia, serif;
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--text-primary);
+      background: var(--bg);
+    }
+
+    /* ===== SITE HEADER ===== */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg-header);
+      border-bottom: 2px solid var(--accent);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .site-header-left { display: flex; align-items: center; gap: 12px; }
+    .wordmark {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: lowercase;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+    .wordmark span { color: var(--accent-warm); }
+    .header-sep { color: var(--border-quote); font-size: 13px; }
+    .header-media {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+    }
+    .site-header-right { display: flex; align-items: center; gap: 12px; }
+    .header-back-link {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .header-back-link:hover { color: var(--accent); }
+    .lang-toggle-bar {
+      display: flex;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .art-lang-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      padding: 3px 10px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .art-lang-btn.active { background: #F5C800; color: #111320; }
+    #theme-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      padding: 3px 9px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.15s;
+    }
+    #theme-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .header-date {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-light);
+      letter-spacing: 0.08em;
+    }
+
+    /* ===== STICKY INFO BAR ===== */
+    #sticky-bar {
+      position: sticky;
+      top: 44px;
+      z-index: 200;
+      background: var(--bg-subtle);
+      border-bottom: 1px solid var(--border-light);
+      padding: 7px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .sbar-cat {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+    }
+    .sbar-sep { color: var(--border-quote); font-size: 11px; }
+    .sbar-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+    .sbar-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      padding: 2px 8px;
+    }
+
+    /* ===== LAYOUT ===== */
+    .article-container { max-width: 1240px; margin: 0 auto; padding: 0 20px; }
+    .article-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 24px;
+    }
+    .article-body { grid-column: 2 / 10; max-width: 68ch; }
+    .article-sidebar {
+      grid-column: 10 / 13;
+      position: sticky;
+      top: 78px;
+      align-self: start;
+      max-height: calc(100vh - 90px);
+      overflow-y: auto;
+    }
+    .article-sidebar::-webkit-scrollbar { width: 4px; }
+    .article-sidebar::-webkit-scrollbar-track { background: transparent; }
+    .article-sidebar::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 2px; }
+
+    /* ===== TYPOGRAPHY ===== */
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+    }
+    .article-headline {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(2rem, 4vw, 2.6rem);
+      font-weight: 600;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+    .article-standfirst {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      font-weight: 400;
+    }
+    .byline {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    h2 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.45rem;
+      font-weight: 600;
+      line-height: 1.25;
+      color: var(--text-primary);
+      margin: 2em 0 0.75em;
+      border-top: 1px solid var(--border);
+      padding-top: 1em;
+    }
+    h3 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin: 1.75em 0 0.5em;
+    }
+    .article-body p { margin-bottom: 1.4em; font-size: 0.97rem; line-height: 1.8; }
+    .article-body ul, .article-body ol { margin: 0 0 1.4em 1.4em; }
+    .article-body li { margin-bottom: 0.4em; font-size: 0.95rem; line-height: 1.7; }
+    strong { color: var(--text-primary); font-weight: 600; }
+
+    /* ===== EXEC SUMMARY ===== */
+    .exec-summary {
+      background: var(--bg-highlight);
+      border: 1px solid var(--border-light);
+      border-left: 4px solid var(--accent);
+      padding: 24px;
+      margin: 0 0 2.5em;
+    }
+    .exec-block { margin-bottom: 20px; }
+    .exec-block:last-child { margin-bottom: 0; }
+    .exec-block + .exec-block { padding-top: 18px; border-top: 1px solid var(--border-light); }
+    .exec-tldr {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.02rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      line-height: 1.55;
+      margin-top: 8px;
+    }
+    .issues-list, .implications-list {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .issue-item { display: flex; gap: 10px; align-items: baseline; }
+    .issue-q {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--accent);
+      flex-shrink: 0;
+      min-width: 20px;
+    }
+    .issue-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: var(--text-body);
+      line-height: 1.55;
+    }
+    .implication-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: var(--text-body);
+      line-height: 1.55;
+      padding-left: 14px;
+      border-left: 2px solid var(--accent);
+    }
+    .read-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
+    .read-col-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.66rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 6px;
+    }
+    .read-label-yes { color: var(--accent); }
+    .read-label-no { color: var(--text-muted); }
+    .read-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-body);
+      line-height: 1.45;
+      padding-left: 10px;
+      border-left: 2px solid var(--accent);
+      margin-bottom: 5px;
+    }
+    .skip-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+      padding-left: 10px;
+      border-left: 2px solid var(--border-light);
+      margin-bottom: 5px;
+    }
+
+    /* ===== INSIGHT / TRAP BOX ===== */
+    .insight-box {
+      background: var(--bg-highlight);
+      border-left: 4px solid var(--accent);
+      padding: 18px 22px;
+      margin: 28px 0;
+    }
+    .insight-box p {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: var(--text-primary);
+    }
+    .insight-box strong { color: var(--accent); }
+    .trap-box {
+      background: #FEF9EC;
+      border-left: 4px solid var(--accent-warm);
+      padding: 18px 22px;
+      margin: 24px 0;
+    }
+    .trap-box p {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      line-height: 1.65;
+      color: var(--text-body);
+    }
+    .trap-box .trap-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      color: var(--accent-warm);
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+
+    /* ===== PULL QUOTE ===== */
+    .pull-quote {
+      border-left: 4px solid var(--accent);
+      margin: 2em 0;
+      padding: 1em 20px;
+      background: var(--bg-card);
+    }
+    .pull-quote p {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.2rem;
+      font-style: italic;
+      color: var(--text-primary);
+      line-height: 1.5;
+      margin-bottom: 6px !important;
+    }
+    .pull-quote footer {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* ===== NUMBERED LIST ===== */
+    .numbered-list { list-style: none; padding: 0; margin: 20px 0; }
+    .numbered-list li {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 16px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.92rem;
+      line-height: 1.65;
+      color: var(--text-body);
+    }
+    .numbered-list li .num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: white;
+      background: var(--accent);
+      min-width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    /* ===== DROP CAP ===== */
+    .drop-cap::first-letter {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 3.4em;
+      float: left;
+      line-height: 0.8;
+      margin: 0.05em 0.1em 0 0;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* ===== SECTION SEP ===== */
+    .section-sep {
+      text-align: center;
+      color: var(--text-light);
+      font-size: 1.2rem;
+      letter-spacing: 0.5em;
+      margin: 48px 0;
+      user-select: none;
+    }
+
+    /* ===== SOURCE LIST ===== */
+    .source-list { list-style: none; padding: 0; }
+    .source-list li { margin-bottom: 6px; }
+    .source-list a {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--accent);
+      text-decoration: none;
+      line-height: 1.5;
+    }
+    .source-list a:hover { text-decoration: underline; }
+    .source-tag { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--text-muted); margin-left: 4px; }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .keyfacts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+    .fact-card { background: var(--bg-highlight); padding: 10px 8px; }
+    .fact-card.highlight { background: #FDF8EC; border: 1px solid #E8D88A; }
+    .fact-value { font-family: 'JetBrains Mono', monospace; font-size: 1rem; font-weight: 500; color: var(--accent); line-height: 1.2; }
+    .fact-card.highlight .fact-value { color: #8A6A00; }
+    .fact-desc { font-family: 'Inter', sans-serif; font-size: 0.64rem; color: var(--text-muted); margin-top: 3px; line-height: 1.35; }
+    .fact-card.highlight .fact-desc { color: #7A6020; }
+
+    /* ===== LANG TOGGLE ===== */
+    .lang-en { display: none; }
+
+    /* ===== FOOTER ===== */
+    .site-footer {
+      border-top: 1px solid var(--border-light);
+      margin-top: 4em;
+      padding: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* ===== PRINT ===== */
+    @media print {
+      body { background: white; font-size: 11pt; }
+      .site-header, #sticky-bar, #progress-bar { display: none; }
+      .article-sidebar { position: static; max-height: none; overflow: visible; }
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+    @page { size: A4; margin: 20mm 15mm; }
+
+    /* ===== RESPONSIVE: IMAGES / SVG ===== */
+    img, figure, svg, .diagram-figure { max-width: 100%; height: auto; }
+
+    /* ===== MOBILE ===== */
+    @media (max-width: 900px) {
+      .article-body { grid-column: 1 / -1; }
+      .article-sidebar { position: static; max-height: none; overflow: visible; grid-column: 1 / -1; }
+      .article-grid { display: block; }
+      .read-grid { grid-template-columns: 1fr; }
+      #sticky-bar { flex-wrap: wrap; gap: 6px; }
+    }
+    @media (max-width: 768px) {
+      .article-grid { display: block; }
+      .article-sidebar { display: none; }
+      #sticky-bar { font-size: 0.75rem; padding: 6px 12px; }
+      h1 { font-size: clamp(1.6rem, 5vw, 2.2rem); }
+    }
+    @media (max-width: 480px) {
+      body { font-size: 15px; }
+      .article-body { padding: 0 12px; }
+      .exec-summary { padding: 16px; }
+      .fact-card { min-width: unset; width: 100%; }
+    }
+
+    body.dark {
+      --bg:           #0D1117;
+      --bg-code:      #161B22;
+      --bg-quote:     #161B22;
+      --bg-highlight: #0E1A2B;
+      --bg-subtle:    #161B22;
+      --bg-card:      #161B22;
+      --bg-header:    #0D1117;
+      --text-primary: #E4E2DC;
+      --text-body:    #C4C2BC;
+      --text-muted:   #8B93A8;
+      --text-light:   #575E70;
+      --accent:       #3A8FD0;
+      --accent-warm:  #F5C800;
+      --border:       #21253A;
+      --border-quote: #2A2D3E;
+      --border-light: #21253A;
+      --tag-bg:       #0E1A2B;
+      --tag-text:     #3A8FD0;
+      --table-stripe: #161B22;
+    }
+    body.dark .trap-box { background: #1C1800; }
+    body.dark .fact-card.highlight { background: #1A1600; border-color: #3A2D00; }
+    body.dark .fact-card.highlight .fact-value { color: #C4900E; }
+    body.dark .fact-card.highlight .fact-desc { color: #A07828; }
+
+    /* ===== DIAGRAMS ===== */
+    .diagram-figure {
+      margin: 2em 0;
+      padding: 0;
+    }
+    .diagram-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+    }
+    .diagram-source {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 8px;
+    }
+
+    /* Before/After Split */
+    .bas-container {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      margin: 1.5em 0;
+    }
+    .bas-panel {
+      flex: 1;
+      padding: 20px 18px;
+    }
+    .bas-before {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-right: none;
+      border-radius: 6px 0 0 6px;
+    }
+    .bas-after {
+      background: var(--bg-highlight);
+      border: 1px solid var(--accent);
+      border-left: none;
+      border-radius: 0 6px 6px 0;
+    }
+    .bas-divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      flex-shrink: 0;
+      background: linear-gradient(90deg, var(--bg-card), var(--bg-highlight));
+    }
+    .bas-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .bas-after .bas-label {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+    .bas-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .bas-list li {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      color: var(--text-body);
+      padding: 6px 0;
+      line-height: 1.5;
+      border-bottom: 1px solid transparent;
+    }
+    .bas-list li:not(:last-child) {
+      border-bottom-color: var(--border-light);
+    }
+    .bas-after .bas-list li {
+      color: var(--text-primary);
+    }
+    body.dark .bas-before { background: #12141C; border-color: #21253A; }
+    body.dark .bas-after { background: #0D2240; border-color: #1A6EB0; }
+    body.dark .bas-divider { background: linear-gradient(90deg, #12141C, #0D2240); }
+    body.dark .bas-label { color: #7A8099; border-bottom-color: #21253A; }
+    body.dark .bas-after .bas-label { color: #4AADE0; border-bottom-color: #1A6EB0; }
+    @media print {
+      .bas-before, .bas-after, .bas-divider {
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+    }
+    @media (max-width: 900px) {
+      .bas-container { flex-direction: column; }
+      .bas-before { border-right: 1px solid var(--border); border-bottom: none; border-radius: 6px 6px 0 0; }
+      .bas-after { border-left: 1px solid var(--accent); border-top: none; border-radius: 0 0 6px 6px; }
+      .bas-divider { width: 100%; height: 40px; background: linear-gradient(180deg, var(--bg-card), var(--bg-highlight)); }
+      .bas-divider svg { transform: rotate(90deg); }
+    }
+
+    /* Big Number Dashboard */
+    .bnd-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+    }
+    .bnd-card {
+      background: var(--bg-highlight);
+      border-left: 3px solid var(--accent);
+      padding: 16px 14px;
+    }
+    .bnd-highlight {
+      background: #FDF8EC;
+      border-left-color: var(--accent-warm);
+    }
+    .bnd-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.6rem;
+      font-weight: 500;
+      color: var(--accent);
+      line-height: 1.2;
+    }
+    .bnd-highlight .bnd-value { color: #8A6A00; }
+    .bnd-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+      line-height: 1.35;
+    }
+    .bnd-highlight .bnd-label { color: #7A6020; }
+    .bnd-delta {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--text-light);
+      margin-top: 4px;
+    }
+    body.dark .bnd-card { background: #111828; }
+    body.dark .bnd-highlight { background: #1A1600; border-left-color: #C4900E; }
+    body.dark .bnd-highlight .bnd-value { color: #C4900E; }
+    body.dark .bnd-highlight .bnd-label { color: #A07828; }
+    @media print {
+      .bnd-card { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+    }
+    @media (max-width: 900px) {
+      .bnd-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 480px) {
+      .bnd-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<!-- 1. Site Header -->
+<header class="site-header">
+  <div class="site-header-left">
+    <a class="wordmark" href="../index.html">dona<span>to</span></a>
+    <span class="header-sep">&mdash;</span>
+    <a class="header-back-link" href="./index.html"><span class="lang-ja">記事一覧</span><span class="lang-en">Articles</span></a>
+    <span class="header-sep">&mdash;</span>
+    <span class="header-media">Finance Professional x Career</span>
+  </div>
+  <div class="site-header-right">
+    <div class="lang-toggle-bar">
+      <button class="art-lang-btn active" data-lang="ja" onclick="setLang('ja')">JP</button>
+      <button class="art-lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+    </div>
+    <button id="theme-btn" onclick="toggleTheme()" title="Dark/Light toggle">☀</button>
+    <time class="header-date">2026-04-03</time>
+  </div>
+</header>
+
+<!-- 2. Sticky Info Bar -->
+<div id="sticky-bar">
+  <span class="sbar-cat">Finance Professional x Career</span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-text"><span class="lang-ja">AI時代のリーダーシップ</span><span class="lang-en">Leadership in the AI Era</span></span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-text">2026-04-03</span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-badge" id="reading-time-badge"><span class="lang-ja">計算中</span><span class="lang-en">...</span></span>
+</div>
+
+<main style="padding: 0 0 3em;">
+  <div class="article-container">
+    <div class="article-grid">
+
+      <!-- 3. Article Body -->
+      <article class="article-body">
+
+        <!-- Article Header -->
+        <div style="padding: 36px 0 24px;">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+            <div class="section-label">Career</div>
+            <span class="sbar-badge" id="reading-time-badge2"><span class="lang-ja">計算中</span><span class="lang-en">...</span></span>
+          </div>
+          <h1 class="article-headline">
+            <span class="lang-ja">AI時代のリーダーシップ &mdash; 「管理する人」から「オーケストレーター」へ</span>
+            <span class="lang-en">Leadership in the Age of AI &mdash; From Manager to Orchestrator</span>
+          </h1>
+          <p class="article-standfirst">
+            <span class="lang-ja">AIエージェントが業務プロセスに組み込まれる2026年、リーダーの役割は根本的に変わりつつある。Finance Professionalがこの変化にどう向き合うべきかを、最新の調査・論文から読み解く。</span>
+            <span class="lang-en">As AI agents become embedded in business processes in 2026, the role of leaders is fundamentally shifting. Drawing on the latest research and publications, we explore how finance professionals should navigate this transformation.</span>
+          </p>
+          <div style="display:flex; gap:16px; align-items:center; border-top:1px solid var(--border-light); border-bottom:1px solid var(--border-light); padding:10px 0;">
+            <span class="byline">By <strong>Donato Career Notes</strong></span>
+            <span style="color:var(--border);">|</span>
+            <time class="byline" datetime="2026-04-03"><span class="lang-ja">2026年4月3日</span><span class="lang-en">3 April 2026</span></time>
+            <span style="color:var(--border);">|</span>
+            <span class="byline"><span class="lang-ja">AI &middot; リーダーシップ &middot; CFO &middot; キャリア</span><span class="lang-en">AI &middot; Leadership &middot; CFO &middot; Career</span></span>
+          </div>
+        </div>
+
+        <!-- Exec Summary -->
+        <section class="exec-summary">
+          <!-- Block 1: Summary -->
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">概要</span><span class="lang-en">Summary</span></div>
+            <p class="exec-tldr">
+              <span class="lang-ja">AIエージェントが業務プロセスに組み込まれる2026年、リーダーの役割は「意思決定者・管理者」から「人とAIを束ねるオーケストレーター」へと根本的に変わりつつある。Finance Professionalがこの変化に乗り遅れれば、キャリアの選択肢が狭まるリスクがある。</span>
+              <span class="lang-en">In 2026, as AI agents become embedded in business processes, the leader's role is fundamentally shifting from "decision-maker and manager" to "orchestrator who coordinates people and AI". Finance professionals who fall behind in this transformation risk narrowing their career options.</span>
+            </p>
+            <div class="read-grid">
+              <div>
+                <div class="read-col-label read-label-yes"><span class="lang-ja">読むべき人</span><span class="lang-en">Who should read</span></div>
+                <div class="read-item"><span class="lang-ja">AI導入が進む環境でチームを率いる、またはキャリアの次のステップを考えているFinance Professional</span><span class="lang-en">Finance professionals leading teams in AI-adopting environments, or considering their next career move</span></div>
+              </div>
+              <div>
+                <div class="read-col-label read-label-no"><span class="lang-ja">スキップしてよい人</span><span class="lang-en">Who can skip</span></div>
+                <div class="skip-item"><span class="lang-ja">AIの基礎概念を既に理解し、エージェント管理の実務経験がある人</span><span class="lang-en">Those who already understand AI fundamentals and have hands-on experience managing AI agents</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Block 2: Key Questions -->
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">本稿の論点</span><span class="lang-en">Key Questions</span></div>
+            <ul class="issues-list">
+              <li class="issue-item">
+                <span class="issue-q">Q1</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>AIエージェント時代に求められるリーダーシップは、従来型と何が違うのか</strong> &mdash; 管理・統制から、人間とAIの協働を設計・監督する「オーケストレーション」能力へシフトしている</span>
+                  <span class="lang-en"><strong>How does leadership in the AI agent era differ from traditional models?</strong> &mdash; Shifting from command-and-control to "orchestration" &mdash; the ability to design and oversee human-AI collaboration</span>
+                </span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">Q2</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>CFO・Finance Leaderの役割はどう変わるのか</strong> &mdash; 「財務のゲートキーパー」から「変革のアーキテクト」へ。AIガバナンスとROI責任を担う中心人物になりつつある</span>
+                  <span class="lang-en"><strong>How is the CFO/Finance Leader role evolving?</strong> &mdash; From "financial gatekeeper" to "architect of transformation", becoming the central figure responsible for AI governance and ROI</span>
+                </span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">Q3</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>個人として今何を始めるべきか</strong> &mdash; AIリテラシー、エージェント管理スキル、そして逆説的に「人間にしかできないスキル」の3領域を同時に鍛える必要がある</span>
+                  <span class="lang-en"><strong>What should individuals start doing now?</strong> &mdash; Three areas to develop simultaneously: AI literacy, agent management skills, and paradoxically, "uniquely human skills"</span>
+                </span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Block 3: Implications for Practitioners -->
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">実務家への含意</span><span class="lang-en">Implications for Practitioners</span></div>
+            <ul class="implications-list">
+              <li class="implication-item">
+                <span class="lang-ja">AIツールの「ユーザー」ではなく「オーケストレーター」としてのポジションを早期に確立すべき</span>
+                <span class="lang-en">Establish your position as an AI "orchestrator" rather than merely a "user" as early as possible</span>
+              </li>
+              <li class="implication-item">
+                <span class="lang-ja">エージェント型AIの基本概念（タスク分解・ガバナンス・モニタリング）を理解しておくべき</span>
+                <span class="lang-en">Understand the fundamentals of agentic AI: task decomposition, governance, and monitoring</span>
+              </li>
+              <li class="implication-item">
+                <span class="lang-ja">対話力・倫理的判断・複雑な状況での意思決定といった「人間スキル」が差別化要因になる</span>
+                <span class="lang-en">Dialogue skills, ethical judgement, and decision-making in complex situations &mdash; these "human skills" become key differentiators</span>
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- ===== SECTION 1 ===== -->
+        <h2><span class="lang-ja">1. リーダーシップの定義が変わった</span><span class="lang-en">1. The Definition of Leadership Has Changed</span></h2>
+
+        <h3><span class="lang-ja">「管理者」モデルの終焉</span><span class="lang-en">The End of the "Manager" Model</span></h3>
+
+        <p class="drop-cap">
+          <span class="lang-ja">従来のミドルマネジメントの役割 &mdash; ステータス更新の集約、パフォーマンス追跡、プロジェクト調整、オペレーション上の意思決定 &mdash; は、AIダッシュボード、コパイロット、ワークフローアシスタントによって急速に代替されつつある。</span>
+          <span class="lang-en">The traditional responsibilities of middle management &mdash; aggregating status updates, tracking performance, coordinating projects, making operational decisions &mdash; are being rapidly supplanted by AI dashboards, copilots, and workflow assistants.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">Harvard Business Reviewは2025年7月の論文「How AI Is Redefining Managerial Roles」で、生成AIが個々の実務担当者の自律的な働き方を可能にし、ミドルマネジメントの層が薄くなる可能性を指摘した。残るマネージャーには、より高い付加価値を持つ業務 &mdash; チームの方向性設定、複雑な判断、人間関係の構築 &mdash; に集中することが求められるようになる。</span>
+          <span class="lang-en">In its July 2025 article "How AI Is Redefining Managerial Roles", Harvard Business Review observed that generative AI enables individual contributors to work more autonomously, potentially thinning middle management layers. Remaining managers are expected to focus on higher-value work &mdash; setting team direction, making complex judgements, and building relationships.</span>
+        </p>
+
+        <h3><span class="lang-ja">「オーケストレーター」モデルの台頭</span><span class="lang-en">The Rise of the "Orchestrator" Model</span></h3>
+
+        <p>
+          <span class="lang-ja">2026年2月、同じくHBRは「To Thrive in the AI Era, Companies Need Agent Managers」を発表し、新たなリーダー像として「エージェント・マネージャー」を提唱した。これはAIエージェントがどのように学習・協働・実行し、人間と安全に共存するかを統括する役割である。</span>
+          <span class="lang-en">In February 2026, HBR published "To Thrive in the AI Era, Companies Need Agent Managers", proposing the "agent manager" as a new leadership archetype &mdash; a role that oversees how AI agents learn, collaborate, execute, and safely coexist with humans.</span>
+        </p>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>エージェント・マネージャーの4つの責任領域:</strong> (1) パフォーマンス監視 &mdash; エージェントの品質・速度・エスカレーション・顧客感情をモニタリングする。(2) ワークフロー改善 &mdash; プロンプトやワークフローを改良し、精度とトーンを向上させる。(3) ハンドオフ管理 &mdash; 人間エージェントへの引き継ぎを管理し、必要時のエスカレーションを担保する。(4) 継続的改善 &mdash; 失敗事例の根本原因分析を行い、改善を推進する。</span>
+            <span class="lang-en"><strong>Four responsibility areas of the Agent Manager:</strong> (1) Performance monitoring &mdash; tracking agent quality, speed, escalation, and customer sentiment. (2) Workflow refinement &mdash; improving prompts and workflows to enhance accuracy and tone. (3) Handoff management &mdash; managing handoffs to human agents and ensuring escalation when required. (4) Continuous improvement &mdash; conducting root-cause analysis of failed cases to drive ongoing improvement.</span>
+          </p>
+        </div>
+
+        <div class="section-sep">&middot; &middot; &middot;</div>
+
+        <!-- ===== SECTION 2 ===== -->
+        <h2><span class="lang-ja">2. CFOの役割変革 &mdash; ゲートキーパーからアーキテクトへ</span><span class="lang-en">2. The CFO's Transformation &mdash; From Gatekeeper to Architect</span></h2>
+
+        <h3><span class="lang-ja">データが示す変化の規模</span><span class="lang-en">The Scale of Change in the Data</span></h3>
+
+        <p>
+          <span class="lang-ja">Deloitte Q4 2025 CFO Signals調査（北米の年間売上10億ドル以上の企業のCFO200名を対象、2025年11月14日〜12月7日実施）では、<strong>87%</strong>のCFOが2026年にAIが自社財務部門の業務に「極めて重要」または「非常に重要」になると回答し、<strong>54%</strong>がAIエージェントの財務部門への統合を変革の優先事項と位置づけた。</span>
+          <span class="lang-en">The Deloitte Q4 2025 CFO Signals survey (conducted 14 November&ndash;7 December 2025, covering 200 CFOs from North American organisations with annual revenue exceeding $1 billion) found that <strong>87%</strong> of CFOs rated AI as "extremely" or "very important" for their finance operations in 2026, whilst <strong>54%</strong> identified AI agent integration into finance as a transformation priority.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">McKinsey State of AI 2025調査では、AIを少なくとも1つのビジネス機能で使用している組織は<strong>88%</strong>（前年78%から増加）であり、ハイパフォーマー企業ではシニアリーダーがAIイニシアティブに対するオーナーシップとコミットメントを示していると「強く同意する」割合が他社の<strong>3倍</strong>に達した。</span>
+          <span class="lang-en">McKinsey's State of AI 2025 survey reported that <strong>88%</strong> of organisations now use AI in at least one business function (up from 78% the prior year), and that high-performing organisations are <strong>3 times</strong> more likely to "strongly agree" that senior leaders demonstrate ownership and commitment to AI initiatives.</span>
+        </p>
+
+        <!-- Diagram: Big Number Dashboard — Section 2 Survey Data -->
+        <figure class="diagram-figure" role="figure">
+          <figcaption class="diagram-title">
+            <span class="lang-ja">主要調査が示すAI導入の現在地</span>
+            <span class="lang-en">Key Survey Data on AI Adoption</span>
+          </figcaption>
+          <div class="bnd-grid">
+            <div class="bnd-card bnd-highlight">
+              <div class="bnd-value">87%</div>
+              <div class="bnd-label">
+                <span class="lang-ja">2026年にAIが「極めて/非常に重要」と回答したCFO</span>
+                <span class="lang-en">CFOs rating AI as extremely/very important for 2026</span>
+              </div>
+              <div class="bnd-delta">Deloitte Q4 2025</div>
+            </div>
+            <div class="bnd-card">
+              <div class="bnd-value">88%</div>
+              <div class="bnd-label">
+                <span class="lang-ja">AIを1つ以上の機能で活用している組織</span>
+                <span class="lang-en">Organisations using AI in at least one function</span>
+              </div>
+              <div class="bnd-delta">McKinsey 2025 (+10pp YoY)</div>
+            </div>
+            <div class="bnd-card">
+              <div class="bnd-value">76%</div>
+              <div class="bnd-label">
+                <span class="lang-ja">CFOがAIを監督する企業の「大きな価値」達成率</span>
+                <span class="lang-en">Companies achieving "great value" when CFO oversees AI</span>
+              </div>
+              <div class="bnd-delta">Fortune 2026-03</div>
+            </div>
+            <div class="bnd-card">
+              <div class="bnd-value">3x</div>
+              <div class="bnd-label">
+                <span class="lang-ja">ハイパフォーマー企業のリーダーAIコミットメント</span>
+                <span class="lang-en">High performers' senior leader AI commitment vs peers</span>
+              </div>
+              <div class="bnd-delta">McKinsey 2025</div>
+            </div>
+          </div>
+          <div class="diagram-source">
+            <span class="lang-ja">出典: 各調査レポート（本文参照）</span>
+            <span class="lang-en">Source: Respective survey reports (see body text)</span>
+          </div>
+        </figure>
+
+        <div class="pull-quote">
+          <p><span class="lang-ja">Chief AI Officerではなく、CFOこそがAIから本当の価値を引き出す鍵である</span><span class="lang-en">It is the CFO, not the Chief AI Officer, who holds the key to unlocking real value from AI</span></p>
+          <footer>Fortune, 2026-03</footer>
+        </div>
+
+        <h3><span class="lang-ja">Fortune誌が指摘する「CFO = AI価値創出の鍵」</span><span class="lang-en">Fortune: The CFO as the Key to AI Value Creation</span></h3>
+
+        <p>
+          <span class="lang-ja">Fortune誌は2026年3月の記事で、Chief AI Officerではなく<strong>CFOこそがAIから本当の価値を引き出す鍵</strong>だと論じた。CFOがAIプロジェクトを監督しアウトカムのスコアリングに責任を持つ企業では、<strong>76%</strong>が「大きな価値」を達成しているという。</span>
+          <span class="lang-en">In its March 2026 article, Fortune argued that <strong>the CFO, not the Chief AI Officer, is the key to extracting real value from AI</strong>. Companies where the CFO oversees AI projects and takes responsibility for outcome scoring achieve "great value" at a rate of <strong>76%</strong>.</span>
+        </p>
+
+        <h3><span class="lang-ja">Gartnerの4つのワークフォースシフト</span><span class="lang-en">Gartner's Four Workforce Shifts</span></h3>
+
+        <p>
+          <span class="lang-ja">Gartnerは2026年3月の調査で、AI・デジタル人材の獲得と育成がCFOにとって最大の短期課題であることを示した。財務組織が2030年に向けて進めるべき4つのシフト:</span>
+          <span class="lang-en">Gartner's March 2026 survey revealed that acquiring and developing AI and digital talent is the CFO's top near-term challenge. Four shifts financial organisations should pursue towards 2030:</span>
+        </p>
+
+        <!-- Diagram: Before/After Split — Gartner 4 Workforce Shifts -->
+        <figure class="diagram-figure" role="figure">
+          <figcaption class="diagram-title">
+            <span class="lang-ja">財務組織の4つのシフト（2030年に向けて）</span>
+            <span class="lang-en">Four Shifts for Financial Organisations (Towards 2030)</span>
+          </figcaption>
+          <div class="bas-container">
+            <div class="bas-panel bas-before">
+              <div class="bas-label"><span class="lang-ja">現在</span><span class="lang-en">Current State</span></div>
+              <ul class="bas-list">
+                <li><span class="lang-ja">ガーディアン（統制役）</span><span class="lang-en">Guardian (control function)</span></li>
+                <li><span class="lang-ja">パートナー（助言者）</span><span class="lang-en">Partner (adviser)</span></li>
+                <li><span class="lang-ja">マニュアル（手作業中心）</span><span class="lang-en">Manual (manual-centric)</span></li>
+                <li><span class="lang-ja">リニア（直線的プロセス）</span><span class="lang-en">Linear (sequential processes)</span></li>
+              </ul>
+            </div>
+            <div class="bas-divider">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M5 12h14m-4-4 4 4-4 4" stroke="#1A6EB0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="bas-panel bas-after">
+              <div class="bas-label"><span class="lang-ja">2030年目標</span><span class="lang-en">2030 Target</span></div>
+              <ul class="bas-list">
+                <li><span class="lang-ja">カタリスト（変革の触媒役）</span><span class="lang-en">Catalyst (accelerator of transformation)</span></li>
+                <li><span class="lang-ja">ツールビルダー（AI構築・運用の主体）</span><span class="lang-en">Tool Builder (active builder and operator of AI tools)</span></li>
+                <li><span class="lang-ja">マシンドリブン（AI駆動プロセス）</span><span class="lang-en">Machine-driven (AI-driven processes)</span></li>
+                <li><span class="lang-ja">イテラティブ（反復的・適応的サイクル）</span><span class="lang-en">Iterative (adaptive, iterative cycles)</span></li>
+              </ul>
+            </div>
+          </div>
+          <div class="diagram-source">
+            <span class="lang-ja">出典: Gartner, 2026年3月調査</span>
+            <span class="lang-en">Source: Gartner, March 2026 survey</span>
+          </div>
+        </figure>
+
+        <div class="section-sep">&middot; &middot; &middot;</div>
+
+        <!-- ===== SECTION 3 ===== -->
+        <h2><span class="lang-ja">3. Big 4が映し出す組織変革の現実</span><span class="lang-en">3. Big 4 Firms Reveal the Reality of Organisational Transformation</span></h2>
+
+        <h3><span class="lang-ja">エージェント型AIプラットフォームの競争</span><span class="lang-en">The Race for Agentic AI Platforms</span></h3>
+
+        <p>
+          <span class="lang-ja">2025年3月、DeloitteとEYはそれぞれNVIDIAとの連携で新たなエージェント型AIプラットフォームを発表した。Big 4各社は、テクノロジーに特化したスタートアップに対抗するため、サービスラインをより業界特化型へと転換させている。</span>
+          <span class="lang-en">In March 2025, Deloitte and EY each announced new agentic AI platforms in partnership with NVIDIA. Big 4 firms are pivoting their service lines towards greater industry specialisation to compete with technology-focused start-ups.</span>
+        </p>
+
+        <h3><span class="lang-ja">採用構造の変化</span><span class="lang-en">Shifts in Hiring Structures</span></h3>
+
+        <p>
+          <span class="lang-ja">PwCアメリカは2028会計年度には税務・監査部門のアソシエイト採用を2025会計年度比<strong>32%削減</strong>する見込みである。AIとオフショアリングの進展が、ジュニアレベルの業務を大幅に代替しつつある。</span>
+          <span class="lang-en">PwC US is expected to reduce associate hiring in tax and audit by <strong>32%</strong> by FY2028 compared to FY2025. Advances in AI and offshoring are substantially replacing junior-level work.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">Deloitteは2025会計年度期初から事業区分を5ビジネスから4ビジネスへ再編し、重複する業務機能の統合を推進している。</span>
+          <span class="lang-en">Deloitte reorganised its business segments from five to four at the start of FY2025, driving consolidation of overlapping operational functions.</span>
+        </p>
+
+        <div class="trap-box">
+          <div class="trap-label"><span class="lang-ja">注意点</span><span class="lang-en">Watch out</span></div>
+          <p>
+            <span class="lang-ja">Big 4の採用削減は「AIがジュニアの仕事を奪う」という単純な話ではない。むしろ、ジュニアに求められるスキルセットが変わりつつあるということだ。従来の「手作業の正確性」よりも「AIの出力を評価・修正できる能力」が重視される。リーダーにはチームのリスキリング設計という新たな責務が加わっている。</span>
+            <span class="lang-en">Big 4 hiring reductions are not simply a story of "AI taking junior jobs". Rather, the skill sets required of juniors are shifting. The ability to evaluate and correct AI output is becoming more valued than manual accuracy. Leaders now bear the additional responsibility of designing reskilling programmes for their teams.</span>
+          </p>
+        </div>
+
+        <div class="section-sep">&middot; &middot; &middot;</div>
+
+        <!-- ===== SECTION 4 ===== -->
+        <h2><span class="lang-ja">4. 今から鍛えるべき3つの領域</span><span class="lang-en">4. Three Areas to Develop Starting Now</span></h2>
+
+        <h3><span class="lang-ja">領域1: AIリテラシー &mdash; 「使える」を超えて「設計できる」へ</span><span class="lang-en">Area 1: AI Literacy &mdash; From "User" to "Designer"</span></h3>
+
+        <p>
+          <span class="lang-ja">HBRが2025年10月に挙げた5つの重要リーダーシップスキルの筆頭は「AIフルエンシーの涵養」だった。これは単にAIツールを使えることではなく、多様なネットワークを通じて業界横断の知見を獲得し、AIが組織に及ぼす影響を構造的に理解する能力を指す。</span>
+          <span class="lang-en">The top skill among the five critical leadership skills listed by HBR in October 2025 was "cultivating AI fluency". This means not merely being able to use AI tools, but acquiring cross-industry insights through diverse networks and structurally understanding AI's organisational impact.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">具体的には: AIエージェントの基本アーキテクチャ（タスク分解・コンテキスト設計・フィードバックループ）を理解する。プロンプトエンジニアリングの基礎を身につける。AIの出力を批判的に評価し、バイアスやハルシネーションを識別できるようになる。</span>
+          <span class="lang-en">Specifically: understand the basic architecture of AI agents (task decomposition, context design, feedback loops). Acquire the fundamentals of prompt engineering. Develop the ability to critically evaluate AI output and identify bias and hallucinations.</span>
+        </p>
+
+        <h3><span class="lang-ja">領域2: 「変化適応力」&mdash; Change Fitnessの構築</span><span class="lang-en">Area 2: Change Fitness &mdash; Building Adaptive Capacity</span></h3>
+
+        <p>
+          <span class="lang-ja">Harvard Business Schoolの研究者らは、2026年のリーダーシップの最重要課題として「Change Fitness（変化適応力）」を挙げている。これは特定の変化に対応する力ではなく、<strong>継続的な変化そのものに耐えられる組織能力</strong>を意味する。</span>
+          <span class="lang-en">Harvard Business School researchers have identified "Change Fitness" as the paramount leadership challenge for 2026. This refers not to the capacity to respond to a specific change, but to <strong>an organisational ability to withstand continuous change itself</strong>.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">WEFも2026年1月のレポートで、AIスキルの習得において「好奇心と認知的アジリティ」が静的な技術スキルよりも重要だと強調している。全員がコーディングを学ぶ必要はないが、AIの仕組みを理解し、その出力に挑戦できる必要がある。</span>
+          <span class="lang-en">The WEF likewise emphasised in its January 2026 report that "curiosity and cognitive agility" matter more than static technical skills when mastering AI. Not everyone needs to learn to code, but everyone needs to understand how AI works and be able to challenge its output.</span>
+        </p>
+
+        <h3><span class="lang-ja">領域3: 人間スキル &mdash; AIが奪えないもの</span><span class="lang-en">Area 3: Human Skills &mdash; What AI Cannot Replace</span></h3>
+
+        <p>
+          <span class="lang-ja">McKinseyは2025年の論文「Developing Human Leadership in the Age of AI」で、AIが高度化すればするほど、人間のリーダーシップの本質 &mdash; 自己認識、明確なコミュニケーション、コンパッション &mdash; が重要になると論じた。</span>
+          <span class="lang-en">In its 2025 paper "Developing Human Leadership in the Age of AI", McKinsey argued that the more sophisticated AI becomes, the more essential the human essence of leadership grows &mdash; self-awareness, clear communication, and compassion.</span>
+        </p>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>逆説的だが、AIの進化は「人間スキル」の価値を高める。</strong> 日経のAI時代金融シンポジウム（2025年10月）でも、金融の領域でAIが使われるようになっても、人間には対話力・共感力・創造力・倫理という代替不可能な特性が残ることが強調された。</span>
+            <span class="lang-en"><strong>Paradoxically, the evolution of AI raises the value of "human skills".</strong> At the Nikkei AI-era Finance Symposium (October 2025), speakers underscored that even as AI permeates finance, humans retain irreplaceable qualities: dialogue, empathy, creativity, and ethics.</span>
+          </p>
+        </div>
+
+        <div class="section-sep">&middot; &middot; &middot;</div>
+
+        <!-- ===== SECTION 5 ===== -->
+        <h2><span class="lang-ja">5. 実践ロードマップ &mdash; 明日から始める3ステップ</span><span class="lang-en">5. A Practical Roadmap &mdash; Three Steps Starting Tomorrow</span></h2>
+
+        <ul class="numbered-list">
+          <li>
+            <span class="num">1</span>
+            <span>
+              <span class="lang-ja"><strong>自分の業務を「AIマップ」する（今週中）:</strong> 現在の業務を棚卸しし、「AIが代替可能」「AIが補助可能」「人間が不可欠」の3カテゴリに分類する。自分の価値がどこにあるかを可視化する第一歩。</span>
+              <span class="lang-en"><strong>Map your work against AI (this week):</strong> Inventory your current tasks and classify them into three categories: "AI can replace", "AI can assist", and "human essential". This is the first step towards visualising where your value lies.</span>
+            </span>
+          </li>
+          <li>
+            <span class="num">2</span>
+            <span>
+              <span class="lang-ja"><strong>エージェント型AIを1つ試す（今月中）:</strong> Claude、GPT、Copilotなどのエージェント機能を、実際の業務タスクで試す。「指示の出し方」と「出力の評価方法」を体感することが目的。</span>
+              <span class="lang-en"><strong>Try one agentic AI tool (this month):</strong> Use the agent capabilities of Claude, GPT, Copilot, or similar on an actual work task. The goal is to experience first-hand how to give instructions and evaluate output.</span>
+            </span>
+          </li>
+          <li>
+            <span class="num">3</span>
+            <span>
+              <span class="lang-ja"><strong>チーム内でAIリテラシーの対話を始める（今四半期中）:</strong> 個人のスキルアップだけでなく、チーム全体のAI活用方針を議論する場を設ける。Gartnerが指摘するように、外部からAI人材を採用するよりも、既存メンバーのアップスキリングの方が現実的かつ効果的。</span>
+              <span class="lang-en"><strong>Start an AI literacy conversation within your team (this quarter):</strong> Create a forum to discuss not just individual upskilling but the team's overall AI adoption strategy. As Gartner notes, upskilling existing members is more realistic and effective than hiring external AI talent.</span>
+            </span>
+          </li>
+        </ul>
+
+        <div class="pull-quote">
+          <p><span class="lang-ja">AIツールの「ユーザー」に留まるか、「オーケストレーター」になるか &mdash; その選択が、Finance Professionalとしての次の10年を決める</span><span class="lang-en">Whether you remain an AI tool "user" or become an "orchestrator" &mdash; that choice will define the next decade of your career as a finance professional</span></p>
+        </div>
+
+        <p>
+          <span class="lang-ja">本稿で見てきたとおり、変化はすでに始まっている。HBR、McKinsey、Deloitte、Gartnerのいずれもが指し示す方向は同じだ &mdash; リーダーの価値は「管理する量」ではなく「人とAIの協働をどう設計するか」で測られる時代になる。完璧な準備は要らない。まず自分の業務をAIマップし、1つのエージェントを試し、チームと対話を始める。その最初の一歩が、オーケストレーターへの転換点になる。</span>
+          <span class="lang-en">As this article has shown, the shift is already under way. HBR, McKinsey, Deloitte, and Gartner all point in the same direction &mdash; a leader's value will be measured not by how much they manage, but by how well they design human-AI collaboration. You do not need a perfect plan. Map your work against AI, try one agent, and start a conversation with your team. That first step is the turning point towards becoming an orchestrator.</span>
+        </p>
+
+      </article>
+
+      <!-- 4. Sidebar -->
+      <aside class="article-sidebar">
+
+        <!-- Key Facts -->
+        <div class="sidebar-card">
+          <div class="section-label">Key Facts</div>
+          <div class="keyfacts-grid">
+            <div class="fact-card highlight">
+              <div class="fact-value">87%</div>
+              <div class="fact-desc"><span class="lang-ja">2026年にAIが「極めて/非常に重要」と回答したCFO (Deloitte)</span><span class="lang-en">CFOs rating AI as extremely/very important for 2026 (Deloitte)</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">88%</div>
+              <div class="fact-desc"><span class="lang-ja">AI活用組織の割合 (McKinsey)</span><span class="lang-en">Organisations using AI in at least one function (McKinsey)</span></div>
+            </div>
+            <div class="fact-card highlight">
+              <div class="fact-value">76%</div>
+              <div class="fact-desc"><span class="lang-ja">CFOがAI監督する企業の価値達成率 (Fortune)</span><span class="lang-en">Companies achieving great value when CFO oversees AI (Fortune)</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">3x</div>
+              <div class="fact-desc"><span class="lang-ja">ハイパフォーマー企業のリーダーAIコミットメント (McKinsey)</span><span class="lang-en">High performers' senior leader AI commitment vs peers (McKinsey)</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">32%</div>
+              <div class="fact-desc"><span class="lang-ja">PwCアソシエイト採用削減 (FY2028見込み)</span><span class="lang-en">PwC associate hiring reduction by FY2028</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">54%</div>
+              <div class="fact-desc"><span class="lang-ja">AIエージェント統合を優先するCFO (Deloitte)</span><span class="lang-en">CFOs prioritising AI agent integration (Deloitte)</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Key References -->
+        <div class="sidebar-card">
+          <div class="section-label">Key References</div>
+          <ul class="source-list" style="margin-top:10px;">
+            <li><a href="https://hbr.org/2026/02/to-thrive-in-the-ai-era-companies-need-agent-managers" target="_blank" rel="noopener">To Thrive in the AI Era, Companies Need Agent Managers</a> <span class="source-tag">HBR 2026-02</span></li>
+            <li><a href="https://hbr.org/2025/07/how-ai-is-redefining-managerial-roles" target="_blank" rel="noopener">How AI Is Redefining Managerial Roles</a> <span class="source-tag">HBR 2025-07</span></li>
+            <li><a href="https://hbr.org/2025/10/5-critical-skills-leaders-need-in-the-age-of-ai" target="_blank" rel="noopener">5 Critical Skills Leaders Need in the Age of AI</a> <span class="source-tag">HBR 2025-10</span></li>
+            <li><a href="https://www.mckinsey.com/capabilities/strategy-and-corporate-finance/our-insights/building-leaders-in-the-age-of-ai" target="_blank" rel="noopener">Developing Human Leadership in the Age of AI</a> <span class="source-tag">McKinsey</span></li>
+            <li><a href="https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-state-of-ai" target="_blank" rel="noopener">The State of AI: Global Survey 2025</a> <span class="source-tag">McKinsey</span></li>
+            <li><a href="https://www.deloitte.com/us/en/about/press-room/deloitte-q4-2025-cfo-signals-survey.html" target="_blank" rel="noopener">Deloitte Q4 2025 CFO Signals Survey</a> <span class="source-tag">Deloitte</span></li>
+            <li><a href="https://fortune.com/2026/03/27/why-cfo-not-chief-ai-officer-secret-getting-real-value-ai/" target="_blank" rel="noopener">Why CFOs Are the Secret to Getting Real Value from AI</a> <span class="source-tag">Fortune 2026-03</span></li>
+            <li><a href="https://www.gartner.com/en/newsroom/press-releases/2026-03-23-gartner-survey-reveals-acquiring-and-developing-ai-and-digital-talent-is-cfos-top-near-term-challenge" target="_blank" rel="noopener">AI and Digital Talent is CFOs' Top Challenge</a> <span class="source-tag">Gartner 2026-03</span></li>
+            <li><a href="https://www.library.hbs.edu/working-knowledge/ai-trends-for-2026-building-change-fitness-and-balancing-trade-offs" target="_blank" rel="noopener">AI Trends for 2026: Building Change Fitness</a> <span class="source-tag">HBS</span></li>
+            <li><a href="https://www.weforum.org/stories/2026/01/ai-roadmap-transforming/" target="_blank" rel="noopener">Invest in the Workforce for the AI Age</a> <span class="source-tag">WEF 2026-01</span></li>
+          </ul>
+        </div>
+
+      </aside>
+
+    </div>
+  </div>
+</main>
+
+<!-- Career/AI category = no disclaimer -->
+<footer class="site-footer">
+  <span>Career | Donato Career Notes | 2026-04-03</span>
+  <span></span>
+</footer>
+
+<script>
+  // Progress bar
+  window.addEventListener('scroll', function() {
+    var h = document.documentElement;
+    var pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    document.getElementById('progress-bar').style.width = Math.min(pct, 100) + '%';
+  });
+
+  // Reading time (500chars/min)
+  (function() {
+    var text = document.querySelector('.article-body') ? document.querySelector('.article-body').textContent : '';
+    var chars = text.length;
+    var minutes = Math.ceil(chars / 500);
+    var el1 = document.getElementById('reading-time-badge');
+    var el2 = document.getElementById('reading-time-badge2');
+    if (el1) el1.querySelector('.lang-ja').textContent = '約' + minutes + '分';
+    if (el2) el2.querySelector('.lang-ja').textContent = '約' + minutes + '分';
+    if (el1) el1.querySelector('.lang-en').textContent = '~' + minutes + ' min read';
+    if (el2) el2.querySelector('.lang-en').textContent = '~' + minutes + ' min read';
+  })();
+
+  // Lang toggle
+  let currentLang = localStorage.getItem('hp-lang') || 'ja';
+  let currentTheme = localStorage.getItem('hp-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('hp-lang', lang);
+    document.querySelectorAll('.lang-ja').forEach(el => el.style.display = lang === 'ja' ? 'inline' : 'none');
+    document.querySelectorAll('.lang-en').forEach(el => el.style.display = lang === 'en' ? 'inline' : 'none');
+    document.querySelectorAll('.art-lang-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+    document.documentElement.lang = lang === 'ja' ? 'ja' : 'en';
+  }
+  function toggleTheme() {
+    currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+    localStorage.setItem('hp-theme', currentTheme);
+    document.body.classList.toggle('dark', currentTheme === 'dark');
+    document.getElementById('theme-btn').textContent = currentTheme === 'light' ? '☀' : '☾';
+  }
+  document.addEventListener('DOMContentLoaded', () => {
+    setLang(currentLang);
+    if (currentTheme === 'dark') {
+      document.body.classList.add('dark');
+      document.getElementById('theme-btn').textContent = '☾';
+    }
+  });
+</script>
+
+</body>
+</html>

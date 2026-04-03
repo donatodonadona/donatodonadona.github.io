@@ -1,0 +1,1455 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="WACCはTax shieldを割引率に混ぜ込み、レバレッジ一定を仮定する。APV（Adjusted Present Value）はMyers（1974）の分離原理に基づき、事業価値とTax shieldを独立評価する。MM命題からAPVの導出、Tax shield割引率論争（MM vs Miles-Ezzell vs Harris-Pringle）、LBO・プロジェクトファイナンスでの優位性、WACC-APV等価条件を体系的に解説。Valuation Theory Lab #014。">
+  <title>APVアプローチ再考 — MM命題・Tax shieldの現在価値 | Valuation Theory Lab #014 | donato</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+JP:wght@300;400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../brand.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:           #F8F7F4;
+      --bg-code:      #EEECEA;
+      --bg-quote:     #EEECEA;
+      --bg-highlight: #EBF3FB;
+      --bg-subtle:    #F0EFEB;
+      --bg-card:      #F0EFEB;
+      --bg-header:    #F8F7F4;
+      --text-primary: #111320;
+      --text-body:    #2A2C3E;
+      --text-muted:   #565C70;
+      --text-light:   #888EA0;
+      --accent:       #1A6EB0;
+      --accent-warm:  #D4A010;
+      --border:       #D4D2CC;
+      --border-quote: #B8B6B0;
+      --border-light: #D4D2CC;
+      --tag-bg:       #E4EFF8;
+      --tag-text:     #1A6EB0;
+      --table-stripe: #F0EFEB;
+    }
+
+    /* ===== PROGRESS BAR ===== */
+    #progress-bar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      width: 0%;
+      background: var(--accent);
+      z-index: 300;
+      transition: width 0.1s linear;
+    }
+
+    body {
+      font-family: 'Noto Serif JP', Georgia, serif;
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--text-primary);
+      background: var(--bg);
+    }
+
+    /* ===== SITE HEADER ===== */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg-header);
+      border-bottom: 2px solid var(--accent);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .site-header-left { display: flex; align-items: center; gap: 12px; }
+    .wordmark {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: lowercase;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+    .wordmark span { color: var(--accent-warm); }
+    .header-sep { color: var(--border-quote); font-size: 13px; }
+    .header-media {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+    }
+    .site-header-right { display: flex; align-items: center; gap: 12px; }
+    .header-back-link {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .header-back-link:hover { color: var(--accent); }
+    .lang-toggle-bar {
+      display: flex;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .art-lang-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      padding: 3px 10px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .art-lang-btn.active { background: #F5C800; color: #111320; }
+    #theme-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      padding: 3px 9px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.15s;
+    }
+    #theme-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .header-date {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-light);
+      letter-spacing: 0.08em;
+    }
+
+    /* ===== STICKY INFO BAR ===== */
+    #sticky-bar {
+      position: sticky;
+      top: 44px;
+      z-index: 200;
+      background: var(--bg-subtle);
+      border-bottom: 1px solid var(--border-light);
+      padding: 7px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .sbar-cat {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+    }
+    .sbar-sep { color: var(--border-quote); font-size: 11px; }
+    .sbar-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+    .sbar-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      padding: 2px 8px;
+    }
+
+    /* ===== LAYOUT ===== */
+    .article-container { max-width: 1240px; margin: 0 auto; padding: 0 20px; }
+    .article-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 24px;
+    }
+    .article-body { grid-column: 2 / 10; max-width: 68ch; }
+    .article-sidebar {
+      grid-column: 10 / 13;
+      position: sticky;
+      top: 78px;
+      align-self: start;
+      max-height: calc(100vh - 90px);
+      overflow-y: auto;
+    }
+    .article-sidebar::-webkit-scrollbar { width: 4px; }
+    .article-sidebar::-webkit-scrollbar-track { background: transparent; }
+    .article-sidebar::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 2px; }
+
+    /* ===== TYPOGRAPHY ===== */
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+    }
+    .article-headline {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(2rem, 4vw, 2.6rem);
+      font-weight: 600;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+    .article-standfirst {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      font-weight: 400;
+    }
+    .byline {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    h2 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.45rem;
+      font-weight: 600;
+      line-height: 1.25;
+      color: var(--text-primary);
+      margin: 2em 0 0.75em;
+      border-top: 1px solid var(--border);
+      padding-top: 1em;
+    }
+    h3 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin: 1.75em 0 0.5em;
+    }
+    .article-body p { margin-bottom: 1.4em; font-size: 0.97rem; line-height: 1.8; }
+    .article-body ul, .article-body ol { margin: 0 0 1.4em 1.4em; }
+    .article-body li { margin-bottom: 0.4em; font-size: 0.95rem; line-height: 1.7; }
+    strong { color: var(--text-primary); font-weight: 600; }
+
+    /* ===== EXEC SUMMARY ===== */
+    .exec-summary {
+      background: var(--bg-highlight);
+      border: 1px solid var(--border-light);
+      border-left: 4px solid var(--accent);
+      padding: 24px;
+      margin: 0 0 2.5em;
+    }
+    .exec-block { margin-bottom: 20px; }
+    .exec-block:last-child { margin-bottom: 0; }
+    .exec-block + .exec-block { padding-top: 18px; border-top: 1px solid var(--border-light); }
+    .exec-tldr {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.02rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      line-height: 1.55;
+      margin-top: 8px;
+    }
+    .issues-list, .implications-list {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .issue-item { display: flex; gap: 10px; align-items: baseline; }
+    .issue-q {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--accent);
+      flex-shrink: 0;
+      min-width: 20px;
+    }
+    .issue-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: var(--text-body);
+      line-height: 1.55;
+    }
+    .implication-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: var(--text-body);
+      line-height: 1.55;
+      padding-left: 14px;
+      border-left: 2px solid var(--accent);
+    }
+    .read-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
+    .read-col-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.66rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 6px;
+    }
+    .read-label-yes { color: var(--accent); }
+    .read-label-no { color: var(--text-muted); }
+    .read-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-body);
+      line-height: 1.45;
+      padding-left: 10px;
+      border-left: 2px solid var(--accent);
+      margin-bottom: 5px;
+    }
+    .skip-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+      padding-left: 10px;
+      border-left: 2px solid var(--border-light);
+      margin-bottom: 5px;
+    }
+
+    /* ===== FORMULA / CALC ===== */
+    .formula {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.93em;
+      background: var(--bg-code);
+      border-left: 3px solid var(--accent);
+      padding: 14px 20px;
+      margin: 20px 0;
+      color: var(--text-primary);
+      overflow-x: auto;
+      line-height: 1.7;
+    }
+    .calc-block {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      padding: 20px 24px;
+      margin: 24px 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+      line-height: 1.8;
+      overflow-x: auto;
+    }
+    .calc-block .calc-row { display: flex; justify-content: space-between; max-width: 480px; }
+    .calc-block .calc-total {
+      border-top: 1px solid var(--border);
+      margin-top: 6px;
+      padding-top: 6px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .calc-block .calc-highlight { color: var(--accent); font-weight: 700; }
+    .calc-block .calc-warn { color: var(--accent-warm); font-weight: 700; }
+
+    /* ===== INSIGHT / TRAP BOX ===== */
+    .insight-box {
+      background: var(--bg-highlight);
+      border-left: 4px solid var(--accent);
+      padding: 18px 22px;
+      margin: 28px 0;
+    }
+    .insight-box p {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: var(--text-primary);
+    }
+    .insight-box strong { color: var(--accent); }
+    .trap-box {
+      background: #FEF9EC;
+      border-left: 4px solid var(--accent-warm);
+      padding: 18px 22px;
+      margin: 24px 0;
+    }
+    .trap-box p {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      line-height: 1.65;
+      color: var(--text-body);
+    }
+    .trap-box .trap-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      color: var(--accent-warm);
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+
+    /* ===== DATA TABLE ===== */
+    .data-table-wrap { overflow-x: auto; margin: 1.5em 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      background: var(--bg-subtle);
+      padding: 8px 12px;
+      text-align: left;
+      border-bottom: 2px solid var(--border);
+    }
+    td {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border-light);
+      color: var(--text-body);
+      font-family: 'Inter', sans-serif;
+    }
+    tr:nth-child(even) td { background: var(--table-stripe); }
+    .td-accent { color: var(--accent); font-weight: 600; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
+    .td-warn   { color: var(--accent-warm); font-weight: 600; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
+
+    /* ===== PULL QUOTE ===== */
+    .pull-quote {
+      border-left: 4px solid var(--accent);
+      margin: 2em 0;
+      padding: 1em 20px;
+      background: var(--bg-card);
+    }
+    .pull-quote p {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.2rem;
+      font-style: italic;
+      color: var(--text-primary);
+      line-height: 1.5;
+      margin-bottom: 6px !important;
+    }
+    .pull-quote footer {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* ===== NUMBERED LIST ===== */
+    .numbered-list { list-style: none; padding: 0; margin: 20px 0; }
+    .numbered-list li {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 16px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.92rem;
+      line-height: 1.65;
+      color: var(--text-body);
+    }
+    .numbered-list li .num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: white;
+      background: var(--accent);
+      min-width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    /* ===== SECTION SEP ===== */
+    .section-sep {
+      text-align: center;
+      color: var(--text-light);
+      font-size: 1.2rem;
+      letter-spacing: 0.5em;
+      margin: 48px 0;
+      user-select: none;
+    }
+
+    /* ===== SOURCE LIST ===== */
+    .source-list { list-style: none; padding: 0; }
+    .source-list li { margin-bottom: 6px; }
+    .source-list a {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--accent);
+      text-decoration: none;
+      line-height: 1.5;
+    }
+    .source-list a:hover { text-decoration: underline; }
+    .source-tag { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--text-muted); margin-left: 4px; }
+
+    /* ===== NEXT ARTICLE CTA ===== */
+    .next-article {
+      background: var(--text-primary);
+      color: #E4E2DC;
+      padding: 28px 32px;
+      margin-top: 56px;
+    }
+    .next-article .next-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      color: var(--accent-warm);
+      margin-bottom: 8px;
+    }
+    .next-article .next-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+    .next-article .next-desc {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.82rem;
+      color: #9299A8;
+      margin-top: 8px;
+    }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .keyfacts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+    .fact-card { background: var(--bg-highlight); padding: 10px 8px; }
+    .fact-card.highlight { background: #FDF8EC; border: 1px solid #E8D88A; }
+    .fact-value { font-family: 'JetBrains Mono', monospace; font-size: 1rem; font-weight: 500; color: var(--accent); line-height: 1.2; }
+    .fact-card.highlight .fact-value { color: #8A6A00; }
+    .fact-desc { font-family: 'Inter', sans-serif; font-size: 0.64rem; color: var(--text-muted); margin-top: 3px; line-height: 1.35; }
+    .fact-card.highlight .fact-desc { color: #7A6020; }
+    .highlights-list { list-style: none; padding: 0; margin-top: 12px; }
+    .highlight-item { padding: 9px 0; border-bottom: 1px solid var(--border-light); display: flex; gap: 10px; align-items: baseline; }
+    .highlight-item:last-child { border-bottom: none; }
+    .hl-num { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--accent); flex-shrink: 0; min-width: 18px; }
+    .hl-text { font-family: 'Inter', sans-serif; font-size: 0.76rem; color: var(--text-body); line-height: 1.45; }
+
+    /* ===== LANG TOGGLE ===== */
+    .lang-en { display: none; }
+
+    /* ===== FOOTER ===== */
+    .site-footer {
+      border-top: 1px solid var(--border-light);
+      margin-top: 4em;
+      padding: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* ===== PRINT ===== */
+    @media print {
+      body { background: white; font-size: 11pt; }
+      .site-header, #sticky-bar, #progress-bar { display: none; }
+      .article-sidebar { position: static; max-height: none; overflow: visible; }
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+    @page { size: A4; margin: 20mm 15mm; }
+
+    /* ===== MOBILE ===== */
+    @media (max-width: 900px) {
+      .article-body { grid-column: 1 / -1; }
+      .article-sidebar { position: static; max-height: none; overflow: visible; grid-column: 1 / -1; }
+      .article-grid { display: block; }
+      .read-grid { grid-template-columns: 1fr; }
+      #sticky-bar { flex-wrap: wrap; gap: 6px; }
+    }
+
+    body.dark {
+      --bg:           #0D1117;
+      --bg-code:      #161B22;
+      --bg-quote:     #161B22;
+      --bg-highlight: #0E1A2B;
+      --bg-subtle:    #161B22;
+      --bg-card:      #161B22;
+      --bg-header:    #0D1117;
+      --text-primary: #E4E2DC;
+      --text-body:    #C4C2BC;
+      --text-muted:   #8B93A8;
+      --text-light:   #575E70;
+      --accent:       #3A8FD0;
+      --accent-warm:  #F5C800;
+      --border:       #21253A;
+      --border-quote: #2A2D3E;
+      --border-light: #21253A;
+      --tag-bg:       #0E1A2B;
+      --tag-text:     #3A8FD0;
+      --table-stripe: #161B22;
+    }
+    body.dark .trap-box { background: #1C1800; }
+    body.dark .fact-card.highlight { background: #1A1600; border-color: #3A2D00; }
+    body.dark .fact-card.highlight .fact-value { color: #C4900E; }
+    body.dark .fact-card.highlight .fact-desc { color: #A07828; }
+    body.dark .next-article { background: #111320; }
+  </style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<!-- 1. Site Header -->
+<header class="site-header">
+  <div class="site-header-left">
+    <a class="wordmark" href="../index.html">dona<span>to</span></a>
+    <span class="header-sep">—</span>
+    <a class="header-back-link" href="./index.html"><span class="lang-ja">記事一覧</span><span class="lang-en">Articles</span></a>
+    <span class="header-sep">—</span>
+    <span class="header-media">Valuation Theory Lab</span>
+  </div>
+  <div class="site-header-right">
+    <div class="lang-toggle-bar">
+      <button class="art-lang-btn active" data-lang="ja" onclick="setLang('ja')">JP</button>
+      <button class="art-lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+    </div>
+    <button id="theme-btn" onclick="toggleTheme()" title="ダーク/ライト切替">☀</button>
+    <time class="header-date">2026-04-03</time>
+  </div>
+</header>
+
+<!-- 2. Sticky Info Bar -->
+<div id="sticky-bar">
+  <span class="sbar-cat">Valuation Theory Lab</span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-text"><span class="lang-ja">Series #014 · APV</span><span class="lang-en">Series #014 · APV</span></span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-text">2026-04-03</span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-badge" id="reading-time-badge"><span class="lang-ja">計算中</span><span class="lang-en">...</span></span>
+</div>
+
+<main style="padding: 0 0 3em;">
+  <div class="article-container">
+    <div class="article-grid">
+
+      <!-- 3. Article Body -->
+      <article class="article-body">
+
+        <!-- Article Header -->
+        <div style="padding: 36px 0 24px;">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+            <div class="section-label">Valuation Theory Lab &nbsp;#014</div>
+            <span class="sbar-badge" id="reading-time-badge2"><span class="lang-ja">計算中</span><span class="lang-en">...</span></span>
+          </div>
+          <h1 class="article-headline">
+            <span class="lang-ja">APVアプローチ再考 — MM命題・Tax shieldの現在価値</span>
+            <span class="lang-en">Revisiting APV — Modigliani-Miller Propositions and the PV of Tax Shields</span>
+          </h1>
+          <p class="article-standfirst">
+            <span class="lang-ja">WACCはTax shieldの価値を割引率に混ぜ込み、レバレッジ一定を暗黙の前提とする。APV（Adjusted Present Value）はMyers（1974）の分離原理に基づき、事業価値とファイナンシングの副次効果を独立に評価する。本稿では、MM命題からAPVの理論的導出を行い、Tax shield割引率をめぐる学術論争を整理し、LBO・プロジェクトファイナンスにおけるAPVの実務的優位性を論じる。</span>
+            <span class="lang-en">WACC embeds the value of tax shields into the discount rate, implicitly assuming constant leverage. APV (Adjusted Present Value), grounded in Myers' (1974) separation principle, independently values the operating business and financing side effects. This article derives APV from the Modigliani-Miller propositions, surveys the academic debate on tax shield discount rates, and examines APV's practical superiority in LBO and project finance contexts.</span>
+          </p>
+          <div style="display:flex; gap:16px; align-items:center; border-top:1px solid var(--border-light); border-bottom:1px solid var(--border-light); padding:10px 0;">
+            <span class="byline">By <strong>Donato Valuation Notes</strong></span>
+            <span style="color:var(--border);">|</span>
+            <time class="byline" datetime="2026-04-03"><span class="lang-ja">2026年4月3日</span><span class="lang-en">3 April 2026</span></time>
+            <span style="color:var(--border);">|</span>
+            <span class="byline"><span class="lang-ja">APV · MM命題 · Tax shield · LBO · WACC</span><span class="lang-en">APV · MM Propositions · Tax Shield · LBO · WACC</span></span>
+          </div>
+        </div>
+
+        <!-- Exec Summary -->
+        <section class="exec-summary">
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">概要</span><span class="lang-en">Summary</span></div>
+            <p class="exec-tldr">
+              <span class="lang-ja">APV（Adjusted Present Value）は、企業価値をアンレバード事業価値V<sub>U</sub>とTax shieldの現在価値PV(TS)に分離して評価する。WACCがレバレッジ一定という非現実的な仮定に依存するのに対し、APVは資本構成の変化を自然にモデリングできる。Tax shieldの割引率にはMM（1963）、Miles-Ezzell（1980）、Harris-Pringle（1985）の3つの主要理論があり、負債政策の前提によって正しい選択が変わる。LBO・プロジェクトファイナンスなどレバレッジが動的に変化する場面では、APVがWACCに対して構造的な優位性を持つ。</span>
+              <span class="lang-en">APV (Adjusted Present Value) decomposes firm value into the unlevered operating value V<sub>U</sub> and the present value of tax shields PV(TS). Whilst WACC relies on the unrealistic assumption of constant leverage, APV naturally accommodates changing capital structures. Three principal theories govern the tax shield discount rate — MM (1963), Miles-Ezzell (1980), and Harris-Pringle (1985) — and the correct choice depends on the firm's debt policy. In contexts where leverage changes dynamically, such as LBOs and project finance, APV holds a structural advantage over WACC.</span>
+            </p>
+          </div>
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">本稿の論点</span><span class="lang-en">Key Questions</span></div>
+            <ul class="issues-list">
+              <li class="issue-item">
+                <span class="issue-q">Q1</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>WACCはなぜ資本構成の変化に弱いのか</strong> — Tax shieldを割引率に混ぜ込む設計がレバレッジ一定の仮定を強制する構造的理由</span>
+                  <span class="lang-en"><strong>Why is WACC fragile to capital structure changes?</strong> — The structural reason why embedding tax shields in the discount rate forces a constant-leverage assumption</span>
+                </span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">Q2</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>Tax shieldの割引率は何が正しいか</strong> — R<sub>d</sub>かR<sub>u</sub>か。MM・Miles-Ezzell・Harris-Pringleの3理論が導く異なる結論と、負債政策との対応関係</span>
+                  <span class="lang-en"><strong>What is the correct discount rate for tax shields?</strong> — R<sub>d</sub> or R<sub>u</sub>? The divergent conclusions of MM, Miles-Ezzell, and Harris-Pringle, and their correspondence to debt policies</span>
+                </span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">Q3</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>APVとWACCはいつ等価で、いつ乖離するか</strong> — 数値的等価条件の導出と、実務で乖離が生じる典型的なパターン</span>
+                  <span class="lang-en"><strong>When are APV and WACC equivalent, and when do they diverge?</strong> — Derivation of numerical equivalence conditions and typical patterns of divergence in practice</span>
+                </span>
+              </li>
+            </ul>
+          </div>
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">Valuation実務家への含意</span><span class="lang-en">Implications for Practitioners</span></div>
+            <ul class="implications-list">
+              <li class="implication-item">
+                <span class="lang-ja"><strong>資本構成が変化する場面ではAPVを使え</strong> — LBO、リストラクチャリング、プロジェクトファイナンスでは、WACCの一定レバレッジ仮定が成立しない。各期の負債残高からTax shieldを直接計算するAPVが構造的に正しい</span>
+                <span class="lang-en"><strong>Use APV when the capital structure changes</strong> — In LBOs, restructurings, and project finance, WACC's constant-leverage assumption fails. APV, which calculates tax shields directly from each period's debt balance, is structurally correct</span>
+              </li>
+              <li class="implication-item">
+                <span class="lang-ja"><strong>Tax shield割引率の選択は負債政策に合わせよ</strong> — 固定額負債ならR<sub>d</sub>（MM）、市場価値レバレッジ一定ならR<sub>u</sub>（Harris-Pringle）。負債政策と割引率の不整合はバリュエーション誤差の主要因となる</span>
+                <span class="lang-en"><strong>Match the tax shield discount rate to the debt policy</strong> — Fixed-dollar debt warrants R<sub>d</sub> (MM); constant market-value leverage warrants R<sub>u</sub> (Harris-Pringle). Mismatching the debt policy and discount rate is a primary source of valuation error</span>
+              </li>
+              <li class="implication-item">
+                <span class="lang-ja"><strong>WACCとAPVの不一致を見つけたら仮定を疑え</strong> — 両手法の乖離は、レバレッジの変化、Tax shieldリスクの仮定の不整合、またはWACCの循環参照が不十分に解かれていることを示唆する</span>
+                <span class="lang-en"><strong>If WACC and APV disagree, interrogate the assumptions</strong> — Divergence between the two methods signals changing leverage, inconsistent tax shield risk assumptions, or insufficiently resolved circularity in WACC</span>
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- ===== Section 1: MM Propositions ===== -->
+
+        <h2>
+          <span class="lang-ja">1. 出発点としてのMM命題</span>
+          <span class="lang-en">1. The Modigliani-Miller Propositions as Starting Point</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">APVの理論的基盤はModigliani-Miller（MM）命題にある。1958年にFranco ModiglianiとMerton Millerが<em>American Economic Review</em>に発表した論文は、完全市場（税金なし、取引費用なし、倒産費用なし）においては、企業の資本構成が企業価値に影響しないことを示した。</span>
+          <span class="lang-en">The theoretical foundation of APV lies in the Modigliani-Miller (MM) propositions. In their 1958 paper published in the <em>American Economic Review</em>, Franco Modigliani and Merton Miller demonstrated that under perfect capital markets (no taxes, no transaction costs, no bankruptcy costs), a firm's capital structure does not affect its total value.</span>
+        </p>
+
+        <h3>
+          <span class="lang-ja">MM命題 I（無税）: 資本構成の無関連性</span>
+          <span class="lang-en">MM Proposition I (no taxes): Capital Structure Irrelevance</span>
+        </h3>
+
+        <div class="formula">
+          <span class="lang-ja">V<sub>L</sub> = V<sub>U</sub><br><br>レバード企業の価値 ＝ アンレバード企業の価値</span>
+          <span class="lang-en">V<sub>L</sub> = V<sub>U</sub><br><br>Value of levered firm = Value of unlevered firm</span>
+        </div>
+
+        <p>
+          <span class="lang-ja">完全市場では、企業が生み出すキャッシュフローの総額は資本構成によって変わらない。パイの切り方（負債と株式の比率）を変えても、パイの大きさは同じだ。投資家は自身のレバレッジ（ホームメイド・レバレッジ）で任意の資本構成を複製できるため、企業レベルのレバレッジにプレミアムは発生しない。</span>
+          <span class="lang-en">Under perfect markets, the total cash flow generated by a firm is unchanged by its capital structure. Reslicing the pie between debt and equity does not alter its size. Investors can replicate any capital structure through personal leverage (homemade leverage), so no premium arises from firm-level leverage.</span>
+        </p>
+
+        <h3>
+          <span class="lang-ja">MM命題 II（無税）: 株主資本コストとレバレッジ</span>
+          <span class="lang-en">MM Proposition II (no taxes): Cost of Equity and Leverage</span>
+        </h3>
+
+        <div class="formula">
+          <span class="lang-ja">R<sub>e</sub> = R<sub>0</sub> + (R<sub>0</sub> - R<sub>d</sub>) &times; D/E<br><br>R<sub>e</sub>: 株主資本コスト &nbsp; R<sub>0</sub>: アンレバード資本コスト<br>R<sub>d</sub>: 負債コスト &nbsp; D/E: 負債・株式比率</span>
+          <span class="lang-en">R<sub>e</sub> = R<sub>0</sub> + (R<sub>0</sub> - R<sub>d</sub>) &times; D/E<br><br>R<sub>e</sub>: Cost of equity &nbsp; R<sub>0</sub>: Unlevered cost of capital<br>R<sub>d</sub>: Cost of debt &nbsp; D/E: Debt-to-equity ratio</span>
+        </div>
+
+        <p>
+          <span class="lang-ja">レバレッジが増加するとR<sub>e</sub>は線形に上昇する。これは直感的にも明快だ — 負債が増えれば残余リスクが株主に集中するため、株主資本コストが上がる。しかし無税の世界では、安い負債による加重平均への「引き下げ効果」と高くなる株式の「引き上げ効果」が完全に相殺し、WACC（加重平均資本コスト）は一定に保たれる。</span>
+          <span class="lang-en">As leverage increases, R<sub>e</sub> rises linearly. The intuition is straightforward — more debt concentrates residual risk on equity holders, pushing up the cost of equity. Yet in a tax-free world, the "pull-down" effect of cheap debt in the weighted average and the "pull-up" from more expensive equity exactly offset, keeping WACC constant.</span>
+        </p>
+
+        <div class="section-sep">· · ·</div>
+
+        <!-- ===== Section 2: MM with Taxes ===== -->
+
+        <h2>
+          <span class="lang-ja">2. 法人税の導入 — Tax shieldの発見</span>
+          <span class="lang-en">2. Introducing Corporate Taxes — The Discovery of Tax Shields</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">1963年の修正論文でModiglianiとMillerは法人税を導入した。利息が法人税上損金算入される世界では、負債を使うことで税引後キャッシュフローが増加する。この増分がTax shield（節税効果）であり、企業価値を押し上げる。</span>
+          <span class="lang-en">In their 1963 correction paper, Modigliani and Miller introduced corporate taxes. In a world where interest is tax-deductible, using debt increases after-tax cash flow. This increment is the tax shield, and it increases firm value.</span>
+        </p>
+
+        <div class="formula">
+          <span class="lang-ja">MM命題 I（有税）:<br>V<sub>L</sub> = V<sub>U</sub> + T<sub>c</sub> &times; D<br><br>Tax shield ＝ 法人税率 &times; 負債額（永続的・確実な負債を仮定）</span>
+          <span class="lang-en">MM Proposition I (with taxes):<br>V<sub>L</sub> = V<sub>U</sub> + T<sub>c</sub> &times; D<br><br>Tax shield = Corporate tax rate &times; Debt level (assuming perpetual, certain debt)</span>
+        </div>
+
+        <p>
+          <span class="lang-ja">この式が意味するのは、負債を増やせば増やすほど企業価値が上がるということだ。論理的帰結としては、最適資本構成は100%負債になる。現実にはそうならないのは、MMモデルが捨象した要素 — 倒産費用（直接費用＋間接費用）、エージェンシーコスト（Jensen & Meckling, 1976）、個人税の影響（Miller, 1977） — が存在するからだ。</span>
+          <span class="lang-en">This formula implies that firm value increases with every increment of debt. The logical conclusion is that the optimal capital structure would be 100% debt. In reality this does not occur because of factors MM's model abstracts away — bankruptcy costs (direct and indirect), agency costs (Jensen & Meckling, 1976), and personal tax effects (Miller, 1977).</span>
+        </p>
+
+        <div class="formula">
+          <span class="lang-ja">MM命題 II（有税）:<br>R<sub>e</sub> = R<sub>0</sub> + (R<sub>0</sub> - R<sub>d</sub>)(1 - T<sub>c</sub>) &times; D/E<br><br>(1 - T<sub>c</sub>)のファクターがレバレッジのインパクトを緩和する</span>
+          <span class="lang-en">MM Proposition II (with taxes):<br>R<sub>e</sub> = R<sub>0</sub> + (R<sub>0</sub> - R<sub>d</sub>)(1 - T<sub>c</sub>) &times; D/E<br><br>The (1 - T<sub>c</sub>) factor moderates the leverage impact</span>
+        </div>
+
+        <p>
+          <span class="lang-ja">有税の世界では、レバレッジが上がってもR<sub>e</sub>の上昇幅が(1 - T<sub>c</sub>)で抑制される。Tax shieldの一部が負債のリスク増大を相殺するからだ。この結果、WACCはレバレッジとともに低下する — ただし倒産費用を無視している限りにおいて。</span>
+          <span class="lang-en">In the tax world, the rise in R<sub>e</sub> from leverage is dampened by (1 - T<sub>c</sub>). Part of the tax shield offsets the increased risk from debt. Consequently, WACC falls as leverage rises — but only to the extent that bankruptcy costs are ignored.</span>
+        </p>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>MM命題はAPVの理論的基盤である。</strong>V<sub>L</sub> = V<sub>U</sub> + T<sub>c</sub> &times; D という式は、APVの基本構造そのものだ。APVが行うのは、この分解をより精緻に — Tax shieldの割引率を負債政策に合わせて選択し、破綻コストやその他のファイナンシング副次効果を独立に評価すること — 実行することにほかならない。</span>
+            <span class="lang-en"><strong>The MM propositions are APV's theoretical foundation.</strong> The expression V<sub>L</sub> = V<sub>U</sub> + T<sub>c</sub> &times; D is the APV structure itself. What APV does is execute this decomposition more precisely — selecting the tax shield discount rate to match the debt policy and independently valuing bankruptcy costs and other financing side effects.</span>
+          </p>
+        </div>
+
+        <div class="section-sep">· · ·</div>
+
+        <!-- ===== Section 3: APV Framework ===== -->
+
+        <h2>
+          <span class="lang-ja">3. APVフレームワーク — Myersの分離原理</span>
+          <span class="lang-en">3. The APV Framework — Myers' Separation Principle</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">Stewart C. Myersは1974年の論文 "Interactions of Corporate Financing and Investment Decisions — Implications for Capital Budgeting"（<em>The Journal of Finance</em>, Vol. 29, No. 1, pp. 1-25）でAPVを提唱した。その核心は<strong>分離原理</strong>にある。</span>
+          <span class="lang-en">Stewart C. Myers proposed APV in his 1974 paper "Interactions of Corporate Financing and Investment Decisions — Implications for Capital Budgeting" (<em>The Journal of Finance</em>, Vol. 29, No. 1, pp. 1-25). Its core is the <strong>separation principle</strong>.</span>
+        </p>
+
+        <div class="formula">
+          <span class="lang-ja">APV = V<sub>U</sub> + PV(Tax Shield) - PV(Financial Distress Costs)<br><br>V<sub>U</sub> = FCFをR<sub>u</sub>（アンレバード資本コスト）で割引<br>PV(TS) = 各期のTax shield（T<sub>c</sub> &times; R<sub>d</sub> &times; D<sub>t</sub>）を適切な割引率で現在価値化</span>
+          <span class="lang-en">APV = V<sub>U</sub> + PV(Tax Shield) - PV(Financial Distress Costs)<br><br>V<sub>U</sub> = FCF discounted at R<sub>u</sub> (unlevered cost of capital)<br>PV(TS) = Each period's tax shield (T<sub>c</sub> &times; R<sub>d</sub> &times; D<sub>t</sub>) present-valued at the appropriate rate</span>
+        </div>
+
+        <p>
+          <span class="lang-ja">WACCとの決定的な違いは、<strong>事業価値とファイナンシング効果を混合しない</strong>点にある。WACCは (1 - T<sub>c</sub>) &times; R<sub>d</sub> &times; D/V の項でTax shieldを割引率に直接組み込んでいる。これは便利な単純化だが、暗黙に「レバレッジ比率D/Vが将来にわたって一定」を要求する。APVではこの仮定が不要だ。</span>
+          <span class="lang-en">The decisive difference from WACC is that <strong>APV does not blend operating value and financing effects</strong>. WACC directly incorporates the tax shield into the discount rate through the (1 - T<sub>c</sub>) &times; R<sub>d</sub> &times; D/V term. This is a convenient simplification, but it implicitly requires the leverage ratio D/V to remain constant into the future. APV dispenses with this assumption.</span>
+        </p>
+
+        <h3>
+          <span class="lang-ja">APVの実行ステップ</span>
+          <span class="lang-en">APV Implementation Steps</span>
+        </h3>
+
+        <ul class="numbered-list">
+          <li>
+            <span class="num">1</span>
+            <span>
+              <span class="lang-ja"><strong>FCFの推計</strong> — 通常のDCFと同様にフリーキャッシュフローを推計する。資本構成を一切考慮しない、事業が生み出す純粋なキャッシュフロー。</span>
+              <span class="lang-en"><strong>Estimate FCF</strong> — Project free cash flows as in a standard DCF. These are the pure operating cash flows, with no consideration of capital structure.</span>
+            </span>
+          </li>
+          <li>
+            <span class="num">2</span>
+            <span>
+              <span class="lang-ja"><strong>R<sub>u</sub>でV<sub>U</sub>を算出</strong> — FCFをアンレバード資本コストR<sub>u</sub>で割引し、全額エクイティで調達した場合の事業価値を求める。R<sub>u</sub>はCAPMで「負債ゼロの仮想的β」を使うか、業種平均のアンレバードβから推計する。</span>
+              <span class="lang-en"><strong>Compute V<sub>U</sub> at R<sub>u</sub></strong> — Discount FCF at the unlevered cost of capital R<sub>u</sub> to derive the value of the business as if entirely equity-financed. R<sub>u</sub> can be estimated via CAPM using a hypothetical zero-debt beta or from industry-average unlevered betas.</span>
+            </span>
+          </li>
+          <li>
+            <span class="num">3</span>
+            <span>
+              <span class="lang-ja"><strong>Tax shieldの計算</strong> — 各期の負債残高D<sub>t</sub>からTax shield（T<sub>c</sub> &times; R<sub>d</sub> &times; D<sub>t</sub>）を計算する。負債スケジュールが具体的に決まっている場合は、各期の実際の利息支払いからT<sub>c</sub> &times; Interest<sub>t</sub>を直接算出する。</span>
+              <span class="lang-en"><strong>Calculate tax shields</strong> — From each period's debt balance D<sub>t</sub>, compute the tax shield (T<sub>c</sub> &times; R<sub>d</sub> &times; D<sub>t</sub>). When the debt schedule is concretely specified, compute T<sub>c</sub> &times; Interest<sub>t</sub> directly from actual interest payments.</span>
+            </span>
+          </li>
+          <li>
+            <span class="num">4</span>
+            <span>
+              <span class="lang-ja"><strong>Tax shieldの割引</strong> — 負債政策に応じた適切な割引率でPV(TS)を算出する（次節で詳述）。</span>
+              <span class="lang-en"><strong>Discount tax shields</strong> — Compute PV(TS) using the discount rate appropriate to the debt policy (detailed in the next section).</span>
+            </span>
+          </li>
+          <li>
+            <span class="num">5</span>
+            <span>
+              <span class="lang-ja"><strong>ファイナンシング副次効果の加減算</strong> — 倒産コスト、補助金付き融資、発行費用、ヘッジ便益など、Tax shield以外のファイナンシング効果があればそれぞれ独立に評価して加減する。</span>
+              <span class="lang-en"><strong>Add/subtract other financing side effects</strong> — If there are financing effects beyond tax shields — bankruptcy costs, subsidised loans, issuance costs, hedging benefits — value each independently and add or subtract.</span>
+            </span>
+          </li>
+        </ul>
+
+        <div class="section-sep">· · ·</div>
+
+        <!-- ===== Section 4: Tax Shield Discount Rate Debate ===== -->
+
+        <h2>
+          <span class="lang-ja">4. Tax shield割引率論争 — 3つの理論</span>
+          <span class="lang-en">4. The Tax Shield Discount Rate Debate — Three Theories</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">APVの理論的構造はシンプルだが、実務上最も困難な問題はTax shieldの割引率の選択だ。Tax shieldのリスク特性は負債政策に依存し、負債政策が異なれば割引率も異なる。学術的には3つの主要理論が存在する。</span>
+          <span class="lang-en">APV's theoretical structure is simple, but the most difficult practical question is the choice of tax shield discount rate. The risk characteristics of tax shields depend on debt policy, and different debt policies imply different discount rates. Three principal academic theories exist.</span>
+        </p>
+
+        <h3>
+          <span class="lang-ja">理論1: MM（1963）— R<sub>d</sub>で割引</span>
+          <span class="lang-en">Theory 1: MM (1963) — Discount at R<sub>d</sub></span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">Modigliani-Miller（1963）の原型では、企業は特定の金額の負債を永続的に維持する（固定額負債政策）。この場合、Tax shield（T<sub>c</sub> &times; R<sub>d</sub> &times; D）は負債と同じリスクを持つ。負債額が確定しているなら、Tax shieldの不確実性は負債のデフォルトリスクのみに依存する。したがって割引率はR<sub>d</sub>（負債コスト）が適切であり、永続的なTax shieldの現在価値は：</span>
+          <span class="lang-en">In the original Modigliani-Miller (1963) formulation, the firm maintains a specific dollar amount of debt in perpetuity (fixed-dollar debt policy). Under this policy, the tax shield (T<sub>c</sub> &times; R<sub>d</sub> &times; D) carries the same risk as the debt itself. If the debt amount is fixed, the uncertainty of the tax shield depends solely on the default risk of the debt. The appropriate discount rate is therefore R<sub>d</sub> (cost of debt), and the present value of the perpetual tax shield is:</span>
+        </p>
+
+        <div class="formula">
+          <span class="lang-ja">PV(TS) = (T<sub>c</sub> &times; R<sub>d</sub> &times; D) / R<sub>d</sub> = T<sub>c</sub> &times; D</span>
+          <span class="lang-en">PV(TS) = (T<sub>c</sub> &times; R<sub>d</sub> &times; D) / R<sub>d</sub> = T<sub>c</sub> &times; D</span>
+        </div>
+
+        <p>
+          <span class="lang-ja">これはTax shield価値の上限を与える。法人税率30%、負債1,000のとき、PV(TS) = 300。<strong>適用場面：</strong>プロジェクトファイナンス（予め確定した返済スケジュール）、社債発行による固定額負債。</span>
+          <span class="lang-en">This gives the upper bound of tax shield value. With a 30% tax rate and debt of 1,000, PV(TS) = 300. <strong>Applicable contexts:</strong> project finance (predetermined repayment schedules), fixed-amount debt from bond issuance.</span>
+        </p>
+
+        <h3>
+          <span class="lang-ja">理論2: Miles-Ezzell（1980）— ハイブリッド割引</span>
+          <span class="lang-en">Theory 2: Miles-Ezzell (1980) — Hybrid Discounting</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">Miles and Ezzell（1980, <em>Journal of Financial and Quantitative Analysis</em>, Vol. 15, No. 3, pp. 719-730）は、企業が市場価値ベースで一定のレバレッジ比率を維持するために定期的にリバランスする（動的レバレッジ政策）ケースを分析した。</span>
+          <span class="lang-en">Miles and Ezzell (1980, <em>Journal of Financial and Quantitative Analysis</em>, Vol. 15, No. 3, pp. 719-730) analysed the case where the firm periodically rebalances to maintain a constant market-value leverage ratio (dynamic leverage policy).</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">この政策下では、第1期のTax shieldは確定しているが（負債額はすでに決まっている）、第2期以降のTax shieldは企業価値に連動して負債額が変動するため、事業リスクと同程度のリスクを持つ。Miles-Ezzellの解は：</span>
+          <span class="lang-en">Under this policy, the first period's tax shield is certain (the debt level is already set), but from the second period onwards, the tax shield fluctuates with firm value as debt is rebalanced, carrying risk comparable to operating risk. The Miles-Ezzell solution is:</span>
+        </p>
+
+        <div class="formula">
+          <span class="lang-ja">第1期のTax shield → R<sub>d</sub>で割引<br>第2期以降のTax shield → R<sub>u</sub>で割引<br><br>WACC<sub>ME</sub> = R<sub>u</sub> - T<sub>c</sub> &times; R<sub>d</sub> &times; (D/V) &times; (1 + R<sub>u</sub>) / (1 + R<sub>d</sub>)</span>
+          <span class="lang-en">Period 1 tax shield → discount at R<sub>d</sub><br>Period 2+ tax shields → discount at R<sub>u</sub><br><br>WACC<sub>ME</sub> = R<sub>u</sub> - T<sub>c</sub> &times; R<sub>d</sub> &times; (D/V) &times; (1 + R<sub>u</sub>) / (1 + R<sub>d</sub>)</span>
+        </div>
+
+        <p>
+          <span class="lang-ja">結果として、Tax shield価値はMMの T<sub>c</sub> &times; D よりも小さくなる。レバレッジ一定でも負債額自体は企業価値とともに変動するため、Tax shieldには事業リスクが反映される。</span>
+          <span class="lang-en">Consequently, the tax shield value is smaller than MM's T<sub>c</sub> &times; D. Even at constant leverage, the debt amount itself fluctuates with firm value, so the tax shield reflects operating risk.</span>
+        </p>
+
+        <h3>
+          <span class="lang-ja">理論3: Harris-Pringle（1985）— 全期間R<sub>u</sub>で割引</span>
+          <span class="lang-en">Theory 3: Harris-Pringle (1985) — Discount Entirely at R<sub>u</sub></span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">Harris and Pringle（1985, <em>Journal of Financial Research</em>, Vol. 8, No. 3, pp. 237-244）は、Miles-Ezzellをさらに単純化した。企業が連続的にリバランスする場合、第1期のTax shieldですら不確実（即座にリバランス可能）とみなし、全期間のTax shieldをR<sub>u</sub>で割引する。</span>
+          <span class="lang-en">Harris and Pringle (1985, <em>Journal of Financial Research</em>, Vol. 8, No. 3, pp. 237-244) further simplified Miles-Ezzell. If the firm continuously rebalances, even the first period's tax shield is uncertain (the firm could rebalance immediately), so all tax shields are discounted at R<sub>u</sub>.</span>
+        </p>
+
+        <div class="formula">
+          <span class="lang-ja">PV(TS) = 全Tax shieldをR<sub>u</sub>で割引<br><br>WACC<sub>HP</sub> = R<sub>u</sub> - T<sub>c</sub> &times; R<sub>d</sub> &times; (D/V)<br><br>これは教科書のWACC公式と同一形</span>
+          <span class="lang-en">PV(TS) = All tax shields discounted at R<sub>u</sub><br><br>WACC<sub>HP</sub> = R<sub>u</sub> - T<sub>c</sub> &times; R<sub>d</sub> &times; (D/V)<br><br>This is identical to the textbook WACC formula</span>
+        </div>
+
+        <p>
+          <span class="lang-ja">Harris-Pringleの仮定が重要なのは、これが<strong>教科書WACCの暗黙の前提</strong>だからだ。つまり、教科書のWACCを使っている時点で、我々は「Tax shieldは事業と同じリスクを持つ（R<sub>u</sub>で割引される）」「レバレッジは市場価値ベースで一定」という仮定を無自覚に受け入れている。</span>
+          <span class="lang-en">The Harris-Pringle assumption matters because it is <strong>the implicit assumption behind the textbook WACC</strong>. In other words, the moment we use the textbook WACC, we are unwittingly accepting that "tax shields carry the same risk as operations (discounted at R<sub>u</sub>)" and "leverage is constant at market value."</span>
+        </p>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">理論</span><span class="lang-en">Theory</span></th>
+                <th><span class="lang-ja">割引率</span><span class="lang-en">Discount Rate</span></th>
+                <th><span class="lang-ja">PV(TS)永続</span><span class="lang-en">PV(TS) Perpetuity</span></th>
+                <th><span class="lang-ja">負債政策の前提</span><span class="lang-en">Debt Policy Assumption</span></th>
+                <th><span class="lang-ja">適用場面</span><span class="lang-en">Application</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="td-accent">MM (1963)</td>
+                <td>R<sub>d</sub></td>
+                <td>T<sub>c</sub> &times; D</td>
+                <td><span class="lang-ja">固定額負債</span><span class="lang-en">Fixed-dollar debt</span></td>
+                <td><span class="lang-ja">PF・社債</span><span class="lang-en">PF, bonds</span></td>
+              </tr>
+              <tr>
+                <td class="td-accent">Miles-Ezzell (1980)</td>
+                <td>R<sub>d</sub> / R<sub>u</sub></td>
+                <td>&lt; T<sub>c</sub> &times; D</td>
+                <td><span class="lang-ja">定期リバランス</span><span class="lang-en">Periodic rebalancing</span></td>
+                <td><span class="lang-ja">ターゲットD/V維持</span><span class="lang-en">Target D/V maintenance</span></td>
+              </tr>
+              <tr>
+                <td class="td-accent">Harris-Pringle (1985)</td>
+                <td>R<sub>u</sub></td>
+                <td>&lt; T<sub>c</sub> &times; D</td>
+                <td><span class="lang-ja">連続リバランス</span><span class="lang-en">Continuous rebalancing</span></td>
+                <td><span class="lang-ja">教科書WACC前提</span><span class="lang-en">Textbook WACC assumption</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="trap-box">
+          <div class="trap-label"><span class="lang-ja">Practitioner Trap</span><span class="lang-en">Practitioner Trap</span></div>
+          <p>
+            <span class="lang-ja">APVでMM（1963）のPV(TS) = T<sub>c</sub> &times; Dを使い、WACCでは教科書公式（Harris-Pringle前提）を使う — これは実務でよく見るが、Tax shieldリスクの仮定が矛盾しており、APVとWACCで異なる企業価値が出る原因になる。両手法で同じ企業を評価するなら、Tax shield割引率の仮定を一致させなければならない。</span>
+            <span class="lang-en">Using MM's (1963) PV(TS) = T<sub>c</sub> &times; D in APV whilst applying the textbook WACC formula (Harris-Pringle assumption) — a common error in practice — creates a contradiction in tax shield risk assumptions, causing APV and WACC to produce different firm values. When valuing the same firm with both methods, the tax shield discount rate assumption must be consistent.</span>
+          </p>
+        </div>
+
+        <div class="section-sep">· · ·</div>
+
+        <!-- ===== Section 5: WACC Limitations ===== -->
+
+        <h2>
+          <span class="lang-ja">5. WACCの構造的限界 — APVが解決する問題</span>
+          <span class="lang-en">5. Structural Limitations of WACC — Problems APV Solves</span>
+        </h2>
+
+        <h3>
+          <span class="lang-ja">5.1 レバレッジ一定の仮定</span>
+          <span class="lang-en">5.1 The Constant Leverage Assumption</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">WACCの最大の限界は、レバレッジ比率D/Vが将来にわたって一定であるという仮定だ。安定した事業会社であれば、この仮定は近似として許容されうる。しかしLBO（レバレッジド・バイアウト）では買収時に60-80%の負債比率で調達し、5-7年で積極的に返済する。負債比率は毎年劇的に変化する。プロジェクトファイナンスでも、建設期と運営期で資本構成は根本的に異なる。単一のWACCでこの変化を捉えることはできない。</span>
+          <span class="lang-en">WACC's greatest limitation is the assumption that the leverage ratio D/V remains constant into the future. For stable operating companies, this assumption may be tolerable as an approximation. But in an LBO (leveraged buyout), the acquirer finances with 60-80% debt at closing and repays aggressively over 5-7 years. The debt ratio changes dramatically every year. In project finance, the capital structure differs fundamentally between construction and operations. A single WACC cannot capture these changes.</span>
+        </p>
+
+        <h3>
+          <span class="lang-ja">5.2 循環参照問題</span>
+          <span class="lang-en">5.2 The Circularity Problem</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">WACCの計算には株式の市場価値ウェイト（E/V）が必要だが、株式の市場価値を求めるにはWACCで割引した企業価値が必要だ。この循環参照はイテレーション（反復計算）で解けるが、収束させるために複数回の計算が必要であり、仮定が複雑になるほどイテレーション回数が増え、中間の仮定にも注意が必要になる。APVはこの循環を完全に回避する — V<sub>U</sub>はR<sub>u</sub>のみで決まり、PV(TS)は負債スケジュールから独立に計算される。</span>
+          <span class="lang-en">Computing WACC requires the market-value weight of equity (E/V), but deriving the market value of equity requires the enterprise value discounted at WACC. This circularity can be resolved by iteration, but it requires multiple calculation passes, and as assumptions grow more complex, convergence requires more iterations with careful attention to intermediate assumptions. APV sidesteps this circularity entirely — V<sub>U</sub> depends only on R<sub>u</sub>, and PV(TS) is calculated independently from the debt schedule.</span>
+        </p>
+
+        <h3>
+          <span class="lang-ja">5.3 複数のファイナンシング効果</span>
+          <span class="lang-en">5.3 Multiple Financing Side Effects</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">WACCが扱えるのは基本的にTax shieldのみだ。しかし現実のファイナンシングには多様な副次効果がある。補助金付き融資（below-market rate loans）、政府保証（プロジェクトファイナンス）、発行費用、ファイナンシャル・ディストレスのコスト、ヘッジの便益。APVはこれらをそれぞれ独立に評価し、V<sub>U</sub>に加減算できる。WACCにはこの柔軟性がない。</span>
+          <span class="lang-en">WACC can essentially handle only tax shields. But real-world financing involves diverse side effects: subsidised loans (below-market rate), government guarantees (project finance), issuance costs, financial distress costs, hedging benefits. APV values each independently and adds or subtracts from V<sub>U</sub>. WACC lacks this flexibility.</span>
+        </p>
+
+        <h3>
+          <span class="lang-ja">5.4 非定常的な税務状況</span>
+          <span class="lang-en">5.4 Non-stationary Tax Situations</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">繰越欠損金を持つ企業、複数の税務管轄区域にまたがる企業、あるいは税率が将来変更される場合、各期のTax shieldの実効額が異なる。WACCはTax shieldを割引率に平均的に組み込むため、この変動を正確に反映できない。APVでは各期のTax shieldを明示的にモデリングする。</span>
+          <span class="lang-en">For firms with tax loss carryforwards, those spanning multiple tax jurisdictions, or facing future tax rate changes, the effective tax shield differs each period. WACC embeds tax shields into the discount rate as an average, making it unable to accurately reflect this variation. APV explicitly models each period's tax shield.</span>
+        </p>
+
+        <div class="section-sep">· · ·</div>
+
+        <!-- ===== Section 6: APV in LBO and Project Finance ===== -->
+
+        <h2>
+          <span class="lang-ja">6. LBO・プロジェクトファイナンスにおけるAPV</span>
+          <span class="lang-en">6. APV in LBO and Project Finance</span>
+        </h2>
+
+        <h3>
+          <span class="lang-ja">6.1 LBOバリュエーション</span>
+          <span class="lang-en">6.1 LBO Valuation</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">LBOは、APVの優位性が最も明確に現れる場面だ。PEファンドがターゲット企業を買収する際、典型的には購入価格の60-80%を負債で調達する。その後5-7年にわたりキャッシュフローから積極的に負債を返済し、レバレッジを低下させたうえでエグジット（売却またはIPO）する。</span>
+          <span class="lang-en">LBO is the context where APV's superiority is most apparent. When a PE fund acquires a target, it typically finances 60-80% of the purchase price with debt. Over the subsequent 5-7 years, it aggressively repays debt from cash flows, reducing leverage before exit (sale or IPO).</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">Damodaranが指摘するように、「資本構成が変化しているときに、単一のリターンが資本コストを表すことはできない」。LBOにおけるAPVの実行手順は：</span>
+          <span class="lang-en">As Damodaran notes, "no single return represents the cost of capital when the firm's capital structure is changing." The APV procedure for an LBO is:</span>
+        </p>
+
+        <div class="calc-block">
+          <div style="margin-bottom: 12px; font-weight: 500; color: var(--text-muted); font-size: 0.75em; letter-spacing: 0.1em;">
+            <span class="lang-ja">LBO APV: 数値例</span>
+            <span class="lang-en">LBO APV: Numerical Example</span>
+          </div>
+          <div style="margin-bottom: 8px; font-size: 0.78em; color: var(--text-muted);">
+            <span class="lang-ja">前提: EV=1,000 / Debt=700 / R<sub>u</sub>=10% / R<sub>d</sub>=5% / T<sub>c</sub>=30%</span>
+            <span class="lang-en">Assumptions: EV=1,000 / Debt=700 / R<sub>u</sub>=10% / R<sub>d</sub>=5% / T<sub>c</sub>=30%</span>
+          </div>
+          <div class="calc-row"><span><span class="lang-ja">V<sub>U</sub>（FCFをR<sub>u</sub>=10%で割引）</span><span class="lang-en">V<sub>U</sub> (FCF discounted at R<sub>u</sub>=10%)</span></span><span>850</span></div>
+          <div class="calc-row"><span><span class="lang-ja">(+) Year 1 TS: 30% &times; 5% &times; 700</span><span class="lang-en">(+) Year 1 TS: 30% &times; 5% &times; 700</span></span><span>10.5</span></div>
+          <div class="calc-row"><span><span class="lang-ja">(+) Year 2 TS: 30% &times; 5% &times; 580</span><span class="lang-en">(+) Year 2 TS: 30% &times; 5% &times; 580</span></span><span>8.7</span></div>
+          <div class="calc-row"><span><span class="lang-ja">(+) Year 3 TS: 30% &times; 5% &times; 450</span><span class="lang-en">(+) Year 3 TS: 30% &times; 5% &times; 450</span></span><span>6.8</span></div>
+          <div class="calc-row"><span><span class="lang-ja">(+) Year 4-5 TS（同様に逓減）</span><span class="lang-en">(+) Year 4-5 TS (similarly declining)</span></span><span>8.2</span></div>
+          <div class="calc-row"><span><span class="calc-warn"><span class="lang-ja">PV(TS) 合計（R<sub>d</sub>=5%で割引）</span><span class="lang-en">PV(TS) total (discounted at R<sub>d</sub>=5%)</span></span></span><span class="calc-warn">30.8</span></div>
+          <div class="calc-row calc-total"><span><span class="calc-highlight"><span class="lang-ja">APV = V<sub>U</sub> + PV(TS)</span><span class="lang-en">APV = V<sub>U</sub> + PV(TS)</span></span></span><span class="calc-highlight">880.8</span></div>
+        </div>
+
+        <p>
+          <span class="lang-ja">LBOでは負債返済スケジュールが予め決まっているため、Tax shieldの割引率はR<sub>d</sub>が理論的に整合する（MM前提）。ただし、返済がキャッシュフロー連動型（cash sweep条項あり）の場合は、Tax shieldにも事業リスクが反映されるため、R<sub>u</sub>に近い割引率を使うべきだ。</span>
+          <span class="lang-en">In LBOs, since the debt repayment schedule is predetermined, R<sub>d</sub> is the theoretically consistent tax shield discount rate (MM assumption). However, if repayment is cash-flow-linked (with cash sweep provisions), the tax shield reflects operating risk, and a discount rate closer to R<sub>u</sub> should be used.</span>
+        </p>
+
+        <h3>
+          <span class="lang-ja">6.2 プロジェクトファイナンス</span>
+          <span class="lang-en">6.2 Project Finance</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">プロジェクトファイナンスでは、APVが事実上の標準手法だ。ノンリコースローンによる調達が主体で、負債の返済スケジュールはファイナンシャル・クローズ時に確定する。建設期と運営期でリスクプロファイルが根本的に異なり、税務優遇措置（加速減価償却、投資税額控除）や政府保証など、Tax shield以外のファイナンシング副次効果が大きい。</span>
+          <span class="lang-en">In project finance, APV is the de facto standard methodology. Financing is primarily through non-recourse loans, and debt repayment schedules are fixed at financial close. The risk profile differs fundamentally between construction and operations, and financing side effects beyond tax shields — accelerated depreciation, investment tax credits, government guarantees — are significant.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">APVの分離原理はこれらの特性と完全に適合する。V<sub>U</sub>でプロジェクトの事業価値を評価し、Tax shield・政府補助・ファイナンス条件の便益をそれぞれ独立に加算する。WACCでは、これらすべてを単一の割引率に押し込めなければならず、理論的にも実務的にも不自然だ。</span>
+          <span class="lang-en">APV's separation principle aligns perfectly with these characteristics. V<sub>U</sub> captures the project's operating value, and tax shields, government subsidies, and favourable financing terms are each added independently. With WACC, all of these must be squeezed into a single discount rate — theoretically and practically awkward.</span>
+        </p>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>APVの本質的優位性は「透明性」にある。</strong>WACCのブラックボックス的な単一割引率に対し、APVは各価値ドライバーを明示的に分離する。投資委員会やレンダーへの説明において、「事業価値はいくらで、Tax shieldがいくらを追加し、政府保証がいくらの価値を持つか」を個別に示せる。この透明性が、意思決定の質を高める。</span>
+            <span class="lang-en"><strong>APV's essential advantage is transparency.</strong> Against WACC's black-box single discount rate, APV explicitly separates each value driver. When presenting to investment committees or lenders, one can individually show "the operating value is X, tax shields add Y, and government guarantees contribute Z." This transparency improves decision quality.</span>
+          </p>
+        </div>
+
+        <div class="section-sep">· · ·</div>
+
+        <!-- ===== Section 7: WACC-APV Equivalence ===== -->
+
+        <h2>
+          <span class="lang-ja">7. WACC-APV等価条件と乖離のパターン</span>
+          <span class="lang-en">7. WACC-APV Equivalence and Patterns of Divergence</span>
+        </h2>
+
+        <h3>
+          <span class="lang-ja">7.1 等価になる条件</span>
+          <span class="lang-en">7.1 Conditions for Equivalence</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">理論的には、WACCベースのDCFとAPVは<strong>同じ仮定の下で常に同じ結果</strong>を出す。Fernandez（2007）が示したように、FCFをWACCで割引する方法、エクイティCFをR<sub>e</sub>で割引する方法、Capital Cash FlowsをR<sub>u</sub>で割引する方法、そしてAPV — これら4つのDCF手法は同一の仮定の下で代数的に等価だ。</span>
+          <span class="lang-en">Theoretically, WACC-based DCF and APV <strong>always produce the same result under the same assumptions</strong>. As Fernandez (2007) demonstrated, the four DCF methods — FCF discounted at WACC, equity CF discounted at R<sub>e</sub>, Capital Cash Flows discounted at R<sub>u</sub>, and APV — are algebraically equivalent under identical assumptions.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">特に、Harris-Pringle前提（Tax shieldをR<sub>u</sub>で割引、レバレッジ一定）の下では：</span>
+          <span class="lang-en">Specifically, under the Harris-Pringle assumption (tax shields discounted at R<sub>u</sub>, constant leverage):</span>
+        </p>
+
+        <div class="formula">
+          <span class="lang-ja">WACC = R<sub>u</sub> - T<sub>c</sub> &times; R<sub>d</sub> &times; (D/V)<br><br>APV: V<sub>L</sub> = FCF/(R<sub>u</sub> - g) + [T<sub>c</sub> &times; R<sub>d</sub> &times; D]/(R<sub>u</sub> - g)<br><br>→ V<sub>L</sub> = FCF/[R<sub>u</sub> - T<sub>c</sub> &times; R<sub>d</sub> &times; (D/V) - g] = FCF/(WACC - g)<br><br>代数的に同一。</span>
+          <span class="lang-en">WACC = R<sub>u</sub> - T<sub>c</sub> &times; R<sub>d</sub> &times; (D/V)<br><br>APV: V<sub>L</sub> = FCF/(R<sub>u</sub> - g) + [T<sub>c</sub> &times; R<sub>d</sub> &times; D]/(R<sub>u</sub> - g)<br><br>→ V<sub>L</sub> = FCF/[R<sub>u</sub> - T<sub>c</sub> &times; R<sub>d</sub> &times; (D/V) - g] = FCF/(WACC - g)<br><br>Algebraically identical.</span>
+        </div>
+
+        <h3>
+          <span class="lang-ja">7.2 実務で乖離が生じるパターン</span>
+          <span class="lang-en">7.2 Patterns of Divergence in Practice</span>
+        </h3>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">乖離の原因</span><span class="lang-en">Source of Divergence</span></th>
+                <th><span class="lang-ja">メカニズム</span><span class="lang-en">Mechanism</span></th>
+                <th><span class="lang-ja">影響の方向</span><span class="lang-en">Direction of Impact</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="lang-ja">レバレッジの変化</span><span class="lang-en">Changing leverage</span></td>
+                <td><span class="lang-ja">WACCは単一レートを使い続けるが、実際のD/Vは毎期変動する</span><span class="lang-en">WACC uses a single rate whilst actual D/V changes each period</span></td>
+                <td class="td-warn"><span class="lang-ja">最大の乖離源</span><span class="lang-en">Largest divergence source</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">TS割引率の不整合</span><span class="lang-en">Inconsistent TS discount rate</span></td>
+                <td><span class="lang-ja">APVでMM、WACCでHP前提を混用</span><span class="lang-en">Using MM in APV but HP assumption in WACC</span></td>
+                <td class="td-warn"><span class="lang-ja">APV &gt; WACC</span><span class="lang-en">APV &gt; WACC</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">Terminal Valueの取扱い</span><span class="lang-en">Terminal value treatment</span></td>
+                <td><span class="lang-ja">WACCのTVは永続的に一定レバレッジ仮定。APVはTV期間のTSを別途モデリング可能</span><span class="lang-en">WACC TV assumes constant leverage in perpetuity. APV can model TV-period TS separately</span></td>
+                <td><span class="lang-ja">場合による</span><span class="lang-en">Depends on case</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">循環参照の不完全解消</span><span class="lang-en">Incomplete circularity resolution</span></td>
+                <td><span class="lang-ja">WACCのイテレーション回数不足</span><span class="lang-en">Insufficient WACC iterations</span></td>
+                <td><span class="lang-ja">微小だが累積する</span><span class="lang-en">Small but cumulative</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">複数のファイナンシング効果</span><span class="lang-en">Multiple financing effects</span></td>
+                <td><span class="lang-ja">WACCではTax shield以外を反映不可</span><span class="lang-en">WACC cannot reflect non-tax-shield effects</span></td>
+                <td><span class="lang-ja">APV &ne; WACC（構造的）</span><span class="lang-en">APV &ne; WACC (structural)</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="section-sep">· · ·</div>
+
+        <!-- ===== Section 8: Practical Decision Framework ===== -->
+
+        <h2>
+          <span class="lang-ja">8. 実務における選択基準 — いつAPVを使うべきか</span>
+          <span class="lang-en">8. Practical Selection Criteria — When to Use APV</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">APVとWACCは競合する手法ではなく、前提条件に応じた使い分けが求められる道具だ。</span>
+          <span class="lang-en">APV and WACC are not competing methods but tools that demand selection based on the underlying conditions.</span>
+        </p>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">状況</span><span class="lang-en">Situation</span></th>
+                <th><span class="lang-ja">推奨手法</span><span class="lang-en">Recommended Method</span></th>
+                <th><span class="lang-ja">理由</span><span class="lang-en">Rationale</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="lang-ja">安定した資本構成の事業会社</span><span class="lang-en">Stable capital structure operating company</span></td>
+                <td class="td-accent">WACC</td>
+                <td><span class="lang-ja">レバレッジ一定仮定が近似的に成立。シンプルで広く受け入れられている</span><span class="lang-en">Constant leverage assumption approximately holds. Simple and widely accepted</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">LBO / レバレッジド・リキャップ</span><span class="lang-en">LBO / leveraged recap</span></td>
+                <td class="td-accent">APV</td>
+                <td><span class="lang-ja">負債が積極的に返済され、レバレッジが毎年変化。期間別のTax shield計算が必要</span><span class="lang-en">Debt is aggressively repaid, leverage changes annually. Period-specific tax shield calculation required</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">プロジェクトファイナンス</span><span class="lang-en">Project finance</span></td>
+                <td class="td-accent">APV</td>
+                <td><span class="lang-ja">予め確定した負債スケジュール、複数のファイナンシング副次効果（政府保証・補助金）</span><span class="lang-en">Predetermined debt schedule, multiple financing side effects (government guarantees, subsidies)</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">財務困難・リストラクチャリング</span><span class="lang-en">Financial distress / restructuring</span></td>
+                <td class="td-accent">APV</td>
+                <td><span class="lang-ja">繰越欠損金によるTax shield変動、債務交換・DES等の特殊ファイナンシング</span><span class="lang-en">Tax shield variability from NOL carryforwards, debt-for-equity swaps and special financing</span></td>
+              </tr>
+              <tr>
+                <td><span class="lang-ja">クロスボーダーM&A</span><span class="lang-en">Cross-border M&A</span></td>
+                <td class="td-accent"><span class="lang-ja">APV推奨</span><span class="lang-en">APV preferred</span></td>
+                <td><span class="lang-ja">税率が管轄区域により異なり、各期のTax shieldの明示的モデリングが必要</span><span class="lang-en">Tax rates vary by jurisdiction, requiring explicit modelling of each period's tax shield</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="section-sep">· · ·</div>
+
+        <!-- ===== Section 9: Conclusion ===== -->
+
+        <h2>
+          <span class="lang-ja">9. 結語 — 分離して初めて見えるもの</span>
+          <span class="lang-en">9. Conclusion — What Separation Reveals</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">WACCは便利な単純化だ。Tax shieldを割引率に織り込み、一つの数値で事業価値とファイナンシング効果を同時に捉える。しかしこの便利さの裏には、レバレッジ一定・Tax shieldリスクの暗黙の仮定・循環参照という構造的な脆弱性が潜んでいる。</span>
+          <span class="lang-en">WACC is a convenient simplification. It weaves the tax shield into the discount rate, capturing operating value and financing effects in a single number. But behind this convenience lurk structural fragilities: constant leverage, implicit tax shield risk assumptions, and circularity.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">APVはその脆弱性を、分離という原理で解消する。Myersの分離原理が教えるのは、事業価値とファイナンシング効果は本質的に異なるリスクを持つということだ。異なるリスクを持つキャッシュフローを一つの割引率で評価するのは、理論的にはつねに次善の策にすぎない。</span>
+          <span class="lang-en">APV resolves these fragilities through the principle of separation. What Myers' separation principle teaches is that operating value and financing effects carry fundamentally different risks. Evaluating cash flows with different risk profiles at a single discount rate is, theoretically, always a second-best approach.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">Tax shield割引率の選択は、一見すると学術的な些事に見えるかもしれない。しかしMM・Miles-Ezzell・Harris-Pringleの3理論が示すように、その選択は負債政策の前提そのものであり、数十億円規模の企業価値に有意な影響を与えうる。実務家が問うべきは「どの割引率が正しいか」ではなく、「対象企業の負債政策は何に最も近いか」だ。</span>
+          <span class="lang-en">The choice of tax shield discount rate may appear to be an academic nicety. But as the three theories of MM, Miles-Ezzell, and Harris-Pringle demonstrate, this choice embodies the debt policy assumption itself and can materially affect enterprise values in the billions. The question practitioners should ask is not "which discount rate is correct" but "which debt policy best describes the target firm."</span>
+        </p>
+
+        <div class="pull-quote">
+          <p>
+            <span class="lang-ja">事業の価値と、事業の資金調達方法の価値は、別の問いだ。APVはそれを分離する — 混合して初めて生まれる幻影を、分離して初めて見える実態に変えるために。</span>
+            <span class="lang-en">The value of a business and the value of how it is financed are separate questions. APV separates them — to replace the illusion born of blending with the reality revealed by separation.</span>
+          </p>
+        </div>
+
+      </article>
+
+      <!-- 4. Sidebar -->
+      <aside class="article-sidebar">
+
+        <!-- Key Facts -->
+        <div class="sidebar-card">
+          <div class="section-label">Key Facts</div>
+          <div class="keyfacts-grid">
+            <div class="fact-card">
+              <div class="fact-value">1974</div>
+              <div class="fact-desc"><span class="lang-ja">Myers APV 提唱年</span><span class="lang-en">Myers APV publication</span></div>
+            </div>
+            <div class="fact-card highlight">
+              <div class="fact-value">V<sub>U</sub> + PV(TS)</div>
+              <div class="fact-desc"><span class="lang-ja">APV の基本式</span><span class="lang-en">APV core formula</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">3</div>
+              <div class="fact-desc"><span class="lang-ja">Tax shield 割引率の主要理論数</span><span class="lang-en">Major TS discount rate theories</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">60-80%</div>
+              <div class="fact-desc"><span class="lang-ja">LBO 典型的な初期負債比率</span><span class="lang-en">Typical initial LBO debt ratio</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Highlights -->
+        <div class="sidebar-card">
+          <div class="section-label"><span class="lang-ja">Highlights</span><span class="lang-en">Highlights</span></div>
+          <ul class="highlights-list">
+            <li class="highlight-item">
+              <span class="hl-num">01</span>
+              <span class="hl-text"><span class="lang-ja">APVは事業価値とTax shieldを分離して評価する</span><span class="lang-en">APV separates operating value and tax shields</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">02</span>
+              <span class="hl-text"><span class="lang-ja">TS割引率は負債政策に依存 — 固定額ならR<sub>d</sub>、一定D/VならR<sub>u</sub></span><span class="lang-en">TS discount rate depends on debt policy — R<sub>d</sub> for fixed debt, R<sub>u</sub> for constant D/V</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">03</span>
+              <span class="hl-text"><span class="lang-ja">教科書WACCはHarris-Pringle前提を暗黙に含む</span><span class="lang-en">Textbook WACC implicitly embeds Harris-Pringle assumption</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">04</span>
+              <span class="hl-text"><span class="lang-ja">LBO・PFでは資本構成変動のためAPVが構造的に優位</span><span class="lang-en">APV structurally superior in LBO/PF due to changing capital structure</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">05</span>
+              <span class="hl-text"><span class="lang-ja">同一仮定ならWACCとAPVは代数的に等価</span><span class="lang-en">Under identical assumptions, WACC and APV are algebraically equivalent</span></span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Series Index -->
+        <div class="sidebar-card">
+          <div class="section-label">Valuation Theory Lab</div>
+          <ol class="highlights-list" style="list-style:none;padding:0;">
+            <li class="highlight-item">
+              <span class="hl-num">01</span>
+              <span class="hl-text"><a href="./2026-03-20-valuation.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">Terminal Value</span><span class="lang-en">Terminal Value</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">02</span>
+              <span class="hl-text"><a href="./2026-03-21-wacc.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">WACC & CAPM</span><span class="lang-en">WACC & CAPM</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">03</span>
+              <span class="hl-text"><a href="./2026-03-21-beta-hamada.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">Beta & Hamada</span><span class="lang-en">Beta & Hamada</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">04</span>
+              <span class="hl-text"><a href="./2026-03-22-cyclical.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">Cyclical & Mid-cycle</span><span class="lang-en">Cyclical & Mid-cycle</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">05</span>
+              <span class="hl-text"><a href="./2026-03-22-dloc-dlom.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">DLOC & DLOM</span><span class="lang-en">DLOC & DLOM</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">06</span>
+              <span class="hl-text"><a href="./2026-03-22-multiples-comparability.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">Multiples Comparability</span><span class="lang-en">Multiples Comparability</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">07</span>
+              <span class="hl-text"><a href="./2026-03-23-normalised-ebitda.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">Normalised EBITDA</span><span class="lang-en">Normalised EBITDA</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">08</span>
+              <span class="hl-text"><a href="./2026-03-23-control-premium.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">Control Premium</span><span class="lang-en">Control Premium</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">09</span>
+              <span class="hl-text"><a href="./2026-03-23-lbo-valuation.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">LBO Valuation</span><span class="lang-en">LBO Valuation</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">10</span>
+              <span class="hl-text"><a href="./2026-03-28-comps-selection.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">Comps Selection</span><span class="lang-en">Comps Selection</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">11</span>
+              <span class="hl-text"><a href="./2026-03-28-industry-analysis.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">Industry Analysis</span><span class="lang-en">Industry Analysis</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">12</span>
+              <span class="hl-text"><a href="./2026-03-28-business-model-analysis.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">Business Model Analysis</span><span class="lang-en">Business Model Analysis</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">13</span>
+              <span class="hl-text"><a href="./2026-03-29-ifrs16-ev-bridge.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">IFRS 16 & EV Bridge</span><span class="lang-en">IFRS 16 & EV Bridge</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">14</span>
+              <span class="hl-text" style="color:var(--accent);font-weight:600;"><span class="lang-ja">APV & MM Propositions ← Now</span><span class="lang-en">APV & MM Propositions ← Now</span></span>
+            </li>
+          </ol>
+        </div>
+
+        <!-- Key References -->
+        <div class="sidebar-card">
+          <div class="section-label">Key References</div>
+          <ul class="source-list" style="margin-top:10px;">
+            <li><a href="https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1540-6261.1974.tb00021.x" target="_blank" rel="noopener">Myers, S.C. (1974) "Interactions of Corporate Financing and Investment Decisions" — Journal of Finance</a> <span class="source-tag">[academic]</span></li>
+            <li><a href="https://www.jstor.org/stable/1809766" target="_blank" rel="noopener">Modigliani, F. & Miller, M.H. (1958) "The Cost of Capital, Corporation Finance and the Theory of Investment" — AER</a> <span class="source-tag">[academic]</span></li>
+            <li><a href="https://www.jstor.org/stable/1809167" target="_blank" rel="noopener">Modigliani, F. & Miller, M.H. (1963) "Corporate Income Taxes and the Cost of Capital: A Correction" — AER</a> <span class="source-tag">[academic]</span></li>
+            <li><a href="https://www.cambridge.org/core/journals/journal-of-financial-and-quantitative-analysis/article/weighted-average-cost-of-capital-perfect-capital-markets-and-project-life-a-clarification/02BE89AB2E9B64DEACC4967D12E467B4" target="_blank" rel="noopener">Miles, J.A. & Ezzell, J.R. (1980) "WACC, Perfect Capital Markets, and Project Life" — JFQA</a> <span class="source-tag">[academic]</span></li>
+            <li><a href="https://onlinelibrary.wiley.com/doi/10.1111/j.1475-6803.1985.tb00406.x" target="_blank" rel="noopener">Harris, R.S. & Pringle, J.J. (1985) "Risk-Adjusted Discount Rates" — JFR</a> <span class="source-tag">[academic]</span></li>
+            <li><a href="https://pages.stern.nyu.edu/~adamodar/pdfiles/val3ed/c15.pdf" target="_blank" rel="noopener">Damodaran, A. — Investment Valuation, Ch. 15: Cost of Capital and APV</a> <span class="source-tag">[academic]</span></li>
+            <li><a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2549005" target="_blank" rel="noopener">Fernandez, P. — "Valuing Tax Shields: 3 Theories with Some Sense" — SSRN</a> <span class="source-tag">[academic]</span></li>
+          </ul>
+        </div>
+
+      </aside>
+
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <span>Valuation Theory Lab #014 | donato Valuation Notes | 2026-04-03</span>
+  <span>
+    <span class="lang-ja">本稿は理論解説を目的としています。投資・M&Aの意思決定には専門家への確認を推奨します。</span>
+    <span class="lang-en">This article is intended as a theoretical discussion. Professional advice should be sought for investment and M&A decisions.</span>
+  </span>
+</footer>
+
+<script>
+  // Progress bar
+  window.addEventListener('scroll', function() {
+    var h = document.documentElement;
+    var pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    document.getElementById('progress-bar').style.width = Math.min(pct, 100) + '%';
+  });
+
+  // Reading time (500 chars/min)
+  (function() {
+    var text = document.querySelector('.article-body') ? document.querySelector('.article-body').textContent : '';
+    var chars = text.length;
+    var minutes = Math.ceil(chars / 500);
+    var el1 = document.getElementById('reading-time-badge');
+    var el2 = document.getElementById('reading-time-badge2');
+    if (el1) el1.querySelector('.lang-ja').textContent = '約' + minutes + '分';
+    if (el2) el2.querySelector('.lang-ja').textContent = '約' + minutes + '分';
+    if (el1) el1.querySelector('.lang-en').textContent = '~' + minutes + ' min read';
+    if (el2) el2.querySelector('.lang-en').textContent = '~' + minutes + ' min read';
+  })();
+
+  // Lang toggle
+  let currentLang = localStorage.getItem('hp-lang') || 'ja';
+  let currentTheme = localStorage.getItem('hp-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('hp-lang', lang);
+    document.querySelectorAll('.lang-ja').forEach(el => el.style.display = lang === 'ja' ? 'inline' : 'none');
+    document.querySelectorAll('.lang-en').forEach(el => el.style.display = lang === 'en' ? 'inline' : 'none');
+    document.querySelectorAll('.art-lang-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+    document.documentElement.lang = lang === 'ja' ? 'ja' : 'en';
+  }
+  function toggleTheme() {
+    currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+    localStorage.setItem('hp-theme', currentTheme);
+    document.body.classList.toggle('dark', currentTheme === 'dark');
+    document.getElementById('theme-btn').textContent = currentTheme === 'light' ? '☀' : '☾';
+  }
+  document.addEventListener('DOMContentLoaded', () => {
+    setLang(currentLang);
+    if (currentTheme === 'dark') {
+      document.body.classList.add('dark');
+      document.getElementById('theme-btn').textContent = '☾';
+    }
+  });
+</script>
+
+</body>
+</html>

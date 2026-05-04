@@ -1,5 +1,71 @@
 [
   {
+    "date": "2026-04-03",
+    "category": "career",
+    "genre_en": "Career",
+    "genre_ja": "Career",
+    "href": "./articles/2026-04-03-career-ai-leadership.html",
+    "title_en": "Leadership in the Age of AI &mdash; From Manager to Orchestrator",
+    "title_ja": "AI時代のリーダーシップ &mdash; 「管理する人」から「オーケストレーター」へ",
+    "summary_en": "As AI agents become embedded in business processes in 2026, the role of leaders is fundamentally shifting. Drawing on the latest research and publications, we explore how finance professionals should navigate this transformation.",
+    "summary_ja": "AIエージェントが業務プロセスに組み込まれる2026年、リーダーの役割は根本的に変わりつつある。Finance Professionalがこの変化にどう向き合うべきかを、最新の調査・論文から読み解く。"
+  },
+  {
+    "date": "2026-04-03",
+    "category": "damodaran",
+    "genre_en": "Damodaran Watch  #005",
+    "genre_ja": "Damodaran Watch  #005",
+    "href": "./articles/2026-04-03-damodaran-gold-surge.html",
+    "title_en": "A Golden Year (2025) &mdash; Gold's Price Surge: The Signal in the Noise",
+    "title_ja": "黄金の年（2025） &mdash; 金価格急騰のシグナルとノイズ",
+    "summary_en": "In 2025, gold surged 57%, breaching $4,000 per ounce. Damodaran classifies gold as a \"collectible\" and argues that debating whether it is \"overvalued\" or \"undervalued\" is pointless for an asset that generates no cash flows. He examines three pricing drivers &mdash; inflation, fear, and real interest rates &mdash; through regression analysis, then maps gold's role across four distinct investor archetypes.",
+    "summary_ja": "2025年、金価格は57%上昇し1オンス4,000ドルを超えた。Damodaranは金を「コレクタブル」と位置づけ、キャッシュフローを生まない資産の「割高・割安」議論は無意味だと断じる。インフレ・恐怖・実質金利という3つの価格ドライバーを回帰分析で検証し、4つの投資家タイプ別にゴールドの役割を整理する。"
+  },
+  {
+    "date": "2026-03-29",
+    "category": "ai",
+    "genre_en": "Finance x AI",
+    "genre_ja": "Finance x AI",
+    "href": "./articles/2026-03-29-ai-webapp-dev.html",
+    "title_en": "The Full Picture of AI Web App Development &mdash; From Beginner to Advanced, Practising Modern AI Development with Claude Code",
+    "title_ja": "AI Web App開発の全体像 &mdash; 初心者から上級者まで、Claude Code で実践するモダン AI 開発",
+    "summary_en": "Vercel AI SDK v6 agent abstractions, MCP industry standardisation, and the Claude Code Skills/Agents ecosystem &mdash; a systematic guide to AI web app development in 2026, empowering finance professionals to design their own development environments.",
+    "summary_ja": "Vercel AI SDK v6のAgent抽象化、MCPの業界標準化、Claude CodeのSkills/Agentsエコシステム &mdash; 2026年のAI Web App開発を体系的に整理し、Finance Professionalが「環境を設計する」ための実践ガイドを提供する。"
+  },
+  {
+    "date": "2026-03-29",
+    "category": "claude",
+    "genre_en": "Claude Code Deep Dive  #003",
+    "genre_ja": "Claude Code Deep Dive  #003",
+    "href": "./articles/2026-03-29-claude-code-003-newsletter.html",
+    "title_en": "Claude Code Is Not a Chatbot — The Programmable Platform Built on Agents, Skills, Hooks, and MCP",
+    "title_ja": "Claude Code は「チャットボット」ではない — Agents・Skills・Hooks・MCP が作るプログラマブルプラットフォームの本質",
+    "summary_en": "The true value of Claude Code lies not in conversing with AI, but in embedding your own workflows into the system through four extensibility layers. This article examines how Opus 4.6 Agent Teams and MCP standardisation are shaping the ecosystem ahead.",
+    "summary_ja": "Claude Code の真の価値は AI との会話ではなく、4つの拡張レイヤーで自分の業務ワークフローをシステムに組み込めることにある。Opus 4.6 の Agent Teams と MCP の業界標準化が開くエコシステムの未来を解説する。"
+  },
+  {
+    "date": "2026-03-29",
+    "category": "claude",
+    "genre_en": "Claude Code Deep Dive  #003",
+    "genre_ja": "Claude Code Deep Dive  #003",
+    "href": "./articles/2026-03-29-claude-code-003.html",
+    "title_en": "It Is Not a Chatbot &mdash; It Is a Programmable Platform: The Essence of Agents, Skills, Hooks, and MCP",
+    "title_ja": "チャットボットではない、プログラマブルプラットフォームである &mdash; Agents, Skills, Hooks, MCP の本質",
+    "summary_en": "The real value of Claude Code is not \"talking to AI.\" It lies in four extensibility layers &mdash; Agents, Skills, Hooks, and MCP &mdash; that let you build a development environment which evolves to fit your work. This article explains the essence of this architecture, what each component does, and how to put it to practical use.",
+    "summary_ja": "Claude Code の本当の価値は「AIと会話できること」ではない。Agents・Skills・Hooks・MCP という4つの拡張レイヤーによって、自分の仕事に合わせて進化する開発環境を構築できることにある。本稿ではこのアーキテクチャの本質、各コンポーネントの役割、そして実務での活用法を解説する。"
+  },
+  {
+    "date": "2026-03-29",
+    "category": "damodaran",
+    "genre_en": "Damodaran Watch  #004",
+    "genre_ja": "Damodaran Watch  #004",
+    "href": "./articles/2026-03-29-damodaran-alternative-investments.html",
+    "title_en": "The (Uncertain) Payoff from Alternative Investments &mdash; Many a Slip between the Cup and the Lip",
+    "title_ja": "オルタナティブ投資の不確かな報酬 &mdash; 杯と唇のあいだに潜む落とし穴",
+    "summary_en": "Alternative investments have been sold on two pillars: diversification through low correlations and alpha generation. Yet Damodaran argues that actual net benefits have been \"modest at best and negative at worst,\" and dissects the triple burden of high costs, illiquidity, and vanishing alpha across hedge funds, private equity, and venture capital.",
+    "summary_ja": "オルタナティブ投資は「低相関による分散効果」と「アルファの創出」を二本柱として売り込まれてきた。しかしDamodaranは、実際のネットリターンは「控えめに言っても限定的、悪ければマイナス」であると論じ、ヘッジファンド・PE・VCの高コスト・非流動性・消えるアルファの三重苦を徹底検証する。"
+  },
+  {
     "date": "2026-03-29",
     "category": "valuation",
     "genre_en": "Valuation Theory Lab  #013",
@@ -7,8 +73,85 @@
     "href": "./articles/2026-03-29-ifrs16-ev-bridge.html",
     "title_en": "Rethinking EV Bridge Post-IFRS 16 — EV/EBITDA vs. EBITDAR",
     "title_ja": "IFRS 16後のEV Bridgeを再考する — EV/EBITDA vs. EBITDAR",
-    "summary_en": "IFRS 16 inflated both EBITDA and EV by bringing operating leases onto the balance sheet. But the effect on EV/EBITDA is not neutral — the multiple compresses for high-multiple firms and expands for low-multiple firms. This article proves the arithmetic, quantifies industry-level impacts, and reconstructs a lease-neutral comparison framework using EBITDAR and Lease-adjusted EV.",
-    "summary_ja": "IFRS 16はオペレーティングリースのオンバランス化によりEBITDAとEVの両方を膨張させた。しかしEV/EBITDAへの影響は中立ではない。高倍率企業ほど倍率は圧縮され、低倍率企業ほど上昇する。本稿ではその算術的メカニズムを証明し、業種別インパクトを定量化し、EBITDARとLease-adjusted EVによるリース中立な比較枠組みを再構築する。"
+    "summary_en": "IFRS 16 brought operating leases onto the balance sheet. EBITDA inflated. EV inflated. Many practitioners assume the effect is neutral because both the numerator and denominator grew. That assumption is arithmetically wrong. This article quantifies the structural impact of IFRS 16 on the EV bridge and multiples, and reconstructs a lease-neutral comparison framework.",
+    "summary_ja": "IFRS 16はオペレーティングリースをバランスシートに載せた。EBITDAは膨張し、EVも膨張した。「分子も分母も増えるなら中立」と考える実務家は多いが、それは算術的に誤りだ。本稿では、IFRS 16がEV bridgeとマルチプルに与える構造的な影響を定量的に分析し、リース中立な比較枠組みを再構築する。"
+  },
+  {
+    "date": "2026-03-29",
+    "category": "tax",
+    "genre_en": "Tax Law",
+    "genre_ja": "Tax Law",
+    "href": "./articles/2026-03-29-tax.html",
+    "title_en": "Japan FY2026 Tax Reform &#8212; Seven Key Issues for Finance Professionals",
+    "title_ja": "令和8年度税制改正 &#8212; Finance Professional が押さえるべき7つの論点",
+    "summary_en": "Income tax threshold at 1.78m yen, defence surtax, crypto separate taxation, 40% strategic R&D credit, Pillar Two UTPR/QDMTT &#8212; a comprehensive overview of the landmark reform spanning individuals, corporates, and international tax.",
+    "summary_ja": "年収の壁178万円、防衛特別所得税、暗号資産分離課税、戦略R&D税額控除40%、グローバルミニマム税UTPR/QDMTT &#8212; 個人・法人・国際の全領域にわたる大型改正の要点を整理する。"
+  },
+  {
+    "date": "2026-03-28",
+    "category": "valuation",
+    "genre_en": "Valuation Theory Lab  #012",
+    "genre_ja": "Valuation Theory Lab  #012",
+    "href": "./articles/2026-03-28-business-model-analysis.html",
+    "title_en": "Business Model Analysis — How Revenue Structure Determines Valuation",
+    "title_ja": "ビジネスモデル分析 — 収益構造が決めるバリュエーション",
+    "summary_en": "Two companies in the same industry trade at EV/EBITDA multiples differing by more than 10x. The cause is not performance but business model. Centred on three archetypes — subscription, platform, and asset-light — this article explains the structure of unit economics, the sources of Economic Moats, and the mechanism by which business model differences fundamentally alter the choice of valuation metrics.",
+    "summary_ja": "同じ業界に属する2社のEV/EBITDAが10倍以上乖離する。その原因は業績ではなくビジネスモデルにある。サブスクリプション・プラットフォーム・アセットライトの3類型を軸に、ユニットエコノミクスの構造、Economic Moatの源泉、そしてビジネスモデルの違いがバリュエーション指標の選択を根本的に変えるメカニズムを解説する。"
+  },
+  {
+    "date": "2026-03-28",
+    "category": "valuation",
+    "genre_en": "Valuation Theory Lab  #010",
+    "genre_ja": "Valuation Theory Lab  #010",
+    "href": "./articles/2026-03-28-comps-selection.html",
+    "title_en": "Comparable Company Selection — Theory, Framework, and Practice",
+    "title_ja": "Comps選定の理論と実務 — 類似企業をどう見極めるか",
+    "summary_en": "The quality of a Comparable Company Analysis is determined nine-tenths by peer selection, not by the multiples calculation itself. This article covers the theoretical definition of comparability, a standard five-step selection process, key data sources, and practical frameworks for when no perfect comparable exists — at a level useful from first-time practitioners to Big 4 FAS, IB, and PE Directors and Partners.",
+    "summary_ja": "Comparable Company Analysisの精度は、マルチプルの計算よりも類似企業の選定で9割が決まる。「比較可能性」の理論的定義から標準的な5ステップ選定プロセス、使うべきデータソース、完全なcomparableが存在しない場合の実践的フレームワークまで、初回経験者からBig 4 FAS・IB・PEのDirector/Partnerまでが使える水準で整理する。"
+  },
+  {
+    "date": "2026-03-28",
+    "category": "damodaran",
+    "genre_en": "Damodaran Watch  #003",
+    "genre_ja": "Damodaran Watch  #003",
+    "href": "./articles/2026-03-28-damodaran-investment-philosophy.html",
+    "title_en": "Finding Your Investing Lodestar — In Search of an Investment Philosophy",
+    "title_ja": "投資の北極星を見つける — 投資哲学の探求",
+    "summary_en": "When uncertainty rocks markets, investors lose their bearings and make decisions they later regret. Damodaran argues there is no single best investment philosophy and presents a five-step framework for building one that fits your beliefs, personality, and capital.",
+    "summary_ja": "市場が不確実性に揺れるとき、投資家は判断の軸を失いやすい。Damodaranは「万人に最適な投資哲学は存在しない」と断言し、自らの信念・性格・資本に合った哲学を5つのステップで構築するフレームワークを提示する。"
+  },
+  {
+    "date": "2026-03-28",
+    "category": "valuation",
+    "genre_en": "Valuation Theory Lab  #011",
+    "genre_ja": "Valuation Theory Lab  #011",
+    "href": "./articles/2026-03-28-industry-analysis.html",
+    "title_en": "The Essence of Industry Analysis — Understanding Sectors as a Prerequisite for Comps",
+    "title_ja": "業界分析の本質 — Compsの前提としての産業理解",
+    "summary_en": "\"Same industry\" is merely the starting point for comparability. Without deep understanding of industry structure, Comps peer selection becomes superficial classification. Through three analytical lenses — Porter's Five Forces, industry life cycle, and value chain analysis — this article explains how industry understanding fundamentally changes valuation conclusions.",
+    "summary_ja": "「同業種」は比較可能性の出発点にすぎない。業界構造を深く理解しなければ、Compsのピアセット選定は表面的な分類に終わる。Porter's Five Forces、業界ライフサイクル、バリューチェーン分析の3つのレンズを通じて、産業理解がバリュエーション結論を根本的に変えるメカニズムを解説する。"
+  },
+  {
+    "date": "2026-03-23",
+    "category": "career",
+    "genre_en": "Career",
+    "genre_ja": "Career",
+    "href": "./articles/2026-03-23-career-job-market.html",
+    "title_en": "Finance Job Market in the AI Era — What Employers Are Now Looking For",
+    "title_ja": "AI時代のFinance転職市場 — 採用側が求めるものが変わった",
+    "summary_en": "Job descriptions increasingly list AI and data skills, interview questions have fundamentally shifted, and salary premium structures are being rewritten. Here is a clear-eyed view of the seismic changes in the 2026 Finance job market — from the employer's perspective.",
+    "summary_ja": "求人JDからAI・データスキルへの言及が急増し、面接で問われる内容が変わり、年収プレミアムの構造が塗り替えられている。2026年のFinance転職市場の地殻変動を、採用側の視点から読み解く。"
+  },
+  {
+    "date": "2026-03-23",
+    "category": "valuation",
+    "genre_en": "Valuation Theory Lab  #008",
+    "genre_ja": "Valuation Theory Lab  #008",
+    "href": "./articles/2026-03-23-control-premium.html",
+    "title_en": "Control Premium & Synergy Valuation — The Theoretical Basis of M&A Pricing",
+    "title_ja": "Control Premium & Synergy Valuation — M&A価格の理論的根拠",
+    "summary_en": "Why is an acquisition premium justified at all? Separating standalone value — the minority market value — from post-acquisition value — the controlling stake inclusive of synergies — is the starting point of disciplined M&A pricing. This article examines how to value synergies through a DCF framework and explains the mechanism by which competitive auctions systematically transfer synergy value to sellers.",
+    "summary_ja": "買収プレミアムはなぜ正当化されるのか。スタンドアローン価値（少数持分の市場価値）と買収後価値（シナジー込みの支配持分価値）を分離することが、M&Aプライシングの起点である。シナジーをDCFで評価する方法と、競争オークションで「シナジーの価値が売り手に移転する」メカニズムを解析する。"
   },
   {
     "date": "2026-03-23",
@@ -19,7 +162,29 @@
     "title_en": "The Price of Risk: An Equity Risk Premium Monologue",
     "title_ja": "リスクの価格 — エクイティ・リスク・プレミアム独白",
     "summary_en": "Historical ERP estimates range from 5.5% to 14.5% — but they move in the wrong direction during crises and are plagued by analyst bias. Damodaran argues that the implied ERP, backed out from current prices and projected cash flows, is the only accurate measure of how markets are pricing risk.",
-    "summary_ja": "歴史的ERPは5.5%〜14.5%という幅の広い数字を出すが、その数字は危機時に逆向きに動き、使い物にならない。Damodaranは現在の株価とキャッシュフロー予測から逆算するインプライドERPこそが、市場評価の唯一の正確な物差しであると論じる。"
+    "summary_ja": "歴史的ERPは5.5%〜14.5%という幅の広い数字を出すが、その数字は危機時に逆向きに動き、アナリストのバイアスにもさらされており、使い物にならない。Damodaranは現在の株価とキャッシュフロー予測から逆算するインプライドERPこそが、市場評価の唯一の正確な物差しであると論じる。"
+  },
+  {
+    "date": "2026-03-23",
+    "category": "valuation",
+    "genre_en": "Valuation Theory Lab  #009",
+    "genre_ja": "Valuation Theory Lab  #009",
+    "href": "./articles/2026-03-23-lbo-valuation.html",
+    "title_en": "LBO Valuation — How Leverage Transforms Value",
+    "title_ja": "LBO Valuation — レバレッジが価値を変えるメカニズム",
+    "summary_en": "A leveraged buyout (LBO) is an equity return amplification mechanism built on debt. How does the PE investor's IRR thinking integrate with DCF valuation? What variables constrain debt capacity? Why does exit multiple sensitivity dominate the analysis? And how does the equity waterfall govern cash distribution? This article dissects the theoretical components of LBO valuation.",
+    "summary_ja": "レバレッジド・バイアウト（LBO）は、デットを使ったエクイティ・リターン増幅の仕組みである。PE投資家のIRR思考とDCFはいかに統合されるか。デット・キャパシティはどの変数に制約されるか。出口マルチプルの感応度がなぜ評価を支配するか。そしてEquity waterfallはどのようにキャッシュを分配するか。本稿はLBOバリュエーションを構成する理論的部品を解析する。"
+  },
+  {
+    "date": "2026-03-23",
+    "category": "valuation",
+    "genre_en": "Valuation Theory Lab  #007",
+    "genre_ja": "Valuation Theory Lab  #007",
+    "href": "./articles/2026-03-23-normalised-ebitda.html",
+    "title_en": "Normalised EBITDA — The Art of Building a Credible Denominator",
+    "title_ja": "Normalised EBITDA — マルチプル分母の正規化技術",
+    "summary_en": "An EV/EBITDA multiple is only as good as the EBITDA it divides into. This article sets out the theoretical framework for distinguishing legitimate normalisation adjustments from opportunistic manipulation — and identifies where buyers and sellers reliably disagree.",
+    "summary_ja": "EV/EBITDAの精度は分母の品質で決まる。一過性費用の除外、ランレート調整、オーナーコスト排除、M&Aプロフォーマ——それぞれの調整が正当か否かを判断する理論的基準と、売り手・買い手が互いに争うポイントを整理する。"
   },
   {
     "date": "2026-03-22",

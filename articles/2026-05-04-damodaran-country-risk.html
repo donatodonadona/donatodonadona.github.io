@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Damodaranがカントリーリスクの4次元（政治体制・暴力・腐敗・法制度）を解剖し、ソブリン格付・CDS・リスクスコアの限界を検証。米国Aaa喪失後のERP算出方法を5ステップで実務家に示す。Damodaran Watch #006。">
+  <title>カントリーリスク2025 &mdash; 数字の裏にある物語 | Damodaran Watch #006 | donato</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+JP:wght@300;400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../brand.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:           #F8F7F4;
+      --bg-code:      #EEECEA;
+      --bg-quote:     #EEECEA;
+      --bg-highlight: #EBF3FB;
+      --bg-subtle:    #F0EFEB;
+      --bg-card:      #F0EFEB;
+      --bg-header:    #F8F7F4;
+      --text-primary: #111320;
+      --text-body:    #2A2C3E;
+      --text-muted:   #565C70;
+      --text-light:   #888EA0;
+      --accent:       #1A6EB0;
+      --accent-warm:  #D4A010;
+      --accent-damo:  #2D9CDB;
+      --border:       #D4D2CC;
+      --border-quote: #B8B6B0;
+      --border-light: #D4D2CC;
+      --tag-bg:       #E4EFF8;
+      --tag-text:     #1A6EB0;
+      --table-stripe: #F0EFEB;
+    }
+
+    #progress-bar {
+      position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+      background: var(--accent-damo); z-index: 300; transition: width 0.1s linear;
+    }
+    body {
+      font-family: 'Noto Serif JP', Georgia, serif;
+      font-size: 17px; line-height: 1.75;
+      color: var(--text-primary); background: var(--bg);
+    }
+
+    /* ===== SITE HEADER ===== */
+    .site-header {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--bg-header); border-bottom: 2px solid var(--accent-damo);
+      padding: 10px 20px; display: flex; justify-content: space-between; align-items: center;
+    }
+    .site-header-left { display: flex; align-items: center; gap: 12px; }
+    .wordmark { font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 500; letter-spacing: 0.14em; text-transform: lowercase; color: var(--text-primary); text-decoration: none; }
+    .wordmark span { color: var(--accent-warm); }
+    .header-sep { color: var(--border-quote); font-size: 13px; }
+    .header-media { font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500; color: var(--text-muted); letter-spacing: 0.04em; }
+    .site-header-right { display: flex; align-items: center; gap: 12px; }
+    .header-back-link { font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500; color: var(--text-muted); text-decoration: none; transition: color 0.15s; }
+    .header-back-link:hover { color: var(--accent-damo); }
+    .lang-toggle-bar { display: flex; background: var(--bg-subtle); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+    .art-lang-btn { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.1em; padding: 3px 10px; border: none; background: transparent; color: var(--text-muted); cursor: pointer; transition: all 0.15s; }
+    .art-lang-btn.active { background: #F5C800; color: #111320; }
+    #theme-btn { font-family: 'JetBrains Mono', monospace; font-size: 12px; padding: 3px 9px; border: 1px solid var(--border); background: transparent; color: var(--text-muted); cursor: pointer; border-radius: 4px; transition: all 0.15s; }
+    #theme-btn:hover { border-color: var(--accent-damo); color: var(--accent-damo); }
+    .header-date { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-light); letter-spacing: 0.08em; }
+
+    /* ===== STICKY INFO BAR ===== */
+    #sticky-bar { position: sticky; top: 44px; z-index: 200; background: var(--bg-subtle); border-bottom: 1px solid var(--border-light); padding: 7px 20px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+    .sbar-cat { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 500; color: var(--accent-damo); letter-spacing: 0.1em; }
+    .sbar-sep { color: var(--border-quote); font-size: 11px; }
+    .sbar-text { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-muted); }
+    .sbar-badge { font-family: 'JetBrains Mono', monospace; font-size: 10px; background: var(--tag-bg); color: var(--tag-text); padding: 2px 8px; }
+
+    /* ===== LAYOUT ===== */
+    .article-container { max-width: 1240px; margin: 0 auto; padding: 0 20px; }
+    .article-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px; }
+    .article-body { grid-column: 2 / 10; max-width: 68ch; }
+    .article-sidebar { grid-column: 10 / 13; position: sticky; top: 78px; align-self: start; max-height: calc(100vh - 90px); overflow-y: auto; }
+    .article-sidebar::-webkit-scrollbar { width: 4px; }
+    .article-sidebar::-webkit-scrollbar-track { background: transparent; }
+    .article-sidebar::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 2px; }
+
+    /* ===== TYPOGRAPHY ===== */
+    .section-label { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; font-weight: 500; letter-spacing: 0.12em; color: var(--accent-damo); }
+    .article-headline { font-family: 'Cormorant Garamond', Georgia, serif; font-size: clamp(2rem, 4vw, 2.6rem); font-weight: 600; line-height: 1.15; letter-spacing: -0.02em; color: var(--text-primary); margin-bottom: 16px; }
+    .article-standfirst { font-family: 'Inter', 'Noto Sans JP', sans-serif; font-size: 1.05rem; line-height: 1.6; color: var(--text-muted); margin-bottom: 20px; font-weight: 400; }
+    .byline { font-family: 'Inter', 'Noto Sans JP', sans-serif; font-size: 0.8rem; color: var(--text-muted); }
+    h2 { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 1.45rem; font-weight: 600; line-height: 1.25; color: var(--text-primary); margin: 2em 0 0.75em; border-top: 1px solid var(--border); padding-top: 1em; }
+    h3 { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; font-weight: 500; letter-spacing: 0.1em; color: var(--text-muted); margin: 1.75em 0 0.5em; }
+    .article-body p { margin-bottom: 1.4em; font-size: 0.97rem; line-height: 1.8; }
+    .article-body ul, .article-body ol { margin: 0 0 1.4em 1.4em; }
+    .article-body li { margin-bottom: 0.4em; font-size: 0.95rem; line-height: 1.7; }
+    strong { color: var(--text-primary); font-weight: 600; }
+
+    /* ===== EXEC SUMMARY ===== */
+    .exec-summary { background: var(--bg-highlight); border: 1px solid var(--border-light); border-left: 4px solid var(--accent-damo); padding: 24px; margin: 0 0 2.5em; }
+    .exec-block { margin-bottom: 20px; }
+    .exec-block:last-child { margin-bottom: 0; }
+    .exec-block + .exec-block { padding-top: 18px; border-top: 1px solid var(--border-light); }
+    .exec-tldr { font-family: 'Inter', sans-serif; font-size: 1.02rem; font-weight: 500; color: var(--text-primary); line-height: 1.55; margin-top: 8px; }
+    .issues-list, .implications-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+    .issue-item { display: flex; gap: 10px; align-items: baseline; }
+    .issue-q { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--accent-damo); flex-shrink: 0; min-width: 20px; }
+    .issue-text { font-family: 'Inter', sans-serif; font-size: 0.875rem; color: var(--text-body); line-height: 1.55; }
+    .implication-item { font-family: 'Inter', sans-serif; font-size: 0.875rem; color: var(--text-body); line-height: 1.55; padding-left: 14px; border-left: 2px solid var(--accent-damo); }
+
+    /* ===== FORMULA / CALC ===== */
+    .formula { font-family: 'JetBrains Mono', monospace; font-size: 0.93em; background: var(--bg-code); border-left: 3px solid var(--accent-damo); padding: 14px 20px; margin: 20px 0; color: var(--text-primary); overflow-x: auto; line-height: 1.7; }
+    .calc-block { background: var(--bg-subtle); border: 1px solid var(--border); padding: 20px 24px; margin: 24px 0; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; line-height: 1.8; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .calc-block .calc-row { display: flex; justify-content: space-between; max-width: 480px; }
+    .calc-block .calc-total { border-top: 1px solid var(--border); margin-top: 6px; padding-top: 6px; font-weight: 500; color: var(--text-primary); }
+    .calc-block .calc-highlight { color: var(--accent-damo); font-weight: 700; }
+    .calc-block .calc-warn { color: var(--accent-warm); font-weight: 700; }
+
+    /* ===== INSIGHT / TRAP BOX ===== */
+    .insight-box { background: var(--bg-highlight); border-left: 4px solid var(--accent-damo); padding: 18px 22px; margin: 28px 0; }
+    .insight-box p { margin: 0; font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.7; color: var(--text-primary); }
+    .insight-box strong { color: var(--accent-damo); }
+    .trap-box { background: #FEF9EC; border-left: 4px solid var(--accent-warm); padding: 18px 22px; margin: 24px 0; }
+    .trap-box p { margin: 0; font-family: 'Inter', sans-serif; font-size: 0.9rem; line-height: 1.65; color: var(--text-body); }
+    .trap-box .trap-label { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; letter-spacing: 0.1em; color: var(--accent-warm); margin-bottom: 6px; font-weight: 700; }
+
+    /* ===== RESPONSIVE BASE ===== */
+    img, figure, svg, .diagram-figure { max-width: 100%; height: auto; }
+
+    /* ===== DATA TABLE ===== */
+    .data-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 1.5em 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; font-weight: 500; letter-spacing: 0.08em; color: var(--text-muted); background: var(--bg-subtle); padding: 8px 12px; text-align: left; border-bottom: 2px solid var(--border); }
+    td { padding: 8px 12px; border-bottom: 1px solid var(--border-light); color: var(--text-body); font-family: 'Inter', sans-serif; }
+    tr:nth-child(even) td { background: var(--table-stripe); }
+    .td-accent { color: var(--accent-damo); font-weight: 600; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
+    .td-warn { color: var(--accent-warm); font-weight: 600; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
+
+    /* ===== PULL QUOTE ===== */
+    .pull-quote { border-left: 4px solid var(--accent-damo); margin: 2em 0; padding: 1em 20px; background: var(--bg-card); }
+    .pull-quote p { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 1.2rem; font-style: italic; color: var(--text-primary); line-height: 1.5; margin-bottom: 6px !important; }
+    .pull-quote footer { font-family: 'Inter', sans-serif; font-size: 0.78rem; color: var(--text-muted); }
+
+    /* ===== NUMBERED LIST ===== */
+    .numbered-list { list-style: none; padding: 0; margin: 20px 0; }
+    .numbered-list li { display: flex; gap: 14px; margin-bottom: 16px; font-family: 'Inter', sans-serif; font-size: 0.92rem; line-height: 1.65; color: var(--text-body); }
+    .numbered-list li .num { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; font-weight: 700; color: white; background: var(--accent-damo); min-width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: 2px; flex-shrink: 0; }
+
+    /* ===== SECTION SEP ===== */
+    .section-sep { text-align: center; color: var(--text-light); font-size: 1.2rem; letter-spacing: 0.5em; margin: 48px 0; user-select: none; }
+
+    /* ===== SOURCE LIST ===== */
+    .source-list { list-style: none; padding: 0; }
+    .source-list li { margin-bottom: 6px; }
+    .source-list a { font-family: 'Inter', sans-serif; font-size: 0.78rem; color: var(--accent-damo); text-decoration: none; line-height: 1.5; }
+    .source-list a:hover { text-decoration: underline; }
+    .source-tag { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--text-muted); margin-left: 4px; }
+
+    /* ===== NEXT ARTICLE CTA ===== */
+    .next-article { background: var(--text-primary); color: #E4E2DC; padding: 28px 32px; margin-top: 56px; }
+    .next-article .next-label { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; letter-spacing: 0.15em; color: var(--accent-warm); margin-bottom: 8px; }
+    .next-article .next-title { font-family: 'Cormorant Garamond', serif; font-size: 1.25rem; font-weight: 600; line-height: 1.3; }
+    .next-article .next-desc { font-family: 'Inter', sans-serif; font-size: 0.82rem; color: #9299A8; margin-top: 8px; }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar-card { background: var(--bg-card); border: 1px solid var(--border-light); padding: 16px; margin-bottom: 14px; }
+    .keyfacts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+    .fact-card { background: var(--bg-highlight); padding: 10px 8px; }
+    .fact-card.highlight { background: #FDF8EC; border: 1px solid #E8D88A; }
+    .fact-value { font-family: 'JetBrains Mono', monospace; font-size: 1rem; font-weight: 500; color: var(--accent-damo); line-height: 1.2; }
+    .fact-card.highlight .fact-value { color: #8A6A00; }
+    .fact-desc { font-family: 'Inter', sans-serif; font-size: 0.64rem; color: var(--text-muted); margin-top: 3px; line-height: 1.35; }
+    .fact-card.highlight .fact-desc { color: #7A6020; }
+    .highlights-list { list-style: none; padding: 0; margin-top: 12px; }
+    .highlight-item { padding: 9px 0; border-bottom: 1px solid var(--border-light); display: flex; gap: 10px; align-items: baseline; }
+    .highlight-item:last-child { border-bottom: none; }
+    .hl-num { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--accent-damo); flex-shrink: 0; min-width: 18px; }
+    .hl-text { font-family: 'Inter', sans-serif; font-size: 0.76rem; color: var(--text-body); line-height: 1.45; }
+
+    .lang-en { display: none; }
+
+    /* ===== FOOTER ===== */
+    .site-footer { border-top: 1px solid var(--border-light); margin-top: 4em; padding: 20px; font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--text-light); display: flex; justify-content: space-between; align-items: center; }
+
+    @media print { body { background: white; font-size: 11pt; } .site-header, #sticky-bar, #progress-bar { display: none; } .article-sidebar { position: static; max-height: none; overflow: visible; } * { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+    @page { size: A4; margin: 20mm 15mm; }
+
+    .article-byline-row { display: flex; gap: 16px; align-items: center; border-top: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light); padding: 10px 0; }
+    @media (max-width: 900px) {
+      .article-body { grid-column: 1 / -1; }
+      .article-sidebar { position: static; max-height: none; overflow: visible; grid-column: 1 / -1; }
+      .article-grid { display: block; }
+      #sticky-bar { flex-wrap: wrap; gap: 6px; }
+      .article-byline-row { flex-wrap: wrap; gap: 8px; }
+      .art-lang-btn { padding: 10px 14px; font-size: 11px; }
+      #theme-btn { padding: 10px 12px; min-width: 44px; min-height: 44px; }
+      .sbar-cat, .sbar-text, .sbar-badge { font-size: 11px; }
+      .fact-desc { font-size: 11px; }
+      .hl-text { font-size: 13px; }
+      .header-date { display: none; }
+    }
+    @media (max-width: 768px) {
+      .article-grid { display: block; }
+      .article-sidebar { display: none; }
+      #sticky-bar { font-size: 0.75rem; padding: 6px 12px; }
+      h1 { font-size: clamp(1.6rem, 5vw, 2.2rem); }
+      .site-footer { flex-direction: column; gap: 8px; text-align: center; }
+    }
+    @media (max-width: 480px) {
+      body { font-size: 15px; }
+      .article-body { padding: 0 12px; }
+      .exec-summary { padding: 16px; }
+      .fact-card { min-width: unset; width: 100%; }
+      .calc-block { padding: 14px 12px; }
+      .calc-block .calc-row { flex-direction: column; gap: 2px; max-width: 100%; }
+      .next-article { padding: 20px 16px; }
+    }
+
+    body.dark {
+      --bg: #0D1117; --bg-code: #161B22; --bg-quote: #161B22; --bg-highlight: #0E1A2B;
+      --bg-subtle: #161B22; --bg-card: #161B22; --bg-header: #0D1117;
+      --text-primary: #E4E2DC; --text-body: #C4C2BC; --text-muted: #8B93A8; --text-light: #575E70;
+      --accent: #3A8FD0; --accent-warm: #F5C800; --accent-damo: #4AB0E8;
+      --border: #21253A; --border-quote: #2A2D3E; --border-light: #21253A;
+      --tag-bg: #0E1A2B; --tag-text: #3A8FD0; --table-stripe: #161B22;
+    }
+    body.dark .trap-box { background: #1C1800; }
+    body.dark .fact-card.highlight { background: #1A1600; border-color: #3A2D00; }
+    body.dark .fact-card.highlight .fact-value { color: #C4900E; }
+    body.dark .fact-card.highlight .fact-desc { color: #A07828; }
+    body.dark .next-article { background: #111320; }
+  </style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<header class="site-header">
+  <div class="site-header-left">
+    <a class="wordmark" href="../index.html">dona<span>to</span></a>
+    <span class="header-sep">&mdash;</span>
+    <a class="header-back-link" href="./index.html"><span class="lang-ja">記事一覧</span><span class="lang-en">Articles</span></a>
+    <span class="header-sep">&mdash;</span>
+    <span class="header-media">Damodaran Watch</span>
+  </div>
+  <div class="site-header-right">
+    <div class="lang-toggle-bar">
+      <button class="art-lang-btn active" data-lang="ja" onclick="setLang('ja')">JP</button>
+      <button class="art-lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+    </div>
+    <button id="theme-btn" onclick="toggleTheme()" title="Toggle light/dark">&#9788;</button>
+    <time class="header-date">2026-05-04</time>
+  </div>
+</header>
+
+<div id="sticky-bar">
+  <span class="sbar-cat">Damodaran Watch</span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-text"><span class="lang-ja">#006 &middot; カントリーリスク &middot; ERP算出の実務</span><span class="lang-en">#006 &middot; Country Risk &middot; ERP Estimation in Practice</span></span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-text">2026-05-04</span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-badge" id="reading-time-badge"><span class="lang-ja">計算中</span><span class="lang-en">...</span></span>
+</div>
+
+<main style="padding: 0 0 3em;">
+  <div class="article-container">
+    <div class="article-grid">
+
+      <article class="article-body">
+
+        <div style="padding: 36px 0 24px;">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+            <div class="section-label">Damodaran Watch &nbsp;#006</div>
+            <span class="sbar-badge" id="reading-time-badge2"><span class="lang-ja">計算中</span><span class="lang-en">...</span></span>
+          </div>
+          <h1 class="article-headline">
+            <span class="lang-ja">カントリーリスク2025 &mdash; 数字の裏にある物語</span>
+            <span class="lang-en">Country Risk 2025 &mdash; The Story behind the Numbers</span>
+          </h1>
+          <p class="article-standfirst">
+            <span class="lang-ja">Damodaranが約30年にわたり更新してきたカントリーリスク・プレミアムの2025年版。政治体制・暴力・腐敗・法制度という4つの次元からリスクを立体的に捉え、ソブリン格付・CDS・リスクスコアの3つの測定手段の強みと限界を検証する。2025年5月の米国Aaa格下げを踏まえ、リスクフリーレートの再定義からERP算出までの5ステップを実務家向けに解説する。</span>
+            <span class="lang-en">Damodaran's 2025 edition of his nearly three-decade-old country risk premium update. He maps risk across four dimensions &mdash; political structure, violence, corruption, and legal systems &mdash; then tests three measurement tools: sovereign ratings, CDS, and risk scores. Following the May 2025 US Aaa downgrade, he walks practitioners through a five-step framework from riskfree rate redefinition to ERP estimation.</span>
+          </p>
+          <div class="article-byline-row">
+            <span class="byline">By <strong>Donato Valuation Notes</strong></span>
+            <span style="color:var(--border);">|</span>
+            <time class="byline" datetime="2026-05-04"><span class="lang-ja">2026年5月4日</span><span class="lang-en">4 May 2026</span></time>
+            <span style="color:var(--border);">|</span>
+            <span class="byline"><span class="lang-ja">カントリーリスク &middot; ERP &middot; ソブリン格付 &middot; CDS</span><span class="lang-en">Country Risk &middot; ERP &middot; Sovereign Ratings &middot; CDS</span></span>
+          </div>
+        </div>
+
+        <!-- Executive Summary -->
+        <section class="exec-summary">
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">概要</span><span class="lang-en">Summary</span></div>
+            <p class="exec-tldr">
+              <span class="lang-ja">Damodaranは、カントリーリスクを単一の数値に還元することの危険性を強調する。リスクは (1) 政治体制（民主主義 vs 権威主義）、(2) 暴力への曝露、(3) 腐敗の程度、(4) 法制度の質という4つの次元から構成される。測定手段としてはソブリン格付（Moody'sが1985年の13カ国から2025年には143カ国へ拡大）、ソブリンCDS（約80カ国で取引）、カントリーリスクスコア（PRS等）があるが、いずれも単独では不十分である。2025年5月にMoody'sが米国をAaaからAa1に格下げしたことで、リスクフリーレートの定義自体が揺らいだ。Damodaranは米国10年債利回り4.24%からAa1デフォルトスプレッド0.27%を差し引いた3.97%をリスクフリーレートとし、成熟市場プレミアム4.21%を基点にした国別ERP算出の5ステップを提示する。</span>
+              <span class="lang-en">Damodaran warns against reducing country risk to a single number. Risk comprises four dimensions: (1) political structure (democracy vs authoritarianism), (2) violence exposure, (3) corruption, and (4) legal system quality. Measurement tools include sovereign ratings (Moody's expanded from 13 countries in 1985 to 143 in 2025), sovereign CDS (traded on roughly 80 countries), and country risk scores (PRS et al.), but none suffices alone. Moody's May 2025 downgrade of the US from Aaa to Aa1 destabilised the very definition of the riskfree rate. Damodaran subtracts the Aa1 default spread of 0.27% from the US 10-year yield of 4.24% to arrive at a riskfree rate of 3.97%, then presents a five-step framework for country-by-country ERP estimation anchored to a mature market premium of 4.21%.</span>
+            </p>
+          </div>
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">本稿の論点</span><span class="lang-en">Key Questions</span></div>
+            <ul class="issues-list">
+              <li class="issue-item">
+                <span class="issue-q">Q1</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>リスクの4次元</strong> &mdash; 政治体制・暴力・腐敗・法制度はどのように相互作用し、ビジネスの価値にどう影響するか</span>
+                  <span class="lang-en"><strong>Four dimensions of risk</strong> &mdash; How do political structure, violence, corruption, and legal systems interact and affect business value?</span>
+                </span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">Q2</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>測定手段の限界</strong> &mdash; ソブリン格付・CDS・リスクスコアはそれぞれ何を捉え、何を見落とすか</span>
+                  <span class="lang-en"><strong>Measurement limitations</strong> &mdash; What does each tool (ratings, CDS, risk scores) capture, and what does it miss?</span>
+                </span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">Q3</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>米国Aaa喪失後のERP算出</strong> &mdash; リスクフリーレートをどう再定義し、国別ERPをどう算出すべきか</span>
+                  <span class="lang-en"><strong>ERP estimation after US Aaa loss</strong> &mdash; How should the riskfree rate be redefined, and how should country-level ERPs be calculated?</span>
+                </span>
+              </li>
+            </ul>
+          </div>
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">Damodaran Watch 実務家への含意</span><span class="lang-en">Implications for Practitioners</span></div>
+            <ul class="implications-list">
+              <li class="implication-item">
+                <span class="lang-ja"><strong>米国Aaa喪失により、米国債利回りをそのままリスクフリーレートとして使うことは不適切になった。</strong>Aa1デフォルトスプレッド（0.27%）を差し引く調整が必要であり、この調整を怠るとカントリーリスクプレミアムとの二重計上が生じる。</span>
+                <span class="lang-en"><strong>The US Aaa loss means Treasury yields can no longer serve directly as the riskfree rate.</strong> An adjustment for the Aa1 default spread (0.27%) is required; failing to make this adjustment creates double-counting with country risk premiums.</span>
+              </li>
+              <li class="implication-item">
+                <span class="lang-ja"><strong>カントリーリスクプレミアムは本社所在国ではなく事業展開国に基づいて付与すべきである。</strong>ブラジルで事業を行うAmazonにはブラジルのERPが適用される。売上高ウェイト（大半の企業）または生産ウェイト（資源企業）で配分する。</span>
+                <span class="lang-en"><strong>Country risk premiums should be assigned based on where a company operates, not where it is incorporated.</strong> Amazon operating in Brazil bears Brazil's ERP. Allocate by revenue weights (most companies) or production weights (resource firms).</span>
+              </li>
+              <li class="implication-item">
+                <span class="lang-ja"><strong>ソブリン格付は地上の現実に遅れる。</strong>格付だけに依存せず、CDSスプレッドを並用してリアルタイムのリスク変動を捕捉すべきである。ただし約80カ国でしか取引されていない点に留意が必要。</span>
+                <span class="lang-en"><strong>Sovereign ratings lag ground-level reality.</strong> Do not rely on ratings alone; use CDS spreads in parallel to capture real-time risk shifts. Note, however, that CDS trade on only roughly 80 countries.</span>
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- ===== Section 1: Hook + Four Dimensions ===== -->
+        <h2><span class="lang-ja">カントリーリスクの4つの次元</span><span class="lang-en">The Four Dimensions of Country Risk</span></h2>
+
+        <p>
+          <span class="lang-ja">あなたのDCFモデルのリスクフリーレートは、いつ時点の「前提」で組まれているだろうか。2025年5月、Moody'sは米国の信用格付をAaaからAa1に引き下げた。S&amp;P（2011年）、Fitch（2023年）に続く3社目の格下げである。「世界最安全な資産」とされてきた米国債が揺らぐとき、カントリーリスクの本質を問い直す必要がある。Damodaranは約30年にわたりカントリーリスクプレミアムを更新してきたが、数字だけを使うアナリストへの懸念を隠さない。数字の裏にある「前提と選択」を理解しなければ、リスクプレミアムは単なる飾りになる。</span>
+          <span class="lang-en">When did you last check the assumptions behind the riskfree rate in your DCF model? In May 2025, Moody's downgraded the United States from Aaa to Aa1 &mdash; the third agency to do so, following S&amp;P (2011) and Fitch (2023). When the asset once deemed the world's safest is shaken, the very nature of country risk demands re-examination. Damodaran has updated country risk premiums for nearly three decades, yet he makes no secret of his concern that analysts use the numbers without understanding the "assumptions and choices" behind them.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">Damodaranはカントリーリスクを4つの次元で捉える。</span>
+          <span class="lang-en">Damodaran frames country risk across four dimensions.</span>
+        </p>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">次元</span><span class="lang-en">Dimension</span></th>
+                <th><span class="lang-ja">リスクの性質</span><span class="lang-en">Nature of Risk</span></th>
+                <th><span class="lang-ja">主要データソース</span><span class="lang-en">Key Data Source</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="td-accent"><span class="lang-ja">政治体制</span><span class="lang-en">Political structure</span></td>
+                <td><span class="lang-ja">民主主義は政策変更リスクが連続的、権威主義は政権交代時に不連続リスクが発生</span><span class="lang-en">Democracies face continuous policy-change risk; authoritarian regimes face discontinuous risk during transitions</span></td>
+                <td><span class="lang-ja">EIU民主主義指数 2024</span><span class="lang-en">EIU Democracy Index 2024</span></td>
+              </tr>
+              <tr>
+                <td class="td-accent"><span class="lang-ja">暴力への曝露</span><span class="lang-en">Violence exposure</span></td>
+                <td><span class="lang-ja">事業中断・安全保障コスト増・保険料上昇</span><span class="lang-en">Operational disruption, security costs, insurance premium increases</span></td>
+                <td><span class="lang-ja">世界平和度指数 2024（IEP）</span><span class="lang-en">Global Peace Index 2024 (IEP)</span></td>
+              </tr>
+              <tr>
+                <td class="td-accent"><span class="lang-ja">腐敗</span><span class="lang-en">Corruption</span></td>
+                <td><span class="lang-ja">暗黙の課税として利益・キャッシュフロー・価値を毀損。誠実な事業者が不利になる</span><span class="lang-en">Acts as an implicit tax eroding profits, cash flows, and value; disadvantages honest operators</span></td>
+                <td><span class="lang-ja">トランスペアレンシー・インターナショナル 2024</span><span class="lang-en">Transparency International 2024</span></td>
+              </tr>
+              <tr>
+                <td class="td-accent"><span class="lang-ja">法制度</span><span class="lang-en">Legal system</span></td>
+                <td><span class="lang-ja">契約履行の強制力・財産権の保護・司法の迅速性。遅い司法は恣意的な司法とほぼ同じ害をもたらす</span><span class="lang-en">Contract enforcement, property rights, judicial timeliness; delayed justice is nearly as harmful as capricious justice</span></td>
+                <td><span class="lang-ja">IPRI（Property Rights Alliance）2024</span><span class="lang-en">IPRI (Property Rights Alliance) 2024</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>Damodaranの指摘：</strong>腐敗は「文化」の問題ではなく「構造」の問題である。許認可を管理する低賃金の官僚が、潤沢な資金を持つ企業を規制する構造があれば、腐敗は必然的に発生する。</span>
+            <span class="lang-en"><strong>Damodaran's observation:</strong> Corruption is not a matter of "culture" but of "structure." When underpaid bureaucrats who control licensing regulate well-capitalised businesses, corruption becomes an inevitable outcome.</span>
+          </p>
+        </div>
+
+        <!-- ===== Section 2: Measurement Tools ===== -->
+        <h2><span class="lang-ja">3つの測定手段とその限界</span><span class="lang-en">Three Measurement Tools and Their Limitations</span></h2>
+
+        <h3><span class="lang-ja">1. ソブリン格付</span><span class="lang-en">1. Sovereign ratings</span></h3>
+
+        <p>
+          <span class="lang-ja">Moody'sの格付対象国は1985年の13カ国から2025年には<strong>143カ国</strong>へ拡大した。しかしAaa格付を維持する国は10年前の15カ国から<strong>11カ国</strong>に減少している。格付はデフォルトリスクに焦点を当てるため、カントリーリスクの全体像を捉えきれない。また格付機関には「欧州を過大評価し、アジア・アフリカ・中南米を過小評価する」傾向があるとDamodaranは指摘する。さらに格付は現実の変化に遅れるという構造的な弱点を持つ。</span>
+          <span class="lang-en">Moody's coverage expanded from 13 countries in 1985 to <strong>143 countries</strong> in 2025. Yet the number of Aaa-rated sovereigns has shrunk from 15 a decade ago to just <strong>11</strong>. Ratings focus on default risk and thus cannot capture the full picture of country risk. Damodaran also notes a tendency to "overrate European countries and underrate Asian, African, and Latin American countries." Moreover, ratings structurally lag ground-level events.</span>
+        </p>
+
+        <h3><span class="lang-ja">2. ソブリンCDS</span><span class="lang-en">2. Sovereign CDS</span></h3>
+
+        <p>
+          <span class="lang-ja">2025年6月30日時点で約<strong>80カ国</strong>のCDSが取引されている。市場主導でリアルタイムに変動するため、格付より迅速にリスク変化を反映する。しかしボラティリティが高く、カバレッジも格付の約半分にとどまる。Damodaranは格付とCDSを併用することを推奨している。</span>
+          <span class="lang-en">As of 30 June 2025, CDS trade on approximately <strong>80 countries</strong>. Market-driven and real-time, they reflect risk changes faster than ratings. However, they are more volatile and cover roughly half as many countries. Damodaran recommends using ratings and CDS in tandem.</span>
+        </p>
+
+        <h3><span class="lang-ja">3. カントリーリスクスコア</span><span class="lang-en">3. Country risk scores</span></h3>
+
+        <p>
+          <span class="lang-ja">PRS（Political Risk Services）、エコノミスト、世界銀行などがスコアを提供している。Damodaranは歴史的データの蓄積からPRSを好むが、サービス間でスコアに大きなばらつきがあり（PRSでは米国がベトナムやリビアよりリスクが高いと評価されたケースも）、スコアをバリュエーションの実務に直接変換することが難しいという根本的な課題がある。</span>
+          <span class="lang-en">PRS (Political Risk Services), the Economist, and the World Bank all provide scores. Damodaran favours PRS for its historical depth, but wide variation across services (PRS once rated the US riskier than Vietnam and Libya) and difficulty in converting scores into actionable valuation inputs remain fundamental challenges.</span>
+        </p>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">手段</span><span class="lang-en">Tool</span></th>
+                <th><span class="lang-ja">カバレッジ</span><span class="lang-en">Coverage</span></th>
+                <th><span class="lang-ja">強み</span><span class="lang-en">Strength</span></th>
+                <th><span class="lang-ja">弱み</span><span class="lang-en">Weakness</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="td-accent"><span class="lang-ja">ソブリン格付</span><span class="lang-en">Sovereign ratings</span></td>
+                <td><span class="lang-ja">143カ国（Moody's）</span><span class="lang-en">143 countries (Moody's)</span></td>
+                <td><span class="lang-ja">広範なカバレッジ、長期的な安定性</span><span class="lang-en">Broad coverage, long-term stability</span></td>
+                <td><span class="lang-ja">遅延性、デフォルトリスク偏重、地域バイアス</span><span class="lang-en">Lagging, default-risk focus, regional bias</span></td>
+              </tr>
+              <tr>
+                <td class="td-accent"><span class="lang-ja">ソブリンCDS</span><span class="lang-en">Sovereign CDS</span></td>
+                <td><span class="lang-ja">約80カ国</span><span class="lang-en">~80 countries</span></td>
+                <td><span class="lang-ja">リアルタイム、市場主導</span><span class="lang-en">Real-time, market-driven</span></td>
+                <td><span class="lang-ja">高ボラティリティ、限定的カバレッジ</span><span class="lang-en">High volatility, limited coverage</span></td>
+              </tr>
+              <tr>
+                <td class="td-accent"><span class="lang-ja">リスクスコア</span><span class="lang-en">Risk scores</span></td>
+                <td><span class="lang-ja">サービスにより異なる</span><span class="lang-en">Varies by service</span></td>
+                <td><span class="lang-ja">多次元的評価</span><span class="lang-en">Multidimensional assessment</span></td>
+                <td><span class="lang-ja">サービス間の不整合、バリュエーションへの変換困難</span><span class="lang-en">Cross-service inconsistency, hard to convert to valuations</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ===== Section 3: ERP Methodology ===== -->
+        <div class="section-sep">&bull; &bull; &bull;</div>
+
+        <h2><span class="lang-ja">ERP算出の5ステップ &mdash; 米国Aaa喪失後のフレームワーク</span><span class="lang-en">Five Steps to ERP Estimation &mdash; A Post-US-Aaa Framework</span></h2>
+
+        <h3><span class="lang-ja">Step 1: インプライドERPの算出</span><span class="lang-en">Step 1: Calculate the implied ERP</span></h3>
+
+        <p>
+          <span class="lang-ja">S&amp;P 500の配当・自社株買いデータと予想成長率から、インデックス水準と現在価値を一致させる割引率を逆算する。2025年7月1日時点のS&amp;P 500の期待リターンは<strong>8.45%</strong>である。</span>
+          <span class="lang-en">Using S&amp;P 500 dividend and buyback data with expected growth rates, Damodaran backs out the discount rate equating present value to the index level. The expected return on the S&amp;P 500 as of 1 July 2025 is <strong>8.45%</strong>.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">米国がAaaを失ったため、米国10年債利回りをそのままリスクフリーレートとして使うことはできない。</span>
+          <span class="lang-en">With the US having lost its Aaa rating, Treasury yields can no longer serve directly as the riskfree rate.</span>
+        </p>
+
+        <div class="calc-block">
+          <div class="calc-row"><span><span class="lang-ja">米国10年債利回り</span><span class="lang-en">US 10-year Treasury yield</span></span><span>4.24%</span></div>
+          <div class="calc-row"><span><span class="lang-ja">Aa1デフォルトスプレッド</span><span class="lang-en">Aa1 default spread</span></span><span>&minus;0.27%</span></div>
+          <div class="calc-row calc-total"><span><span class="lang-ja">リスクフリーレート</span><span class="lang-en">Riskfree rate</span></span><span class="calc-highlight">3.97%</span></div>
+        </div>
+
+        <div class="formula">
+          <span class="lang-ja">インプライドERP（米国）= 8.45% &minus; 3.97% = <strong>4.48%</strong><br>成熟市場プレミアム = 4.48% &minus; 0.27%（米国デフォルトスプレッド）= <strong>4.21%</strong></span>
+          <span class="lang-en">Implied ERP (US) = 8.45% &minus; 3.97% = <strong>4.48%</strong><br>Mature Market Premium = 4.48% &minus; 0.27% (US default spread) = <strong>4.21%</strong></span>
+        </div>
+
+        <p>
+          <span class="lang-ja">この4.21%が、Aaa格付を維持する11カ国に適用されるベースプレミアムとなる。</span>
+          <span class="lang-en">This 4.21% becomes the base premium applied to the 11 countries still rated Aaa.</span>
+        </p>
+
+        <h3><span class="lang-ja">Step 2: 国別カントリーリスクプレミアムの上乗せ</span><span class="lang-en">Step 2: Add country risk premiums</span></h3>
+
+        <p>
+          <span class="lang-ja">Aaa以外の国については、ソブリン格付に基づくデフォルトスプレッドを推定し、株式リスクがより高いことを反映してスプレッドをスケールアップする。成熟市場プレミアムにカントリーリスクプレミアムを加算して、国別ERPを算出する。</span>
+          <span class="lang-en">For non-Aaa countries, estimate default spreads from sovereign ratings, scale them upward to reflect higher equity risk, and add the country risk premium to the mature market premium to yield country-level ERPs.</span>
+        </p>
+
+        <div class="calc-block">
+          <div style="margin-bottom:12px;font-weight:500;color:var(--text-primary);"><span class="lang-ja">例：インド（2025年7月1日）</span><span class="lang-en">Example: India (1 July 2025)</span></div>
+          <div class="calc-row"><span><span class="lang-ja">インド国債利回り</span><span class="lang-en">Indian government bond rate</span></span><span>6.32%</span></div>
+          <div class="calc-row"><span><span class="lang-ja">デフォルトスプレッド</span><span class="lang-en">Default spread</span></span><span>&minus;2.16%</span></div>
+          <div class="calc-row calc-total"><span><span class="lang-ja">インドルピー・リスクフリーレート</span><span class="lang-en">INR riskfree rate</span></span><span>4.16%</span></div>
+          <div class="calc-row" style="margin-top:8px;"><span><span class="lang-ja">インドERP</span><span class="lang-en">India ERP</span></span><span class="calc-highlight">7.46%</span></div>
+          <div class="calc-row calc-total"><span><span class="lang-ja">インド株式の期待リターン</span><span class="lang-en">Expected return on Indian equity</span></span><span class="calc-warn">11.62%</span></div>
+        </div>
+
+        <div class="calc-block">
+          <div style="margin-bottom:12px;font-weight:500;color:var(--text-primary);"><span class="lang-ja">例：トルコ（2025年7月1日）</span><span class="lang-en">Example: Turkey (1 July 2025)</span></div>
+          <div class="calc-row"><span><span class="lang-ja">トルコERP</span><span class="lang-en">Turkey ERP</span></span><span class="calc-highlight">10.87%</span></div>
+          <div class="calc-row"><span><span class="lang-ja">米ドルベース期待リターン</span><span class="lang-en">Expected return in USD</span></span><span>3.97% + 10.87% = 14.84%</span></div>
+          <div class="calc-row calc-total"><span><span class="lang-ja">トルコリラベース期待リターン（インフレ差20% vs 2.5%）</span><span class="lang-en">Expected return in TRY (inflation 20% vs 2.5%)</span></span><span class="calc-warn">34.45%</span></div>
+        </div>
+
+        <h3><span class="lang-ja">Step 3: 事業展開国ベースでERPを配分</span><span class="lang-en">Step 3: Assign ERP based on operations</span></h3>
+
+        <p>
+          <span class="lang-ja">カントリーリスクは<strong>本社所在国ではなく事業展開国</strong>に基づいて付与する。ブラジルで事業を行うAmazonには、米国ではなくブラジルのERPが適用される。大半の企業では売上高ウェイトで配分し、資源企業では生産ウェイトを使う。</span>
+          <span class="lang-en">Country risk exposure derives from <strong>where a company operates, not where it is incorporated</strong>. Amazon operating in Brazil bears Brazil's ERP, not the US premium. Most companies use revenue weights; natural resource firms use production weights.</span>
+        </p>
+
+        <div class="trap-box">
+          <div class="trap-label"><span class="lang-ja">二重計上に注意</span><span class="lang-en">Watch for double-counting</span></div>
+          <p>
+            <span class="lang-ja">Aaa格付を持たない国の政府債券利回りをリスクフリーレートとして使う場合、デフォルトスプレッド分を差し引かないと、ERPとの間でカントリーリスクが二重に計上される。</span>
+            <span class="lang-en">When using government bond yields from non-Aaa countries as the riskfree rate, failing to subtract the default spread creates double-counting of country risk with the ERP.</span>
+          </p>
+        </div>
+
+        <h3><span class="lang-ja">Step 4: ベータとデフォルトスプレッド</span><span class="lang-en">Step 4: Beta and default spreads</span></h3>
+
+        <p>
+          <span class="lang-ja">ERPだけでは資本コストは完成しない。<strong>ベータ</strong>（株式の相対リスク尺度）と<strong>デフォルトスプレッド</strong>（負債コスト）を加える。ベータは回帰分析ではなく、業種平均またはボトムアップベータを推奨する。格付がない企業には財務分析に基づくシンセティック格付を適用する。</span>
+          <span class="lang-en">ERP alone does not complete the cost of capital. Add <strong>beta</strong> (relative equity risk measure) and <strong>default spreads</strong> (cost of debt). Damodaran recommends industry-average or bottom-up betas over regression approaches. For unrated companies, apply synthetic ratings derived from financial analysis.</span>
+        </p>
+
+        <h3><span class="lang-ja">Step 5: 通貨の一貫性</span><span class="lang-en">Step 5: Currency consistency</span></h3>
+
+        <p>
+          <span class="lang-ja">Step 2で選択した通貨は、割引率とキャッシュフローの両方に一貫して適用しなければならない。トルコリラで計算すれば株主資本コストは34%を超えるが、成長率もインフレ分だけ高くなる。ユーロで計算すれば株主資本コストは低いが、成長率も抑えられる。いずれの通貨を選んでも、内部整合性があれば同じバリュエーション結果に収束する。</span>
+          <span class="lang-en">The currency chosen in Step 2 must be applied consistently to both discount rates and cash flow projections. In Turkish lira, the cost of equity exceeds 34%, but growth rates are commensurately inflated. In euros, the cost of equity is lower, but so is growth. Either currency yields the same valuation provided internal consistency is maintained.</span>
+        </p>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>核心原則：</strong>「全ての企業やプロジェクトが平均的なリスクではない」。カントリーリスクプレミアムはあくまで出発点であり、個別企業のベータ・信用リスク・通貨エクスポージャーで調整して初めて実務で使える資本コストになる。</span>
+            <span class="lang-en"><strong>Core principle:</strong> "Not all companies or projects are average risk." The country risk premium is merely a starting point; it becomes a usable cost of capital only after adjustment for individual company beta, credit risk, and currency exposure.</span>
+          </p>
+        </div>
+
+        <!-- ===== Conclusion ===== -->
+        <h2><span class="lang-ja">結論 &mdash; 単一の数値に還元できないリスク</span><span class="lang-en">Conclusion &mdash; Risk That Cannot Be Reduced to a Single Number</span></h2>
+
+        <p>
+          <span class="lang-ja">Damodaranの分析は、カントリーリスクが政治体制・暴力・腐敗・法制度という複数の次元で構成されており、ソブリン格付・CDS・リスクスコアのいずれか一つでは全体像を捉えられないことを強調する。米国Aaa喪失は「リスクフリー」概念そのものへの挑戦であり、実務家はリスクフリーレートの再定義から始めなければならない。ERPはバリュエーションと資本配分の基礎だが、その裏にある前提と選択を理解しない限り、数字は意味を持たない。</span>
+          <span class="lang-en">Damodaran's analysis underscores that country risk comprises multiple dimensions &mdash; political structure, violence, corruption, and legal systems &mdash; none of which is fully captured by any single measurement tool. The US Aaa loss challenges the very concept of "riskfree," forcing practitioners to begin with riskfree rate redefinition. ERPs are foundational to valuation and capital allocation, but the numbers are meaningless without understanding the assumptions and choices behind them.</span>
+        </p>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>Damodaranの懸念：</strong>カントリーリスクプレミアムを使うアナリストの多くが、その裏にある前提と選択を理解していない。数字を「ブラックボックス」として使うことは、リスク評価の本質を見失うことに等しい。</span>
+            <span class="lang-en"><strong>Damodaran's concern:</strong> Many analysts who use country risk premiums do not understand the assumptions and choices behind them. Using the numbers as a "black box" is tantamount to losing sight of what risk assessment truly means.</span>
+          </p>
+        </div>
+
+      </article>
+
+      <!-- 4. Sidebar -->
+      <aside class="article-sidebar">
+
+        <div class="sidebar-card">
+          <div class="section-label">Key Facts</div>
+          <div class="keyfacts-grid">
+            <div class="fact-card highlight">
+              <div class="fact-value">143</div>
+              <div class="fact-desc"><span class="lang-ja">Moody's格付対象国（2025年）</span><span class="lang-en">Countries rated by Moody's (2025)</span></div>
+            </div>
+            <div class="fact-card highlight">
+              <div class="fact-value">11</div>
+              <div class="fact-desc"><span class="lang-ja">Aaa維持国（15から減少）</span><span class="lang-en">Aaa-rated countries (down from 15)</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">4.21%</div>
+              <div class="fact-desc"><span class="lang-ja">成熟市場プレミアム</span><span class="lang-en">Mature market premium</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">3.97%</div>
+              <div class="fact-desc"><span class="lang-ja">リスクフリーレート（調整後）</span><span class="lang-en">Riskfree rate (adjusted)</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">~80</div>
+              <div class="fact-desc"><span class="lang-ja">CDS取引対象国</span><span class="lang-en">Countries with CDS trading</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">8.45%</div>
+              <div class="fact-desc"><span class="lang-ja">S&amp;P 500 期待リターン</span><span class="lang-en">S&amp;P 500 expected return</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-card">
+          <div class="section-label"><span class="lang-ja">要点</span><span class="lang-en">Highlights</span></div>
+          <ul class="highlights-list">
+            <li class="highlight-item">
+              <span class="hl-num">01</span>
+              <span class="hl-text"><span class="lang-ja">カントリーリスクは4次元で捉える</span><span class="lang-en">Country risk has four dimensions</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">02</span>
+              <span class="hl-text"><span class="lang-ja">米国Aaa喪失でリスクフリーレート再定義が必要</span><span class="lang-en">US Aaa loss demands riskfree rate redefinition</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">03</span>
+              <span class="hl-text"><span class="lang-ja">ERPは本社所在国でなく事業展開国で配分</span><span class="lang-en">ERP assigned by operations, not incorporation</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">04</span>
+              <span class="hl-text"><span class="lang-ja">格付とCDSの併用を推奨</span><span class="lang-en">Use ratings and CDS in tandem</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">05</span>
+              <span class="hl-text"><span class="lang-ja">通貨の一貫性がバリュエーションの整合性を担保</span><span class="lang-en">Currency consistency ensures valuation integrity</span></span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="sidebar-card">
+          <div class="section-label">Damodaran Watch</div>
+          <ol class="highlights-list" style="list-style:none;padding:0;">
+            <li class="highlight-item">
+              <span class="hl-num">01</span>
+              <span class="hl-text"><a href="./2026-03-22-damodaran-ai-scenarios.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">AIシナリオ</span><span class="lang-en">AI Scenarios</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">02</span>
+              <span class="hl-text"><a href="./2026-03-23-damodaran-erp-monologue.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">リスクの価格：ERP独白</span><span class="lang-en">The Price of Risk: ERP Monologue</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">03</span>
+              <span class="hl-text"><a href="./2026-03-28-damodaran-investment-philosophy.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">投資の北極星を見つける</span><span class="lang-en">Finding Your Investing Lodestar</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">04</span>
+              <span class="hl-text"><a href="./2026-03-29-damodaran-alternative-investments.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">オルタナティブ投資の不確かな報酬</span><span class="lang-en">Alternative Investments</span></a></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">05</span>
+              <span class="hl-text"><a href="./2026-04-03-damodaran-gold-surge.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">黄金の年：金価格急騰</span><span class="lang-en">A Golden Year: Gold's Price Surge</span></a></span>
+            </li>
+            <li class="highlight-item" style="border-bottom:none;">
+              <span class="hl-num" style="color:var(--accent-warm);">06</span>
+              <span class="hl-text" style="font-weight:600;"><span class="lang-ja">カントリーリスク2025（本稿）</span><span class="lang-en">Country Risk 2025 (this article)</span></span>
+            </li>
+          </ol>
+        </div>
+
+        <div class="sidebar-card">
+          <div class="section-label">Key References</div>
+          <ul class="source-list" style="margin-top:10px;">
+            <li><a href="https://aswathdamodaran.blogspot.com/2025/07/country-risk-2025-story-behind-numbers.html" target="_blank" rel="noopener">Damodaran Blog: Country Risk 2025</a> <span class="source-tag">Original</span></li>
+            <li><a href="https://pages.stern.nyu.edu/~adamodar/" target="_blank" rel="noopener">Damodaran Online (NYU Stern)</a> <span class="source-tag">Data</span></li>
+          </ul>
+        </div>
+
+      </aside>
+
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <span>Damodaran Watch #006 | donato Valuation Notes | 2026-05-04</span>
+  <span>
+    <span class="lang-ja">本稿は情報提供を目的とした解説記事であり、特定の投資行動を推奨するものではありません。投資判断はご自身の責任でお願いいたします。</span>
+    <span class="lang-en">This article is for informational purposes only and does not constitute investment advice. Investment decisions are the reader's own responsibility.</span>
+  </span>
+</footer>
+
+<script>
+  // Progress bar
+  window.addEventListener('scroll', function() {
+    var h = document.documentElement;
+    var pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    document.getElementById('progress-bar').style.width = Math.min(pct, 100) + '%';
+  });
+
+  // Reading time (500 chars/min)
+  (function() {
+    var text = document.querySelector('.article-body') ? document.querySelector('.article-body').textContent : '';
+    var chars = text.length;
+    var minutes = Math.ceil(chars / 500);
+    var el1 = document.getElementById('reading-time-badge');
+    var el2 = document.getElementById('reading-time-badge2');
+    if (el1) el1.querySelector('.lang-ja').textContent = '約' + minutes + '分';
+    if (el2) el2.querySelector('.lang-ja').textContent = '約' + minutes + '分';
+    if (el1) el1.querySelector('.lang-en').textContent = '~' + minutes + ' min read';
+    if (el2) el2.querySelector('.lang-en').textContent = '~' + minutes + ' min read';
+  })();
+
+  // Lang toggle
+  let currentLang = localStorage.getItem('hp-lang') || 'ja';
+  let currentTheme = localStorage.getItem('hp-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('hp-lang', lang);
+    document.querySelectorAll('.lang-ja').forEach(el => el.style.display = lang === 'ja' ? 'inline' : 'none');
+    document.querySelectorAll('.lang-en').forEach(el => el.style.display = lang === 'en' ? 'inline' : 'none');
+    document.querySelectorAll('.art-lang-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+    document.documentElement.lang = lang === 'ja' ? 'ja' : 'en';
+  }
+  function toggleTheme() {
+    currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+    localStorage.setItem('hp-theme', currentTheme);
+    document.body.classList.toggle('dark', currentTheme === 'dark');
+    document.getElementById('theme-btn').textContent = currentTheme === 'light' ? '\u2606' : '\u263E';
+  }
+  document.addEventListener('DOMContentLoaded', () => {
+    setLang(currentLang);
+    if (currentTheme === 'dark') {
+      document.body.classList.add('dark');
+      document.getElementById('theme-btn').textContent = '\u263E';
+    }
+  });
+</script>
+
+</body>
+</html>

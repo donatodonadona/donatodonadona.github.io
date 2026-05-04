@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Sum-of-the-Parts（SOTP）は多角化企業を事業セグメントごとに独立評価し、コングロマリット・ディスカウントの実態を定量化する手法である。Berger & Ofek（1995）が発見した13-15%のディスカウントは本当に価値破壊なのか。SOTP実務手順、セグメント報告の限界、アクティビスト投資家によるブレークアップ分析の実例（GE・東芝・Honeywell）を解説。Valuation Theory Lab #015。">
+  <title>Sum-of-the-Parts再考 — コングロマリット・ディスカウントの実態と分解価値 | Valuation Theory Lab #015 | donato</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+JP:wght@300;400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../brand.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:           #F8F7F4;
+      --bg-code:      #EEECEA;
+      --bg-quote:     #EEECEA;
+      --bg-highlight: #EBF3FB;
+      --bg-subtle:    #F0EFEB;
+      --bg-card:      #F0EFEB;
+      --bg-header:    #F8F7F4;
+      --text-primary: #111320;
+      --text-body:    #2A2C3E;
+      --text-muted:   #565C70;
+      --text-light:   #888EA0;
+      --accent:       #1A6EB0;
+      --accent-warm:  #D4A010;
+      --border:       #D4D2CC;
+      --border-quote: #B8B6B0;
+      --border-light: #D4D2CC;
+      --tag-bg:       #E4EFF8;
+      --tag-text:     #1A6EB0;
+      --table-stripe: #F0EFEB;
+    }
+
+    #progress-bar { position: fixed; top: 0; left: 0; height: 3px; width: 0%; background: var(--accent); z-index: 300; transition: width 0.1s linear; }
+    body { font-family: 'Noto Serif JP', Georgia, serif; font-size: 17px; line-height: 1.75; color: var(--text-primary); background: var(--bg); }
+
+    .site-header { position: sticky; top: 0; z-index: 100; background: var(--bg-header); border-bottom: 2px solid var(--accent); padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; }
+    .site-header-left { display: flex; align-items: center; gap: 12px; }
+    .wordmark { font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 500; letter-spacing: 0.14em; text-transform: lowercase; color: var(--text-primary); text-decoration: none; }
+    .wordmark span { color: var(--accent-warm); }
+    .header-sep { color: var(--border-quote); font-size: 13px; }
+    .header-media { font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500; color: var(--text-muted); letter-spacing: 0.04em; }
+    .site-header-right { display: flex; align-items: center; gap: 12px; }
+    .header-back-link { font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500; color: var(--text-muted); text-decoration: none; transition: color 0.15s; }
+    .header-back-link:hover { color: var(--accent); }
+    .lang-toggle-bar { display: flex; background: var(--bg-subtle); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+    .art-lang-btn { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.1em; padding: 3px 10px; border: none; background: transparent; color: var(--text-muted); cursor: pointer; transition: all 0.15s; }
+    .art-lang-btn.active { background: #F5C800; color: #111320; }
+    #theme-btn { font-family: 'JetBrains Mono', monospace; font-size: 12px; padding: 3px 9px; border: 1px solid var(--border); background: transparent; color: var(--text-muted); cursor: pointer; border-radius: 4px; transition: all 0.15s; }
+    #theme-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .header-date { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-light); letter-spacing: 0.08em; }
+
+    #sticky-bar { position: sticky; top: 44px; z-index: 200; background: var(--bg-subtle); border-bottom: 1px solid var(--border-light); padding: 7px 20px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+    .sbar-cat { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 500; color: var(--accent); letter-spacing: 0.1em; }
+    .sbar-sep { color: var(--border-quote); font-size: 11px; }
+    .sbar-text { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-muted); }
+    .sbar-badge { font-family: 'JetBrains Mono', monospace; font-size: 10px; background: var(--tag-bg); color: var(--tag-text); padding: 2px 8px; }
+
+    .article-container { max-width: 1240px; margin: 0 auto; padding: 0 20px; }
+    .article-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px; }
+    .article-body { grid-column: 2 / 10; max-width: 68ch; }
+    .article-sidebar { grid-column: 10 / 13; position: sticky; top: 78px; align-self: start; max-height: calc(100vh - 90px); overflow-y: auto; }
+    .article-sidebar::-webkit-scrollbar { width: 4px; }
+    .article-sidebar::-webkit-scrollbar-track { background: transparent; }
+    .article-sidebar::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 2px; }
+
+    .section-label { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; font-weight: 500; letter-spacing: 0.12em; color: var(--accent); }
+    .article-headline { font-family: 'Cormorant Garamond', Georgia, serif; font-size: clamp(2rem, 4vw, 2.6rem); font-weight: 600; line-height: 1.15; letter-spacing: -0.02em; color: var(--text-primary); margin-bottom: 16px; }
+    .article-standfirst { font-family: 'Inter', 'Noto Sans JP', sans-serif; font-size: 1.05rem; line-height: 1.6; color: var(--text-muted); margin-bottom: 20px; font-weight: 400; }
+    .byline { font-family: 'Inter', 'Noto Sans JP', sans-serif; font-size: 0.8rem; color: var(--text-muted); }
+    h2 { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 1.45rem; font-weight: 600; line-height: 1.25; color: var(--text-primary); margin: 2em 0 0.75em; border-top: 1px solid var(--border); padding-top: 1em; }
+    h3 { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; font-weight: 500; letter-spacing: 0.1em; color: var(--text-muted); margin: 1.75em 0 0.5em; }
+    .article-body p { margin-bottom: 1.4em; font-size: 0.97rem; line-height: 1.8; }
+    .article-body ul, .article-body ol { margin: 0 0 1.4em 1.4em; }
+    .article-body li { margin-bottom: 0.4em; font-size: 0.95rem; line-height: 1.7; }
+    strong { color: var(--text-primary); font-weight: 600; }
+
+    .exec-summary { background: var(--bg-highlight); border: 1px solid var(--border-light); border-left: 4px solid var(--accent); padding: 24px; margin: 0 0 2.5em; }
+    .exec-block { margin-bottom: 20px; }
+    .exec-block:last-child { margin-bottom: 0; }
+    .exec-block + .exec-block { padding-top: 18px; border-top: 1px solid var(--border-light); }
+    .exec-tldr { font-family: 'Inter', sans-serif; font-size: 1.02rem; font-weight: 500; color: var(--text-primary); line-height: 1.55; margin-top: 8px; }
+    .issues-list, .implications-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+    .issue-item { display: flex; gap: 10px; align-items: baseline; }
+    .issue-q { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--accent); flex-shrink: 0; min-width: 20px; }
+    .issue-text { font-family: 'Inter', sans-serif; font-size: 0.875rem; color: var(--text-body); line-height: 1.55; }
+    .implication-item { font-family: 'Inter', sans-serif; font-size: 0.875rem; color: var(--text-body); line-height: 1.55; padding-left: 14px; border-left: 2px solid var(--accent); }
+
+    .formula { font-family: 'JetBrains Mono', monospace; font-size: 0.93em; background: var(--bg-code); border-left: 3px solid var(--accent); padding: 14px 20px; margin: 20px 0; color: var(--text-primary); overflow-x: auto; line-height: 1.7; }
+    .calc-block { background: var(--bg-subtle); border: 1px solid var(--border); padding: 20px 24px; margin: 24px 0; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; line-height: 1.8; overflow-x: auto; }
+    .calc-block .calc-row { display: flex; justify-content: space-between; max-width: 480px; }
+    .calc-block .calc-total { border-top: 1px solid var(--border); margin-top: 6px; padding-top: 6px; font-weight: 500; color: var(--text-primary); }
+    .calc-block .calc-highlight { color: var(--accent); font-weight: 700; }
+    .calc-block .calc-warn { color: var(--accent-warm); font-weight: 700; }
+
+    .insight-box { background: var(--bg-highlight); border-left: 4px solid var(--accent); padding: 18px 22px; margin: 28px 0; }
+    .insight-box p { margin: 0; font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.7; color: var(--text-primary); }
+    .insight-box strong { color: var(--accent); }
+    .trap-box { background: #FEF9EC; border-left: 4px solid var(--accent-warm); padding: 18px 22px; margin: 24px 0; }
+    .trap-box p { margin: 0; font-family: 'Inter', sans-serif; font-size: 0.9rem; line-height: 1.65; color: var(--text-body); }
+    .trap-box .trap-label { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; letter-spacing: 0.1em; color: var(--accent-warm); margin-bottom: 6px; font-weight: 700; }
+
+    .data-table-wrap { overflow-x: auto; margin: 1.5em 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; font-weight: 500; letter-spacing: 0.08em; color: var(--text-muted); background: var(--bg-subtle); padding: 8px 12px; text-align: left; border-bottom: 2px solid var(--border); }
+    td { padding: 8px 12px; border-bottom: 1px solid var(--border-light); color: var(--text-body); font-family: 'Inter', sans-serif; }
+    tr:nth-child(even) td { background: var(--table-stripe); }
+    .td-accent { color: var(--accent); font-weight: 600; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
+    .td-warn { color: var(--accent-warm); font-weight: 600; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
+
+    .pull-quote { border-left: 4px solid var(--accent); margin: 2em 0; padding: 1em 20px; background: var(--bg-card); }
+    .pull-quote p { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 1.2rem; font-style: italic; color: var(--text-primary); line-height: 1.5; margin-bottom: 6px !important; }
+
+    .numbered-list { list-style: none; padding: 0; margin: 20px 0; }
+    .numbered-list li { display: flex; gap: 14px; margin-bottom: 16px; font-family: 'Inter', sans-serif; font-size: 0.92rem; line-height: 1.65; color: var(--text-body); }
+    .numbered-list li .num { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; font-weight: 700; color: white; background: var(--accent); min-width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: 2px; flex-shrink: 0; }
+
+    .section-sep { text-align: center; color: var(--text-light); font-size: 1.2rem; letter-spacing: 0.5em; margin: 48px 0; user-select: none; }
+
+    .source-list { list-style: none; padding: 0; }
+    .source-list li { margin-bottom: 6px; }
+    .source-list a { font-family: 'Inter', sans-serif; font-size: 0.78rem; color: var(--accent); text-decoration: none; line-height: 1.5; }
+    .source-list a:hover { text-decoration: underline; }
+    .source-tag { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--text-muted); margin-left: 4px; }
+
+    .sidebar-card { background: var(--bg-card); border: 1px solid var(--border-light); padding: 16px; margin-bottom: 14px; }
+    .keyfacts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+    .fact-card { background: var(--bg-highlight); padding: 10px 8px; }
+    .fact-card.highlight { background: #FDF8EC; border: 1px solid #E8D88A; }
+    .fact-value { font-family: 'JetBrains Mono', monospace; font-size: 1rem; font-weight: 500; color: var(--accent); line-height: 1.2; }
+    .fact-card.highlight .fact-value { color: #8A6A00; }
+    .fact-desc { font-family: 'Inter', sans-serif; font-size: 0.64rem; color: var(--text-muted); margin-top: 3px; line-height: 1.35; }
+    .fact-card.highlight .fact-desc { color: #7A6020; }
+    .highlights-list { list-style: none; padding: 0; margin-top: 12px; }
+    .highlight-item { padding: 9px 0; border-bottom: 1px solid var(--border-light); display: flex; gap: 10px; align-items: baseline; }
+    .highlight-item:last-child { border-bottom: none; }
+    .hl-num { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--accent); flex-shrink: 0; min-width: 18px; }
+    .hl-text { font-family: 'Inter', sans-serif; font-size: 0.76rem; color: var(--text-body); line-height: 1.45; }
+
+    .lang-en { display: none; }
+
+    .site-footer { border-top: 1px solid var(--border-light); margin-top: 4em; padding: 20px; font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--text-light); display: flex; justify-content: space-between; align-items: center; }
+
+    @media print { body { background: white; font-size: 11pt; } .site-header, #sticky-bar, #progress-bar { display: none; } .article-sidebar { position: static; max-height: none; overflow: visible; } * { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+    @page { size: A4; margin: 20mm 15mm; }
+    @media (max-width: 900px) { .article-body { grid-column: 1 / -1; } .article-sidebar { position: static; max-height: none; overflow: visible; grid-column: 1 / -1; } .article-grid { display: block; } }
+
+    body.dark { --bg: #0D1117; --bg-code: #161B22; --bg-quote: #161B22; --bg-highlight: #0E1A2B; --bg-subtle: #161B22; --bg-card: #161B22; --bg-header: #0D1117; --text-primary: #E4E2DC; --text-body: #C4C2BC; --text-muted: #8B93A8; --text-light: #575E70; --accent: #3A8FD0; --accent-warm: #F5C800; --border: #21253A; --border-quote: #2A2D3E; --border-light: #21253A; --tag-bg: #0E1A2B; --tag-text: #3A8FD0; --table-stripe: #161B22; }
+    body.dark .trap-box { background: #1C1800; }
+    body.dark .fact-card.highlight { background: #1A1600; border-color: #3A2D00; }
+    body.dark .fact-card.highlight .fact-value { color: #C4900E; }
+    body.dark .fact-card.highlight .fact-desc { color: #A07828; }
+  </style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<header class="site-header">
+  <div class="site-header-left">
+    <a class="wordmark" href="../index.html">dona<span>to</span></a>
+    <span class="header-sep">—</span>
+    <a class="header-back-link" href="./index.html"><span class="lang-ja">記事一覧</span><span class="lang-en">Articles</span></a>
+    <span class="header-sep">—</span>
+    <span class="header-media">Valuation Theory Lab</span>
+  </div>
+  <div class="site-header-right">
+    <div class="lang-toggle-bar">
+      <button class="art-lang-btn active" data-lang="ja" onclick="setLang('ja')">JP</button>
+      <button class="art-lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+    </div>
+    <button id="theme-btn" onclick="toggleTheme()" title="Toggle theme">☀</button>
+    <time class="header-date">2026-05-04</time>
+  </div>
+</header>
+
+<div id="sticky-bar">
+  <span class="sbar-cat">Valuation Theory Lab</span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-text"><span class="lang-ja">Series #015 · SOTP</span><span class="lang-en">Series #015 · SOTP</span></span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-text">2026-05-04</span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-badge" id="reading-time-badge"><span class="lang-ja">計算中</span><span class="lang-en">...</span></span>
+</div>
+
+<main style="padding: 0 0 3em;">
+  <div class="article-container">
+    <div class="article-grid">
+
+      <article class="article-body">
+
+        <div style="padding: 36px 0 24px;">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+            <div class="section-label">Valuation Theory Lab &nbsp;#015</div>
+            <span class="sbar-badge" id="reading-time-badge2"><span class="lang-ja">計算中</span><span class="lang-en">...</span></span>
+          </div>
+          <h1 class="article-headline">
+            <span class="lang-ja">Sum-of-the-Parts再考 — コングロマリット・ディスカウントの実態と分解価値</span>
+            <span class="lang-en">Revisiting Sum-of-the-Parts — The Reality of the Conglomerate Discount and Break-Up Value</span>
+          </h1>
+          <p class="article-standfirst">
+            <span class="lang-ja">多角化企業の株価は、各事業を独立評価した合計よりも低い — いわゆるコングロマリット・ディスカウント。Berger & Ofek（1995）が報告した13-15%のディスカウントは「価値破壊の証拠」なのか、それとも「測定のアーティファクト」にすぎないのか。本稿では、SOTPバリュエーションの理論と実務手順を体系化し、ディスカウントの発生メカニズムを分析し、アクティビスト投資家によるブレークアップ分析の実例を通じて、分解価値の意味と限界を論じる。</span>
+            <span class="lang-en">Diversified firms trade below the sum of their independently valued segments — the conglomerate discount. Is the 13-15% discount reported by Berger & Ofek (1995) evidence of value destruction, or merely a measurement artefact? This article systematises the theory and practice of SOTP valuation, analyses the mechanisms behind the discount, and examines break-up analyses by activist investors to discuss the meaning and limitations of break-up value.</span>
+          </p>
+          <div style="display:flex; gap:16px; align-items:center; border-top:1px solid var(--border-light); border-bottom:1px solid var(--border-light); padding:10px 0;">
+            <span class="byline">By <strong>Donato Valuation Notes</strong></span>
+            <span style="color:var(--border);">|</span>
+            <time class="byline" datetime="2026-05-04"><span class="lang-ja">2026年5月4日</span><span class="lang-en">4 May 2026</span></time>
+            <span style="color:var(--border);">|</span>
+            <span class="byline"><span class="lang-ja">SOTP · コングロマリット・ディスカウント · アクティビスト · スピンオフ</span><span class="lang-en">SOTP · Conglomerate Discount · Activists · Spin-offs</span></span>
+          </div>
+        </div>
+
+        <!-- Exec Summary -->
+        <section class="exec-summary">
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">概要</span><span class="lang-en">Summary</span></div>
+            <p class="exec-tldr">
+              <span class="lang-ja">Sum-of-the-Parts（SOTP）は多角化企業を事業セグメントごとに独立評価し合算するバリュエーション手法である。学術研究は8-15%のコングロマリット・ディスカウントを報告するが、その原因が内部資本市場の非効率なのか、自己選択バイアスなのか、セグメント報告の測定誤差なのかは未決着である。実務においてSOTPは「分解した場合の理論価値」を示す強力なツールだが、分離コスト・ディスシナジー・実行リスクを無視すれば過大評価に陥る。</span>
+              <span class="lang-en">Sum-of-the-Parts (SOTP) independently values each business segment of a diversified firm and sums them. Academic research reports an 8-15% conglomerate discount, but whether it stems from inefficient internal capital markets, self-selection bias, or segment reporting measurement error remains unsettled. In practice, SOTP is a powerful tool showing "theoretical value if separated," but ignoring separation costs, dissynergies, and execution risk leads to overvaluation.</span>
+            </p>
+          </div>
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">本稿の論点</span><span class="lang-en">Key Questions</span></div>
+            <ul class="issues-list">
+              <li class="issue-item">
+                <span class="issue-q">Q1</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>コングロマリット・ディスカウントは実在するか</strong> — Berger & Ofek（1995）の発見と、Villalonga（2004）・Campa & Kedia（2002）による反論。因果関係か測定誤差か</span>
+                  <span class="lang-en"><strong>Does the conglomerate discount actually exist?</strong> — Berger & Ofek's (1995) findings vs. rebuttals by Villalonga (2004) and Campa & Kedia (2002). Causation or measurement error?</span>
+                </span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">Q2</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>SOTP分析の実務上の落とし穴は何か</strong> — コーポレートコストの二重計上、セグメント報告の裁量、ピュアプレイComps選定のバイアス</span>
+                  <span class="lang-en"><strong>What are the practical pitfalls of SOTP analysis?</strong> — Double-counting corporate costs, discretion in segment reporting, and bias in pure-play comps selection</span>
+                </span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">Q3</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>アクティビストのブレークアップ分析はどこまで信頼できるか</strong> — GE・東芝・Honeywellの事例から、SOTP理論値と実現価値の乖離を検証する</span>
+                  <span class="lang-en"><strong>How reliable are activist break-up analyses?</strong> — Examining the gap between SOTP theoretical value and realised value through GE, Toshiba, and Honeywell cases</span>
+                </span>
+              </li>
+            </ul>
+          </div>
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">実務家への含意</span><span class="lang-en">Implications for Practitioners</span></div>
+            <ul class="implications-list">
+              <li class="implication-item">
+                <span class="lang-ja"><strong>SOTPは「天井価格」ではなく「仮説」として使え</strong> — 分離コストとディスシナジーを明示的に差し引かなければ、SOTPは実現不可能な理論値に過ぎない。分離コストの見積もりをSOTPの横に常に併記すべき</span>
+                <span class="lang-en"><strong>Use SOTP as a hypothesis, not a ceiling price</strong> — Without explicitly deducting separation costs and dissynergies, SOTP is merely an unrealisable theoretical value. Always present separation cost estimates alongside SOTP</span>
+              </li>
+              <li class="implication-item">
+                <span class="lang-ja"><strong>セグメント報告を鵜呑みにするな</strong> — IFRS 8 / ASC 280は経営者の裁量を認める。開示セグメントが実態より集約されていないか、トランスファープライシングが利益を歪めていないかを独立に検証せよ</span>
+                <span class="lang-en"><strong>Do not take segment reporting at face value</strong> — IFRS 8 / ASC 280 grant management discretion. Independently verify whether disclosed segments are overly aggregated and whether transfer pricing distorts profitability</span>
+              </li>
+              <li class="implication-item">
+                <span class="lang-ja"><strong>ディスカウントの「正当な理由」を見極めよ</strong> — すべてのディスカウントが非効率の証拠ではない。内部資本市場の便益、共同保険効果、クロスセリング・シナジーが存在する場合、ディスカウントの一部は合理的だ</span>
+                <span class="lang-en"><strong>Distinguish justified from unjustified discounts</strong> — Not every discount evidences inefficiency. Where internal capital market benefits, coinsurance effects, or cross-selling synergies exist, part of the discount may be rational</span>
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- Section 1 -->
+        <h2>
+          <span class="lang-ja">1. SOTPバリュエーションの基本構造</span>
+          <span class="lang-en">1. The Basic Structure of SOTP Valuation</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">Sum-of-the-Parts（SOTP）は、企業を「一つの塊」として評価するのではなく、各事業セグメントを独立した企業として個別に評価し、その合計値を企業全体の価値とするアプローチだ。通常のComps分析やDCFが企業全体に単一の評価指標を適用するのに対し、SOTPはセグメントごとに異なるピアグループ、異なるマルチプル、場合によっては異なる評価手法を使い分ける。</span>
+          <span class="lang-en">Sum-of-the-Parts (SOTP) values a company not as a single entity but by independently valuing each business segment as if it were a standalone company and summing the results. Whilst standard comps analysis or DCF applies a single valuation metric to the entire firm, SOTP uses different peer groups, different multiples, and potentially different valuation methodologies for each segment.</span>
+        </p>
+
+        <div class="calc-block">
+          <div style="margin-bottom: 12px; font-weight: 500; color: var(--text-muted); font-size: 0.75em; letter-spacing: 0.1em;">
+            <span class="lang-ja">SOTP構造: 数値例</span>
+            <span class="lang-en">SOTP Structure: Numerical Example</span>
+          </div>
+          <div class="calc-row"><span><span class="lang-ja">Segment A: EV/EBITDA 12x &times; EBITDA 200</span><span class="lang-en">Segment A: EV/EBITDA 12x &times; EBITDA 200</span></span><span>2,400</span></div>
+          <div class="calc-row"><span><span class="lang-ja">Segment B: EV/EBITDA 8x &times; EBITDA 150</span><span class="lang-en">Segment B: EV/EBITDA 8x &times; EBITDA 150</span></span><span>1,200</span></div>
+          <div class="calc-row"><span><span class="lang-ja">Segment C: EV/Revenue 3x &times; Revenue 300</span><span class="lang-en">Segment C: EV/Revenue 3x &times; Revenue 300</span></span><span>900</span></div>
+          <div class="calc-row"><span><span class="calc-warn"><span class="lang-ja">(-) コーポレートコスト: 8x &times; 50</span><span class="lang-en">(-) Corporate costs: 8x &times; 50</span></span></span><span class="calc-warn">(400)</span></div>
+          <div class="calc-row calc-total"><span><span class="calc-highlight"><span class="lang-ja">SOTP Enterprise Value</span><span class="lang-en">SOTP Enterprise Value</span></span></span><span class="calc-highlight">4,100</span></div>
+          <div class="calc-row"><span><span class="lang-ja">(-) Net Debt</span><span class="lang-en">(-) Net Debt</span></span><span>(800)</span></div>
+          <div class="calc-row"><span><span class="lang-ja">(-) Minority Interests</span><span class="lang-en">(-) Minority Interests</span></span><span>(100)</span></div>
+          <div class="calc-row calc-total"><span><span class="calc-highlight"><span class="lang-ja">SOTP Equity Value</span><span class="lang-en">SOTP Equity Value</span></span></span><span class="calc-highlight">3,200</span></div>
+        </div>
+
+        <p>
+          <span class="lang-ja">この例では、高成長セグメントAに12x、成熟セグメントBに8x、赤字だが高成長のセグメントCにEV/Revenue 3xを適用している。企業全体に一律のマルチプルを適用する場合、セグメントAは過小評価され、セグメントBは過大評価される可能性がある。SOTPの核心的な価値提案はこの「セグメント別の適正評価」にある。</span>
+          <span class="lang-en">In this example, 12x is applied to high-growth Segment A, 8x to mature Segment B, and EV/Revenue 3x to loss-making but high-growth Segment C. Applying a uniform multiple to the entire firm would potentially undervalue Segment A and overvalue Segment B. The core value proposition of SOTP lies in this "segment-appropriate valuation."</span>
+        </p>
+
+        <div class="section-sep">· · ·</div>
+
+        <!-- Section 2 -->
+        <h2>
+          <span class="lang-ja">2. コングロマリット・ディスカウントの実証研究</span>
+          <span class="lang-en">2. Empirical Evidence on the Conglomerate Discount</span>
+        </h2>
+
+        <h3>
+          <span class="lang-ja">2.1 ディスカウントの「発見」</span>
+          <span class="lang-en">2.1 The "Discovery" of the Discount</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">Berger and Ofek（1995, <em>Journal of Financial Economics</em>, Vol. 37, pp. 39-65）は、多角化企業が単一事業の「仮想的」価値の合計に対して13-15%のディスカウントで取引されていることを報告した。1986-1991年の米国企業をサンプルとし、各セグメントのEBITまたは売上高にメディアンの産業マルチプルを適用して「imputed value」を算出し、実際のMarket Capと比較した。</span>
+          <span class="lang-en">Berger and Ofek (1995, <em>Journal of Financial Economics</em>, Vol. 37, pp. 39-65) reported that diversified firms trade at a 13-15% discount to the sum of their segments' "imputed" standalone values. Using US firms from 1986-1991, they applied median industry multiples (based on EBIT or sales) to each segment to compute imputed values and compared these to actual market capitalisation.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">Lang and Stulz（1994, <em>Journal of Political Economy</em>, Vol. 102, pp. 1248-1280）は、多角化企業のTobin's qが集中企業よりも系統的に低いことを示した。この差は1980年代を通じて拡大した。</span>
+          <span class="lang-en">Lang and Stulz (1994, <em>Journal of Political Economy</em>, Vol. 102, pp. 1248-1280) showed that diversified firms' Tobin's q is systematically lower than that of focused firms, with the gap widening through the 1980s.</span>
+        </p>
+
+        <h3>
+          <span class="lang-ja">2.2 反論 — 自己選択と測定誤差</span>
+          <span class="lang-en">2.2 Rebuttals — Self-Selection and Measurement Error</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">Campa and Kedia（2002, <em>The Journal of Finance</em>, Vol. 57, pp. 1731-1762）は、ディスカウントの大部分が<strong>自己選択バイアス</strong>で説明できると主張した。多角化を「選択する」企業は、多角化する以前からすでにディスカウントで取引されていた。つまり、多角化がディスカウントを引き起こしたのではなく、低い評価を受けている企業が多角化を選ぶという逆の因果関係が存在する。内生性をコントロールすると、ディスカウントは大幅に縮小するか消失する。</span>
+          <span class="lang-en">Campa and Kedia (2002, <em>The Journal of Finance</em>, Vol. 57, pp. 1731-1762) argued that much of the discount is explained by <strong>self-selection bias</strong>. Firms that "choose" to diversify were already trading at a discount before diversifying. The causality runs in reverse: low-valued firms choose to diversify, rather than diversification causing the discount. Controlling for endogeneity substantially reduces or eliminates the measured discount.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">Villalonga（2004, <em>The Journal of Finance</em>, Vol. 59, pp. 479-506）は、さらに踏み込んだ批判を展開した。セグメント報告データ（SFAS 131）ではなく、事業所レベルのデータ（Business Information Tracking Series）を使って分析すると、ディスカウントは消失し、むしろ<strong>プレミアム</strong>が観測される場合もある。これはセグメント報告の定義が経営者の裁量に委ねられているため、報告されたセグメントが経済的に意味のある事業単位を正確に反映していないことを示唆する。</span>
+          <span class="lang-en">Villalonga (2004, <em>The Journal of Finance</em>, Vol. 59, pp. 479-506) mounted a deeper critique. Using establishment-level data (Business Information Tracking Series) rather than segment reporting data (SFAS 131), the discount disappears and in some cases a <strong>premium</strong> is observed. This suggests that since segment definitions are at management's discretion, reported segments may not accurately reflect economically meaningful business units.</span>
+        </p>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>ディスカウントの存在は「事実」だが、因果関係は未確定。</strong>観測可能なデータにおいて多角化企業が集中企業よりも低い評価を受けていることは再現性の高い実証的事実だ。しかしその原因が「多角化による価値破壊」なのか「低い評価を受ける企業が多角化しやすい」のか「セグメント報告の測定誤差」なのかは、30年にわたる研究でも決着がついていない。</span>
+            <span class="lang-en"><strong>The discount's existence is "fact," but causation is unsettled.</strong> That diversified firms receive lower valuations than focused firms in observable data is a reproducible empirical fact. But whether this is caused by "value destruction from diversification," "low-valued firms being more likely to diversify," or "measurement error in segment reporting" remains unsettled after three decades of research.</span>
+          </p>
+        </div>
+
+        <div class="section-sep">· · ·</div>
+
+        <!-- Section 3 -->
+        <h2>
+          <span class="lang-ja">3. ディスカウントの発生メカニズム</span>
+          <span class="lang-en">3. Mechanisms Behind the Discount</span>
+        </h2>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">メカニズム</span><span class="lang-en">Mechanism</span></th>
+                <th><span class="lang-ja">内容</span><span class="lang-en">Description</span></th>
+                <th><span class="lang-ja">主要文献</span><span class="lang-en">Key Reference</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="td-accent"><span class="lang-ja">内部資本市場の非効率</span><span class="lang-en">Inefficient internal capital markets</span></td>
+                <td><span class="lang-ja">利益の高いセグメントから低いセグメントへの過剰な資本配分（「社会主義的」配分）。強い事業への投資不足、弱い事業への過剰投資</span><span class="lang-en">Over-allocation from profitable to unprofitable segments ("socialist" allocation). Underinvestment in strong businesses, overinvestment in weak ones</span></td>
+                <td>Shin & Stulz (1998)</td>
+              </tr>
+              <tr>
+                <td class="td-accent"><span class="lang-ja">エージェンシーコスト</span><span class="lang-en">Agency costs</span></td>
+                <td><span class="lang-ja">経営者の帝国建設動機 — 多角化は経営者の権限・報酬・雇用安定性を高めるが、株主価値を必ずしも最大化しない</span><span class="lang-en">Managerial empire-building — diversification increases management's power, compensation, and job security without necessarily maximising shareholder value</span></td>
+                <td>Jensen (1986)</td>
+              </tr>
+              <tr>
+                <td class="td-accent"><span class="lang-ja">情報の非対称性</span><span class="lang-en">Information asymmetry</span></td>
+                <td><span class="lang-ja">アナリストカバレッジの困難 — 多角化企業を正確に評価できる専門家が少なく、投資家基盤が縮小する</span><span class="lang-en">Difficulty of analyst coverage — fewer specialists can accurately value diversified firms, narrowing the investor base</span></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="td-accent"><span class="lang-ja">純粋な透明性欠如</span><span class="lang-en">Lack of pure-play transparency</span></td>
+                <td><span class="lang-ja">投資家はセグメント別の真の経済性を観察できない。トランスファープライシングと共有コストが利益を歪める</span><span class="lang-en">Investors cannot observe true segment economics. Transfer pricing and shared costs distort profitability</span></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="td-accent"><span class="lang-ja">投資家の「自家調合」選好</span><span class="lang-en">Investor "homemade diversification" preference</span></td>
+                <td><span class="lang-ja">ポートフォリオマネジャーは自身で分散投資を行うことを好み、コングロマリットに資本配分を委ねることに対しディスカウントを要求する</span><span class="lang-en">Portfolio managers prefer to diversify themselves and demand a discount for delegating capital allocation to a conglomerate</span></td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>
+          <span class="lang-ja">Shin and Stulz（1998, <em>Quarterly Journal of Economics</em>, Vol. 113, pp. 531-552）は内部資本市場の非効率性を定量的に示した。多角化企業のセグメント投資は、そのセグメント自身のキャッシュフローだけでなく、他セグメントのキャッシュフローにも感応する。この「相互補助」が、高収益事業のリターンを希釈する。</span>
+          <span class="lang-en">Shin and Stulz (1998, <em>Quarterly Journal of Economics</em>, Vol. 113, pp. 531-552) quantitatively demonstrated internal capital market inefficiency. Segment investment in diversified firms responds not only to the segment's own cash flows but also to other segments' cash flows. This "cross-subsidisation" dilutes returns from high-performing businesses.</span>
+        </p>
+
+        <div class="section-sep">· · ·</div>
+
+        <!-- Section 4 -->
+        <h2>
+          <span class="lang-ja">4. SOTP実務手順 — 6ステップ・フレームワーク</span>
+          <span class="lang-en">4. SOTP Practical Methodology — Six-Step Framework</span>
+        </h2>
+
+        <ul class="numbered-list">
+          <li>
+            <span class="num">1</span>
+            <span>
+              <span class="lang-ja"><strong>セグメント特定</strong> — IFRS 8（事業セグメント）またはASC 280の開示を出発点とする。両基準とも「経営アプローチ」（CODMがどう事業を見ているか）に基づくため、経済的に意味のある単位と一致しない場合がある。必要に応じて、アナリスト独自のセグメント再定義を行う。</span>
+              <span class="lang-en"><strong>Segment identification</strong> — Start from disclosures under IFRS 8 (Operating Segments) or ASC 280. Both standards use the "management approach" (how the CODM views the business), which may not align with economically meaningful units. Where necessary, redefine segments independently.</span>
+            </span>
+          </li>
+          <li>
+            <span class="num">2</span>
+            <span>
+              <span class="lang-ja"><strong>セグメント別評価手法の選択</strong> — 安定的なキャッシュフローを持つ成熟セグメントにはEV/EBITDAまたはDCF、赤字だが高成長のセグメントにはEV/Revenue、資産集約型にはNAV、金融サービスにはP/BVを適用。各セグメントの性質に最も適した手法を選ぶ。</span>
+              <span class="lang-en"><strong>Select valuation approach per segment</strong> — Apply EV/EBITDA or DCF to mature segments with stable cash flows, EV/Revenue to loss-making high-growth segments, NAV to asset-heavy segments, P/BV to financial services. Choose the methodology best suited to each segment's characteristics.</span>
+            </span>
+          </li>
+          <li>
+            <span class="num">3</span>
+            <span>
+              <span class="lang-ja"><strong>ピュアプレイCompsの選定</strong> — 各セグメントに対して、主事業がそのセグメントと一致するピュアプレイ企業を特定する。地域、規模、成長率、マージン構造でマッチングし、メディアンまたはトリム平均マルチプルを適用する。</span>
+              <span class="lang-en"><strong>Select pure-play comps</strong> — For each segment, identify pure-play companies whose primary business matches the segment. Match on geography, scale, growth profile, and margin structure. Apply median or trimmed-mean multiples from the peer set.</span>
+            </span>
+          </li>
+          <li>
+            <span class="num">4</span>
+            <span>
+              <span class="lang-ja"><strong>セグメント間取引とコーポレートコストの処理</strong> — セグメント間売上高を排除して二重計上を防ぐ。コーポレートコスト（本社費用）は、売上高比例・EBITDA比例・資産比例のいずれかで配賦するか、独立した「マイナスのセグメント」として評価する。</span>
+              <span class="lang-en"><strong>Handle inter-segment transactions and corporate costs</strong> — Eliminate inter-segment revenue to prevent double-counting. Allocate corporate costs (HQ overhead) proportionally by revenue, EBITDA, or assets, or value as an independent "negative segment."</span>
+            </span>
+          </li>
+          <li>
+            <span class="num">5</span>
+            <span>
+              <span class="lang-ja"><strong>EV-to-Equity Bridge</strong> — セグメントEVの合計から、連結ベースのNet Debt、少数株主持分、年金債務超過、訴訟引当金を差し引き、関連会社・JVの持分価値と余剰現金を加算してEquity Valueを算出する。</span>
+              <span class="lang-en"><strong>EV-to-Equity Bridge</strong> — From the sum of segment EVs, deduct consolidated Net Debt, minority interests, pension deficits, and litigation provisions. Add associate/JV equity stakes and excess cash to derive Equity Value.</span>
+            </span>
+          </li>
+          <li>
+            <span class="num">6</span>
+            <span>
+              <span class="lang-ja"><strong>ディスカウント/プレミアムの判断</strong> — SOTPの理論値をそのまま「正しい価格」とするか、10-25%のホールディング・ディスカウントを適用するかを判断する。ベストプラクティスは、グロスSOTPと現在の時価総額との比較を示し、「市場が暗黙に織り込んでいるディスカウント」を逆算することだ。</span>
+              <span class="lang-en"><strong>Discount/premium decision</strong> — Decide whether to present gross SOTP as the "correct price" or apply a 10-25% holding company discount. Best practice is to show both gross SOTP and the comparison to current market cap, reverse-engineering the "discount the market implicitly applies."</span>
+            </span>
+          </li>
+        </ul>
+
+        <div class="trap-box">
+          <div class="trap-label"><span class="lang-ja">Practitioner Trap</span><span class="lang-en">Practitioner Trap</span></div>
+          <p>
+            <span class="lang-ja">コーポレートコストの二重計上はSOTPの最も頻出するエラーだ。セグメントEBITDAが本社費用の配賦をすでに含んでいる場合、別途コーポレートコストを差し引くと二重控除になる。逆に、セグメントEBITDAが配賦前（配賦前セグメント利益）であれば、コーポレートコストの独立評価が必要だ。開示資料でどちらのベースか確認すること。</span>
+            <span class="lang-en">Double-counting corporate costs is the most common SOTP error. If segment EBITDA already includes HQ cost allocations, separately deducting corporate costs creates a double charge. Conversely, if segment EBITDA is pre-allocation (unallocated segment profit), independent valuation of corporate costs is required. Verify which basis the disclosures use.</span>
+          </p>
+        </div>
+
+        <div class="section-sep">· · ·</div>
+
+        <!-- Section 5 -->
+        <h2>
+          <span class="lang-ja">5. アクティビスト投資家とSOTP — ブレークアップ分析の実例</span>
+          <span class="lang-en">5. Activist Investors and SOTP — Break-Up Analysis in Practice</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">SOTPが最も強力なツールとして機能するのは、アクティビスト投資家が「企業は分離した方が価値が高い」と主張する場面だ。過去10年間で、コングロマリットのブレークアップは主要な企業戦略のトレンドとなった。</span>
+          <span class="lang-en">SOTP functions most powerfully as a tool when activist investors argue that "the company is worth more separated." Over the past decade, conglomerate break-ups have become a major corporate strategy trend.</span>
+        </p>
+
+        <h3>
+          <span class="lang-ja">5.1 General Electric（2015-2024）</span>
+          <span class="lang-en">5.1 General Electric (2015-2024)</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">GEはコングロマリット・ディスカウントの教科書的な事例だ。Trian Partners（Nelson Peltz）が2015年に約25億ドルの株式を取得し、2017年に取締役の席を得て以降、ポートフォリオ合理化を推進した。2021年11月、CEOのLarry Culpは3社への分割を発表した。</span>
+          <span class="lang-en">GE is a textbook case of the conglomerate discount. Trian Partners (Nelson Peltz) acquired approximately $2.5bn in shares in 2015, gained a board seat in 2017, and pushed for portfolio rationalisation. In November 2021, CEO Larry Culp announced a three-way split.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">2023年1月にGE HealthCare（GEHC、売上高約200億ドル）がスピンオフ。2024年4月にGE Vernova（GEV、売上高約150億ドル）がスピンオフし、残った航空宇宙事業がGE Aerospace（GE、売上高約320億ドル）となった。分割発表時点（2021年11月）のGE時価総額は約1,200億ドルだったが、2024年中頃の3社合計時価総額はGE Aerospace約1,900億ドル、GEHC約900億ドル、GEV約800億ドルの計約3,600億ドルに達し、コングロマリットとしての取引価格の約3倍の価値が顕在化した。</span>
+          <span class="lang-en">GE HealthCare (GEHC, ~$20bn revenue) spun off in January 2023. GE Vernova (GEV, ~$15bn revenue) spun off in April 2024, with the remaining aerospace business becoming GE Aerospace (GE, ~$32bn revenue). At the split announcement (November 2021), GE's market cap was approximately $120bn. By mid-2024, the combined market cap reached approximately $360bn (GE Aerospace ~$190bn, GEHC ~$90bn, GEV ~$80bn) — roughly three times the conglomerate trading price, making the value unlock tangible.</span>
+        </p>
+
+        <h3>
+          <span class="lang-ja">5.2 東芝（2021-2023）</span>
+          <span class="lang-en">5.2 Toshiba (2021-2023)</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">東芝は、アクティビスト株主（Elliott Management、Third Point、Farallon等）からの圧力を受けて2021年11月に3社分割案を発表した。SOTPベースでは、インフラ事業・デバイス事業・キオクシア持分をそれぞれ独立評価すると、当時の時価総額を上回るとの分析が示された。最終的に株主の反対で分割案は否決され、日本産業パートナーズ（JIP）による約2兆円の非公開化で決着した。2023年12月に東芝は74年間の上場に幕を下ろした。アクティビストのSOTP論拠が、テイクプライベートのプレミアムを押し上げる原動力となった。</span>
+          <span class="lang-en">Toshiba, under pressure from activist shareholders (Elliott Management, Third Point, Farallon, et al.), announced a three-way split in November 2021. SOTP analysis showed that independently valuing the infrastructure, devices, and Kioxia stake businesses exceeded the then-market cap. The split was ultimately rejected by shareholders, and the situation was resolved by a approximately 2 trillion yen take-private by Japan Industrial Partners (JIP). Toshiba delisted in December 2023 after 74 years of listing. The activists' SOTP argument drove the premium in the take-private offer.</span>
+        </p>
+
+        <h3>
+          <span class="lang-ja">5.3 Honeywell（2024）</span>
+          <span class="lang-en">5.3 Honeywell (2024)</span>
+        </h3>
+
+        <p>
+          <span class="lang-ja">Elliott Managementは2024年に50億ドル超の持分を取得し、航空宇宙事業とオートメーション事業の分離を要求した。ElliottのSOTP分析は、分離により2年以内に75%のアップサイドが実現可能と主張した。このケースはSOTPの「限界」も示す — 分離にはトランジションサービス契約、IT分離、サプライチェーン再構築など数十億ドルの分離コストが伴い、SOTPの理論値から大幅に割り引く必要がある。</span>
+          <span class="lang-en">Elliott Management acquired a $5bn+ stake in 2024 and demanded separation of the Aerospace and Automation divisions. Elliott's SOTP analysis claimed 75% upside within two years from separation. This case also illustrates SOTP's "limitations" — separation involves billions in transition service agreements, IT separation, and supply chain restructuring, requiring significant deductions from SOTP theoretical value.</span>
+        </p>
+
+        <div class="section-sep">· · ·</div>
+
+        <!-- Section 6 -->
+        <h2>
+          <span class="lang-ja">6. SOTPの限界と落とし穴</span>
+          <span class="lang-en">6. Limitations and Pitfalls of SOTP</span>
+        </h2>
+
+        <div class="data-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="lang-ja">落とし穴</span><span class="lang-en">Pitfall</span></th>
+                <th><span class="lang-ja">内容</span><span class="lang-en">Description</span></th>
+                <th><span class="lang-ja">対処法</span><span class="lang-en">Mitigation</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="td-warn"><span class="lang-ja">マルチプルの恣意的選択</span><span class="lang-en">Cherry-picking multiples</span></td>
+                <td><span class="lang-ja">各セグメントに最も有利なピアを選び、SOTPを膨張させる</span><span class="lang-en">Selecting the most favourable peers for each segment to inflate SOTP</span></td>
+                <td><span class="lang-ja">ピアセット選定基準の明示と感度分析</span><span class="lang-en">Explicit peer selection criteria and sensitivity analysis</span></td>
+              </tr>
+              <tr>
+                <td class="td-warn"><span class="lang-ja">分離コストの無視</span><span class="lang-en">Ignoring separation costs</span></td>
+                <td><span class="lang-ja">IT分離、TSA、重複機能のコスト、リファイナンスコストを考慮しない</span><span class="lang-en">Not accounting for IT separation, TSA, duplicated functions, refinancing costs</span></td>
+                <td><span class="lang-ja">SOTPから分離コスト（通常EV の3-8%）を明示的に控除</span><span class="lang-en">Explicitly deduct separation costs (typically 3-8% of EV) from SOTP</span></td>
+              </tr>
+              <tr>
+                <td class="td-warn"><span class="lang-ja">多角化の便益を無視</span><span class="lang-en">Ignoring diversification benefits</span></td>
+                <td><span class="lang-ja">共同保険効果（負債コスト低下）、内部資本市場の効率性、クロスセリング・シナジーの喪失</span><span class="lang-en">Coinsurance effect (lower cost of debt), internal capital market efficiency, loss of cross-selling synergies</span></td>
+                <td><span class="lang-ja">分離後の各社の信用格付・調達コスト変化を見積もる</span><span class="lang-en">Estimate post-separation credit rating and funding cost changes</span></td>
+              </tr>
+              <tr>
+                <td class="td-warn"><span class="lang-ja">セグメント報告への過度な依存</span><span class="lang-en">Over-reliance on segment reporting</span></td>
+                <td><span class="lang-ja">IFRS 8の経営者裁量により、セグメントが実態より集約されている可能性</span><span class="lang-en">Management discretion under IFRS 8 may result in overly aggregated segments</span></td>
+                <td><span class="lang-ja">有報の「主要な経営指標」、決算説明資料、競合の開示と照合</span><span class="lang-en">Cross-reference with management commentary, earnings presentations, and competitor disclosures</span></td>
+              </tr>
+              <tr>
+                <td class="td-warn"><span class="lang-ja">税務摩擦</span><span class="lang-en">Tax friction</span></td>
+                <td><span class="lang-ja">スピンオフの非課税要件（米国IRC Section 355等）を満たさない場合、巨額の譲渡益課税が発生する</span><span class="lang-en">If tax-free spin-off requirements (e.g., US IRC Section 355) are not met, massive capital gains tax arises</span></td>
+                <td><span class="lang-ja">税務アドバイザーによるストラクチャリングの事前確認</span><span class="lang-en">Pre-confirm structuring with tax advisers</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="section-sep">· · ·</div>
+
+        <!-- Section 7 -->
+        <h2>
+          <span class="lang-ja">7. 結語 — 分解価値は「真の価値」ではない</span>
+          <span class="lang-en">7. Conclusion — Break-Up Value Is Not "True Value"</span>
+        </h2>
+
+        <p>
+          <span class="lang-ja">SOTPは強力なバリュエーション・フレームワークだが、その結果を「企業の真の価値」と同一視してはならない。SOTPが示すのは「各セグメントが独立に存在し、最適な評価を受けた場合の理論的最大値」であり、そこに至るまでの経路 — 分離コスト、ディスシナジー、実行リスク、税務摩擦 — を含んでいない。</span>
+          <span class="lang-en">SOTP is a powerful valuation framework, but its result should not be equated with "the firm's true value." What SOTP shows is "the theoretical maximum if each segment existed independently and received optimal valuation" — it does not incorporate the path to get there: separation costs, dissynergies, execution risk, and tax friction.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">コングロマリット・ディスカウントの実証研究が30年かけて示したのは、ディスカウントが「ある」ことではなく、ディスカウントの「原因」を特定することの困難さだ。Berger & Ofekの13-15%は平均値であり、個々の企業のディスカウントは0%から50%超まで幅がある。アナリストが問うべきは「ディスカウントが存在するか」ではなく「このディスカウントの何%が正当化され、何%が解消可能か」だ。</span>
+          <span class="lang-en">What three decades of conglomerate discount research have shown is not that the discount "exists," but the difficulty of identifying its "cause." Berger & Ofek's 13-15% is an average; individual firm discounts range from 0% to over 50%. The question analysts should ask is not "does the discount exist" but "what percentage of this discount is justified, and what percentage is eliminable."</span>
+        </p>
+
+        <div class="pull-quote">
+          <p>
+            <span class="lang-ja">SOTPは「答え」ではなく「問い」を立てるための道具だ。分離すれば本当に価値が上がるのか — その問いに答えるには、分離の経路そのもののコストを見積もらなければならない。</span>
+            <span class="lang-en">SOTP is a tool for posing questions, not for providing answers. Whether separation truly increases value — answering that question requires estimating the cost of the separation path itself.</span>
+          </p>
+        </div>
+
+      </article>
+
+      <!-- Sidebar -->
+      <aside class="article-sidebar">
+
+        <div class="sidebar-card">
+          <div class="section-label">Key Facts</div>
+          <div class="keyfacts-grid">
+            <div class="fact-card highlight">
+              <div class="fact-value">13-15%</div>
+              <div class="fact-desc"><span class="lang-ja">Berger & Ofek 平均ディスカウント</span><span class="lang-en">Berger & Ofek avg. discount</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">3</div>
+              <div class="fact-desc"><span class="lang-ja">GE 分割後の独立企業数</span><span class="lang-en">GE post-split entities</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">2 兆円</div>
+              <div class="fact-desc"><span class="lang-ja">東芝テイクプライベート額</span><span class="lang-en">Toshiba take-private value</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">3-8%</div>
+              <div class="fact-desc"><span class="lang-ja">典型的な分離コスト（対EV）</span><span class="lang-en">Typical separation costs (% of EV)</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-card">
+          <div class="section-label"><span class="lang-ja">Highlights</span><span class="lang-en">Highlights</span></div>
+          <ul class="highlights-list">
+            <li class="highlight-item">
+              <span class="hl-num">01</span>
+              <span class="hl-text"><span class="lang-ja">SOTPはセグメントごとに最適な評価手法を適用する</span><span class="lang-en">SOTP applies the optimal valuation for each segment</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">02</span>
+              <span class="hl-text"><span class="lang-ja">ディスカウントの因果関係は30年の研究でも未確定</span><span class="lang-en">Discount causation unsettled after 30 years of research</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">03</span>
+              <span class="hl-text"><span class="lang-ja">GE分割は SOTP テーゼの検証事例</span><span class="lang-en">GE split validated the SOTP thesis</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">04</span>
+              <span class="hl-text"><span class="lang-ja">分離コストを無視したSOTPは過大評価につながる</span><span class="lang-en">SOTP without separation costs leads to overvaluation</span></span>
+            </li>
+            <li class="highlight-item">
+              <span class="hl-num">05</span>
+              <span class="hl-text"><span class="lang-ja">セグメント報告の経営者裁量がSOTPの精度を制約する</span><span class="lang-en">Management discretion in segment reporting constrains SOTP precision</span></span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Series Index -->
+        <div class="sidebar-card">
+          <div class="section-label">Valuation Theory Lab</div>
+          <ol class="highlights-list" style="list-style:none;padding:0;">
+            <li class="highlight-item"><span class="hl-num">01</span><span class="hl-text"><a href="./2026-03-20-valuation.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">Terminal Value</span><span class="lang-en">Terminal Value</span></a></span></li>
+            <li class="highlight-item"><span class="hl-num">02</span><span class="hl-text"><a href="./2026-03-21-wacc.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">WACC & CAPM</span><span class="lang-en">WACC & CAPM</span></a></span></li>
+            <li class="highlight-item"><span class="hl-num">03</span><span class="hl-text"><a href="./2026-03-21-beta-hamada.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">Beta & Hamada</span><span class="lang-en">Beta & Hamada</span></a></span></li>
+            <li class="highlight-item"><span class="hl-num">04</span><span class="hl-text"><a href="./2026-03-22-cyclical.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">Cyclical & Mid-cycle</span><span class="lang-en">Cyclical & Mid-cycle</span></a></span></li>
+            <li class="highlight-item"><span class="hl-num">05</span><span class="hl-text"><a href="./2026-03-22-dloc-dlom.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">DLOC & DLOM</span><span class="lang-en">DLOC & DLOM</span></a></span></li>
+            <li class="highlight-item"><span class="hl-num">06</span><span class="hl-text"><a href="./2026-03-22-multiples-comparability.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">Multiples Comparability</span><span class="lang-en">Multiples Comparability</span></a></span></li>
+            <li class="highlight-item"><span class="hl-num">07</span><span class="hl-text"><a href="./2026-03-23-normalised-ebitda.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">Normalised EBITDA</span><span class="lang-en">Normalised EBITDA</span></a></span></li>
+            <li class="highlight-item"><span class="hl-num">08</span><span class="hl-text"><a href="./2026-03-23-control-premium.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">Control Premium</span><span class="lang-en">Control Premium</span></a></span></li>
+            <li class="highlight-item"><span class="hl-num">09</span><span class="hl-text"><a href="./2026-03-23-lbo-valuation.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">LBO Valuation</span><span class="lang-en">LBO Valuation</span></a></span></li>
+            <li class="highlight-item"><span class="hl-num">10</span><span class="hl-text"><a href="./2026-03-28-comps-selection.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">Comps Selection</span><span class="lang-en">Comps Selection</span></a></span></li>
+            <li class="highlight-item"><span class="hl-num">11</span><span class="hl-text"><a href="./2026-03-28-industry-analysis.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">Industry Analysis</span><span class="lang-en">Industry Analysis</span></a></span></li>
+            <li class="highlight-item"><span class="hl-num">12</span><span class="hl-text"><a href="./2026-03-28-business-model-analysis.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">Business Model Analysis</span><span class="lang-en">Business Model Analysis</span></a></span></li>
+            <li class="highlight-item"><span class="hl-num">13</span><span class="hl-text"><a href="./2026-03-29-ifrs16-ev-bridge.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">IFRS 16 & EV Bridge</span><span class="lang-en">IFRS 16 & EV Bridge</span></a></span></li>
+            <li class="highlight-item"><span class="hl-num">14</span><span class="hl-text"><a href="./2026-04-03-apv.html" style="color:var(--text-body);text-decoration:none;"><span class="lang-ja">APV & MM Propositions</span><span class="lang-en">APV & MM Propositions</span></a></span></li>
+            <li class="highlight-item"><span class="hl-num">15</span><span class="hl-text" style="color:var(--accent);font-weight:600;"><span class="lang-ja">SOTP & Conglomerate Discount ← Now</span><span class="lang-en">SOTP & Conglomerate Discount ← Now</span></span></li>
+          </ol>
+        </div>
+
+        <div class="sidebar-card">
+          <div class="section-label">Key References</div>
+          <ul class="source-list" style="margin-top:10px;">
+            <li><a href="https://www.sciencedirect.com/science/article/pii/0304405X94007986" target="_blank" rel="noopener">Berger, P.G. & Ofek, E. (1995) "Diversification's effect on firm value" — JFE</a> <span class="source-tag">[academic]</span></li>
+            <li><a href="https://www.journals.uchicago.edu/doi/abs/10.1086/261970" target="_blank" rel="noopener">Lang, L.H.P. & Stulz, R.M. (1994) "Tobin's q, Corporate Diversification..." — JPE</a> <span class="source-tag">[academic]</span></li>
+            <li><a href="https://onlinelibrary.wiley.com/doi/abs/10.1111/1540-6261.00476" target="_blank" rel="noopener">Campa, J.M. & Kedia, S. (2002) "Explaining the Diversification Discount" — JF</a> <span class="source-tag">[academic]</span></li>
+            <li><a href="https://pages.stern.nyu.edu/~bvillalo/Villalonga_DivPremium_JF2004.pdf" target="_blank" rel="noopener">Villalonga, B. (2004) "Diversification Discount or Premium?" — JF</a> <span class="source-tag">[academic]</span></li>
+            <li><a href="https://academic.oup.com/qje/article-abstract/113/2/531/1915751" target="_blank" rel="noopener">Shin, H.H. & Stulz, R.M. (1998) "Are Internal Capital Markets Efficient?" — QJE</a> <span class="source-tag">[academic]</span></li>
+            <li><a href="https://onlinelibrary.wiley.com/doi/abs/10.1111/0022-1082.00386" target="_blank" rel="noopener">Lamont, O.A. & Polk, C. (2001) "The Diversification Discount" — JF</a> <span class="source-tag">[academic]</span></li>
+          </ul>
+        </div>
+
+      </aside>
+
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <span>Valuation Theory Lab #015 | donato Valuation Notes | 2026-05-04</span>
+  <span>
+    <span class="lang-ja">本稿は理論解説を目的としています。投資・M&Aの意思決定には専門家への確認を推奨します。</span>
+    <span class="lang-en">This article is intended as a theoretical discussion. Professional advice should be sought for investment and M&A decisions.</span>
+  </span>
+</footer>
+
+<script>
+  window.addEventListener('scroll', function() { var h = document.documentElement; var pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100; document.getElementById('progress-bar').style.width = Math.min(pct, 100) + '%'; });
+  (function() { var text = document.querySelector('.article-body') ? document.querySelector('.article-body').textContent : ''; var chars = text.length; var minutes = Math.ceil(chars / 500); var el1 = document.getElementById('reading-time-badge'); var el2 = document.getElementById('reading-time-badge2'); if (el1) el1.querySelector('.lang-ja').textContent = '約' + minutes + '分'; if (el2) el2.querySelector('.lang-ja').textContent = '約' + minutes + '分'; if (el1) el1.querySelector('.lang-en').textContent = '~' + minutes + ' min read'; if (el2) el2.querySelector('.lang-en').textContent = '~' + minutes + ' min read'; })();
+  let currentLang = localStorage.getItem('hp-lang') || 'ja';
+  let currentTheme = localStorage.getItem('hp-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  function setLang(lang) { currentLang = lang; localStorage.setItem('hp-lang', lang); document.querySelectorAll('.lang-ja').forEach(el => el.style.display = lang === 'ja' ? 'inline' : 'none'); document.querySelectorAll('.lang-en').forEach(el => el.style.display = lang === 'en' ? 'inline' : 'none'); document.querySelectorAll('.art-lang-btn').forEach(btn => { btn.classList.toggle('active', btn.dataset.lang === lang); }); document.documentElement.lang = lang === 'ja' ? 'ja' : 'en'; }
+  function toggleTheme() { currentTheme = currentTheme === 'light' ? 'dark' : 'light'; localStorage.setItem('hp-theme', currentTheme); document.body.classList.toggle('dark', currentTheme === 'dark'); document.getElementById('theme-btn').textContent = currentTheme === 'light' ? '☀' : '☾'; }
+  document.addEventListener('DOMContentLoaded', () => { setLang(currentLang); if (currentTheme === 'dark') { document.body.classList.add('dark'); document.getElementById('theme-btn').textContent = '☾'; } });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1530 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="自己認識（Self-Awareness）はリーダーシップの出発点であり、キャリアの分岐点を左右する最も過小評価されたスキルである。Eurich、Goleman、Bill Georgeの研究から、Finance Professionalが認識のギャップを埋める方法を探る。">
+  <title>本当の自分を知ることが、なぜキャリアを変えるのか | Finance Professional x Career | donato</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+JP:wght@300;400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../brand.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:           #F8F7F4;
+      --bg-code:      #EEECEA;
+      --bg-quote:     #EEECEA;
+      --bg-highlight: #EBF3FB;
+      --bg-subtle:    #F0EFEB;
+      --bg-card:      #F0EFEB;
+      --bg-header:    #F8F7F4;
+      --text-primary: #111320;
+      --text-body:    #2A2C3E;
+      --text-muted:   #565C70;
+      --text-light:   #888EA0;
+      --accent:       #1A6EB0;
+      --accent-warm:  #D4A010;
+      --border:       #D4D2CC;
+      --border-quote: #B8B6B0;
+      --border-light: #D4D2CC;
+      --tag-bg:       #E4EFF8;
+      --tag-text:     #1A6EB0;
+      --table-stripe: #F0EFEB;
+    }
+
+    /* ===== PROGRESS BAR ===== */
+    #progress-bar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      width: 0%;
+      background: var(--accent);
+      z-index: 300;
+      transition: width 0.1s linear;
+    }
+
+    body {
+      font-family: 'Noto Serif JP', Georgia, serif;
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--text-primary);
+      background: var(--bg);
+    }
+
+    /* ===== SITE HEADER ===== */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg-header);
+      border-bottom: 2px solid var(--accent);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .site-header-left { display: flex; align-items: center; gap: 12px; }
+    .wordmark {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: lowercase;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+    .wordmark span { color: var(--accent-warm); }
+    .header-sep { color: var(--border-quote); font-size: 13px; }
+    .header-media {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+    }
+    .site-header-right { display: flex; align-items: center; gap: 12px; }
+    .header-back-link {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .header-back-link:hover { color: var(--accent); }
+    .lang-toggle-bar {
+      display: flex;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .art-lang-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      padding: 3px 10px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .art-lang-btn.active { background: #F5C800; color: #111320; }
+    #theme-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      padding: 3px 9px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.15s;
+    }
+    #theme-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .header-date {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-light);
+      letter-spacing: 0.08em;
+    }
+
+    /* ===== STICKY INFO BAR ===== */
+    #sticky-bar {
+      position: sticky;
+      top: 44px;
+      z-index: 200;
+      background: var(--bg-subtle);
+      border-bottom: 1px solid var(--border-light);
+      padding: 7px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .sbar-cat {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+    }
+    .sbar-sep { color: var(--border-quote); font-size: 11px; }
+    .sbar-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+    .sbar-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      padding: 2px 8px;
+    }
+
+    /* ===== LAYOUT ===== */
+    .article-container { max-width: 1240px; margin: 0 auto; padding: 0 20px; }
+    .article-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 24px;
+    }
+    .article-body { grid-column: 2 / 10; max-width: 68ch; }
+    .article-sidebar {
+      grid-column: 10 / 13;
+      position: sticky;
+      top: 78px;
+      align-self: start;
+      max-height: calc(100vh - 90px);
+      overflow-y: auto;
+    }
+    .article-sidebar::-webkit-scrollbar { width: 4px; }
+    .article-sidebar::-webkit-scrollbar-track { background: transparent; }
+    .article-sidebar::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 2px; }
+
+    /* ===== TYPOGRAPHY ===== */
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+    }
+    .article-headline {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(2rem, 4vw, 2.6rem);
+      font-weight: 600;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+    .article-standfirst {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      font-weight: 400;
+    }
+    .byline {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    h2 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.45rem;
+      font-weight: 600;
+      line-height: 1.25;
+      color: var(--text-primary);
+      margin: 2em 0 0.75em;
+      border-top: 1px solid var(--border);
+      padding-top: 1em;
+    }
+    h3 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin: 1.75em 0 0.5em;
+    }
+    .article-body p { margin-bottom: 1.4em; font-size: 0.97rem; line-height: 1.8; }
+    .article-body ul, .article-body ol { margin: 0 0 1.4em 1.4em; }
+    .article-body li { margin-bottom: 0.4em; font-size: 0.95rem; line-height: 1.7; }
+    strong { color: var(--text-primary); font-weight: 600; }
+
+    /* ===== EXEC SUMMARY ===== */
+    .exec-summary {
+      background: var(--bg-highlight);
+      border: 1px solid var(--border-light);
+      border-left: 4px solid var(--accent);
+      padding: 24px;
+      margin: 0 0 2.5em;
+    }
+    .exec-block { margin-bottom: 20px; }
+    .exec-block:last-child { margin-bottom: 0; }
+    .exec-block + .exec-block { padding-top: 18px; border-top: 1px solid var(--border-light); }
+    .exec-tldr {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.02rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      line-height: 1.55;
+      margin-top: 8px;
+    }
+    .issues-list, .implications-list {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .issue-item { display: flex; gap: 10px; align-items: baseline; }
+    .issue-q {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--accent);
+      flex-shrink: 0;
+      min-width: 20px;
+    }
+    .issue-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: var(--text-body);
+      line-height: 1.55;
+    }
+    .implication-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: var(--text-body);
+      line-height: 1.55;
+      padding-left: 14px;
+      border-left: 2px solid var(--accent);
+    }
+    .read-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
+    .read-col-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.66rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 6px;
+    }
+    .read-label-yes { color: var(--accent); }
+    .read-label-no { color: var(--text-muted); }
+    .read-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-body);
+      line-height: 1.45;
+      padding-left: 10px;
+      border-left: 2px solid var(--accent);
+      margin-bottom: 5px;
+    }
+    .skip-item {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+      padding-left: 10px;
+      border-left: 2px solid var(--border-light);
+      margin-bottom: 5px;
+    }
+
+    /* ===== FORMULA / CALC ===== */
+    .formula {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.93em;
+      background: var(--bg-code);
+      border-left: 3px solid var(--accent);
+      padding: 14px 20px;
+      margin: 20px 0;
+      color: var(--text-primary);
+      overflow-x: auto;
+      line-height: 1.7;
+    }
+    .calc-block {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      padding: 20px 24px;
+      margin: 24px 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+      line-height: 1.8;
+    }
+    .calc-block .calc-row { display: flex; justify-content: space-between; max-width: 480px; }
+    .calc-block .calc-total {
+      border-top: 1px solid var(--border);
+      margin-top: 6px;
+      padding-top: 6px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .calc-block .calc-highlight { color: var(--accent); font-weight: 700; }
+    .calc-block .calc-warn { color: var(--accent-warm); font-weight: 700; }
+
+    /* ===== INSIGHT / TRAP BOX ===== */
+    .insight-box {
+      background: var(--bg-highlight);
+      border-left: 4px solid var(--accent);
+      padding: 18px 22px;
+      margin: 28px 0;
+    }
+    .insight-box p {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: var(--text-primary);
+    }
+    .insight-box strong { color: var(--accent); }
+    .trap-box {
+      background: #FEF9EC;
+      border-left: 4px solid var(--accent-warm);
+      padding: 18px 22px;
+      margin: 24px 0;
+    }
+    .trap-box p {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      line-height: 1.65;
+      color: var(--text-body);
+    }
+    .trap-box .trap-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      color: var(--accent-warm);
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+
+    /* ===== DATA TABLE ===== */
+    .data-table-wrap { overflow-x: auto; margin: 1.5em 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      background: var(--bg-subtle);
+      padding: 8px 12px;
+      text-align: left;
+      border-bottom: 2px solid var(--border);
+    }
+    td {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border-light);
+      color: var(--text-body);
+      font-family: 'Inter', sans-serif;
+    }
+    tr:nth-child(even) td { background: var(--table-stripe); }
+    .td-accent { color: var(--accent); font-weight: 600; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
+    .td-warn   { color: var(--accent-warm); font-weight: 600; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
+
+    /* ===== PULL QUOTE ===== */
+    .pull-quote {
+      border-left: 4px solid var(--accent);
+      margin: 2em 0;
+      padding: 1em 20px;
+      background: var(--bg-card);
+    }
+    .pull-quote p {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.2rem;
+      font-style: italic;
+      color: var(--text-primary);
+      line-height: 1.5;
+      margin-bottom: 6px !important;
+    }
+    .pull-quote footer {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* ===== NUMBERED LIST ===== */
+    .numbered-list { list-style: none; padding: 0; margin: 20px 0; }
+    .numbered-list li {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 16px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.92rem;
+      line-height: 1.65;
+      color: var(--text-body);
+    }
+    .numbered-list li .num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: white;
+      background: var(--accent);
+      min-width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    /* ===== DROP CAP ===== */
+    .drop-cap::first-letter {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 3.4em;
+      float: left;
+      line-height: 0.8;
+      margin: 0.05em 0.1em 0 0;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* ===== SECTION SEP ===== */
+    .section-sep {
+      text-align: center;
+      color: var(--text-light);
+      font-size: 1.2rem;
+      letter-spacing: 0.5em;
+      margin: 48px 0;
+      user-select: none;
+    }
+
+    /* ===== SOURCE LIST ===== */
+    .source-list { list-style: none; padding: 0; }
+    .source-list li { margin-bottom: 6px; }
+    .source-list a {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      color: var(--accent);
+      text-decoration: none;
+      line-height: 1.5;
+    }
+    .source-list a:hover { text-decoration: underline; }
+    .source-tag { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--text-muted); margin-left: 4px; }
+
+    /* ===== NEXT ARTICLE CTA ===== */
+    .next-article {
+      background: var(--text-primary);
+      color: #E4E2DC;
+      padding: 28px 32px;
+      margin-top: 56px;
+    }
+    .next-article .next-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      color: var(--accent-warm);
+      margin-bottom: 8px;
+    }
+    .next-article .next-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+    .next-article .next-desc {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.82rem;
+      color: #9299A8;
+      margin-top: 8px;
+    }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .keyfacts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+    .fact-card { background: var(--bg-highlight); padding: 10px 8px; }
+    .fact-card.highlight { background: #FDF8EC; border: 1px solid #E8D88A; }
+    .fact-value { font-family: 'JetBrains Mono', monospace; font-size: 1rem; font-weight: 500; color: var(--accent); line-height: 1.2; }
+    .fact-card.highlight .fact-value { color: #8A6A00; }
+    .fact-desc { font-family: 'Inter', sans-serif; font-size: 0.64rem; color: var(--text-muted); margin-top: 3px; line-height: 1.35; }
+    .fact-card.highlight .fact-desc { color: #7A6020; }
+    .highlights-list { list-style: none; padding: 0; margin-top: 12px; }
+    .highlight-item { padding: 9px 0; border-bottom: 1px solid var(--border-light); display: flex; gap: 10px; align-items: baseline; }
+    .highlight-item:last-child { border-bottom: none; }
+    .hl-num { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--accent); flex-shrink: 0; min-width: 18px; }
+    .hl-text { font-family: 'Inter', sans-serif; font-size: 0.76rem; color: var(--text-body); line-height: 1.45; }
+
+    /* ===== LANG TOGGLE ===== */
+    .lang-en { display: none; }
+
+    /* ===== FOOTER ===== */
+    .site-footer {
+      border-top: 1px solid var(--border-light);
+      margin-top: 4em;
+      padding: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* ===== PRINT ===== */
+    @media print {
+      body { background: white; font-size: 11pt; }
+      .site-header, #sticky-bar, #progress-bar { display: none; }
+      .article-sidebar { position: static; max-height: none; overflow: visible; }
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+    @page { size: A4; margin: 20mm 15mm; }
+
+    /* ===== RESPONSIVE: IMAGES / SVG ===== */
+    img, figure, svg { max-width: 100%; height: auto; }
+
+    /* ===== MOBILE ===== */
+    @media (max-width: 900px) {
+      .article-body { grid-column: 1 / -1; }
+      .article-sidebar { position: static; max-height: none; overflow: visible; grid-column: 1 / -1; }
+      .article-grid { display: block; }
+      .read-grid { grid-template-columns: 1fr; }
+      #sticky-bar { flex-wrap: wrap; gap: 6px; }
+    }
+    @media (max-width: 768px) {
+      .article-grid { display: block; }
+      .article-sidebar { display: none; }
+      #sticky-bar { font-size: 0.75rem; padding: 6px 12px; }
+      h1 { font-size: clamp(1.6rem, 5vw, 2.2rem); }
+    }
+    @media (max-width: 480px) {
+      body { font-size: 15px; }
+      .article-body { padding: 0 12px; }
+      .exec-summary { padding: 16px; }
+      .fact-card { min-width: unset; width: 100%; }
+    }
+
+    body.dark {
+      --bg:           #0D1117;
+      --bg-code:      #161B22;
+      --bg-quote:     #161B22;
+      --bg-highlight: #0E1A2B;
+      --bg-subtle:    #161B22;
+      --bg-card:      #161B22;
+      --bg-header:    #0D1117;
+      --text-primary: #E4E2DC;
+      --text-body:    #C4C2BC;
+      --text-muted:   #8B93A8;
+      --text-light:   #575E70;
+      --accent:       #3A8FD0;
+      --accent-warm:  #F5C800;
+      --border:       #21253A;
+      --border-quote: #2A2D3E;
+      --border-light: #21253A;
+      --tag-bg:       #0E1A2B;
+      --tag-text:     #3A8FD0;
+      --table-stripe: #161B22;
+    }
+    body.dark .trap-box { background: #1C1800; }
+    body.dark .fact-card.highlight { background: #1A1600; border-color: #3A2D00; }
+    body.dark .fact-card.highlight .fact-value { color: #C4900E; }
+    body.dark .fact-card.highlight .fact-desc { color: #A07828; }
+    body.dark .next-article { background: #111320; }
+
+    /* ===== DIAGRAM COMMON ===== */
+    .diagram-figure {
+      margin: 2em 0;
+      padding: 0;
+    }
+    .diagram-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+    .diagram-source {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--text-light);
+      margin-top: 8px;
+    }
+
+    /* ===== 2x2 MATRIX ===== */
+    .matrix-2x2 {
+      display: grid;
+      grid-template-columns: 32px 1fr 1fr;
+      grid-template-rows: 32px 1fr 1fr;
+      gap: 0;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+    .matrix-corner {
+      background: transparent;
+    }
+    .matrix-col-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid var(--border);
+    }
+    .matrix-row-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      transform: rotate(180deg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-right: 1px solid var(--border);
+    }
+    .matrix-cell {
+      padding: 16px 14px;
+      border: 1px solid var(--border-light);
+    }
+    .matrix-cell-title {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+    .matrix-cell-desc {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+    .matrix-cell.highlight-cell {
+      background: var(--bg-highlight);
+      border-color: var(--accent);
+    }
+    .matrix-cell.highlight-cell .matrix-cell-title {
+      color: var(--accent);
+    }
+    .matrix-cell.warn-cell {
+      background: #FEF9EC;
+    }
+    body.dark .matrix-cell.warn-cell {
+      background: #1C1800;
+    }
+
+    /* ===== MATRIX AXIS LABELS ===== */
+    .matrix-axis-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--text-light);
+      text-align: center;
+      margin-top: 6px;
+    }
+    .matrix-y-axis-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--text-light);
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      transform: rotate(180deg);
+      position: absolute;
+      left: -18px;
+      top: 50%;
+      translate: 0 -50%;
+    }
+    .matrix-wrapper {
+      position: relative;
+      padding-left: 22px;
+    }
+
+    /* ===== JOHARI WINDOW ===== */
+    .johari-grid {
+      display: grid;
+      grid-template-columns: 36px 1fr 1fr;
+      grid-template-rows: 36px 1fr 1fr;
+      gap: 0;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+    .johari-col-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 2px solid var(--border);
+      padding: 0 4px;
+    }
+    .johari-row-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      transform: rotate(180deg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-right: 2px solid var(--border);
+      padding: 4px 0;
+    }
+    .johari-cell {
+      padding: 14px 12px;
+      border: 1px solid var(--border-light);
+      text-align: center;
+    }
+    .johari-cell-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--text-light);
+      margin-bottom: 4px;
+    }
+    .johari-cell-title {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    .johari-cell-desc {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+    .johari-cell.johari-open {
+      background: var(--bg-highlight);
+      border-color: var(--accent);
+    }
+    .johari-cell.johari-open .johari-cell-title {
+      color: var(--accent);
+    }
+    .johari-cell.johari-blind {
+      background: #FEF9EC;
+    }
+    body.dark .johari-cell.johari-blind { background: #1C1800; }
+    .johari-cell.johari-hidden {
+      background: var(--bg-subtle);
+    }
+    .johari-cell.johari-unknown {
+      background: var(--bg-card);
+    }
+
+    /* ===== FLOWCHART ===== */
+    .flowchart-svg { margin: 1em 0; }
+    body.dark .flowchart-svg rect[fill="#EBF3FB"] { fill: #0D1520; opacity: 0.8; }
+    body.dark .flowchart-svg rect[fill="#FFFFFF"] { fill: #12141C; stroke: #2E88CA; }
+    body.dark .flowchart-svg text[fill="#111320"] { fill: #E4E2DC; }
+    body.dark .flowchart-svg text[fill="#565C70"] { fill: #8B93A8; }
+    body.dark .flowchart-svg text[fill="#888EA0"] { fill: #575E70; }
+    body.dark .flowchart-svg line[stroke="#1A6EB0"] { stroke: #2E88CA; }
+    body.dark .flowchart-svg polygon[fill="#1A6EB0"] { fill: #2E88CA; }
+    body.dark .flowchart-svg rect[fill="#1A6EB0"] { fill: #2E88CA; }
+
+    @media (max-width: 600px) {
+      .matrix-2x2, .johari-grid { max-width: 100%; }
+      .matrix-cell, .johari-cell { padding: 10px 8px; }
+      .matrix-cell-title, .johari-cell-title { font-size: 0.76rem; }
+      .matrix-cell-desc, .johari-cell-desc { font-size: 0.7rem; }
+    }
+    @media print {
+      .matrix-cell, .johari-cell, .flowchart-svg, .bas-panel, .bas-divider {
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<!-- 1. Site Header -->
+<header class="site-header">
+  <div class="site-header-left">
+    <a class="wordmark" href="../index.html">dona<span>to</span></a>
+    <span class="header-sep">&mdash;</span>
+    <a class="header-back-link" href="./index.html"><span class="lang-ja">記事一覧</span><span class="lang-en">Articles</span></a>
+    <span class="header-sep">&mdash;</span>
+    <span class="header-media">Finance Professional x Career</span>
+  </div>
+  <div class="site-header-right">
+    <div class="lang-toggle-bar">
+      <button class="art-lang-btn active" data-lang="ja" onclick="setLang('ja')">JP</button>
+      <button class="art-lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+    </div>
+    <button id="theme-btn" onclick="toggleTheme()" title="Dark/Light toggle">☀</button>
+    <time class="header-date">2026-05-04</time>
+  </div>
+</header>
+
+<!-- 2. Sticky Info Bar -->
+<div id="sticky-bar">
+  <span class="sbar-cat">Finance Professional x Career</span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-text"><span class="lang-ja">自己認識とリーダーシップの科学</span><span class="lang-en">The Science of Self-Awareness and Leadership</span></span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-text">2026-05-04</span>
+  <span class="sbar-sep">|</span>
+  <span class="sbar-badge" id="reading-time-badge"><span class="lang-ja">計算中</span><span class="lang-en">...</span></span>
+</div>
+
+<main style="padding: 0 0 3em;">
+  <div class="article-container">
+    <div class="article-grid">
+
+      <!-- 3. Article Body -->
+      <article class="article-body">
+
+        <!-- Article Header -->
+        <div style="padding: 36px 0 24px;">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+            <div class="section-label">Career</div>
+            <span class="sbar-badge" id="reading-time-badge2"><span class="lang-ja">計算中</span><span class="lang-en">...</span></span>
+          </div>
+          <h1 class="article-headline">
+            <span class="lang-ja">本当の自分を知ることが、なぜキャリアを変えるのか &mdash; 自己認識とリーダーシップの科学</span>
+            <span class="lang-en">Why Knowing Your True Self Changes Your Career &mdash; The Science of Self-Awareness and Leadership</span>
+          </h1>
+          <p class="article-standfirst">
+            <span class="lang-ja">自己認識（Self-Awareness）はリーダーシップの「出発点」であり、キャリアの分岐点を左右する最も過小評価されたスキルである。研究によると95%の人が自分を正しく理解していると思い込んでいるが、実際にその基準を満たすのは10&ndash;15%に過ぎない。この「認識のギャップ」を埋める方法を探る。</span>
+            <span class="lang-en">Self-awareness is the "starting point" of leadership and the most underrated skill that determines career turning points. Research shows that 95% of people believe they understand themselves correctly, yet only 10&ndash;15% actually meet that standard. We explore how to bridge this "perception gap".</span>
+          </p>
+          <div style="display:flex; gap:16px; align-items:center; border-top:1px solid var(--border-light); border-bottom:1px solid var(--border-light); padding:10px 0;">
+            <span class="byline">By <strong>Donato Career Notes</strong></span>
+            <span style="color:var(--border);">|</span>
+            <time class="byline" datetime="2026-05-04"><span class="lang-ja">2026年5月4日</span><span class="lang-en">4 May 2026</span></time>
+            <span style="color:var(--border);">|</span>
+            <span class="byline"><span class="lang-ja">Self-Awareness &middot; Leadership &middot; Career &middot; EI</span><span class="lang-en">Self-Awareness &middot; Leadership &middot; Career &middot; EI</span></span>
+          </div>
+        </div>
+
+        <!-- Exec Summary -->
+        <section class="exec-summary">
+          <!-- Block 1: Summary -->
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">概要</span><span class="lang-en">Summary</span></div>
+            <p class="exec-tldr">
+              <span class="lang-ja">自己認識（Self-Awareness）はリーダーシップの「出発点」であり、キャリアの分岐点を左右する最も過小評価されたスキルである。しかし研究によると、自分を正しく理解していると思っている人の95%は実際には自己認識が低い。Finance Professionalがこの「認識のギャップ」を埋めることで、意思決定の質、チームマネジメント、そしてキャリアの方向性が根本から変わる可能性がある。</span>
+              <span class="lang-en">Self-awareness is the "starting point" of leadership and the most underrated skill governing career turning points. Yet research reveals that 95% of those who believe they understand themselves accurately are, in fact, low in self-awareness. By bridging this "perception gap", finance professionals can fundamentally transform the quality of their decision-making, team management, and career trajectory.</span>
+            </p>
+            <div class="read-grid">
+              <div>
+                <div class="read-col-label read-label-yes"><span class="lang-ja">読むべき人</span><span class="lang-en">Who should read</span></div>
+                <div class="read-item"><span class="lang-ja">マネジメント職への移行期にいる、またはリーダーとしての壁を感じているFinance Professional</span><span class="lang-en">Finance professionals transitioning into management roles or experiencing a leadership plateau</span></div>
+              </div>
+              <div>
+                <div class="read-col-label read-label-no"><span class="lang-ja">スキップしてよい人</span><span class="lang-en">Who can skip</span></div>
+                <div class="skip-item"><span class="lang-ja">自己認識の理論を既に深く学び、360度フィードバック等の実践を継続している人</span><span class="lang-en">Those who have already studied self-awareness theory in depth and consistently practise 360-degree feedback</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Block 2: Key Questions -->
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">本稿の論点</span><span class="lang-en">Key Questions</span></div>
+            <ul class="issues-list">
+              <li class="issue-item">
+                <span class="issue-q">Q1</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>自己認識とは具体的に何を指すのか</strong> &mdash; Tasha Eurichの研究に基づく「内面的自己認識」と「外面的自己認識」の2軸フレームワーク。両方を持って初めてリーダーとして機能する</span>
+                  <span class="lang-en"><strong>What does self-awareness actually mean?</strong> &mdash; A two-axis framework based on Tasha Eurich's research: "internal self-awareness" and "external self-awareness". Leaders function effectively only when both are present</span>
+                </span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">Q2</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>自己認識はリーダーシップとキャリアにどう影響するのか</strong> &mdash; Goleman、Bill George、Korn Ferryの研究が一致して示す「自己認識の高いリーダーは業績・昇進・チームエンゲージメントで優位」というエビデンス</span>
+                  <span class="lang-en"><strong>How does self-awareness affect leadership and career?</strong> &mdash; Converging evidence from Goleman, Bill George, and Korn Ferry showing that highly self-aware leaders outperform on results, promotions, and team engagement</span>
+                </span>
+              </li>
+              <li class="issue-item">
+                <span class="issue-q">Q3</span>
+                <span class="issue-text">
+                  <span class="lang-ja"><strong>自己認識をどう高めるか</strong> &mdash; 「内省の罠」を避け、360度フィードバック、Johariの窓、「Why」ではなく「What」を問う技法で具体的に鍛える方法</span>
+                  <span class="lang-en"><strong>How can self-awareness be developed?</strong> &mdash; Practical techniques to avoid the "introspection trap": 360-degree feedback, the Johari Window, and asking "What" instead of "Why"</span>
+                </span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Block 3: Implications for Practitioners -->
+          <div class="exec-block">
+            <div class="section-label"><span class="lang-ja">実務家への含意</span><span class="lang-en">Implications for Practitioners</span></div>
+            <ul class="implications-list">
+              <li class="implication-item">
+                <span class="lang-ja"><strong>「自分は自己認識が高い」という思い込みこそが最大の障壁。</strong>まず疑うことから始めるべき</span>
+                <span class="lang-en"><strong>The belief "I am highly self-aware" is itself the greatest barrier.</strong> Start by questioning that assumption</span>
+              </li>
+              <li class="implication-item">
+                <span class="lang-ja"><strong>内面的自己認識と外面的自己認識を別々に評価すべき。</strong>価値観・感情パターンの理解と、他者からの見え方の理解は独立した能力である</span>
+                <span class="lang-en"><strong>Evaluate internal and external self-awareness separately.</strong> Understanding your values and emotional patterns is a distinct capability from understanding how others perceive you</span>
+              </li>
+              <li class="implication-item">
+                <span class="lang-ja"><strong>AI時代に人間のリーダーに求められる差別化要因は、技術スキルではなく自己認識に基づく判断力と信頼構築力</strong></span>
+                <span class="lang-en"><strong>In the AI era, the differentiator for human leaders is not technical skill but judgement and trust-building grounded in self-awareness</strong></span>
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- ===== SECTION 1 ===== -->
+        <h2><span class="lang-ja">1. 「95%の錯覚」 &mdash; なぜ自分を知ることは難しいのか</span><span class="lang-en">1. The "95% Illusion" &mdash; Why Knowing Yourself Is So Difficult</span></h2>
+
+        <h3><span class="lang-ja">自己認識の定義：2つの軸</span><span class="lang-en">Defining Self-Awareness: Two Axes</span></h3>
+
+        <p class="drop-cap">
+          <span class="lang-ja">自分のことは自分が一番よく分かっている &mdash; そう信じている人は95%にのぼる。だが組織心理学者Tasha Eurichが5,000人以上を対象に実施した大規模調査は、その確信を根底から揺さぶる。実際に自己認識の基準を満たしていたのはわずか10&ndash;15%。Eurichはこの調査を通じて、自己認識を2つの独立した次元に分類した。この分類こそが、自己認識を実践可能なフレームワークに変えた転換点である。</span>
+          <span class="lang-en">You probably believe you know yourself well &mdash; 95% of people do. Yet organisational psychologist Tasha Eurich's large-scale study of more than 5,000 participants shatters that confidence: only 10&ndash;15% actually meet the standard for genuine self-awareness. Through this research, Eurich classified self-awareness into two independent dimensions &mdash; a turning point that transformed the concept into a practicable framework.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja"><strong>内面的自己認識（Internal Self-Awareness）</strong>とは、自分の価値観、情熱、反応パターン、強み、弱みをどれだけ明確に理解しているかを指す。<strong>外面的自己認識（External Self-Awareness）</strong>とは、他者が自分をどう見ているかをどれだけ正確に理解しているかを指す。</span>
+          <span class="lang-en"><strong>Internal self-awareness</strong> refers to how clearly you understand your own values, passions, reaction patterns, strengths, and weaknesses. <strong>External self-awareness</strong> refers to how accurately you understand how others perceive you.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">重要なのは、この2つは独立しているという点だ。内面的自己認識が高くても外面的自己認識が低い人は「自己陶酔型」になりやすく、逆に外面的自己認識だけが高い人は「迎合型」に陥る。リーダーとしてのオーセンティシティ（本物らしさ）は、両方を備えて初めて成立する。</span>
+          <span class="lang-en">Crucially, these two dimensions are independent. A person with high internal but low external self-awareness tends towards narcissism, whilst someone with only high external self-awareness risks becoming a people-pleaser. Authenticity as a leader requires both.</span>
+        </p>
+
+        <!-- Diagram: Eurich 2x2 Self-Awareness Matrix -->
+        <figure class="diagram-figure" role="figure">
+          <figcaption class="diagram-title">
+            <span class="lang-ja">Eurichの自己認識 2x2 マトリクス</span>
+            <span class="lang-en">Eurich's Self-Awareness 2x2 Matrix</span>
+          </figcaption>
+          <div class="matrix-wrapper">
+            <div class="matrix-2x2">
+              <div class="matrix-corner"></div>
+              <div class="matrix-col-label">
+                <span class="lang-ja">内面的: 高</span>
+                <span class="lang-en">Internal: High</span>
+              </div>
+              <div class="matrix-col-label">
+                <span class="lang-ja">内面的: 低</span>
+                <span class="lang-en">Internal: Low</span>
+              </div>
+              <div class="matrix-row-label">
+                <span class="lang-ja">外面的: 高</span>
+                <span class="lang-en">External: High</span>
+              </div>
+              <div class="matrix-cell highlight-cell">
+                <div class="matrix-cell-title">
+                  <span class="lang-ja">Aware (自己認識型)</span>
+                  <span class="lang-en">Aware</span>
+                </div>
+                <div class="matrix-cell-desc">
+                  <span class="lang-ja">自分を知り、他者からの見え方も正確に理解。オーセンティック・リーダーの条件</span>
+                  <span class="lang-en">Knows self and accurately understands how others perceive them. The prerequisite for authentic leadership</span>
+                </div>
+              </div>
+              <div class="matrix-cell">
+                <div class="matrix-cell-title">
+                  <span class="lang-ja">Seeker (探求型)</span>
+                  <span class="lang-en">Seeker</span>
+                </div>
+                <div class="matrix-cell-desc">
+                  <span class="lang-ja">他者の視点は分かるが、自分の価値観・パターンが不明確。方向性が定まりにくい</span>
+                  <span class="lang-en">Understands others' views but lacks clarity on own values and patterns. Struggles to set direction</span>
+                </div>
+              </div>
+              <div class="matrix-row-label">
+                <span class="lang-ja">外面的: 低</span>
+                <span class="lang-en">External: Low</span>
+              </div>
+              <div class="matrix-cell warn-cell">
+                <div class="matrix-cell-title">
+                  <span class="lang-ja">Introspector (内省型)</span>
+                  <span class="lang-en">Introspector</span>
+                </div>
+                <div class="matrix-cell-desc">
+                  <span class="lang-ja">自己理解は深いが、他者への影響を把握していない。「自己陶酔型」リスク</span>
+                  <span class="lang-en">Deep self-understanding but unaware of impact on others. Risk of narcissistic tendencies</span>
+                </div>
+              </div>
+              <div class="matrix-cell">
+                <div class="matrix-cell-title">
+                  <span class="lang-ja">Unaware (無自覚型)</span>
+                  <span class="lang-en">Unaware</span>
+                </div>
+                <div class="matrix-cell-desc">
+                  <span class="lang-ja">自分も他者からの見え方も理解していない。最もリスクの高い象限</span>
+                  <span class="lang-en">Neither self-aware nor aware of how others see them. The highest-risk quadrant</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="diagram-source">
+            <span class="lang-ja">出典: Eurich, "Insight" (2017) / HBR (2018) に基づく著者の整理</span>
+            <span class="lang-en">Source: Author's synthesis based on Eurich, "Insight" (2017) / HBR (2018)</span>
+          </div>
+        </figure>
+
+        <div class="trap-box">
+          <div class="trap-label"><span class="lang-ja">95%の錯覚</span><span class="lang-en">The 95% Illusion</span></div>
+          <p>
+            <span class="lang-ja">Eurichの研究で最も衝撃的な発見は、<strong>95%の人が自分は自己認識が高いと信じている</strong>にもかかわらず、<strong>実際にその基準を満たしているのは10&ndash;15%に過ぎない</strong>という事実だ。この「認識のギャップ」は、キャリアにおいて深刻な影響を及ぼす。自分の強みを過大評価すれば間違ったポジションに進み、弱みに気づかなければ同じ失敗を繰り返す。</span>
+            <span class="lang-en">Eurich's most striking finding: <strong>95% of people believe they are highly self-aware</strong>, yet <strong>only 10&ndash;15% actually meet that standard</strong>. This "perception gap" has serious career consequences. Overestimating your strengths leads you to the wrong role; remaining blind to your weaknesses means repeating the same mistakes.</span>
+          </p>
+        </div>
+
+        <div class="section-sep">&middot; &middot; &middot;</div>
+
+        <!-- ===== SECTION 2 ===== -->
+        <h2><span class="lang-ja">2. 自己認識がリーダーシップを変える &mdash; エビデンスの全体像</span><span class="lang-en">2. How Self-Awareness Transforms Leadership &mdash; The Evidence Landscape</span></h2>
+
+        <h3><span class="lang-ja">Goleman: EIの基盤としての自己認識</span><span class="lang-en">Goleman: Self-Awareness as the Foundation of EI</span></h3>
+
+        <p>
+          <span class="lang-ja">Daniel Golemanは、Harvard Business Reviewの論文「Leadership That Gets Results」で、感情的知性（EI）を4つの領域に整理した：自己認識、自己管理、社会的認識、関係管理。そのなかで自己認識を「感情的知性の心臓部」と位置づけた。</span>
+          <span class="lang-en">Daniel Goleman, in his Harvard Business Review article "Leadership That Gets Results", organised emotional intelligence (EI) into four domains: self-awareness, self-management, social awareness, and relationship management. He positioned self-awareness as "the heart of emotional intelligence".</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">Golemanの研究チームがRichard Boyatzisとともに数十の組織の内部コンピテンシーモデルを分析した結果、「最も効果的なリーダーは全員、高い感情的知性を共有していた」という結論に至った。そして自己認識はその出発点である。</span>
+          <span class="lang-en">Goleman's research team, working alongside Richard Boyatzis, analysed internal competency models across dozens of organisations and concluded that "the most effective leaders all share high emotional intelligence". Self-awareness is the starting point.</span>
+        </p>
+
+        <div class="pull-quote">
+          <p><span class="lang-ja">自己認識は感情的知性の心臓部であり、リーダーシップの出発点である。自分を知らなければ、他者を導くことはできない</span><span class="lang-en">Self-awareness is the heart of emotional intelligence and the starting point of leadership. Without knowing yourself, you cannot lead others</span></p>
+          <footer><span class="lang-ja">Goleman / Boyatzis の研究知見に基づく著者の要約</span><span class="lang-en">Author's synthesis based on Goleman / Boyatzis research</span></footer>
+        </div>
+
+        <h3><span class="lang-ja">Bill George: オーセンティック・リーダーシップと「True North」</span><span class="lang-en">Bill George: Authentic Leadership and "True North"</span></h3>
+
+        <p>
+          <span class="lang-ja">Harvard Business Schoolの教授であり、Medtronicの元会長兼CEOであるBill Georgeは、リーダーシップ開発研究として史上最大規模級の調査を実施し、「オーセンティック・リーダーシップ」の概念を提唱した。Georgeの主張の核心は、リーダーシップの出発点は「自己認識」であり、自分の価値観、動機、人生のストーリーを深く理解したリーダーだけが、本物の影響力を持てるというものだ。</span>
+          <span class="lang-en">Bill George, a Harvard Business School professor and former chairman and CEO of Medtronic, conducted one of the largest leadership development studies in history and proposed the concept of "Authentic Leadership". At its core, George argues that leadership begins with self-awareness: only leaders who deeply understand their own values, motivations, and life stories can wield genuine influence.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">彼は「否認（denial）がリーダーの自己認識を妨げる最大のハードル」であると指摘し、持続的で勇気ある自己探求の重要性を説いた。HBSのAuthentic Leader Developmentプログラムは毎年定員を超える応募があり、自己認識と感情的知性の開発に焦点を当てている。</span>
+          <span class="lang-en">He identified "denial as the greatest hurdle preventing leaders from self-awareness" and emphasised the importance of sustained, courageous self-exploration. The HBS Authentic Leader Development programme, which focuses on developing self-awareness and emotional intelligence, is oversubscribed every year.</span>
+        </p>
+
+        <h3><span class="lang-ja">Korn Ferry: 自己認識と財務業績の相関</span><span class="lang-en">Korn Ferry: The Correlation Between Self-Awareness and Financial Performance</span></h3>
+
+        <p>
+          <span class="lang-ja">Korn Ferry Instituteは、486の上場企業に所属する6,977人のプロフェッショナルの自己評価を分析し、「ブラインドスポット（自分が強みと認識しているが、同僚が弱みと認識しているスキル）」を特定した。結果、業績不振企業のプロフェッショナルは好業績企業より20%多くのブラインドスポットを持ち、全体的な自己認識が低い確率が79%高かった。</span>
+          <span class="lang-en">The Korn Ferry Institute analysed 6,977 self-assessments from professionals at 486 publicly traded companies to identify "blind spots" &mdash; skills that the professional counted among their strengths whilst coworkers cited that same skill as a weakness. The result: professionals at poorly performing companies had 20% more blind spots than those at financially strong firms, and were 79% more likely to have low overall self-awareness.</span>
+        </p>
+
+        <h3><span class="lang-ja">2026年の学術レビュー: EIとリーダーのアウトカム</span><span class="lang-en">2026 Academic Review: EI and Leader Outcomes</span></h3>
+
+        <p>
+          <span class="lang-ja">2026年に発表されたSAGE Journalsの包括的レビュー論文「Emotional Intelligence and Leader Outcomes」（Gerhardt, Bauwens &amp; van Woerkom）は、1990年から2021年に発表された101の実証研究を体系的にレビューし、リーダーのEIがリーダーシップスタイル・ウェルビーイング・パフォーマンスの3つのアウトカムカテゴリーにおいて、産業や文化を横断して正の関係を持つことを確認した。この知見はFinance領域のリーダーにも直接適用可能である。</span>
+          <span class="lang-en">A comprehensive review paper published in SAGE Journals in 2026, "Emotional Intelligence and Leader Outcomes" (Gerhardt, Bauwens &amp; van Woerkom), systematically reviewed 101 empirical studies published between 1990 and 2021 and confirmed that leader EI has a positive relationship with three outcome categories &mdash; leadership style, well-being, and performance &mdash; across industries and cultures. These findings are directly applicable to leaders in finance.</span>
+        </p>
+
+        <div class="pull-quote">
+          <p><span class="lang-ja">業績不振企業のプロフェッショナルは、好業績企業と比較して自己認識が低い確率が79%高い。自己認識のギャップは個人の問題ではなく、組織の業績に直結する構造的課題である</span><span class="lang-en">Professionals at poorly performing companies are 79% more likely to have low self-awareness than those at financially strong firms. The self-awareness gap is not a personal issue but a structural challenge directly linked to organisational performance</span></p>
+          <footer><span class="lang-ja">Korn Ferry Institute の研究に基づく</span><span class="lang-en">Based on Korn Ferry Institute research</span></footer>
+        </div>
+
+        <div class="section-sep">&middot; &middot; &middot;</div>
+
+        <!-- ===== SECTION 3 ===== -->
+        <h2><span class="lang-ja">3. Finance Professionalにとっての自己認識 &mdash; なぜ今重要なのか</span><span class="lang-en">3. Self-Awareness for Finance Professionals &mdash; Why It Matters Now</span></h2>
+
+        <h3><span class="lang-ja">AI時代に残る「人間の価値」</span><span class="lang-en">The "Human Value" That Remains in the AI Era</span></h3>
+
+        <p>
+          <span class="lang-ja">前回の記事「AI時代のリーダーシップ」で論じたとおり、AIがデータ分析・レポーティング・プロセス管理を代替する時代に、Finance Professionalに求められるのは戦略的パートナーリングの能力だ。そしてその基盤にあるのがコミュニケーション、共感、関係構築 &mdash; すべて自己認識から始まるスキルである。</span>
+          <span class="lang-en">As discussed in the previous article "Leadership in the AI Era", in an age where AI is replacing data analysis, reporting, and process management, what finance professionals need is the capacity for strategic partnering. At its foundation lie communication, empathy, and relationship-building &mdash; all skills that begin with self-awareness.</span>
+        </p>
+
+        <h3><span class="lang-ja">「内省の罠」&mdash; Whyではなく Whatを問う</span><span class="lang-en">The "Introspection Trap" &mdash; Ask "What", Not "Why"</span></h3>
+
+        <p>
+          <span class="lang-ja">Eurichの研究が示した最も実践的な発見の一つが「内省の罠（Introspection Trap）」だ。多くの人が自己認識を高めようとして「なぜ私はあの判断をしたのか？」「なぜ私はこう感じるのか？」と自問する。しかし「Why」の問いは、答えが見つからないスパイラルに陥りやすく、むしろ不安やネガティブな思考を強化する。</span>
+          <span class="lang-en">One of Eurich's most practical findings is the "Introspection Trap". Many people, seeking to heighten self-awareness, ask themselves "Why did I make that decision?" or "Why do I feel this way?" Yet "Why" questions tend to spiral into unanswerable loops, actually reinforcing anxiety and negative thinking.</span>
+        </p>
+
+        <div class="insight-box">
+          <p>
+            <span class="lang-ja"><strong>「Why」ではなく「What」を問う技法:</strong> 「私は今、何を感じているか？」「この状況で、何が私を最もフラストレーションさせているか？」「この意思決定で、何を最も重視しているか？」&mdash;「What」は観察と具体化を促し、「Why」は推測と自己批判を招く。この一語の違いが、建設的な自己認識と破壊的な反芻の分岐点になる。</span>
+            <span class="lang-en"><strong>The "What" instead of "Why" technique:</strong> "What am I feeling right now?" "What about this situation frustrates me most?" "What do I value most in this decision?" &mdash; "What" encourages observation and specificity, whilst "Why" invites speculation and self-criticism. This single-word difference is the dividing line between constructive self-awareness and destructive rumination.</span>
+          </p>
+        </div>
+
+        <h3><span class="lang-ja">Johariの窓と360度フィードバック</span><span class="lang-en">The Johari Window and 360-Degree Feedback</span></h3>
+
+        <p>
+          <span class="lang-ja">1955年にJoseph LuftとHarrington Inghamが開発した「Johariの窓」は、自己認識を4つの象限で整理するフレームワークだ：</span>
+          <span class="lang-en">The "Johari Window", developed by Joseph Luft and Harrington Ingham in 1955, is a framework that organises self-awareness into four quadrants:</span>
+        </p>
+
+        <!-- Diagram: Johari Window -->
+        <figure class="diagram-figure" role="figure">
+          <figcaption class="diagram-title">
+            <span class="lang-ja">Johariの窓 (Luft &amp; Ingham, 1955)</span>
+            <span class="lang-en">The Johari Window (Luft &amp; Ingham, 1955)</span>
+          </figcaption>
+          <div class="johari-grid">
+            <div class="matrix-corner"></div>
+            <div class="johari-col-label">
+              <span class="lang-ja">自分は知っている</span>
+              <span class="lang-en">Known to self</span>
+            </div>
+            <div class="johari-col-label">
+              <span class="lang-ja">自分は知らない</span>
+              <span class="lang-en">Unknown to self</span>
+            </div>
+            <div class="johari-row-label">
+              <span class="lang-ja">他者は知っている</span>
+              <span class="lang-en">Known to others</span>
+            </div>
+            <div class="johari-cell johari-open">
+              <div class="johari-cell-num">1</div>
+              <div class="johari-cell-title">
+                <span class="lang-ja">開放の窓</span>
+                <span class="lang-en">Open Area</span>
+              </div>
+              <div class="johari-cell-desc">
+                <span class="lang-ja">自分も他者も知っている領域</span>
+                <span class="lang-en">Known to self and known to others</span>
+              </div>
+            </div>
+            <div class="johari-cell johari-blind">
+              <div class="johari-cell-num">2</div>
+              <div class="johari-cell-title">
+                <span class="lang-ja">盲点の窓</span>
+                <span class="lang-en">Blind Spot</span>
+              </div>
+              <div class="johari-cell-desc">
+                <span class="lang-ja">他者は知っているが自分は知らない領域</span>
+                <span class="lang-en">Known to others but unknown to self</span>
+              </div>
+            </div>
+            <div class="johari-row-label">
+              <span class="lang-ja">他者は知らない</span>
+              <span class="lang-en">Unknown to others</span>
+            </div>
+            <div class="johari-cell johari-hidden">
+              <div class="johari-cell-num">3</div>
+              <div class="johari-cell-title">
+                <span class="lang-ja">秘密の窓</span>
+                <span class="lang-en">Hidden Area</span>
+              </div>
+              <div class="johari-cell-desc">
+                <span class="lang-ja">自分は知っているが他者に見せていない領域</span>
+                <span class="lang-en">Known to self but hidden from others</span>
+              </div>
+            </div>
+            <div class="johari-cell johari-unknown">
+              <div class="johari-cell-num">4</div>
+              <div class="johari-cell-title">
+                <span class="lang-ja">未知の窓</span>
+                <span class="lang-en">Unknown Area</span>
+              </div>
+              <div class="johari-cell-desc">
+                <span class="lang-ja">自分も他者も知らない領域</span>
+                <span class="lang-en">Unknown to both self and others</span>
+              </div>
+            </div>
+          </div>
+          <div class="diagram-source">
+            <span class="lang-ja">出典: Luft &amp; Ingham (1955) / CCL応用研究に基づく</span>
+            <span class="lang-en">Source: Luft &amp; Ingham (1955) / Based on CCL applied research</span>
+          </div>
+        </figure>
+
+        <p>
+          <span class="lang-ja">48,000件のLeaderView360レビューを分析した研究（Jockers &amp; Perrault）によると、リーダーは対人関係スキルや適応行動（他者理解、トレンド認識、チーム構築など）を一貫して過大評価する一方、タスク系のコンピテンシーではより正確な自己評価ができていた。つまり、Finance Professionalが最も盲点を抱えやすいのは、技術的な業務遂行能力ではなく、対人関係の領域である。</span>
+          <span class="lang-en">A study analysing 48,000 LeaderView360 reviews (Jockers &amp; Perrault) found that leaders consistently overestimate interpersonal skills and adaptive behaviours (understanding others, recognising trends, team-building), whilst self-assessments of task-based competencies were more accurate. In other words, the area where finance professionals are most likely to have blind spots is not technical execution but interpersonal relations.</span>
+        </p>
+
+        <div class="section-sep">&middot; &middot; &middot;</div>
+
+        <!-- ===== SECTION 4 ===== -->
+        <h2><span class="lang-ja">4. 自己認識を高める実践フレームワーク</span><span class="lang-en">4. A Practical Framework for Developing Self-Awareness</span></h2>
+
+        <!-- Diagram: 3-Step Framework Flowchart -->
+        <figure class="diagram-figure" role="figure">
+          <figcaption class="diagram-title">
+            <span class="lang-ja">自己認識を高める3ステップ</span>
+            <span class="lang-en">Three Steps to Develop Self-Awareness</span>
+          </figcaption>
+          <svg class="flowchart-svg" viewBox="0 0 440 370"
+               style="width:100%;max-width:440px;display:block;margin:0 auto;"
+               xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <marker id="fc-arrow" viewBox="0 0 10 7" refX="10" refY="3.5"
+                      markerWidth="10" markerHeight="7" orient="auto-start-reverse">
+                <polygon points="0 0, 10 3.5, 0 7" fill="#1A6EB0"/>
+              </marker>
+            </defs>
+
+            <!-- Background -->
+            <rect x="0" y="0" width="440" height="370" rx="8"
+                  fill="#EBF3FB" opacity="0.5"/>
+
+            <!-- Step 1 -->
+            <rect x="70" y="30" width="300" height="60" rx="8"
+                  fill="#FFFFFF" stroke="#1A6EB0" stroke-width="1.5"/>
+            <text x="220" y="52" text-anchor="middle"
+                  font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#111320">
+              <tspan class="lang-ja">Step 1: 内面的自己認識の棚卸し</tspan>
+              <tspan class="lang-en">Step 1: Internal Self-Awareness Inventory</tspan>
+            </text>
+            <text x="220" y="72" text-anchor="middle"
+                  font-family="JetBrains Mono, monospace" font-size="9" fill="#888EA0">
+              <tspan class="lang-ja">今週中 | 「What」の問いで価値観・強み・弱みを整理</tspan>
+              <tspan class="lang-en">This week | Use "What" questions for values, strengths, weaknesses</tspan>
+            </text>
+
+            <!-- Arrow 1→2 -->
+            <line x1="220" y1="90" x2="220" y2="140"
+                  stroke="#1A6EB0" stroke-width="1.5" marker-end="url(#fc-arrow)"/>
+
+            <!-- Step 2 -->
+            <rect x="70" y="140" width="300" height="60" rx="8"
+                  fill="#FFFFFF" stroke="#1A6EB0" stroke-width="1.5"/>
+            <text x="220" y="162" text-anchor="middle"
+                  font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#111320">
+              <tspan class="lang-ja">Step 2: 外面的自己認識の獲得</tspan>
+              <tspan class="lang-en">Step 2: Acquire External Self-Awareness</tspan>
+            </text>
+            <text x="220" y="182" text-anchor="middle"
+                  font-family="JetBrains Mono, monospace" font-size="9" fill="#888EA0">
+              <tspan class="lang-ja">今月中 | Loving Critics 3-5人からフィードバック</tspan>
+              <tspan class="lang-en">This month | Feedback from 3-5 Loving Critics</tspan>
+            </text>
+
+            <!-- Arrow 2→3 -->
+            <line x1="220" y1="200" x2="220" y2="250"
+                  stroke="#1A6EB0" stroke-width="1.5" marker-end="url(#fc-arrow)"/>
+
+            <!-- Step 3 (terminal) -->
+            <rect x="70" y="250" width="300" height="60" rx="30"
+                  fill="#1A6EB0" stroke="none"/>
+            <text x="220" y="272" text-anchor="middle"
+                  font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#FFFFFF">
+              <tspan class="lang-ja">Step 3: 継続的な仕組み化</tspan>
+              <tspan class="lang-en">Step 3: Systematise Continuous Practice</tspan>
+            </text>
+            <text x="220" y="292" text-anchor="middle"
+                  font-family="JetBrains Mono, monospace" font-size="9" fill="#C4D8F0">
+              <tspan class="lang-ja">今四半期中 | 日次・月次・四半期の振り返りサイクル</tspan>
+              <tspan class="lang-en">This quarter | Daily, monthly, quarterly reflection cycles</tspan>
+            </text>
+
+            <!-- Timeline labels on right -->
+            <text x="390" y="64" text-anchor="start"
+                  font-family="JetBrains Mono, monospace" font-size="9" fill="#565C70">
+              <tspan class="lang-ja">1週間</tspan>
+              <tspan class="lang-en">1 week</tspan>
+            </text>
+            <text x="390" y="174" text-anchor="start"
+                  font-family="JetBrains Mono, monospace" font-size="9" fill="#565C70">
+              <tspan class="lang-ja">1ヶ月</tspan>
+              <tspan class="lang-en">1 month</tspan>
+            </text>
+            <text x="390" y="284" text-anchor="start"
+                  font-family="JetBrains Mono, monospace" font-size="9" fill="#565C70">
+              <tspan class="lang-ja">1四半期</tspan>
+              <tspan class="lang-en">1 quarter</tspan>
+            </text>
+          </svg>
+          <div class="diagram-source">
+            <span class="lang-ja">出典: Eurichの研究に基づく著者のフレームワーク</span>
+            <span class="lang-en">Source: Author's framework based on Eurich's research</span>
+          </div>
+        </figure>
+
+        <h3><span class="lang-ja">Step 1: 内面的自己認識の棚卸し（今週中）</span><span class="lang-en">Step 1: Inventory Your Internal Self-Awareness (This Week)</span></h3>
+
+        <p>
+          <span class="lang-ja">自分の価値観・強み・弱み・感情のトリガーを「What」の問いで棚卸しする。</span>
+          <span class="lang-en">Take stock of your values, strengths, weaknesses, and emotional triggers using "What" questions.</span>
+        </p>
+
+        <ul>
+          <li><span class="lang-ja">「今の仕事で、何をしている時に最もエネルギーを感じるか？」</span><span class="lang-en">"What am I doing at work when I feel the most energy?"</span></li>
+          <li><span class="lang-ja">「何がきっかけで最もストレスを感じるか？」</span><span class="lang-en">"What triggers the most stress for me?"</span></li>
+          <li><span class="lang-ja">「キャリアの意思決定で、何を最も重視してきたか？」</span><span class="lang-en">"What have I valued most in my career decisions?"</span></li>
+          <li><span class="lang-ja">「自分のリーダーシップスタイルで、何が最もうまく機能しているか？」</span><span class="lang-en">"What about my leadership style works best?"</span></li>
+        </ul>
+
+        <h3><span class="lang-ja">Step 2: 外面的自己認識の獲得（今月中）</span><span class="lang-en">Step 2: Acquire External Self-Awareness (This Month)</span></h3>
+
+        <p>
+          <span class="lang-ja">Eurichが「Loving Critics（愛ある批判者）」と呼ぶ人物 &mdash; 自分を大切に思いつつ、正直なフィードバックをくれる信頼できる相手 &mdash; を3〜5人特定する。</span>
+          <span class="lang-en">Identify 3&ndash;5 people whom Eurich calls "Loving Critics" &mdash; trusted individuals who care about you and will provide honest feedback.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">彼らに以下を聞く：「私の最大の強みは何だと思うか？」「私が気づいていないかもしれない改善点は何か？」「チームの中で、私はどう見えているか？」正式な360度フィードバックプログラムが利用可能であれば、Johariの窓のフレームワークと組み合わせて活用する。</span>
+          <span class="lang-en">Ask them: "What do you see as my greatest strength?" "What improvement might I be unaware of?" "How do I come across within the team?" If a formal 360-degree feedback programme is available, combine it with the Johari Window framework.</span>
+        </p>
+
+        <h3><span class="lang-ja">Step 3: 継続的な自己認識の仕組み化（今四半期中）</span><span class="lang-en">Step 3: Systematise Continuous Self-Awareness (This Quarter)</span></h3>
+
+        <p>
+          <span class="lang-ja">自己認識は一度の棚卸しでは完成しない。継続的なプラクティスが必要だ。</span>
+          <span class="lang-en">Self-awareness cannot be completed in a single inventory. It demands continuous practice.</span>
+        </p>
+
+        <ul class="numbered-list">
+          <li>
+            <span class="num">1</span>
+            <span>
+              <span class="lang-ja"><strong>日次:</strong> 1日の終わりに「今日、感情的に最も反応した場面は何か？何がトリガーだったか？」を3分で振り返る</span>
+              <span class="lang-en"><strong>Daily:</strong> At the end of each day, spend 3 minutes reflecting: "What situation triggered the strongest emotional response today? What was the trigger?"</span>
+            </span>
+          </li>
+          <li>
+            <span class="num">2</span>
+            <span>
+              <span class="lang-ja"><strong>月次:</strong> Loving Criticsとの対話を定期化する</span>
+              <span class="lang-en"><strong>Monthly:</strong> Schedule regular conversations with your Loving Critics</span>
+            </span>
+          </li>
+          <li>
+            <span class="num">3</span>
+            <span>
+              <span class="lang-ja"><strong>四半期:</strong> キャリアの方向性と自分の価値観の整合性を確認する。ズレを感じたら、それは軌道修正のシグナルである</span>
+              <span class="lang-en"><strong>Quarterly:</strong> Check the alignment between your career direction and your values. If you sense a gap, that is a signal for course correction</span>
+            </span>
+          </li>
+        </ul>
+
+        <div class="section-sep">&middot; &middot; &middot;</div>
+
+        <!-- ===== SECTION 5 ===== -->
+        <h2><span class="lang-ja">5. 自己認識の先にあるもの &mdash; キャリアの「True North」</span><span class="lang-en">5. Beyond Self-Awareness &mdash; Finding Your Career's "True North"</span></h2>
+
+        <p>
+          <span class="lang-ja">Bill Georgeの「True North（真北）」という概念は、自己認識の究極の目的を示している。コンパスが常に北を指すように、自分の内側にある「本当に大切なもの」を知ることで、外部環境がどう変わっても判断の軸がブレなくなる。</span>
+          <span class="lang-en">Bill George's concept of "True North" articulates the ultimate purpose of self-awareness. Just as a compass always points north, knowing what truly matters to you from within ensures your decision-making axis remains steady, no matter how the external environment shifts.</span>
+        </p>
+
+        <p>
+          <span class="lang-ja">AI時代に技術スキルの陳腐化は加速する。しかし自分が何を大切にし、何に情熱を持ち、どのような影響を世界に与えたいのかという問いへの答えは、テクノロジーの変化に左右されない。</span>
+          <span class="lang-en">In the AI era, the obsolescence of technical skills will accelerate. Yet the answers to what you value, what you are passionate about, and what impact you wish to have on the world are not subject to technological change.</span>
+        </p>
+
+        <div class="pull-quote">
+          <p><span class="lang-ja">自己認識は目に見えにくいスキルだ。しかし、HBR、McKinsey、Harvard Business Schoolの研究が一致して示すのは、このスキルこそがリーダーとしての成果、キャリアの満足度、そして組織への影響力を最も確実に予測するという事実である</span><span class="lang-en">Self-awareness is an invisible skill. Yet research from HBR, McKinsey, and Harvard Business School converges on one finding: it is the most reliable predictor of a leader's results, career satisfaction, and organisational influence</span></p>
+          <footer><span class="lang-ja">本稿の研究知見に基づく著者の総括</span><span class="lang-en">Author's synthesis based on the research findings in this article</span></footer>
+        </div>
+
+        <p>
+          <span class="lang-ja">MBAや資格のように履歴書に書くことはできない。しかし、自己認識の深さはあらゆる場面 &mdash; 面接での受け答え、チームへのフィードバック、危機的状況での判断 &mdash; で静かに、しかし確実に現れる。その違いに気づくのは、まず自分自身を知ることから始まる。</span>
+          <span class="lang-en">You cannot list it on a CV like an MBA or a professional qualification. Yet the depth of your self-awareness quietly but unmistakably reveals itself in every situation &mdash; how you respond in an interview, how you give feedback to your team, how you make decisions in a crisis. Noticing that difference begins with knowing yourself.</span>
+        </p>
+
+      </article>
+
+      <!-- 4. Sidebar -->
+      <aside class="article-sidebar">
+
+        <!-- Key Facts -->
+        <div class="sidebar-card">
+          <div class="section-label">Key Facts</div>
+          <div class="keyfacts-grid">
+            <div class="fact-card highlight">
+              <div class="fact-value">95%</div>
+              <div class="fact-desc"><span class="lang-ja">自分は自己認識が高いと信じている人の割合 (Eurich)</span><span class="lang-en">People who believe they are self-aware (Eurich)</span></div>
+            </div>
+            <div class="fact-card highlight">
+              <div class="fact-value">10-15%</div>
+              <div class="fact-desc"><span class="lang-ja">実際に自己認識が高い人の割合 (Eurich)</span><span class="lang-en">Who actually are self-aware (Eurich)</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">4</div>
+              <div class="fact-desc"><span class="lang-ja">GolemanのEIフレームワークの領域数</span><span class="lang-en">EI domains in Goleman's framework</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">48,000</div>
+              <div class="fact-desc"><span class="lang-ja">分析されたLeaderView360レビュー数 (Jockers &amp; Perrault)</span><span class="lang-en">LeaderView360 reviews analysed (Jockers &amp; Perrault)</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">4</div>
+              <div class="fact-desc"><span class="lang-ja">Johariの窓の象限数</span><span class="lang-en">Johari Window quadrants</span></div>
+            </div>
+            <div class="fact-card">
+              <div class="fact-value">79%</div>
+              <div class="fact-desc"><span class="lang-ja">業績不振企業で自己認識が低い確率の上昇幅 (Korn Ferry)</span><span class="lang-en">More likely to have low self-awareness at poorly performing firms (Korn Ferry)</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Key References -->
+        <div class="sidebar-card">
+          <div class="section-label">Key References</div>
+          <ul class="source-list" style="margin-top:10px;">
+            <li><a href="https://hbr.org/2018/01/what-self-awareness-really-is-and-how-to-cultivate-it" target="_blank" rel="noopener">What Self-Awareness Really Is (and How to Cultivate It)</a> <span class="source-tag">HBR / Eurich</span></li>
+            <li><a href="https://www.amazon.com/Insight-Power-Self-Awareness-Self-Deluded-World/dp/1509839615" target="_blank" rel="noopener">Insight: The Power of Self-Awareness in a Self-Deluded World</a> <span class="source-tag">Eurich (book)</span></li>
+            <li><a href="https://hbr.org/2000/03/leadership-that-gets-results" target="_blank" rel="noopener">Leadership That Gets Results</a> <span class="source-tag">HBR / Goleman</span></li>
+            <li><a href="https://danielgolemanemotionalintelligence.com/ei-overview-the-four-domains-and-twelve-competencies/" target="_blank" rel="noopener">EI Overview: The Four Domains and Twelve Competencies</a> <span class="source-tag">Goleman</span></li>
+            <li><a href="https://hbr.org/2007/02/discovering-your-authentic-leadership" target="_blank" rel="noopener">Discovering Your Authentic Leadership</a> <span class="source-tag">HBR / George</span></li>
+            <li><a href="https://www.mckinsey.com/capabilities/strategy-and-corporate-finance/our-insights/leading-with-authenticity-a-conversation-with-bill-george" target="_blank" rel="noopener">Harvard's Bill George on Authentic Leadership</a> <span class="source-tag">McKinsey</span></li>
+            <li><a href="https://ir.kornferry.com/news-events/press-releases/detail/488/korn-ferry-institute-study-shows-link-between-self-awareness-and-company-financial-performance" target="_blank" rel="noopener">Korn Ferry Institute: Self-Awareness and Company Financial Performance</a> <span class="source-tag">Korn Ferry</span></li>
+            <li><a href="https://journals.sagepub.com/doi/10.1177/15344843251342689" target="_blank" rel="noopener">Emotional Intelligence and Leader Outcomes</a> <span class="source-tag">SAGE 2026</span></li>
+            <li><a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=5736922" target="_blank" rel="noopener">The Johari Window Revisited (48,000 LeaderView360 Reviews)</a> <span class="source-tag">SSRN</span></li>
+            <li><a href="https://cclinnovation.org/wp-content/uploads/2025/02/applyingjohariwindow.pdf" target="_blank" rel="noopener">Applying the Johari Window to Enhance 360 Assessments</a> <span class="source-tag">CCL</span></li>
+            <li><a href="https://www.elitehighperformance.com/2025/12/31/leadership-in-2026-why-self-awareness-will-be-the-most-underrated-yet-most-urgent-leadership-behaviour-to-acquire/" target="_blank" rel="noopener">Leadership in 2026: Why Self-Awareness Will Be the Most Underrated Behaviour</a> <span class="source-tag">EHP</span></li>
+            <li><a href="https://illaftrainoftrainers.com/the-leadership-edge-for-2026-why-emotional-intelligence-is-your-ultimate-crisis-strategy-article-3750-lang-en" target="_blank" rel="noopener">Why EI Is Your Ultimate Crisis Strategy</a> <span class="source-tag">ILAF 2026</span></li>
+            <li><a href="https://www.potentialproject.com/insights/self-awareness-can-help-leaders-more-than-an-mba-can" target="_blank" rel="noopener">Self-Awareness Can Help Leaders More Than an MBA</a> <span class="source-tag">Potential Project</span></li>
+            <li><a href="https://hbr.org/2026/01/leaders-bring-your-best-self-into-the-new-year" target="_blank" rel="noopener">Leaders, Bring Your Best Self into the New Year</a> <span class="source-tag">HBR 2026-01</span></li>
+            <li><a href="https://www.harvardbusiness.org/insight/the-ladder-of-inference-building-self-awareness-to-be-a-better-human-centered-leader/" target="_blank" rel="noopener">Building Self-Awareness to Be A Better Human-Centred Leader</a> <span class="source-tag">Harvard Business</span></li>
+          </ul>
+        </div>
+
+      </aside>
+
+    </div>
+  </div>
+</main>
+
+<!-- Career/AI category = no disclaimer -->
+<footer class="site-footer">
+  <span>Career | Donato Career Notes | 2026-05-04</span>
+  <span></span>
+</footer>
+
+<script>
+  // Progress bar
+  window.addEventListener('scroll', function() {
+    var h = document.documentElement;
+    var pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    document.getElementById('progress-bar').style.width = Math.min(pct, 100) + '%';
+  });
+
+  // Reading time (500chars/min)
+  (function() {
+    var text = document.querySelector('.article-body') ? document.querySelector('.article-body').textContent : '';
+    var chars = text.length;
+    var minutes = Math.ceil(chars / 500);
+    var el1 = document.getElementById('reading-time-badge');
+    var el2 = document.getElementById('reading-time-badge2');
+    if (el1) el1.querySelector('.lang-ja').textContent = '約' + minutes + '分';
+    if (el2) el2.querySelector('.lang-ja').textContent = '約' + minutes + '分';
+    if (el1) el1.querySelector('.lang-en').textContent = '~' + minutes + ' min read';
+    if (el2) el2.querySelector('.lang-en').textContent = '~' + minutes + ' min read';
+  })();
+
+  // Lang toggle
+  let currentLang = localStorage.getItem('hp-lang') || 'ja';
+  let currentTheme = localStorage.getItem('hp-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('hp-lang', lang);
+    document.querySelectorAll('.lang-ja').forEach(el => el.style.display = lang === 'ja' ? 'inline' : 'none');
+    document.querySelectorAll('.lang-en').forEach(el => el.style.display = lang === 'en' ? 'inline' : 'none');
+    document.querySelectorAll('.art-lang-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+    document.documentElement.lang = lang === 'ja' ? 'ja' : 'en';
+  }
+  function toggleTheme() {
+    currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+    localStorage.setItem('hp-theme', currentTheme);
+    document.body.classList.toggle('dark', currentTheme === 'dark');
+    document.getElementById('theme-btn').textContent = currentTheme === 'light' ? '☀' : '☾';
+  }
+  document.addEventListener('DOMContentLoaded', () => {
+    setLang(currentLang);
+    if (currentTheme === 'dark') {
+      document.body.classList.add('dark');
+      document.getElementById('theme-btn').textContent = '☾';
+    }
+  });
+</script>
+
+</body>
+</html>
